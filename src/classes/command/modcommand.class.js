@@ -27,12 +27,12 @@ class ModCommand extends AdminCommand {
     // If we don't have UserPermissions defined
     if (!comprops?.permissionsRequired) {
       // Default to KickMembers
-      comprops.permissionsRequired = [PermissionFlagsBits.KickMembers]
+      comprops.permissionsRequired = [ PermissionFlagsBits.KickMembers ]
     }
     // If we don't have BotPermissions defined
     if (!comprops?.botPermssions) {
       // Default to KickMembers
-      comprops.botPermssions = [PermissionFlagsBits.KickMembers]
+      comprops.botPermssions = [ PermissionFlagsBits.KickMembers ]
     }
     // Category: Mod
     comprops.access = comprops?.access ? comprops.access : "Mod"

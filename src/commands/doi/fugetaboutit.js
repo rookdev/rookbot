@@ -2,6 +2,8 @@ const { Client, Interaction } = require('discord.js');
 const { RookEmbed } = require('../../classes/embed/rembed.class');
 const path = require('path');
 
+// FIXME: Update to OOP
+
 module.exports = {
   /**
    *

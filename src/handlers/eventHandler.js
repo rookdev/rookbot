@@ -28,7 +28,6 @@ module.exports = (client) => {
         }
         const eventFunction = require(eventFile)
         await eventFunction(client, ...args) // Pass all arguments to the event function
-        console.log("")
       }
     })
   }

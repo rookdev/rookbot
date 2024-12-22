@@ -43,13 +43,16 @@ class RookCommand {
 
   /**
    * @typedef   {Object}  CommandProps  Command Properties
-   * @property  {string}                    name          Command Name
-   * @property  {string}                    description   Command Description
-   * @property  {Array.<CommandOption>}     [options]     Command Options
-   * @property  {string}                    [category]    Command Category
-   * @property  {string}                    [channelName] Default Channel
-   * @property  {string}                    [access]      Access Label
-   * @property  {Array.<CommandTestOption>} [testOptions] Command Tests
+   * @property  {string}                    name                  Command Name
+   * @property  {string}                    description           Command Description
+   * @property  {Array.<CommandOption>}     [options]             Command Options
+   * @property  {string}                    [category]            Command Category
+   * @property  {string}                    [channelName]         Default Channel
+   * @property  {number}                    [permissions]         Global Permissions
+   * @property  {number}                    [permissionsRequired] User Permissions
+   * @property  {number}                    [botPermissions]      Bot Permissions
+   * @property  {string}                    [access]              Access Label
+   * @property  {Array.<CommandTestOption>} [testOptions]         Command Tests
    */
 
   // Command Options
@@ -77,6 +80,13 @@ class RookCommand {
   /** @type {string} Access Label */
   access;
 
+  /** @type {number} Global Permissions */
+  permissions;
+  /** @type {number} Bot Permissions */
+  botPermissions;
+  /** @type {number} User Permissions */
+  permissionsRequired;
+
   // Global Variables
   /** @type {any} Loaded Client Profile */
   profile;
@@ -91,6 +101,8 @@ class RookCommand {
 
   /** @type {boolean} Did we get an error? */
   error;
+  /** @type {Object.<string, string>} Canned Error Messages */
+  errors;
 
   // Scratchpad
   /** @type {EmbedProps} Embed Properties */
@@ -107,14 +119,18 @@ class RookCommand {
    * @param {EmbedProps}    props     Embed Properties
    */
   constructor(client, comprops={}, props={}) {
-    this.name             = setValue(comprops.name, "unknown")
-    this.description      = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
-    this.options          = setValue(comprops.options, [])
-    this.category         = setValue(comprops.category, "unknown")
-    this.testOptions      = setValue(comprops.testOptions, [])
-    this.testIndependent  = setValue(comprops.testIndependent, false)
-    this.channelName      = "bot-console"
-    this.access           = setValue(comprops.access, "unset")
+    this.name                 = setValue(comprops.name, "unknown")
+    this.description          = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
+    this.options              = setValue(comprops.options, [])
+    this.category             = setValue(comprops.category, "unknown")
+    this.testOptions          = setValue(comprops.testOptions, [])
+    this.testIndependent      = setValue(comprops.testIndependent, false)
+    this.channelName          = "bot-console"
+    this.access               = setValue(comprops.access, "unset")
+    this.permissions          = setValue(comprops.permissions, 0)
+    this.botPermissions       = setValue(comprops.botPermissions, this.permissions)
+    this.permissionsRequired  = setValue(comprops.permissionsRequired, this.permissions)
+    this.errors               = require('../../dbs/errors.json')
 
     this.profile = client.profile
     this.pages = []
@@ -458,7 +474,6 @@ class RookCommand {
       hasDeferred
     )
     // if (shipResult) { console.log(`/${this.name}: Shipped!`) }
-    console.log("")
 
     return printResult && shipResult
   }
@@ -517,6 +532,8 @@ class RookCommand {
         hasDeferred
       )
     }
+
+    console.log("")
 
     return buildResult && sendResult && !this.error
   }

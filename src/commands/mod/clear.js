@@ -8,8 +8,7 @@ module.exports = class ClearCommand extends ModCommand {
       name: "clear",
       category: "mod",
       description: "Clear Messages",
-      // permissionsRequired: [PermissionFlagsBits.ManageMessages],
-      // botPermissions: [PermissionFlagsBits.ManageMessages],
+      permissions: [ PermissionFlagsBits.ManageMessages ]
     }
     let props = {}
 

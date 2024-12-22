@@ -1,3 +1,4 @@
+const { PermissionFlagsBits } = require('discord.js')
 const { changeNickname } = require('../../utils/changeNickname')  // Import the changeNickname function
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
@@ -9,7 +10,8 @@ module.exports = class CastleNameCommand extends RookCommand {
       description: "Immediately triggers a nickname change for castle, to a random castle-esque name",
       flags: {
         test: "basic"
-      }
+      },
+      permissions: [ PermissionFlagsBits.ChangeNickname ]
     }
     let props = {}
     super(

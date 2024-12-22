@@ -19,8 +19,7 @@ module.exports = class UnlockCommand extends ModCommand {
           required: true,
         },
       ],
-      // permissionsRequired: [PermissionFlagsBits.ManageChannels],
-      // botPermissions: [PermissionFlagsBits.ManageChannels],
+      permissions: [ PermissionFlagsBits.ManageChannels ]
     }
     let props = {}
 

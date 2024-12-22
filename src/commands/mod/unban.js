@@ -26,8 +26,7 @@ module.exports = class UnbanCommand extends ModCommand {
           required: false,
         }
       ],
-      // permissionsRequired: [PermissionFlagsBits.BanMembers],
-      // botPermissions: [PermissionFlagsBits.BanMembers],
+      permissions: [ PermissionFlagsBits.BanMembers ]
     }
     let props = {}
 

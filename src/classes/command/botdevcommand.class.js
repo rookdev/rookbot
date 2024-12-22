@@ -11,7 +11,7 @@ const { AdminCommand } = require('./admincommand.class')
 class BotDevCommand extends AdminCommand {
   constructor(client, comprops, props) {
     // BotPerms: Administrator
-    comprops.botPermssions = [PermissionFlagsBits.Administrator]
+    comprops.permissions = [ PermissionFlagsBits.Administrator ]
     // Category: BotDev
     comprops.access = comprops?.access ? comprops.access : "BotDev"
 

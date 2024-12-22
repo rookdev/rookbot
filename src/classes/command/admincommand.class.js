@@ -12,7 +12,7 @@ const fs = require('fs')
 class AdminCommand extends RookCommand {
   constructor(client, comprops, props) {
     // BotPerms: Administrator
-    comprops.botPermissions = [PermissionFlagsBits.Administrator]
+    comprops.permissions = [ PermissionFlagsBits.Administrator ]
     // Category: Admin
     comprops.access = comprops?.access ? comprops.access : "Admin"
 

@@ -42,9 +42,8 @@ module.exports = class MuteCommand extends ModCommand {
           "member-role-id": "member",
           "muted-role-id":  "muted"
         }
-      ]
-      // permissionsRequired: [PermissionFlagsBits.BanMembers],
-      // botPermissions: [PermissionFlagsBits.BanMembers],
+      ],
+      permissions: [ PermissionFlagsBits.ManageRoles ]
     }
     let props = {}
 

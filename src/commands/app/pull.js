@@ -18,8 +18,6 @@ module.exports = class PullCommand extends BotDevCommand {
       flags: {
         test: "basic"
       }
-      // permissionsRequired: [PermissionFlagsBits.Administrator], // Restrict to staff
-      // botPermissions: [PermissionFlagsBits.Administrator] // Ensure bot can send messages
     }
     let props = {
       caption: { text: "Pull", emoji: "⏫" },

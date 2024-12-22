@@ -30,8 +30,7 @@ module.exports = class LockdownCommand extends ModCommand {
           ]
         }
       ],
-      // permissionsRequired: [PermissionFlagsBits.ManageChannels],
-      // botPermissions: [PermissionFlagsBits.ManageChannels],
+      permissions: [ PermissionFlagsBits.ManageChannels ]
     }
     let props = {}
 

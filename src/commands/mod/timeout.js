@@ -34,8 +34,7 @@ module.exports = class TimeoutCommand extends ModCommand {
           required: false
         }
       ],
-      // permissionsRequired: [PermissionFlagsBits.ModerateMembers],
-      // botPermissions: [PermissionFlagsBits.ModerateMembers],
+      permissions: [ PermissionFlagsBits.ModerateMembers ]
     }
     let props = {}
 

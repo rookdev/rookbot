@@ -1,6 +1,8 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 const { RookEmbed } = require('../../classes/embed/rembed.class');
 
+// FIXME: Update to OOP
+
 module.exports = {
   /**
    *

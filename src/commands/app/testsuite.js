@@ -21,9 +21,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
           type: ApplicationCommandOptionType.String,
           required: true
         }
-      ],
-      // permissionsRequired: [PermissionFlagsBits.Administrator],
-      // botPermissions: [PermissionFlagsBits.Administrator],
+      ]
     }
     let props = {}
 

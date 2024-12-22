@@ -2,6 +2,8 @@ const { ApplicationCommandOptionType } = require('discord.js')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const weather = require('weather-js')
 
+// FIXME: Update to OOP
+
 module.exports = {
   name: 'weather',
   description: 'Weather',

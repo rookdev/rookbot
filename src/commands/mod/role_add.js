@@ -31,8 +31,7 @@ module.exports = class RoleAddCommand extends ModCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
-      // permissionsRequired: [PermissionFlagsBits.BanMembers],
-      // botPermissions: [PermissionFlagsBits.BanMembers],
+      permissions: [ PermissionFlagsBits.ManageRoles ]
     }
     let props = {}
 

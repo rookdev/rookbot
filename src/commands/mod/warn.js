@@ -34,9 +34,8 @@ module.exports = class WarnCommand extends ModCommand {
           "target-id":  "282859044593598464",
           "reason":     "Because"
         }
-      ]
-      // permissionsRequired: [PermissionFlagsBits.ManageMessages],
-      // botPermissions: [PermissionFlagsBits.ManageMessages],
+      ],
+      permissions: [ PermissionFlagsBits.ModerateMembers ]
     }
     let props = {}
 

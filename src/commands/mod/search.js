@@ -70,9 +70,8 @@ module.exports = class SearchCommand extends ModCommand {
           "target-id":    "282859044593598464",
           "search-type":  "Unban"
         }
-      ]
-      // permissionsRequired: [PermissionFlagsBits.ManageMessages],
-      // botPermissions: [PermissionFlagsBits.ManageMessages],
+      ],
+      permissions: [ PermissionFlagsBits.ModerateMembers ]
     }
     let props = {}
 
