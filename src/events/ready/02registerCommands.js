@@ -89,7 +89,7 @@ module.exports = async (client) => {
                 autocomplete
               }
             )
-            client.commands[name] = commandsManager.get(existingCommand.id)
+            client.commands[name] = await commandsManager.fetch(existingCommand.id)
           } catch (error) {
             if (error.code === 429) {
               console.warn(`  ⏳ Rate limit hit. Retrying for "${name}" after ${error.retry_after || 1000}ms.`)
@@ -102,7 +102,7 @@ module.exports = async (client) => {
                   autocomplete
                 }
               )
-              client.commands[name] = commandsManager.get(existingCommand.id)
+              client.commands[name] = await commandsManager.fetch(existingCommand.id)
             } else {
               console.error(`  ❌ Failed to edit: "${name}":`, error.message)
             }

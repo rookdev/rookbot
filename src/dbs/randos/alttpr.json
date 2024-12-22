@@ -1,7 +1,6 @@
 {
   "madlibs": {
     "major": [
-      "Morph Ball",
       "Pegasus Boots",
       "Fire Rod",
       "Hookshot",
@@ -15,17 +14,7 @@
       "A Progressive Glove",
       "Lamp",
       "Half-Magic",
-      "Morph Bombs",
-      "Charge Beam",
-      "Speed Booster",
-      "A Progressive Suit",
-      "Hi-Jump Boots",
-      "Varia Suit",
-      "Gravity Suit",
-      "Space Jump",
-      "Plasma Beam",
-      "Screw Attack",
-      "Ice Beam"
+      "A Progressive Suit"
     ],
     "useless": [
       "3 Bombs",
@@ -38,15 +27,11 @@
       "Mushroom",
       "Shovel",
       "Cane of Byrna",
-      "Magic Cape",
-      "Spring Ball",
-      "Spazer Beam",
-      "Grapple Beam"
+      "Magic Cape"
     ],
     "footers": [
       "Good luck out there, adventurers!",
       "May the RNG be ever in your favor!",
-      "I wonder who we'll be microwaving today~",
       "Don't forget to grab [MAJOR_ITEM]!",
       "Watch out for those pesky Lynels!",
       "Hookshot, Bombs, Boots, Go!",
@@ -57,17 +42,13 @@
       "Hoping [MAJOR_ITEM] won't be at Graveyard Ledge!",
       "Hoping we'll get a sword within the first hour!",
       "Hoping we'll find [MAJOR_ITEM] within the first hour!",
-      "Hoping we'll find Morph Bombs before Power Bombs!",
       "Hoping that Blind's pun will make us laugh today!",
       "Hoping that [MAJOR_ITEM] will be in Blind's Hut!",
-      "Praying we won't have to do Suitless Maridia!",
-      "Hoping SM won't require Reverse Boss Order (RBO)!",
       "Who wants to do a hookpush vs Ganon? <:",
       "Let's have a beat-up party at Ganon's!",
       "Hoping that Boots hovering won't be required this time!",
       "Who's ready for some silverless Ganon action??",
       "please no aga1 seed im allergic",
-      "No Charge Beam vs Mother Brain? No problem 👍",
       "Discount [USELESS_ITEM] at King Zora! Only 500 Rupees!",
       "Don't worry-There'll be at least one sword outside of Ganon's Tower!",
       "[MAJOR_ITEM] on Pedestal? No problem-just hike over the mountain!",
@@ -76,13 +57,13 @@
   },
   "rando": {
     "player": {
-      "name": "SMZ3",
-      "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/smz3.png"
+      "name": "ALttPR",
+      "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/z3r.png"
     },
     "scripts": [
-      "[Stable February 2022 (`alttpo-client-win64-stable-20220213.1`)](https://dev.azure.com/ALttPO/alttpo/_build/results?buildId=693&view=artifacts&pathAsName=false&type=publishedArtifacts)"
+      "[Unstable June 2024 (`esync-v20240601-smz3`)](https://github.com/alttpo/alttpo/releases/tag/esync-v20240601-smz3)"
     ],
     "pingable-role-id": "1300904313081565236",
-    "permalink": "https://samus.link/seed/<hash>"
+    "permalink": "https://alttpr.com/h/<hash>"
   }
 }

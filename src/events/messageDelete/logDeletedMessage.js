@@ -110,7 +110,7 @@ module.exports = async (client, deletedMessage) => {
       [
         {
           name: 'Content',
-          value: deletedMessage.content || '*No content*'
+          value: deletedMessage.content.slice(0,1024) || '*No content*'
         }
       ]
     )

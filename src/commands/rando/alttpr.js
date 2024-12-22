@@ -4,15 +4,15 @@ const SeedAnnounceCommand = require('../rando/seedannounce')
 /**
  * @class
  * @classdesc Super Metroid Map Randomizer Seed Announcer
- * @this {SMMRSeedCommand}
+ * @this {ALttPRSeedCommand}
  * @extends {SeedAnnounceCommand}
  * @public
  */
-module.exports = class SMMRSeedCommand extends SeedAnnounceCommand {
+module.exports = class ALttPRSeedCommand extends SeedAnnounceCommand {
   constructor(client) {
     let comprops = {
-      name: "smmr",
-      description: "Super Metroid Map Randomizer Seed Announcer",
+      name: "alttpr",
+      description: "A Link to the Past Randomizer Seed Announcer",
       category: "rando",
       options: [
         {
@@ -42,7 +42,7 @@ module.exports = class SMMRSeedCommand extends SeedAnnounceCommand {
   async execute(client, interaction) {
     let coptions = interaction.options
     let options = {
-      randomizer: "m3maprando",
+      randomizer: "alttpr",
       "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,
       "seed-url": coptions["seed-url"] ?? "",
       "prep-time": coptions["prep-time"] ?? 0

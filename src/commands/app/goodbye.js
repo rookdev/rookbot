@@ -12,6 +12,7 @@ module.exports = class GoodbyeCommand extends SalutationCommand {
   constructor(client) {
     let comprops = {
       name: "goodbye",
+      category: "bot",
       description: "Goodbye"
     }
     super(

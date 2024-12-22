@@ -105,13 +105,13 @@ module.exports = async (client, oldMessage, newMessage) => {
         [
           {
             name: 'Old Content',
-            value: oldContent || '*No old content*' // Ensure there's always a default value
+            value: oldContent.slice(0,1024) || '*No old content*' // Ensure there's always a default value
           }
         ],
         [
           {
             name: 'New Content',
-            value: newContent || '*No new content*' // Ensure there's always a default value
+            value: newContent.slice(0,1024) || '*No new content*' // Ensure there's always a default value
           }
         ]
       ]

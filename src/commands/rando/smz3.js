@@ -13,24 +13,22 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
     let comprops = {
       name: "smz3",
       description: "SMZ3 Seed Announcer",
+      category: "rando",
       options: [
         {
           name: "ping-multiplayer-role",
           description: "Whether or not to ping the Multiplayer Ping role",
-          type: ApplicationCommandOptionType.Boolean,
-          required: false
+          type: ApplicationCommandOptionType.Boolean
         },
         {
           name: 'seed-url',
           description: 'The URL of the seed to play',
-          type: ApplicationCommandOptionType.String,
-          required: false
+          type: ApplicationCommandOptionType.String
         },
         {
           name: 'prep-time',
           description: 'The number of minutes to prepare before the game starts.',
-          type: ApplicationCommandOptionType.Integer,
-          required: false
+          type: ApplicationCommandOptionType.Integer
         }
       ]
     }
@@ -44,7 +42,7 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
   async execute(client, interaction) {
     let coptions = interaction.options
     let options = {
-      rando: "smz3",
+      randomizer: "smz3",
       "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,
       "seed-url": coptions["seed-url"] ?? "",
       "prep-time": coptions["prep-time"] ?? 0

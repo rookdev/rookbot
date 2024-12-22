@@ -11,6 +11,7 @@ module.exports = class HelloCommand extends SalutationCommand {
   constructor(client) {
     let comprops = {
       name: "hello",
+      category: "bot",
       description: "Hello"
     }
     super(

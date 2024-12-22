@@ -66,10 +66,10 @@
       "segment": "local"
     }
   },
-  "unknown": {
+  "bot": {
     "goodbye": {
       "name": "goodbye",
-      "category": "unknown",
+      "category": "bot",
       "description": "Goodbye",
       "options": [],
       "access": "unset",
@@ -77,55 +77,12 @@
     },
     "hello": {
       "name": "hello",
-      "category": "unknown",
+      "category": "bot",
       "description": "Hello",
       "options": [],
       "access": "unset",
       "segment": "local"
-    }
-  },
-  "undefined": {
-    "say": {
-      "name": "say",
-      "description": "Make the bot send a message in the specified channel.",
-      "options": [
-        {
-          "name": "channel",
-          "description": "The channel to send the message in.",
-          "required": true
-        },
-        {
-          "name": "message",
-          "description": "The message to send.",
-          "required": true
-        }
-      ],
-      "segment": "local"
     },
-    "fugetaboutit": {
-      "name": "fugetaboutit",
-      "description": "Pronunciation tutorial",
-      "options": [],
-      "segment": "local"
-    }
-  },
-  "botdev": {
-    "testsuite": {
-      "name": "testsuite",
-      "category": "botdev",
-      "description": "Runs a test suite for a command",
-      "options": [
-        {
-          "name": "command-name",
-          "description": "The name of the command to test.",
-          "required": true
-        }
-      ],
-      "access": "BotDev",
-      "segment": "local"
-    }
-  },
-  "bot": {
     "botavatar": {
       "name": "botavatar",
       "category": "bot",
@@ -181,6 +138,47 @@
       "description": "Guild Status",
       "options": [],
       "access": "unset",
+      "segment": "local"
+    }
+  },
+  "undefined": {
+    "say": {
+      "name": "say",
+      "description": "Make the bot send a message in the specified channel.",
+      "options": [
+        {
+          "name": "channel",
+          "description": "The channel to send the message in.",
+          "required": true
+        },
+        {
+          "name": "message",
+          "description": "The message to send.",
+          "required": true
+        }
+      ],
+      "segment": "local"
+    },
+    "fugetaboutit": {
+      "name": "fugetaboutit",
+      "description": "Pronunciation tutorial",
+      "options": [],
+      "segment": "local"
+    }
+  },
+  "botdev": {
+    "testsuite": {
+      "name": "testsuite",
+      "category": "botdev",
+      "description": "Runs a test suite for a command",
+      "options": [
+        {
+          "name": "command-name",
+          "description": "The name of the command to test.",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
       "segment": "local"
     }
   },
@@ -651,6 +649,27 @@
     }
   },
   "rando": {
+    "alttpr": {
+      "name": "alttpr",
+      "category": "rando",
+      "description": "A Link to the Past Randomizer Seed Announcer",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
     "holyimage": {
       "name": "holyimage",
       "category": "rando",
@@ -675,22 +694,20 @@
       "options": [
         {
           "name": "randomizer",
-          "description": "Randomizer to choose"
+          "description": "Randomizer to choose",
+          "required": true
         },
         {
           "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role",
-          "required": false
+          "description": "Whether or not to ping the Multiplayer Ping role"
         },
         {
           "name": "seed-url",
-          "description": "The URL of the seed to play",
-          "required": false
+          "description": "The URL of the seed to play"
         },
         {
           "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts.",
-          "required": false
+          "description": "The number of minutes to prepare before the game starts."
         }
       ],
       "access": "unset",
@@ -708,6 +725,48 @@
         {
           "name": "hash-id",
           "description": "Seed Hash ID to call"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "smmr": {
+      "name": "smmr",
+      "category": "rando",
+      "description": "Super Metroid Map Randomizer Seed Announcer",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "smz3": {
+      "name": "smz3",
+      "category": "rando",
+      "description": "SMZ3 Seed Announcer",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
         }
       ],
       "access": "unset",
