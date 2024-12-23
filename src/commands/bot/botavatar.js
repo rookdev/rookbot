@@ -28,8 +28,8 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    let new_avatar = options["avatar-url"]
+  async action(client, interaction, coptions) {
+    let new_avatar = coptions["avatar-url"]
     let old_avatar = client.user.displayAvatarURL()
 
     this.props.title = {
@@ -47,7 +47,7 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
           avatar: old_avatar
         }
       }
-      this.props.image = new_avatar
+      this.props.image = { image: new_avatar }
     } catch(e) {
       this.error = true
       this.props.description = [

@@ -20,7 +20,6 @@ module.exports = class PullCommand extends BotDevCommand {
       }
     }
     let props = {
-      caption: { text: "Pull", emoji: "⏫" },
       title: { text: "Pull", emoji: "⏫" }
     }
     super(
@@ -29,7 +28,7 @@ module.exports = class PullCommand extends BotDevCommand {
       {...props}
     )
   }
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     let BRANCH = ""
     let COMMITS = {
       current: "",

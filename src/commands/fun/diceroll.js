@@ -40,9 +40,9 @@ module.exports = class DiceRollCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    const count = options.count
-    const sides = options.sides ?? 6
+  async action(client, interaction, coptions) {
+    const count = coptions.count
+    const sides = coptions.sides ?? 6
 
     // Roll the dice and collect results
     const rolls = Array.from({ length: count }, () => Math.floor(Math.random() * sides) + 1)

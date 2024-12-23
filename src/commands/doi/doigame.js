@@ -1,5 +1,5 @@
-const { serverGameName_base64encoded } = require('../../../config.json')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { serverGameName_base64encoded } = require('../../../config.json')
 
 module.exports = class DOIGameCommand extends RookCommand {
   constructor(client) {
@@ -22,7 +22,7 @@ module.exports = class DOIGameCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     // Decode the base64 string
     const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
 

@@ -32,7 +32,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
       ]
     }
     let props = {
-      caption: { text: "Bot Guilds" }
+      title: { text: "Bot Guilds" }
     }
     super(
       client,
@@ -41,7 +41,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions={}) {
     this.props.description = []
     this.props.description.push(
       `***Guilds that ${client.user} is in:***`,
@@ -49,7 +49,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     )
 
     let guilds = client.guilds.cache
-    let locale = options['locale']
+    let locale = coptions['locale']
     if (!locale) {
       locale = "en-AU"
     }

@@ -345,12 +345,11 @@ class RookEmbed extends EmbedBuilder {
       }
 
       if (hasText || hasIcon) {
-        this.setFooter(
-          {
-            text:    this.props.footer.text.trim(),
-            iconURL: this.props.footer.image.trim()
-          }
-        )
+        let footer = { text: this.props.footer.text.trim() }
+        if (this.props.footer?.image) {
+          footer.image = this.props.footer.image.trim()
+        }
+        this.setFooter(footer)
       }
     }
 

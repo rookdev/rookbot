@@ -31,8 +31,8 @@ module.exports = class ColorCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    const hexInput = options.hex.replace('#', '').toUpperCase()
+  async action(client, interaction, coptions) {
+    const hexInput = coptions.hex.replace('#', '').toUpperCase()
 
     // Validate hex string
     const hexRegex = /^[0-9A-F]{6}$/

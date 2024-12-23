@@ -69,6 +69,7 @@ if (
   // FIXME:
   // Use ./node_modules/.bin/* if linux
   // Use ./* if not linux
+  shell.exec("which npm-check-updates")
   let outdated = await shell.exec("npm-check-updates", { silent: true })
   if (
     (outdated.stdout.trim() == "" && outdated.stderr.trim() == "") ||

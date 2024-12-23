@@ -1,3 +1,5 @@
+const { RookEmbed } = require('../../classes/embed/rembed.class')
+
 /**
  * @class
  * @classdesc Build a Slim Villains-branded Embed
@@ -5,9 +7,6 @@
  * @extends {RookEmbed}
  * @public
  */
-
-const { RookEmbed } = require('../../classes/embed/rembed.class')
-
 class SlimEmbed extends RookEmbed {
   /**
    * @typedef {Object} EmbedField

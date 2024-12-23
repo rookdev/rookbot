@@ -57,7 +57,7 @@ module.exports = class EmbedCommand extends AdminCommand {
   /**
    * Sends an embed message in response to a slash command interaction.
    */
-  async action() {
+  async action(client, interaction, coptions={}) {
     // all done in constructor
     return !this.error
   }

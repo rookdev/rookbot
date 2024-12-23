@@ -1,5 +1,5 @@
-const getProfile = require('../../utils/getProfile')
 const { Client } = require('discord.js')
+const getProfile = require('../../utils/getProfile')
 
 /**
  * @class

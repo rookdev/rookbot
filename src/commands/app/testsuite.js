@@ -1,5 +1,6 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js');
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 const getLocalCommands = require('../../utils/getLocalCommands')
 
 module.exports = class TestSuiteCommand extends BotDevCommand {
@@ -34,12 +35,12 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions={}) {
     console.log(`/${this.name}: Action`)
     const localCommands = getLocalCommands(client)
-    let commandName = options["command-name"]
+    let commandName = coptions["command-name"]
 
     try {
       // Find the command

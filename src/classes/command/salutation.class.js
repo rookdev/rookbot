@@ -5,7 +5,6 @@ const colors = require('../../dbs/colors.json')
 const shell = require('shelljs')
 const path = require('path')
 const fs = require('fs')
-const { ApplicationCommandOptionType } = require('discord.js')
 
 /**
  * @class
@@ -23,8 +22,8 @@ class SalutationCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    let mode        = options?.mode || "boot"
+  async action(client, interaction, coptions) {
+    let mode        = coptions?.mode || "boot"
     let onlineness  = mode == "boot" ? "Online" : "Offline"
     let readiness   = mode == "boot" ? "Ready"  : "Unready"
     let BRANCH      = ""

@@ -2,10 +2,6 @@ const { ApplicationCommandOptionType } = require('discord.js');
 const { RookCommand } = require('../../classes/command/rcommand.class');
 const timeFormat = require('../../utils/timeFormat.js')
 
-String.prototype.ucfirst = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1)
-}
-
 function article(input="") {
   for (let vowel of "aeiou".split("")) {
     if (input.toLowerCase().startsWith(vowel)) {
@@ -95,15 +91,12 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    const randomizer = options.randomizer || "smz3"
-    const guildID = interaction.guild.id
-    const userIDs = require("../../dbs/userids.json")
+  async action(client, interaction, coptions) {
+    const randomizer = coptions.randomizer || "smz3"
 
-    const pingMultiplayerRole = options['ping-multiplayer-role'] || false // Default to false
-    const randoID = options.randomizer
-    const seedURL = options['seed_url'] || null
-    const prepTimeMinutes = options['prep_time'] ?? 5 // Default to 5 minutes
+    const pingMultiplayerRole = coptions['ping-multiplayer-role'] || false // Default to false
+    const seedURL = coptions['seed_url'] || null
+    const prepTimeMinutes = coptions['prep_time'] ?? 5 // Default to 5 minutes
 
       /*
     const sahaBot = interaction.guild.members.fetch(userIDs['sahabot']);
@@ -208,7 +201,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       }
 
       // Construct the content for the channel message
-      let roleID = options["pingable-role-id"]
+      let roleID = coptions["pingable-role-id"]
       let messageContent = pingMultiplayerRole ? `<@&${roleID}>` : ""
       messageContent += article(randoTitle).ucfirst() + ` ${randoTitle} game has been generated!`
 

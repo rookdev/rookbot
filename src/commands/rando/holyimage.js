@@ -1,5 +1,6 @@
-const { ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 
 async function get_url(in_url) {
   try {
@@ -54,11 +55,11 @@ module.exports = class HolyImageCommand extends RookCommand {
   /**
    * Sends an embed message in response to a slash command interaction.
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction, options) {
-    let gameID = options['game-id'] ?? "z3r"
-    let slugID = options['slug-id'] ?? "verify"
+  async action(client, interaction, coptions) {
+    let gameID = coptions['game-id'] ?? "z3r"
+    let slugID = coptions['slug-id'] ?? "verify"
     // console.log(gameID,slugID)
 
     let gameNames = await get_url(`http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`)

@@ -1,5 +1,4 @@
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
 const UptimeCommand = require('../../commands/app/uptime.js')
 const unready = require('../../events/unready/exit')
 const colors = require('../../dbs/colors.json')
@@ -38,14 +37,13 @@ module.exports = class ExitCommand extends BotDevCommand {
     )
   }
 
-  async execute(client, interaction) {
+  async execute(client, interaction, coptions={}, independent=false) {
     if (
       interaction &&
       typeof interaction.deferReply === "function"
     ) {
       await interaction.deferReply()
     }
-    // await interaction.deleteReply()
 
     console.log(`!!! Bot Exit by: ${interaction.member.user.tag} !!!`)
     this.props.description = `Exiting <@${client.user.id}>`

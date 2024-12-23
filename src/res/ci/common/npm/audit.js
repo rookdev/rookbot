@@ -65,5 +65,6 @@ if (
   // FIXME:
   // Use ./node_modules/.bin/* if linux
   // Use ./* if not linux
+  shell.exec("which better-npm-audit")
   shell.exec("better-npm-audit audit")
 }

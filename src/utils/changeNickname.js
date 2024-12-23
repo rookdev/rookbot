@@ -38,7 +38,7 @@ async function changeNickname(client, member) {
 
           return {
             success: true,
-            message: `Changed nickname of '${member.user.tag}' in '${guildData.name}' to '${randomWord}'.`
+            message: `Changed nickname of '${member.user.tag}' in '${guildData.name}' to '${newNickname}'.`
           }
         }
       }

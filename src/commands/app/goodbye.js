@@ -1,5 +1,4 @@
 const { SalutationCommand } = require('../../classes/command/salutation.class.js')
-const { UptimeCommand } = require('../../commands/app/uptime.js')
 
 /**
  * @class
@@ -22,7 +21,7 @@ module.exports = class GoodbyeCommand extends SalutationCommand {
     )
   }
 
-  async execute(client, interaction) {
+  async execute(client, interaction, coptions={}, independent=false) {
     await super.execute(
       client,
       interaction,

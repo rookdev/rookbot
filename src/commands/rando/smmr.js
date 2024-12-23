@@ -39,8 +39,8 @@ module.exports = class SMMRSeedCommand extends SeedAnnounceCommand {
     )
   }
 
-  async execute(client, interaction) {
-    let coptions = interaction.options
+  async execute(client, interaction, coptions={}, independent=false) {
+    coptions = interaction.options
     let options = {
       randomizer: "m3maprando",
       "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,

@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, ChatInputCommandInteraction, PermissionFlagsBits } = require('discord.js');
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+const { RookClient } = require('../../classes/objects/rclient.class')
+const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
 
 // Multiple messages
@@ -32,12 +33,12 @@ module.exports = class LockCommand extends ModCommand {
   /**
    * Locks a specified channel, preventing the @everyone role from sending messages.
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions) {
     const guildID = interaction.guild.id
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
-    const channelID = options['channel']
+    const channelID = coptions['channel']
     const channel = client.channels.cache.get(channelID)
 
     try {

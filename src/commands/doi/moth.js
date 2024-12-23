@@ -1,5 +1,6 @@
-const { Client, Interaction } = require('discord.js')
+const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 const path = require('path')
 
 module.exports = class MothCommand extends RookCommand {
@@ -23,9 +24,9 @@ module.exports = class MothCommand extends RookCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     // Path to the local video file
     const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'mothula.mp4')
 

@@ -1,4 +1,6 @@
+const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookClient } = require('../../classes/objects/rclient.class.js')
 
 module.exports = class BoostersCommand extends RookCommand {
   constructor(client) {
@@ -26,9 +28,9 @@ module.exports = class BoostersCommand extends RookCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     try {
       // Get the number of boosts in the server
       const boosts = interaction.guild.premiumSubscriptionCount

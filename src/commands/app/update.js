@@ -1,6 +1,5 @@
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')
-const fs = require('fs')
 
 module.exports = class UpdateCommand extends BotDevCommand {
   constructor(client) {
@@ -21,7 +20,7 @@ module.exports = class UpdateCommand extends BotDevCommand {
     )
   }
 
-  async action(client) {
+  async action(client, interaction, coptions={}) {
     let node_update = null
     try {
       node_update = shell.exec("npm run-script update")

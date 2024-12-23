@@ -1,6 +1,5 @@
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')
-const fs = require('fs')
 
 /**
  * @class
@@ -28,7 +27,7 @@ module.exports = class InstallCommand extends BotDevCommand {
     )
   }
 
-  async action(client) {
+  async action(client, interaction, coptions={}) {
     let node_install = null
     try {
       node_install = shell.exec(

@@ -1,4 +1,6 @@
+const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 
 module.exports = class MemberCountCommand extends RookCommand {
   constructor(client) {
@@ -25,9 +27,9 @@ module.exports = class MemberCountCommand extends RookCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     try {
       // Fetch all members in the server to ensure the data is up-to-date
       const members = await interaction.guild.members.fetch()

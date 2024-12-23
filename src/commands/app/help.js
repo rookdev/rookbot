@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
 
 /**
  * @class
@@ -50,7 +49,7 @@ module.exports = class HelpCommand extends RookCommand {
       testIndependent: true
     }
     let props = {
-      caption: { text: "Help", emoji: "?" }
+      title: { text: "Help", emoji: "?" }
     }
     super(
       client,
@@ -58,10 +57,10 @@ module.exports = class HelpCommand extends RookCommand {
       {...props}
     )
   }
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions) {
     let helpJSON = require('../../res/app/manifests/help/help.json')
-    let command = options["command-name"] ?? null
-    let section = options["section-name"] ?? null
+    let command = coptions["command-name"] ?? null
+    let section = coptions["section-name"] ?? null
 
     this.props.description = " "
 

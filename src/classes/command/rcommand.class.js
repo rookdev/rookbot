@@ -8,6 +8,7 @@ const { RookClient } = require('../objects/rclient.class')
 const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../embed/rembed.class')
 const { SlimEmbed } = require('../embed/rslimbed.class')
+const AsciiTable = require('ascii-table')
 const fs = require('fs')
 
 function isNumeric(n) {
@@ -24,6 +25,10 @@ function isNumeric(n) {
 
 function setValue(input, defvalue="") {
   return input ? input : defvalue
+}
+
+String.prototype.ucfirst = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
 /**
@@ -160,7 +165,21 @@ class RookCommand {
       target: {}
     }
 
-    this.DEV = this.profile?.DEV && this.profile.DEV
+    let PROD = false
+    let DEV = true
+    if (this.profile?.DEV && this.profile.DEV) {
+      PROD = false
+      DEV = true
+    }
+    if (process.env.ENV_ACTIVE === "production") {
+      PROD = true
+      DEV = false
+    }
+    if (process.env.ENV_ACTIVE === "development") {
+      PROD = false
+      DEV = true
+    }
+    this.DEV = !PROD
 
     this.props = {...props}
     if (!this.props?.full) {
@@ -182,7 +201,7 @@ class RookCommand {
     channelType = channelType || this.channelName
 
     let channelIDs = {}
-    let channelID = this.channelName
+    let channelID = channelType
     let guild = interaction?.guild || client.guild
     let guildID = guild.id
     let channel = null
@@ -281,8 +300,16 @@ class RookCommand {
 
     // Defer if needed
     if (!hasDeferred && !hasReply && canDefer) {
-      console.log(`/${this.name}: Deferring Reply`)
-      await interaction.deferReply()
+      let deferMsg = `/${this.name}: Deferring Reply`
+      if (this.ephemeral) {
+        deferMsg += " [Ephemeral]"
+      }
+      console.log(deferMsg)
+      await interaction.deferReply(
+        {
+          ephemeral: this.ephemeral
+        }
+      )
       hasDeferred = true
     }
 
@@ -398,9 +425,8 @@ class RookCommand {
 
   /**
    * Ship the thing!
-   * @param {RookClient} client Client Object
    */
-  async ship_it(client, interaction, independent=false, hasDeferred=false) {
+  async ship_it(interaction, independent=false, hasDeferred=false) {
     console.log(`/${this.name}: ...and Ship it!`)
 
     let this_package = { embeds: this.pages }
@@ -468,7 +494,6 @@ class RookCommand {
     // if (printResult) { console.log(`/${this.name}: Printed!`) }
 
     let shipResult = await this.ship_it(
-      client,
       interaction,
       independent,
       hasDeferred
@@ -486,7 +511,38 @@ class RookCommand {
    * @returns
    */
   async execute(client, interaction, coptions, independent=false) {
-    console.log(`/${this.name}: ${new Date().toISOString()}`)
+    const Table = new AsciiTable(
+      `/${this.name}` + " : " + new Date().toISOString(),
+      {}
+    )
+    Table.setHeading(
+      "",
+      "Name",
+      "ID"
+    )
+    Table.setAlign(2, AsciiTable.RIGHT)
+    Table.addRow(
+      "Guild",
+      interaction?.member?.guild?.name,
+      interaction?.guildId
+    )
+    Table.addRow(
+      "Channel",
+      await interaction?.guild?.channels?.cache?.find(c => c.id === interaction?.channelId)?.name,
+      interaction?.channelId
+    )
+    Table.addRow(
+      "Interaction",
+      "",
+      interaction.id
+    )
+    Table.addRow(
+      "User",
+      interaction?.user?.username,
+      interaction?.user?.id
+    )
+    console.log(Table.toString())
+
     console.log(`/${this.name}: Execute`)
 
     if (!this.channel) {

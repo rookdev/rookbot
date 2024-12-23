@@ -1,5 +1,6 @@
 const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 
 module.exports = class PingCommand extends RookCommand {
   constructor(client) {
@@ -27,7 +28,7 @@ module.exports = class PingCommand extends RookCommand {
    * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    * @returns
    */
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     console.log(`/${this.name}: Action`)
 
     const reply = await interaction.fetchReply()

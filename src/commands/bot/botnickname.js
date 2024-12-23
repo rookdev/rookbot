@@ -28,8 +28,8 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    let new_nickname = options["bot-nickname"]
+  async action(client, interaction, coptions) {
+    let new_nickname = coptions["bot-nickname"]
     let old_nickname = ""
 
     this.props.title = {
@@ -64,17 +64,22 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
       }
 
       old_nickname = member.displayName
-      member.setNickname(new_nickname)
+
+      if (old_nickname != new_nickname) {
+        member.setNickname(new_nickname)
+      }
 
       this.props.fields = [
-        {
-          name: "Old Nickname",
-          value: old_nickname
-        },
-        {
-          name: "New Nickname",
-          value: new_nickname
-        }
+        [
+          {
+            name: "Old Nickname",
+            value: old_nickname
+          },
+          {
+            name: "New Nickname",
+            value: new_nickname
+          }
+        ]
       ]
     } catch(e) {
       this.error = true

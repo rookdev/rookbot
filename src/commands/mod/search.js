@@ -1,6 +1,5 @@
 const { PermissionFlagsBits, ApplicationCommandOptionType, time, TimestampStyles } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const { RookEmbed } = require('../../classes/embed/rembed.class')
 const path = require('path')
 const fs = require('fs')
 
@@ -21,12 +20,14 @@ module.exports = class SearchCommand extends ModCommand {
           type: ApplicationCommandOptionType.String,
           required: true,
           choices: [
-            { name: "Membership", value: "Change" },
-            { name: "Bans",       value: "Ban" },
-            { name: "Mutes",      value: "Mute" },
-            { name: "Unbans",     value: "Unban" },
-            { name: "Unmutes",    value: "Unmute" },
-            { name: "Warns",      value: "Warn" }
+            { name: "Membership",     value: "Change" },
+            { name: "Ghost Messages", value: "ghostMessage" },
+            { name: "Bans",           value: "Ban" },
+            { name: "Mutes",          value: "Mute" },
+            { name: "Unbans",         value: "Unban" },
+            { name: "Unmutes",        value: "Unmute" },
+            { name: "Timeouts",       value: "Timeout" },
+            { name: "Warns",          value: "Warn" }
           ]
         },
         {
@@ -82,10 +83,10 @@ module.exports = class SearchCommand extends ModCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    let searchType = options["search-type"]
-    let targetUserInput = options["target-id"]
-    let region = options["region"] || ""
+  async action(client, interaction, coptions) {
+    let searchType = coptions["search-type"]
+    let targetUserInput = coptions["target-id"]
+    let region = coptions["region"] || (this.DEV ? "DEV" : "")
     let targetUserId = targetUserInput.replace(/[<@!>]/g, '');  // Remove <@>, <@!>, and >
     let targetUser;
     try {
@@ -100,20 +101,33 @@ module.exports = class SearchCommand extends ModCommand {
     const guildMember = interaction.guild.members.cache.get(targetUserId);
     const user = guildMember?.user || targetUser
 
+    let logFileName = "" +
+      region +
+      (searchType != "ghostMessage" ? "member" : "") +
+      searchType +
+      "s.log"
+
     let logFilePath = path.join(
       __dirname,
       "..",
       "..",
       "botlogs",
-      region + "member" + searchType + "s.log"
+      logFileName
     )
+
     let logFile = fs.readFileSync(logFilePath, "utf8")
     let logLines = logFile.split("\n")
     let foundLogs = {}
     let i = 0
     for(let line of logLines) {
       line = line.trim()
-      if(line.indexOf(targetUserId) > -1) {
+      if(
+        (
+          (line.indexOf("Author:") > -1) ||
+          (line.indexOf("User:") > -1)
+        ) &&
+        (line.indexOf(targetUserId) > -1)
+      ) {
         let beginning = i
         let running = true
         while(running) {

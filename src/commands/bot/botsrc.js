@@ -34,7 +34,7 @@ module.exports = class BotSourceCommand extends RookCommand {
   /**
    * Sends an embed message with a link to the bot\'s GitHub repository.
    */
-  async action() {
+  async action(client, interaction, coptions={}) {
     // all done in constructor
     return !this.error
   }

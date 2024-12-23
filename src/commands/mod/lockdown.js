@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, ChatInputCommandInteraction, PermissionFlagsBits } = require('discord.js');
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+const { RookClient } = require('../../classes/objects/rclient.class')
+const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 module.exports = class LockdownCommand extends ModCommand {
   constructor(client) {
@@ -43,14 +44,14 @@ module.exports = class LockdownCommand extends ModCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions) {
     const guildID = interaction.guild.id;
     const guildChannels = require(`../../dbs/${guildID}/channels.json`);
 
-    const action = options['action'];
-    const confirm = options['confirm'];
+    const action = coptions['action'];
+    const confirm = coptions['confirm'];
     const channels = interaction.guild.channels.cache.filter(
       ch => ch.isTextBased() || ch.isVoiceBased()
     );

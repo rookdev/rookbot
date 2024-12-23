@@ -1,4 +1,4 @@
-const { Interaction, ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
 const timeFormat = require('../../utils/timeFormat.js')
@@ -36,10 +36,10 @@ module.exports = class UserInfoCommand extends RookCommand {
   }
   /**
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async action(client, interaction, options) {
-    const targetUserInput = options['target-id']
+  async action(client, interaction, coptions) {
+    const targetUserInput = coptions['target-id']
 
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >

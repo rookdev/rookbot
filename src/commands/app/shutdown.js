@@ -1,4 +1,6 @@
+const { ChatInputCommandInteraction } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const { RookClient } = require('../../classes/objects/rclient.class.js')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const UptimeCommand = require('../../commands/app/uptime.js')
 const unready = require('../../events/unready/exit')
@@ -29,9 +31,9 @@ module.exports = class ShutdownCommand extends BotDevCommand {
   /**
    *
    * @param {RookClient} client
-   * @param {Interaction} interaction
+   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
    */
-  async execute(client, interaction) {
+  async execute(client, interaction, coptions={}, independent=false) {
     this.channel = await this.getChannel(client)
 
     if (interaction) {

@@ -1,16 +1,22 @@
-const { MessageFlags, PermissionFlagsBits } = require('discord.js')
+const { ChatInputCommandInteraction, MessageFlags, PermissionFlagsBits } = require('discord.js')
 const { AdminCommand } = require('./admincommand.class')
 const { RookEmbed } = require('../embed/rembed.class')
+const timeConversion = require('../../utils/timeConversion')
+const timeFormat = require('../../utils/timeFormat')
 const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
 
-String.prototype.ucfirst = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1)
-}
+function isNumeric(n) {
+  let isaN      = !isNaN(n)
+  let isBool    = typeof n === "boolean"
+  let isStr     = typeof n === "string"
+  let isNumStr  = (
+    isStr &&
+    ((n.replace(/\D/g, '') + "") == (n + ""))
+  )
 
-function isString(input) {
-  return typeof input == "string" || input instanceof String
+  return (isaN || isNumStr) && !isBool
 }
 
 // Multiple messages
@@ -43,16 +49,18 @@ class ModCommand extends AdminCommand {
       {...comprops},
       {...props}
     )
+    this.ephemeral = true
   }
 
   /**
    * Add/Remove roles
    *
-   * @param {CommandInteraction}      interaction Interaction that called the command
-   * @param {User}                    user        User that we're modifying
-   * @param {Object.<string, string>} roles       Roles that we're adjusting
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
+   * @param {Object.<string, string>}     roles       Roles that we're adjusting
    */
-  async adjust_roles(message, user, roles) {
+  async adjust_roles(interaction, user, roles) {
+    console.log("Adjust Roles:",user.displayName,roles)
     if (!user) {
       this.error = true
       this.props.description = "No member loaded."
@@ -77,18 +85,18 @@ class ModCommand extends AdminCommand {
         (
           matches ||
           ((parseInt(addRole) + "") == addRole) ||
-          Number.isInteger(addRole)
+          isNumeric(addRole)
         ) &&
         addRole != 0
       ) {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await message.guild.roles.cache.find(
+        addRole = await interaction.guild.roles.cache.find(
           role => role.id === addRole
         )
-      } else if (isString(addRole)) {
-        addRole = await message.guild.roles.cache.find(
+      } else {
+        addRole = await interaction.guild.roles.cache.find(
           role => role.name === addRole
         )
       }
@@ -109,18 +117,18 @@ class ModCommand extends AdminCommand {
         (
           matches ||
           ((parseInt(remRole) + "") == remRole) ||
-          Number.isInteger(remRole)
+          isNumeric(remRole)
         ) &&
         remRole != 0
       ) {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await message.guild.roles.cache.find(
+        remRole = await interaction.guild.roles.cache.find(
           role => role.id === remRole
         )
-      } else if (isString(remRole)) {
-        remRole = await message.guild.roles.cache.find(
+      } else {
+        remRole = await interaction.guild.roles.cache.find(
           role => role.name === remRole
         )
       }
@@ -147,32 +155,32 @@ class ModCommand extends AdminCommand {
   /**
    * Add role to user
    *
-   * @param {CommandInteraction}  message Interaction that called the command
-   * @param {User}                user    User that we're modifying
-   * @param {RoleResolvable}      role    Role that we're adding
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
+   * @param {RoleResolvable}              role        Role that we're adding
    */
-  async add_role(message, user, role) {
-    return await this.adjust_roles(message, user, { add: role })
+  async add_role(interaction, user, role) {
+    return await this.adjust_roles(interaction, user, { add: role })
   }
   /**
    * Remove role from user
    *
-   * @param {CommandInteraction}  message Interaction that called the command
-   * @param {User}                user    User that we're modifying
-   * @param {RoleResolvable}      role    Role that we're removing
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
+   * @param {RoleResolvable}              role        Role that we're removing
    */
-  async remove_role(message, user, role) {
-    return await this.adjust_roles(message, user, { remove: role })
+  async remove_role(interaction, user, role) {
+    return await this.adjust_roles(interaction, user, { remove: role })
   }
 
   /**
    * Apply Voice Roles (un/mute) to User
    *
-   * @param {CommandInteraction}  message Interaction that called the command
-   * @param {User}                user    User that we're modifying
-   * @param {string}              voice   Un/Mute?
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
+   * @param {string}                      voice       Un/Mute?
    */
-  async voice_user(message, user, voice) {
+  async voice_user(interaction, user, voice) {
     let success = false
     // Member Role Name
     let MEMBER_ROLE = this?.ROLES?.member ? this.ROLES.member[0]  : null
@@ -180,9 +188,9 @@ class ModCommand extends AdminCommand {
     let MUTED_ROLE  = this?.ROLES?.muted  ? this.ROLES.muted[0]   : null
 
     // Member Role ID
-    let MEMBER_ID   = message.options.getString("target-id")  || null
+    let MEMBER_ID   = interaction.options.getString("target-id")  || null
     // Muted Role ID
-    let MUTED_ID    = message.options.getString("muted-role-id")   || null
+    let MUTED_ID    = interaction.options.getString("muted-role-id")   || null
 
     if (!this.DEV) {
       let mainRole = MEMBER_ROLE  || MEMBER_ID
@@ -222,7 +230,7 @@ class ModCommand extends AdminCommand {
           remove: muteRole
         }
       }
-      sucess = this.adjust_roles(message, user, roles)
+      success = this.adjust_roles(interaction, user, roles)
       this.props.description = `<@${user.id}> has been ${voice}d`
     } else {
       this.props.description = `<@${user.id}> *would be* **${voice}d** if this wasn't in DEV Mode`
@@ -233,33 +241,45 @@ class ModCommand extends AdminCommand {
   /**
    * Mute a User
    *
-   * @param {CommandInteraction}  message Interaction that called the command
-   * @param {User}                user    User that we're modifying
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
    */
-  async mute_user(message, user) {
-    return await this.voice_user(message, user, "mute")
+  async mute_user(interaction, user) {
+    return await this.voice_user(interaction, user, "mute")
   }
   /**
    * Unmute a User
    *
-   * @param {CommandInteraction}  message Interaction that called the command
-   * @param {User}                user    User that we're modifying
+   * @param {ChatInputCommandInteraction} interaction Interaction that called the command
+   * @param {User}                        user        User that we're modifying
    */
-  async unmute_user(message, user) {
-    return await this.voice_user(message, user, "unmute")
+  async unmute_user(interaction, user) {
+    return await this.voice_user(interaction, user, "unmute")
   }
 
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions) {
     let lastingError = false
 
     // Get Guild ID
-    const guildID = interaction.guild.id;
+    const guildID = interaction.guild.id
     // Get Guild Channels
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get User Input
-    const targetUserInput = options["target-id"];
+    const targetUserInput = coptions["target-id"];
     // Get Reason
-    const reason = options["reason"] || 'No reason provided';
+    const reason = coptions["reason"] || 'No reason provided';
+    // Get Role
+    const role = interaction.options?.getString("role")?.replace(/[<@&>]/g, "") || ""
+    // Get Timeout Duration
+    let duration = interaction.options?.getInteger("duration-seconds") || 0
+    let durationSeconds = 0
+    let durationMilliseconds = 0
+    if (duration) {
+      durationSeconds = Math.abs(duration)
+      durationMilliseconds = durationSeconds * 1000
+    }
+    let now = new Date()
+    let timeoutUntil = new Date(now.getTime() + durationMilliseconds)
 
     let props = {
       public: {},
@@ -311,6 +331,11 @@ class ModCommand extends AdminCommand {
       case "Role Remove":
         emoji = "➖"
         break
+      case "Timeout":
+        tenses.past = "timed out"
+        tenses.active = "timing out"
+        emoji = "⏰"
+        break
       case "Warn":
         emoji = "⚠️"
         break
@@ -323,6 +348,7 @@ class ModCommand extends AdminCommand {
         "ban",
         "kick",
         "mute",
+        "timeout",
         "unban",
         "unmute"
       ].includes(this.name)
@@ -361,29 +387,59 @@ class ModCommand extends AdminCommand {
       if (!this.DEV) {
         switch(this.name) {
           case "role_add":
-            success = await this.add_role(interaction, guildMember, interaction.options.getString("role").replace(/[<@&>]/g, ""))
+            success = await this.add_role(
+              interaction,
+              guildMember,
+              role
+            )
             break
           case "role_remove":
-            success = await this.remove_role(interaction, guildMember, interaction.options.getString("role").replace(/[<@&>]/g, ""))
+            success = await this.remove_role(
+              interaction,
+              guildMember,
+              role
+            )
             break
           case "ban":
-            success = await interaction.guild.members.ban(targetUserId, { reason })
+            success = await interaction.guild.members.ban(
+              targetUserId, { reason }
+            )
             break
           case "kick":
-            success = await interaction.guild.members.kick(targetUserId, { reason })
+            success = await interaction.guild.members.kick(
+              targetUserId, { reason }
+            )
             break
           case "mute":
-            success = this.mute_user(interaction, guildMember, reason)
+            success = this.mute_user(
+              interaction,
+              guildMember,
+              reason
+            )
+            break
+          case "timeout":
+            success = await guildMember.timeout(
+              durationMilliseconds,
+              reason
+            )
             break
           case "unban":
-            success = await interaction.guild.members.unban(targetUserId)
+            success = await interaction.guild.members.unban(
+              targetUserId
+            )
             break
           case "unmute":
-            success = this.unmute_user(interaction, guildMember, reason)
+            success = this.unmute_user(
+              interaction,
+              guildMember,
+              reason
+            )
             break
           case "warn":
             success = true
-            // await interaction.guild.members.warn(targetUserId)
+            // success = await interaction.guild.members.warn(
+            //   targetUserId
+            // )
             break
         }
       } else {
@@ -402,14 +458,15 @@ class ModCommand extends AdminCommand {
         }
         props.public.description = [
           (this.DEV ? "DEV: " : "") +
-          `User **${targetUserName}** has been **${tenses.past}**.`,
+          `User **${targetUserName}** has been **${tenses.past}**`,
           "(" +
           // `ID: \`${targetUserId}\`; ` +  // Don't add userID to ModPost
+          (role != "" ? `Role: ${role}; Reason: ` : "") +
           reason +
           ")"
         ]
         embeds.public = await new RookEmbed(client, props.public)
-        interaction.editReply(
+        interaction.channel.send(
           {
             embeds: [ embeds.public ]
           }
@@ -422,10 +479,16 @@ class ModCommand extends AdminCommand {
       if (success && (!this.DEV || true)) {
         // DM post for ACTION
         try {
-          let dm_desc = `You have been ${tenses.past} from the ${interaction.guild.name} server. (${reason})`
+          let dm_desc = `You have been ${tenses.past} from the ${interaction.guild.name} server. ` +
+          `(` +
+          (role != "" ? `Role: ${role}; Reason: ` : "") +
+          (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.getTime())}; Reason: ` : "") +
+          reason +
+          `)`
           if (
             [
               "mute",
+              "timeout",
               "unmute",
               "warn"
             ].includes(this.name)
@@ -451,19 +514,30 @@ class ModCommand extends AdminCommand {
           console.log(`/${this.name}: DM Post`)
 
           // Reply to Mod for DM about ACTION
+          this.ephemeral = true
           props.mod = {
             color: colors["success"],
             title: {
               emoji: "🟢",
               text: "[YouPost] Success!"
             },
-            description: [
-              `✅ User **${targetUserName}** successfully **${tenses.past}** via DMs!`,
-              "",
-              `Message: ${props.dm.description}`
-            ],
             ephemeral: true
           }
+          // Don't link user
+          if (["ban","unban","kick"].includes(this.name)) {
+            props.mod.description = [
+              `✅ User **${targetUserName}** successfully **${tenses.past}** via DMs!`,
+            ]
+          } else {
+            // Do link user
+            props.mod.description = [
+              `✅ User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
+            ]
+          }
+          props.mod.description.push(
+            "",
+            `Message: ${props.dm.description}`
+          )
           embeds.mod = await new RookEmbed(client, props.mod)
           interaction.followUp(
             {
@@ -474,6 +548,7 @@ class ModCommand extends AdminCommand {
           console.log(`/${this.name}: YouPost`)
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
+          this.ephemeral = true
           console.log(`Failed to DM user: ${dmError.message}`);
           props.mod = {
             color: colors["red"],
@@ -501,8 +576,8 @@ class ModCommand extends AdminCommand {
         if (guildChannels[log_check]) {
           log_type = log_check
         }
-        const logs = client.channels.cache.get(guildChannels[log_type]);
-        if (logs) {
+        const logsChannel = await this.getChannel(client, interaction, log_type);
+        if (logsChannel) {
           if(this.DEV) {
             emoji = "[DEV]" + emoji
           }
@@ -524,6 +599,7 @@ class ModCommand extends AdminCommand {
               "ban",
               "kick",
               "mute",
+              "timeout",
               "warn"
             ].includes(this.name)
           ) {
@@ -537,7 +613,11 @@ class ModCommand extends AdminCommand {
             )
           }
           embeds.log = await new RookEmbed(client, props.log)
-          logs.send({ embeds: [ embeds.log ] })
+          logsChannel.send(
+            {
+              embeds: [ embeds.log ]
+            }
+          )
           console.log(`/${this.name}: LogPost`)
         } else {
           console.log("Logs channel not found.")
@@ -552,13 +632,29 @@ class ModCommand extends AdminCommand {
           ((this.DEV ? "DEV" : "") + "member" + pretty_name.replace(" ", "") + "s.log")
         )
         let logEntry = [
-          `[${new Date().toISOString()}]`,
-          `User:    ${user.tag} (ID: ${user.id})`,
-          `Action:  ${tenses.past.ucfirst()}`,
-          `Guild:   ${interaction.guild.name} (ID: ${interaction.guild.id})`,
-          `Reason:  ${reason}`,
+          `[${now.toISOString()}]`,
+          `User:     ${user.tag} (ID: ${user.id})`,
+          `Actor:    ${interaction.user.tag} (ID: ${interaction.user.id})`,
+          `Action:   ${tenses.past.ucfirst()}`,
+          `Guild:    ${interaction.guild.name} (ID: ${interaction.guild.id})`,
+        ]
+        if (durationSeconds != 0) {
+          logEntry.push(
+            `Seconds:  ${durationSeconds} seconds`,
+            `Duration: ${timeConversion(durationMilliseconds)}`,
+            `Until:    ${timeoutUntil.toISOString()}`
+          )
+        }
+        if (role != "") {
+          logEntry.push(
+            `Role:     ${role}`
+          )
+        }
+        logEntry.push(
+          `Reason:   ${reason}`,
           '--------------------------------'
-        ].join("\n") + "\n"
+        )
+        logEntry = logEntry.join("\n") + "\n"
         fs.appendFileSync(logFilePath, logEntry, "utf8")
         console.log(`/${this.name}: LogFile`)
       }
@@ -569,6 +665,7 @@ class ModCommand extends AdminCommand {
 
     if (!success) {
       // Reply to Mod if error for ACTION
+      this.ephemeral = true
       let msg = `There was an error when ${tenses.active}`
       if (lastingError) {
         msg += `: ${lastingError.stack}`

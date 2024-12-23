@@ -39,10 +39,10 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
     )
   }
 
-  async execute(client, interaction) {
-    let coptions = interaction.options
+  async execute(client, interaction, coptions={}, independent=false) {
+    coptions = interaction.options
     let options = {
-      randomizer: "smz3",
+      randomizer: "z3m3",
       "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,
       "seed-url": coptions["seed-url"] ?? "",
       "prep-time": coptions["prep-time"] ?? 0

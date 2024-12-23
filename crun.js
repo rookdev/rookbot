@@ -2,6 +2,8 @@ const { program } = require('commander')
 const AsciiTable = require('ascii-table')
 const PACKAGE = require('./package.json')
 const shell = require('shelljs')
+const path = require('path')
+const fs = require('fs')
 
 console.log("")
 console.log("---")
@@ -41,16 +43,31 @@ program
     "-e, --environment <dev|prod>", "Environment to load",
     "development"
   )
+  .option(
+    "-lo, --loadoptions", "Load canned options (crun.json)"
+  )
   .parse(process.argv)
 
-const options = program.opts()
+let options = program.opts()
+if (options.loadoptions && options.loadoptions != "") {
+  options = require(
+    path.join(
+      __dirname,
+      "crun.json"
+    )
+  )
+} else {
+  fs.writeFileSync(
+    path.join(
+      __dirname,
+      "crun.json"
+    ),
+    JSON.stringify(options, null, "  ")
+  )
+}
 
 // console.log("Options:")
 // console.log(JSON.stringify(options, null, "  "))
-
-// FIXME:
-// Use ./node_modules/.bin/* if linux
-// Use ./* if not linux
 
 let dotenvx = shell.exec("which dotenvx", { silent: true })
 let uname = shell.exec("uname", { silent: true })

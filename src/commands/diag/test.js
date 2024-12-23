@@ -15,7 +15,7 @@ module.exports = class TestCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
+  async action(client, interaction, coptions) {
     if (! this.DEV) {
       // Do the thing
       this.props.description = "Doing the thing!"

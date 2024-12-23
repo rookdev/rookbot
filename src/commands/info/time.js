@@ -22,7 +22,7 @@ module.exports = class TimeCommand extends RookCommand {
     )
   }
 
-  async action() {
+  async action(client, interaction, coptions={}) {
     const now = Date.now()
     const tzs = [
       "Australia/Perth",  // + 8

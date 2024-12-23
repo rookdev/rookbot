@@ -1,6 +1,6 @@
 const { PermissionFlagsBits } = require('discord.js')
-const { changeNickname } = require('../../utils/changeNickname')  // Import the changeNickname function
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { changeNickname } = require('../../utils/changeNickname')  // Import the changeNickname function
 
 module.exports = class CastleNameCommand extends RookCommand {
   constructor(client) {
@@ -11,7 +11,7 @@ module.exports = class CastleNameCommand extends RookCommand {
       flags: {
         test: "basic"
       },
-      permissions: [ PermissionFlagsBits.ChangeNickname ]
+      permissions: [ PermissionFlagsBits.ManageNicknames ]
     }
     let props = {}
     super(
@@ -21,7 +21,7 @@ module.exports = class CastleNameCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction) {
+  async action(client, interaction, coptions={}) {
     // Get this Guild ID
     // Set Castle's User ID
     const guildID = interaction.guild.id

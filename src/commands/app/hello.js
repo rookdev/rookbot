@@ -21,7 +21,7 @@ module.exports = class HelloCommand extends SalutationCommand {
     )
   }
 
-  async execute(client, interaction) {
+  async execute(client, interaction, coptions={}, independent=false) {
     await super.execute(
       client,
       interaction,

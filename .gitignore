@@ -3,6 +3,8 @@
 config.json
 ## Profile
 PROFILE.json
+## Run Options
+crun.json
 
 # Python
 __pycache__

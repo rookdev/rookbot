@@ -1,40 +1,48 @@
-const { Client, Interaction } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+const { RookCommand } = require('../../classes/command/rcommand.class')
 const path = require('path');
 
-// FIXME: Update to OOP
+/**
+ * @class
+ * @classdesc Pronunciation Tutorial
+ * @this {FugetaboutitCommand}
+ * @extends {RookCommand}
+ */
 
-module.exports = {
-  /**
-   *
-   * @param {RookClient} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    // Path to the local video file
-    const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'fugetaboutit.mp4');
+module.exports = class FugetaboutitCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "fugetaboutit",
+      description: "Pronunciation Tutorial",
+      category: "doi"
+    }
+    let props = {}
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  async execute(client, interaction, coptions={}, independent=false) {
+    const videoPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "res",
+      "media",
+      "fugetaboutit.mp4"
+    )
 
     try {
-
-      // Send the video to the channel the command was sent in
-      await interaction.reply({
-        files: [videoPath],
-      });
+      await interaction.reply(
+        {
+          files: [ videoPath ]
+        }
+      )
     } catch (error) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "There as an error uploading the video."
-      }
-      const embed = new RookEmbed(client, props)
-      console.log(`There was an error when uploading the video: ${error.stack}`);
-      // If error occurs, use an ephemeral reply to privately inform the user
-      await interaction.followUp({ embeds: [ embed ], ephemeral: true });
+      this.error = true
+      this.props.description = "Error uploading video"
+      return
     }
-  },
-
-  name: 'fugetaboutit',
-  description: 'Pronunciation tutorial',
+  }
 }

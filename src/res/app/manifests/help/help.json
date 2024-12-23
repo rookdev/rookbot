@@ -83,6 +83,24 @@
       "access": "unset",
       "segment": "local"
     },
+    "say": {
+      "name": "say",
+      "category": "bot",
+      "description": "Say as Bot",
+      "options": [
+        {
+          "name": "message",
+          "description": "Message to send",
+          "required": true
+        },
+        {
+          "name": "channel",
+          "description": "Channel to send message to"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
     "botavatar": {
       "name": "botavatar",
       "category": "bot",
@@ -141,31 +159,6 @@
       "segment": "local"
     }
   },
-  "undefined": {
-    "say": {
-      "name": "say",
-      "description": "Make the bot send a message in the specified channel.",
-      "options": [
-        {
-          "name": "channel",
-          "description": "The channel to send the message in.",
-          "required": true
-        },
-        {
-          "name": "message",
-          "description": "The message to send.",
-          "required": true
-        }
-      ],
-      "segment": "local"
-    },
-    "fugetaboutit": {
-      "name": "fugetaboutit",
-      "description": "Pronunciation tutorial",
-      "options": [],
-      "segment": "local"
-    }
-  },
   "botdev": {
     "testsuite": {
       "name": "testsuite",
@@ -213,6 +206,14 @@
       "name": "doigame",
       "category": "doi",
       "description": "Sends a message with download info for *The Legend of Zelda - Dungeons of Infinity*.",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "fugetaboutit": {
+      "name": "fugetaboutit",
+      "category": "doi",
+      "description": "Pronunciation Tutorial",
       "options": [],
       "access": "unset",
       "segment": "local"
@@ -475,6 +476,24 @@
       "access": "Mod",
       "segment": "local"
     },
+    "purge": {
+      "name": "purge",
+      "category": "mod",
+      "description": "Purge Messages",
+      "options": [
+        {
+          "name": "amount",
+          "description": "The number of messages to delete (1-100).",
+          "required": true
+        },
+        {
+          "name": "channel",
+          "description": "Channel to purge messages from."
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
     "role_add": {
       "name": "role_add",
       "category": "mod",
@@ -561,7 +580,7 @@
         },
         {
           "name": "reason",
-          "description": "The reason for the timeout.",
+          "description": "The reason for timing out the user.",
           "required": false
         }
       ],
@@ -719,12 +738,13 @@
       "description": "Gets metadata for a seed",
       "options": [
         {
-          "name": "game-id",
-          "description": "Game ID to call from"
+          "name": "hash-id",
+          "description": "Seed Hash ID to call",
+          "required": true
         },
         {
-          "name": "hash-id",
-          "description": "Seed Hash ID to call"
+          "name": "game-id",
+          "description": "Game ID to call from"
         }
       ],
       "access": "unset",

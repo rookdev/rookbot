@@ -36,8 +36,8 @@ module.exports = class CalcCommand extends RookCommand {
     )
   }
 
-  async action(client, interaction, options) {
-    const expression = options.expression
+  async action(client, interaction, coptions) {
+    const expression = coptions.expression
 
     try {
       // Evaluate the math expression
