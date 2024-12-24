@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require('discord.js')
-const { RookClient } = require('../objects/rclient.class')
 
 function isNumeric(n) {
   let isaN      = !isNaN(n)
@@ -13,83 +12,9 @@ function isNumeric(n) {
   return (isaN || isNumStr) && !isBool
 }
 
-/**
- * @class
- * @classdesc Build a Rook-branded Embed
- * @this {RookEmbed}
- * @extends {EmbedBuilder}
- * @public
- */
 class RookEmbed extends EmbedBuilder {
-  /**
-   * @typedef   {Object}  EmbedAuthor Embed Author (top line in white)
-   * @property  {string}  text        Author Text (Name)
-   * @property  {string}  [image]     Author Image (Avatar)
-   * @property  {string}  [url]       Author URL (Hyperlink)
-   */
-
-  /**
-   * @typedef   {Object}  EmbedThumbnail  Embed Thumbnail (image to right)
-   * @property  {string}  image           Thumbnail Image URL
-   */
-
-  /**
-   * @typedef   {Object}  EmbedTitle  Embed Title (top line below author, blue if URL added)
-   * @property  {string}  text        Title Text
-   * @property  {string}  [emoji]     Title Emoji
-   * @property  {string}  [url]       Title URL
-   */
-
-  /**
-   * @typedef   {Object}  EmbedField
-   * @property  {string}  name      Field Name
-   * @property  {string}  value     Field Value
-   * @property  {boolean} [inline]  Inline?
-   */
-
-  /**
-   * @typedef   {Object}  EmbedImage  Embed Image (image in description, after fields, before footer)
-   * @property  {string}  image       Image URL
-   */
-
-  /**
-   * @typedef   {Object}  EmbedFooter Embed Footer
-   * @property  {string}  text        Footer Text
-   * @property  {string}  [image]     Footer Image URL
-   */
-
-    /**
-   * @typedef {Object} EmbedPlayer Player
-   * @property {string} name The name
-   * @property {string} url The URL
-   * @property {string} avatar The Avatar
-   */
-
-    /**
-   * @typedef   {Object}              EmbedProps
-   * @property  {string}              [color]       Embed Color
-   * @property  {EmbedAuthor}         [author]      Embed Author
-   * @property  {EmbedThumbnail}      [thumbnail]   Embed Thumbnail
-   * @property  {EmbedTitle}          [title]       Embed Title
-   * @property  {string}              [description] Embed Description
-   * @property  {Array.<EmbedField>}  [fields]      Embed Fields
-   * @property  {EmbedImage}          [image]       Embed Image
-   * @property  {EmbedFooter}         [footer]      Embed Footer
-   * @property  {number | null}       [timestamp]   Embed Timestamp
-   * @property  {{bot:EmbedPlayer,user:EmbedPlayer,target:EmbedPlayer}} [players]     Embed Players
-   * @property  {number}              [flags]       Embed Flags
-   * @property  {boolean}             [ephemeral]   Ephemeral?
-   * @property  {boolean}             [full]        Full Embed?
-   */
-
-  // Member properties
-  /** @type {EmbedProps} Embed Properties */
   props;
 
-  /**
-   * Initialize sanity checks
-   * @param {RookClient} client
-   */
   async init(client) {
     // Get color figured out
     if (
@@ -152,11 +77,6 @@ class RookEmbed extends EmbedBuilder {
     }
   }
 
-  /**
-   * Constructor
-   * @param {RookClient} client
-   * @param {(EmbedProps | Object.<any>)} props Local list of command properties
-   */
   constructor(client, props = {}) {
     super()
 

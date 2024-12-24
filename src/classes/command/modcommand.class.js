@@ -258,6 +258,16 @@ class ModCommand extends AdminCommand {
   }
 
   async action(client, interaction, coptions) {
+    if (interaction) {
+      if (interaction?.guild.id) {
+        if (interaction.guild.id === "1282788953052676177") {
+          this.error = true
+          this.props.description = `/${this.name} not ready for Live Server yet.`
+          return
+        }
+      }
+    }
+
     let lastingError = false
 
     // Get Guild ID

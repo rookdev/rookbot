@@ -2,13 +2,6 @@ const { PermissionFlagsBits } = require('discord.js')
 const { RookCommand } = require('../command/rcommand.class')
 const fs = require('fs')
 
-/**
- * @class
- * @classdesc Build a Command for Admins-only
- * @this {AdminCommand}
- * @extends {RookCommand}
- * @public
- */
 class AdminCommand extends RookCommand {
   constructor(client, comprops, props) {
     // BotPerms: Administrator

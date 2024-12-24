@@ -1,10 +1,4 @@
-const {
-  DMChannel,
-  ChatInputCommandInteraction,
-  GuildBasedChannel,
-  MessageFlags
-} = require('discord.js')
-const { RookClient } = require('../objects/rclient.class')
+const { MessageFlags } = require('discord.js')
 const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../embed/rembed.class')
 const { SlimEmbed } = require('../embed/rslimbed.class')
@@ -31,98 +25,27 @@ String.prototype.ucfirst = function() {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
-/**
- * @class
- * @classdesc Build a Rook-branded command
- * @this      {RookCommand}
- * @public
- */
 class RookCommand {
-  /**
-   * @typedef   {Object}  CommandOption Command Option
-   * @property  {string}  name          Option Name
-   * @property  {string}  description   Option Description
-   * @property  {string}  type          Option Type
-   * @property  {boolean} [required]    Required?
-   */
-
-  /**
-   * @typedef   {Object}  CommandProps  Command Properties
-   * @property  {string}                    name                  Command Name
-   * @property  {string}                    description           Command Description
-   * @property  {Array.<CommandOption>}     [options]             Command Options
-   * @property  {string}                    [category]            Command Category
-   * @property  {string}                    [channelName]         Default Channel
-   * @property  {number}                    [permissions]         Global Permissions
-   * @property  {number}                    [permissionsRequired] User Permissions
-   * @property  {number}                    [botPermissions]      Bot Permissions
-   * @property  {string}                    [access]              Access Label
-   * @property  {Array.<CommandTestOption>} [testOptions]         Command Tests
-   */
-
-  // Command Options
-  /** @type {string} Command Name; Slash modifier */
   name;
-
-  /** @type {string} Command Description */
   description;
-
-  /** @type {Array.<CommandOption>} Command Options */
   options;
-
-  /** @type {string} Command Category; used in help command/file */
   category;
-
-  /** @type {Array.<any>} Command Tests */
   testOptions;
-
-  /** @type {string} Default Channel */
   channelName;
-
-  /** @type {DMChannel | GuildBasedChannel | null} Channel to Send to */
   channel;
-
-  /** @type {string} Access Label */
   access;
-
-  /** @type {number} Global Permissions */
   permissions;
-  /** @type {number} Bot Permissions */
   botPermissions;
-  /** @type {number} User Permissions */
   permissionsRequired;
-
-  // Global Variables
-  /** @type {any} Loaded Client Profile */
   profile;
-
-  /** Entities to select from */
   entities;
-  /** Players to display */
   players;
-
-  /** @type {Array.<RookEmbed>} Pages to Send */
   pages;
-
-  /** @type {boolean} Did we get an error? */
   error;
-  /** @type {Object.<string, string>} Canned Error Messages */
   errors;
-
-  // Scratchpad
-  /** @type {EmbedProps} Embed Properties */
   props;
-
-  // Ephemeral?
-  /** @type {boolean} Ephemeral? */
   ephemeral;
 
-  /**
-   * Constructor
-   * @param {RookClient}    client    Client Object
-   * @param {CommandProps}  comprops  Command Properties
-   * @param {EmbedProps}    props     Embed Properties
-   */
   constructor(client, comprops={}, props={}) {
     this.name                 = setValue(comprops.name, "unknown")
     this.description          = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
@@ -191,12 +114,6 @@ class RookCommand {
     this.ephemeral = false
   }
 
-  /**
-   * Get Channel to send this to
-   * @param {RookClient} client Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @param {string} channelType Channel Type to locate
-   */
   async getChannel(client, interaction, channelType) {
     channelType = channelType || this.channelName
 
@@ -234,25 +151,13 @@ class RookCommand {
 
     return channel
   }
-  /**
-   * Get specified Server Emoji
-   * @param {RookClient}  client   Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @param {string}      emojiKey Emoji Key to search for
-   */
+
   async getEmoji(client, interaction, emojiKey) {
     let emoji = `[${emojiKey}]`
 
     return emoji
   }
 
-  /**
-   * Do the thing!
-   * @param {RookClient}            client  Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @param {Object.<string, any>}  coptions Input Options
-   * @returns
-   */
   async action(client, interaction, coptions) {
     console.log(`/${this.name}: Action`)
 
@@ -264,13 +169,7 @@ class RookCommand {
 
     return !this.error
   }
-  /**
-   * Pre-flight stuff!
-   * @param {RookClient}            client  Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @param {Object.<string, any>}  coptions Input Options
-   * @returns
-   */
+
   async build(client, interaction, coptions={}) {
     console.log(`/${this.name}: Rook Build`)
 
@@ -290,9 +189,6 @@ class RookCommand {
     return actionResult && !this.error
   }
 
-  /**
-   * Defer it!
-   */
   async handle_deferrment(interaction) {
     let hasDeferred = interaction?.deferred
     let hasReply    = interaction?.replied
@@ -316,9 +212,6 @@ class RookCommand {
     return hasDeferred
   }
 
-  /**
-   * Handle it!
-   */
   async handle_interaction(interaction, this_package, hasDeferred=false) {
     let isEphemeral = this_package.ephemeral
     let hasReply    = interaction?.replied
@@ -381,10 +274,6 @@ class RookCommand {
     return handle_result
   }
 
-  /**
-   * Print the thing!
-   * @param {RookClient} client Client Object
-   */
   async print_it(client, pages) {
     console.log(`/${this.name}: Print it...`)
 
@@ -423,9 +312,6 @@ class RookCommand {
     return false
   }
 
-  /**
-   * Ship the thing!
-   */
   async ship_it(interaction, independent=false, hasDeferred=false) {
     console.log(`/${this.name}: ...and Ship it!`)
 
@@ -483,10 +369,6 @@ class RookCommand {
     return interaction_result || send_result
   }
 
-  /**
-   * Send the thing!
-   * @param {RookClient} client Client Object
-   */
   async send(client, interaction, pages, independent=false, hasDeferred=false) {
     console.log(`/${this.name}: Full Send it!`)
 
@@ -503,13 +385,6 @@ class RookCommand {
     return printResult && shipResult
   }
 
-  /**
-   * Run the thing!
-   * @param {RookClient} client Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @param {Object.<string, any>} options Input Options
-   * @returns
-   */
   async execute(client, interaction, coptions, independent=false) {
     const Table = new AsciiTable(
       `/${this.name}` + " : " + new Date().toISOString(),
@@ -593,12 +468,7 @@ class RookCommand {
 
     return buildResult && sendResult && !this.error
   }
-  /**
-   * Test the thing!
-   * @param {RookClient} client Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @returns
-   */
+
   async test(client, interaction) {
     if (!this.channel) {
       this.channel = await this.getChannel(client)
