@@ -65,7 +65,7 @@ module.exports = async (client, oldMember) => {
           {
             name: 'Left At',
             value: leftAt
-              ? (timeFormat(letfAt) + ` (\`${leftAt.getTime()}\`)`)
+              ? (timeFormat(leftAt) + ` (\`${leftAt.getTime()}\`)`)
               : 'Unknown' // Handle cases where leftAt is null
           }
         ],
