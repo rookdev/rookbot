@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('./rcommand.class.js')
 const { RookEmbed } = require('../embed/rembed.class.js')
 const timeFormat = require('../../utils/timeFormat.js')
@@ -22,12 +24,14 @@ class SalutationCommand extends RookCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let mode        = coptions?.mode || "boot"
     let onlineness  = mode == "boot" ? "Online" : "Offline"
     let readiness   = mode == "boot" ? "Ready"  : "Unready"
-    let BRANCH      = ""
-    let COMMIT      = ""
+    let BRANCH      = null
+    let COMMIT      = null
 
     let mode_msg = ""
     let mode_tag = ""
@@ -44,7 +48,7 @@ class SalutationCommand extends RookCommand {
     if (mode == "boot") {
       this.props.caption = { text: "Hello World" }
       this.props.title = {
-        text: this.props.caption.text,
+        text: this.props["caption"].text,
         emoji: "🔼"
       }
 
@@ -53,7 +57,7 @@ class SalutationCommand extends RookCommand {
     } else if (mode == "exit") {
       this.props.caption = { text: "Later, man!" },
       this.props.title = {
-        text: this.props.caption.text,
+        text: this.props["caption"].text,
         emoji: "🔽"
       }
       this.props.color = colors["error"]
@@ -86,11 +90,11 @@ class SalutationCommand extends RookCommand {
 
     // Get Commit
     try {
-      let git_log = shell.exec(
+      let git_log_exec = shell.exec(
         "git log -1",
         { silent: true }
       )
-      git_log = git_log.stdout.trim()
+      let git_log = git_log_exec.stdout.trim()
       let latest_commit = git_log.split("\n")[0]
       COMMIT = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)
       if (COMMIT && (COMMIT.length > 0)) {
@@ -112,6 +116,9 @@ class SalutationCommand extends RookCommand {
       (user ? user.username : "") +
       ` v${this.profile.PACKAGE.version} is ${onlineness}!`
     )
+    if (!this?.props?.title) {
+      this.props.title = { text: "" }
+    }
     this.props.title.text = console_output[1]
     this.props.title.url = git_info.root
 
@@ -182,7 +189,7 @@ class SalutationCommand extends RookCommand {
       )?.name || "?"
     }
 
-    this.props.fields = [
+    this.props["fields"] = [
       [
         // Client User
         {
@@ -251,7 +258,7 @@ class SalutationCommand extends RookCommand {
 
     // If we're exiting
     if (mode == "exit") {
-      this.props.fields.push(
+      this.props["fields"].push(
         [
           // Current Time
           {
@@ -263,7 +270,7 @@ class SalutationCommand extends RookCommand {
     }
 
     // Final Status
-    this.props.fields.push(
+    this.props["fields"].push(
       [
         {
           name: "Status",

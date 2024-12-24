@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { PermissionFlagsBits } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const { changeNickname } = require('../../utils/changeNickname')  // Import the changeNickname function
@@ -20,6 +22,8 @@ module.exports = class CastleNameCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     // Get this Guild ID
@@ -51,7 +55,7 @@ module.exports = class CastleNameCommand extends RookCommand {
       // Call the utility function to change the nickname
       const result = await changeNickname(client, member)
 
-      if (result.success) {
+      if (result?.success) {
         this.props.players.target = {
           name: member.user.displayName,
           avatar: member.user.avatarURL()
@@ -61,7 +65,7 @@ module.exports = class CastleNameCommand extends RookCommand {
         console.log(result.message)
       } else {
         this.error = true
-        this.props.description = result.message
+        this.props.description = result?.message
       }
     } catch (error) {
       this.error = true

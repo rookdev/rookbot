@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js');
 const { RookCommand } = require('../../classes/command/rcommand.class');
 const timeFormat = require('../../utils/timeFormat.js')
@@ -90,6 +92,8 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
     const randomizer = coptions.randomizer || "smz3"

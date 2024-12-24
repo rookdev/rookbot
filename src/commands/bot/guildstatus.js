@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const timeFormat = require('../../utils/timeFormat.js')
 
@@ -18,6 +20,8 @@ module.exports = class GuildStatusCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     // Entities

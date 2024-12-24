@@ -1,8 +1,11 @@
-const { Client, Message } = require('discord.js')
-const fs = require('fs')
-const path = require('path')
+// @ts-nocheck
+
+const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const { Message } = require('discord.js')
 const colors = require('../../dbs/colors.json')
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Logs edited messages from the server.
@@ -58,7 +61,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     }
 
     // Fetch the log channel using its ID
-    const guildID = newMessage.guild.id
+    const guildID = newMessage.guild?.id
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     let log_type = "logging"
     let log_check = "logging-messages"
@@ -76,10 +79,10 @@ module.exports = async (client, oldMessage, newMessage) => {
       players: {
         user: {
           name: newMessage.author.displayName,
-          avatar: newMessage.author.displayAvatarURL( { dyanmic: true, size: 128 } )
+          avatar: newMessage.author.displayAvatarURL( { size: 128 } )
         },
         target: {
-          avatar: newMessage.author.displayAvatarURL( { dyanmic: true, size: 128 } )
+          avatar: newMessage.author.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [
@@ -119,22 +122,25 @@ module.exports = async (client, oldMessage, newMessage) => {
 
     // Send the embed to the log channel, if found and valid
     if (logChannel?.isTextBased()) {
+      // @ts-ignore
       await logChannel.send({ embeds: [embed] })
     } else {
       console.warn('Log channel not found or not a text-based channel.')
     }
 
     // Optional: Save the edited message to a log file
+    const DEV = process.env.ENV_ACTIVE === "development"
     const logFilePath = path.join(
       __dirname,
       '..',
       '..',
       'botlogs',
-      `${this.DEV ? 'DEV' : ''}editedMessages.log`
+      `${DEV ? 'DEV' : ''}editedMessages.log`
     )
     const logEntry = [
       `[${new Date().toISOString()}]`,
       `Author:      ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
+      // @ts-ignore
       `Channel:     #${newMessage.channel.name}`,
       `Old Content: ${oldContent}`,
       `New Content: ${newContent}`,

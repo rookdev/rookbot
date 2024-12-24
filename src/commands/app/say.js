@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
@@ -104,14 +106,15 @@ module.exports = class SayCommand extends ModCommand {
         `Message ID:  ${result.id}`,
         '--------------------------------'
       ]
-      logEntry = logEntry.join("\n") + "\n\n"
 
       // Append the log entry to the file
-      fs.appendFileSync(logFilePath, logEntry, 'utf8')
+      fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
 
       let logsChannel = await this.getChannel(client, interaction, "logging-say")
       logsChannel.send({ embeds: [ embeds.mod ] })
       this.null = true
     }
+
+    return true
   }
 }

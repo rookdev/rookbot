@@ -1,4 +1,6 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction, PermissionFlagsBits, MessageFlags } = require('discord.js')
+// @ts-nocheck
+
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
@@ -43,18 +45,14 @@ module.exports = class PurgeCommand extends ModCommand {
       mod:    {},
       log:    {}
     }
-    let embeds = {
-      public: null,
-      mod:    null,
-      log:    null
-    }
+    let embeds = {}
 
     if (messagesToDelete < 1 || messagesToDelete > 100) {
       props.mod.error = true
       props.mod.ephemeral = true
       props.mod.description = `Please specify a number between 1 and 100 '${messagesToDelete}'.`
       this.props = props.mod
-      return
+      return !props.mod.error
     }
 
     let success = false
@@ -71,7 +69,7 @@ module.exports = class PurgeCommand extends ModCommand {
       this.error = true
       this.ephemeral = true
       this.props.description = "I couldn't delete those messages. Make sure they're not older than 14 days."
-      return
+      return !this.error
     }
 
     if (success) {
@@ -137,8 +135,8 @@ module.exports = class PurgeCommand extends ModCommand {
       `Amount:  ${deletedMessages.size}`,
       '--------------------------------'
     ]
-    logEntry = logEntry.join("\n") + "\n"
-    fs.appendFileSync(logFilePath, logEntry, "utf8")
+
+    fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
     console.log(`/${this.name}: LogFile`)
 
     if (!success) {
@@ -158,5 +156,7 @@ module.exports = class PurgeCommand extends ModCommand {
       )
       this.null = true
     }
+
+    return success
   }
 }

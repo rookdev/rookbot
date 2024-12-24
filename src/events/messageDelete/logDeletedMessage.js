@@ -1,8 +1,11 @@
-const { Client, AuditLogEvent, Message } = require('discord.js')
-const fs = require('fs')
-const path = require('path')
+// @ts-nocheck
+
+const { AuditLogEvent, Message } = require('discord.js')
+const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Logs deleted messages from the server.
@@ -22,7 +25,7 @@ module.exports = async (client, deletedMessage) => {
     }
 
     // Fetch the log channel using the deletedMessage's guild ID
-    const guildID = deletedMessage.guild.id
+    const guildID = deletedMessage.guild?.id || 0
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     let log_type = "logging"
     let log_check = "logging-messages"
@@ -37,7 +40,7 @@ module.exports = async (client, deletedMessage) => {
     }
 
     // Fetch a couple audit logs than just one as new entries could've been added right after this event was emitted.
-    const fetchedLogs = await deletedMessage.guild.fetchAuditLogs({
+    const fetchedLogs = await deletedMessage.guild?.fetchAuditLogs({
       limit: 6,
       type: AuditLogEvent.MessageDelete
     }).catch(console.error)
@@ -46,7 +49,7 @@ module.exports = async (client, deletedMessage) => {
       // console.log("Logs Fetched!")
     }
 
-    const auditEntry = await fetchedLogs.entries.find(
+    const auditEntry = await fetchedLogs?.entries.find(
       a =>
         // Small filter function to make use of the little discord provides to narrow down the correct audit entry.
         a.target.id === deletedMessage.author.id &&
@@ -125,11 +128,11 @@ module.exports = async (client, deletedMessage) => {
       players: {
         user: {
           name: deletedMessage.author.displayName,
-          avatar: deletedMessage.author.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: deletedMessage.author.displayAvatarURL( { size: 128 } )
         },
         target: {
           name: deletedMessage.author.displayName,
-          avatar: deletedMessage.author.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: deletedMessage.author.displayAvatarURL( { size: 128 } )
         }
       },
       fields: fields
@@ -137,15 +140,17 @@ module.exports = async (client, deletedMessage) => {
 
 
     // Send the log embed to the log channel
+    // @ts-ignore
     await logChannel.send({ embeds: [logEmbed] })
 
     // Optional: Save the deleted message to a log file
+    const DEV = process.env.ENV_ACTIVE === "development"
     const logFilePath = path.join(
       __dirname,
       '..',
       '..',
       'botlogs',
-      `${this.DEV ? 'DEV' : ''}deletedMessages.log`
+      `${DEV ? 'DEV' : ''}deletedMessages.log`
     )
     let logEntry = [
       `[${new Date().toISOString()}]`,
@@ -161,16 +166,15 @@ module.exports = async (client, deletedMessage) => {
       )
     }
     logEntry.push(
-      `Guild:      ${deletedMessage.guild.name} (ID: ${deletedMessage.guild.id})`,
+      `Guild:      ${deletedMessage.guild?.name} (ID: ${deletedMessage.guild?.id})`,
+      // @ts-ignore
       `Channel:    #${deletedMessage.channel.name} (ID: ${deletedMessage.channel.id})`,
       `Content:    ${deletedMessage.content}`,
       `Message ID: ${deletedMessage.id}`,
       '--------------------------------'
     )
-    logEntry = logEntry.join("\n") + "\n\n"
-
     // Append the log entry to the file
-    fs.appendFileSync(logFilePath, logEntry, 'utf8')
+    fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", 'utf8')
   } catch (error) {
     console.error('Error logging deleted message:', error)
   }

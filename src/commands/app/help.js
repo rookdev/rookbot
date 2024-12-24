@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 
@@ -57,10 +59,14 @@ module.exports = class HelpCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let helpJSON = require('../../res/app/manifests/help/help.json')
     let command = coptions["command-name"] ?? null
     let section = coptions["section-name"] ?? null
+    let showJSON = {}
 
     this.props.description = " "
 
@@ -70,16 +76,18 @@ module.exports = class HelpCommand extends RookCommand {
           let thisJSON = {}
           thisJSON[sectionName] = {}
           thisJSON[sectionName][command] = sectionCmds[command]
-          helpJSON = thisJSON
+          showJSON = thisJSON
         }
       }
     } else if(section) {
       let thisJSON = {}
       thisJSON[section] = helpJSON[section]
-      helpJSON = thisJSON
+      showJSON = thisJSON
+    } else {
+      showJSON = {...helpJSON}
     }
 
-    for(let [sectionName, sectionCmds] of Object.entries(helpJSON)) {
+    for(let [sectionName, sectionCmds] of Object.entries(showJSON)) {
       for(let [cmdName, cmd] of Object.entries(sectionCmds)) {
         let fields = [
           [

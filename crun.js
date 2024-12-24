@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { program } = require('commander')
 const AsciiTable = require('ascii-table')
 const PACKAGE = require('./package.json')
@@ -121,6 +123,7 @@ if (options.environment) {
 
 if (options.long) {
   args.push("-l")
+  // @ts-ignore
   long = true
 }
 if (options.profile) {
@@ -146,7 +149,6 @@ command.push(envs.trim())
 command.push("--")
 command.push("node ./run.js")
 command.push(args.join(" "))
-command = command.join(" ")
 
-console.log("CLI Command:", command)
-shell.exec(command)
+console.log("CLI Command:", command.join(" "))
+shell.exec(command.join(" "))

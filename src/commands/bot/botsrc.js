@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 
 module.exports = class BotSourceCommand extends RookCommand {
@@ -31,9 +33,6 @@ module.exports = class BotSourceCommand extends RookCommand {
     )
   }
 
-  /**
-   * Sends an embed message with a link to the bot\'s GitHub repository.
-   */
   async action(client, interaction, coptions={}) {
     // all done in constructor
     return !this.error

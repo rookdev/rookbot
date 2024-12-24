@@ -1,6 +1,6 @@
-const { ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 
 module.exports = class MemberCountCommand extends RookCommand {
   constructor(client) {
@@ -24,11 +24,9 @@ module.exports = class MemberCountCommand extends RookCommand {
       {...props}
     )
   }
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     try {
       // Fetch all members in the server to ensure the data is up-to-date

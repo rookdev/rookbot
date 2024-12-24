@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
@@ -28,6 +30,8 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let new_avatar = coptions["avatar-url"]
     let old_avatar = client.user.displayAvatarURL()
@@ -42,10 +46,8 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
       }
 
       client.user.setAvatar(new_avatar)
-      this.players = {
-        target: {
-          avatar: old_avatar
-        }
+      this.players.target = {
+        avatar: old_avatar
       }
       this.props.image = { image: new_avatar }
     } catch(e) {
@@ -54,7 +56,6 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
         `Error when setting avatar for ${client.user}: '${new_avatar}'`,
         e.stack
       ]
-      return
     }
 
     return !this.error

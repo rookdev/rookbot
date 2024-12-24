@@ -6,7 +6,7 @@ import { RookEmbed } from "../classes/embed/rembed.class"
 
 /**
  * @class
- * @classdesc Build a Rook-branded Command
+ * @classdesc Describes a Rook-branded Command
  * @this {RookCommand}
  * @public
  */
@@ -29,6 +29,8 @@ declare class RookCommand {
   /** Did we get an error? */     error?: boolean
   /** Canned Error Messages */    errors?: Array<string>
   /** Scratchpad */               props: Array<EmbedProps>
+  /** Test Independent? */        testIndependent?: boolean
+  /** Full? */                    full?: boolean
   /** Ephemeral? */               ephemeral?: boolean
 
   /**
@@ -85,14 +87,14 @@ declare class RookCommand {
    * @param interaction - Interaction that called this command
    * @param coptions    - Input Options
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   action(
     client: RookClient,
     interaction?: TextBasedChannel,
     coptions?: Array<CommandTestOption>
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Pre-flight stuff!
@@ -100,26 +102,26 @@ declare class RookCommand {
    * @param interaction - Interaction that called this command
    * @param coptions    - Input Options
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   build(
     client: RookClient,
     interaction?: ChatInputCommandInteraction,
     coptions?: Array<CommandTestOption>
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Defer It!
    *
    * @param interaction - Interaction that called this Command
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   handle_deferrment(
     interaction: ChatInputCommandInteraction
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Handle It!
@@ -128,14 +130,14 @@ declare class RookCommand {
    * @param this_package  - Embed(s) to process
    * @param hasDeferred   - Has this Interaction been deferred?
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   handle_interaction(
     interaction: ChatInputCommandInteraction,
     this_package: RookEmbed,
     hasDeferred?: boolean
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Print the thing!
@@ -143,13 +145,13 @@ declare class RookCommand {
    * @param client  - Client Object
    * @param pages   - Pages to print
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   print_it(
     client: RookClient,
     pages: Array<RookEmbed>
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Ship the thing!
@@ -158,14 +160,14 @@ declare class RookCommand {
    * @param independent - Print this one independently?
    * @param hasDeferred - Has this Interaction been Deferred?
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   ship_it(
     interaction: ChatInputCommandInteraction,
     independent?: boolean,
     hasDeferred?: boolean
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Send the thing!
@@ -176,7 +178,7 @@ declare class RookCommand {
    * @param independent - Print this batch independently?
    * @param hasDeferred - Has this Interaction been deferred?
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   send(
     client: RookClient,
@@ -185,7 +187,7 @@ declare class RookCommand {
     independent?: boolean,
     hasDeferred?: boolean
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Run the thing!
@@ -194,7 +196,7 @@ declare class RookCommand {
    * @param interaction - Interaction that called the Command
    * @param options     - Input Options
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   execute(
     client: RookClient,
@@ -202,7 +204,7 @@ declare class RookCommand {
     coptions?: any,
     independent?: boolean
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 
   /**
    * Test the thing!
@@ -210,13 +212,13 @@ declare class RookCommand {
    * @param client      - Client Object
    * @param interaction - Interaction that called the Command
    *
-   * @returns Promise<boolean>
+   * @returns Promise<boolean | undefined>
    */
   test(
     client: RookClient,
     interaction: ChatInputCommandInteraction
   )
-  : Promise<boolean>
+  : Promise<boolean | undefined>
 }
 
 export { RookCommand }

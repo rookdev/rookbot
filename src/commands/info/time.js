@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const timeFormat = require('../../utils/timeFormat.js')
 const tz = require('timezone')
@@ -21,6 +23,8 @@ module.exports = class TimeCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     const now = Date.now()

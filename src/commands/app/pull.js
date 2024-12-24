@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')
 const fs = require('fs')
@@ -28,6 +30,9 @@ module.exports = class PullCommand extends BotDevCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     let BRANCH = ""
     let COMMITS = {
@@ -54,16 +59,16 @@ module.exports = class PullCommand extends BotDevCommand {
 
     // Get Current commit ID
     try {
-      let git_log = shell.exec(
+      let git_log_exec = shell.exec(
         "git log -1",
         { silent: true }
       )
-      git_log = git_log.stdout.trim()
+      let git_log = git_log_exec.stdout.trim()
       let commits = git_log.split("\n")
       let latest_commit = commits[0 * 6]
-      COMMITS.current = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)
-      if (COMMITS.current && (COMMITS.current.length > 0)) {
-        COMMITS.current = COMMITS.current[1]
+      let matches = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)
+      if (matches && (matches.length > 0)) {
+        COMMITS.current = matches[1]
       }
     } catch (err) {
       console.log(err.stack)
@@ -87,11 +92,11 @@ module.exports = class PullCommand extends BotDevCommand {
     // Get Fresh commit ID
     // Get previous commit ID
     try {
-      let git_log = shell.exec(
+      let git_log_exec = shell.exec(
         "git log -2",
         { silent: true }
       )
-      git_log = git_log.stdout.trim()
+      let git_log = git_log_exec.stdout.trim()
       let commits = git_log.split("\n")
       let latest_commit = commits[0 * 6]
       COMMITS.fresh = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)

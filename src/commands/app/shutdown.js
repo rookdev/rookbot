@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ChatInputCommandInteraction } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
@@ -28,11 +30,9 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       {...props}
     )
   }
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async execute(client, interaction, coptions={}, independent=false) {
     this.channel = await this.getChannel(client)
 
@@ -50,7 +50,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
 
     let action = "Shutting Down"
 
-    console.log(`!!! Bot Shutdown by: ${interaction.member.user.tag} !!!`)
+    console.log(`!!! Bot Shutdown by: ${interaction?.member?.user?.username} !!!`)
     let processed_pm2 = false
     try {
       const pm2 = require('pm2')
@@ -86,8 +86,8 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       console.log(`🟡/${this.name}: Skipping PM2!`)
       // Entities
       let entities = {
-        bot: { name: client.user.name, avatar: client.user.avatarURL(), username: client.user.username },
-        user: { name: interaction.user.displayName, avatar: interaction.user.avatarURL(), username: interaction.user.username }
+        bot: { name: client.user?.displayName, avatar: client.user?.avatarURL(), username: client.user?.username },
+        user: { name: interaction?.user.displayName, avatar: interaction?.user.avatarURL(), username: interaction?.user.username }
       }
       // Players
       this.props.players = {
@@ -95,10 +95,10 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         target: entities.bot
       }
 
-      this.props.description = `${action} <@${client.user.id}>`
+      this.props.description = `${action} <@${client.user?.id}>`
 
       let this_embed = await new RookEmbed(client, this.props)
-      await interaction.reply({ embeds: [ this_embed ] })
+      await interaction?.reply({ embeds: [ this_embed ] })
       this.null = true
       // if (interaction) {
       //   interaction.deleteReply()
@@ -112,5 +112,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       console.log(`!!! SHUTDOWN`)
       process.exit(1337)
     }
+
+    return true
   }
 }

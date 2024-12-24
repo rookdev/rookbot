@@ -1,9 +1,12 @@
-const { Client, GuildMember } = require('discord.js')
-const fs = require('fs')
-const path = require('path')
+// @ts-nocheck
+
+const { GuildMember } = require('discord.js')
+const { RookClient } = require('../../classes/objects/rclient.class.js')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json')
 const timeFormat = require('../../utils/timeFormat.js')
+const colors = require('../../dbs/colors.json')
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Logs when a member leaves the server and saves it to a log file.
@@ -39,11 +42,11 @@ module.exports = async (client, oldMember) => {
       players: {
         user: {
           name: oldMember.user.displayName,
-          avatar: oldMember.user.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: oldMember.user.displayAvatarURL( { size: 128 } )
         },
         target: {
           name: oldMember.user.displayName,
-          avatar: oldMember.user.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: oldMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [
@@ -80,15 +83,17 @@ module.exports = async (client, oldMember) => {
     })
 
     // Send the log embed to the log channel
+    // @ts-ignore
     await logChannel.send({ embeds: [logEmbed] });
 
     // Save the leaving member to a log file
+    const DEV = process.env.ENV_ACTIVE === "development"
     const logFilePath = path.join(
       __dirname,
       '..',
       '..',
       'botlogs',
-      `${this.DEV ? 'DEV' : ''}memberChanges.log`
+      `${DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
       `[${new Date().toISOString()}]`,

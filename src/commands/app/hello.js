@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { SalutationCommand } = require('../../classes/command/salutation.class.js')
 
 /**
@@ -22,7 +24,7 @@ module.exports = class HelloCommand extends SalutationCommand {
   }
 
   async execute(client, interaction, coptions={}, independent=false) {
-    await super.execute(
+    return await super.execute(
       client,
       interaction,
       { mode: "boot" }

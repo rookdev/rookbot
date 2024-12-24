@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+import { RookCommand } from '../../classes/command/rcommand.class'
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const weather = require('weather-js')
 
@@ -40,38 +44,48 @@ module.exports = class WeatherCommand extends RookCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let degreeType = coptions.unit
     let search = coptions.location
+    let error = false
+    let props = this.props
+    if (!props.title?.text) {
+      // @ts-ignore
+      props.title.text = ""
+    }
+
     if (search == "") {
-      error = true
+      this.error = true
       this.props.description = "Please specify a location."
-      return
+      return false
     }
     weather.find(
       {
         search: search,
         degreeType: degreeType
-      }, await function(error, result) {
-        if(error || !search || result === undefined || result.length === 0) {
-          this.error = true
-          if(error) {
-            this.props.description = error
+      }, await function(wError, result) {
+        if(wError || !search || result === undefined || result.length === 0) {
+          error = true
+          if(wError) {
+            props.description = wError
           } else if(!search) {
-            this.props.description = "Please specify a location"
+            props.description = "Please specify a location"
           } else if(result === undefined || result.length === 0) {
-            this.props.description = "**Invalid** Location"
+            props.description = "**Invalid** Location"
           } else {
-            this.props.description = ""
+            props.description = ""
           }
         } else {
           let current = result[0].current
           let location = result[0].location
-          this.props.description = `**${current.skytext}**`
-          this.props.caption.text = `Weather forecast for ${current.observationpoint}`
-          this.props.players.bot.url = `https://www.accuweather.com/en/search-locations?query=` + encodeURI(`${current.observationpoint}`)
-          this.props.players.user.avatar = current.imageUrl
-          this.props.fields = [
+          props.description = `**${current.skytext}**`
+          // @ts-ignore
+          props.title.text = `Weather forecast for ${current.observationpoint}`
+          props.players.bot.url = `https://www.accuweather.com/en/search-locations?query=` + encodeURI(`${current.observationpoint}`)
+          props.players.user.avatar = current.imageUrl
+          props.fields = [
             [
               {
                 name: "Timezone",
@@ -104,5 +118,10 @@ module.exports = class WeatherCommand extends RookCommand {
         }
       }
     )
+
+    this.props = props
+    this.error = error
+
+    return !this.error
   }
 }

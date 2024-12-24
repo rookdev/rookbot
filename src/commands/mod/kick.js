@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js');
 const { ModCommand } = require('../../classes/command/modcommand.class')
 

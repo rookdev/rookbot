@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
@@ -31,6 +33,8 @@ module.exports = class ColorCommand extends RookCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     const hexInput = coptions.hex.replace('#', '').toUpperCase()
 
@@ -39,7 +43,7 @@ module.exports = class ColorCommand extends RookCommand {
     if (!hexRegex.test(hexInput)) {
       this.error = true
       this.props.description = "Invalid hex color code. Please provide a valid 6-character hexadecimal string (e.g., #FF5733 or FF5733)."
-      return
+      return !this.error
     }
 
     // Convert hex to RGB
@@ -54,7 +58,7 @@ module.exports = class ColorCommand extends RookCommand {
       title: {
         text: "Color Information"
       },
-      image: `https://png-pixel.com/${dims}-${hexInput.toLowerCase()}ff.png`,
+      image: { image: `https://png-pixel.com/${dims}-${hexInput.toLowerCase()}ff.png` },
       fields: [
         [
           { name: 'Hex', value: `\`#${hexInput}\`` },

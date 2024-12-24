@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
@@ -21,11 +23,6 @@ module.exports = class JustinCommand extends RookCommand {
     )
   }
 
-  /**
-   * Sends an embed message showcasing the developer's video games.
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
   async action(client, interaction, coptions={}) {
     this.props = {
       title: {

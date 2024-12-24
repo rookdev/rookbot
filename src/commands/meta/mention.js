@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
+const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
 
 module.exports = class MentionCommand extends RookCommand {
   constructor(client) {
@@ -50,11 +51,8 @@ module.exports = class MentionCommand extends RookCommand {
     )
   }
 
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let targetInput   = coptions["target-id"]
     let targetId      = targetInput.replace(/[<#@&!>]/g, '');  // Remove <@>, <@!>, and >

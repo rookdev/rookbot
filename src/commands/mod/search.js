@@ -1,7 +1,10 @@
+// @ts-nocheck
+
 const { PermissionFlagsBits, ApplicationCommandOptionType, time, TimestampStyles } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const path = require('path')
 const fs = require('fs')
+const timeFormat = require('../../utils/timeFormat')
 
 module.exports = class SearchCommand extends ModCommand {
   constructor(client) {
@@ -83,19 +86,24 @@ module.exports = class SearchCommand extends ModCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let searchType = coptions["search-type"]
     let targetUserInput = coptions["target-id"]
     let region = coptions["region"] || (this.DEV ? "DEV" : "")
-    let targetUserId = targetUserInput.replace(/[<@!>]/g, '');  // Remove <@>, <@!>, and >
-    let targetUser;
+    let targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
+    let targetUser
+
+    let props = {}
+
     try {
       targetUser = await client.users.fetch(targetUserId);
     } catch (error) {
       props.mod.error = true
       props.mod.description = "User not found."
       this.props = props.mod
-      return
+      return !props.mod.error
     }
     // Get the guild member (to fetch nickname if present)
     const guildMember = interaction.guild.members.cache.get(targetUserId);
@@ -157,11 +165,11 @@ module.exports = class SearchCommand extends ModCommand {
     }
     i = 1
     for(let [timestamp, foundLog] of Object.entries(foundLogs)) {
+      // let this_props: import('../../types/embed').EmbedProps = {
       let this_props = {
         title: { text: `Searching ${searchType}s` },
         description: `**User**\n${user}`,
-        fields: [],
-        timestamp: timestamp
+        fields: []
       }
       for(let logLine of foundLog) {
         logLine = logLine.trim()
@@ -169,7 +177,7 @@ module.exports = class SearchCommand extends ModCommand {
           let field_name = logLine.substring(0, logLine.indexOf(": "))
           let field_value = logLine.substring(logLine.indexOf(": ") + ": ".length)
           field_value = field_value.replace(/([\d]{5,})/, "`$1`")
-          this_props.fields.push(
+          this_props.fields?.push(
             [
               {
                 name: field_name,
@@ -179,8 +187,8 @@ module.exports = class SearchCommand extends ModCommand {
           )
         } else if(logLine.indexOf("Z]") > -1) {
           let timestamp = Date.parse(logLine.replace("[","").replace("]",""))
-          let timestr = time(parseInt(timestamp / 1000), TimestampStyles.LongDateTime)
-          this_props.fields.push(
+          let timestr = timeFormat(timestamp)
+          this_props.fields?.push(
             [
               {
                 name: "Time",
@@ -193,5 +201,7 @@ module.exports = class SearchCommand extends ModCommand {
       this.pages.push(this_props)
       i = i +1
     }
+
+    return true
   }
 }

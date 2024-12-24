@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 const { ModCommand } = require('../../classes/command/modcommand.class.js')
 

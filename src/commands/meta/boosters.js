@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
@@ -25,18 +27,15 @@ module.exports = class BoostersCommand extends RookCommand {
     )
   }
 
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     try {
       // Get the number of boosts in the server
-      const boosts = interaction.guild.premiumSubscriptionCount
+      const boosts = interaction?.guild?.premiumSubscriptionCount
 
       // Get the server's boost level
-      const boostLevel = interaction.guild.premiumTier
+      const boostLevel = interaction?.guild?.premiumTier
 
       // Prepare a message to show the boost information
       this.props.fields = [

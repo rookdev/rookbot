@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class NLCommand extends RookCommand {
@@ -28,5 +30,7 @@ module.exports = class NLCommand extends RookCommand {
         content: "https://cdn.discordapp.com/attachments/565312923271168000/985473102702071838/divider-line.gif"
       }
     )
+
+    return true
   }
 }

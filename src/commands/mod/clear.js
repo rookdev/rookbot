@@ -1,6 +1,7 @@
+// @ts-nocheck
+
 const { PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const fs = require('fs')
 
 module.exports = class ClearCommand extends ModCommand {
   constructor(client) {
@@ -38,5 +39,7 @@ module.exports = class ClearCommand extends ModCommand {
     } else {
       this.props.description = (this.DEV ? "DEV: " : "") + `Clearing ${limit} messages in ${duration}.`
     }
+
+    return true
   }
 }

@@ -1,8 +1,11 @@
-const { Client, GuildMember } = require('discord.js')
-const fs = require('fs')
-const path = require('path')
+// @ts-nocheck
+
+const { GuildMember } = require('discord.js')
+const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Logs changes to a user's nickname in the server.
@@ -36,11 +39,11 @@ module.exports = async (client, oldMember, newMember) => {
       players: {
         user: {
           name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: newMember.user.displayAvatarURL( { size: 128 } )
         },
         target: {
           name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { dynamic: true, size: 128 } )
+          avatar: newMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [
@@ -85,18 +88,20 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Send the embed to the log channel, if found and valid
     if (logChannel?.isTextBased()) {
+      // @ts-ignore
       await logChannel.send({ embeds: [ embed.toJSON() ] })
     } else {
       console.warn('Log channel not found or not a text-based channel.')
     }
 
     // Optional: Save the nickname change to a log file
+    const DEV = process.env.ENV_ACTIVE === "development"
     const logFilePath = path.join(
       __dirname,
       '..',
       '..',
       'botlogs',
-      `${this.DEV ? 'DEV' : ''}nicknameChanges.log`
+      `${DEV ? 'DEV' : ''}nicknameChanges.log`
     )
     const logEntry = [
       `[${new Date().toISOString()}]`,

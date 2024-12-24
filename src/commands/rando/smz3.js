@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const SeedAnnounceCommand = require('../rando/seedannounce')
 
@@ -47,7 +49,7 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
       "seed-url": coptions["seed-url"] ?? "",
       "prep-time": coptions["prep-time"] ?? 0
     }
-    await super.execute(
+    return await super.execute(
       client,
       interaction,
       options

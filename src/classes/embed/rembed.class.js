@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { EmbedBuilder } = require('discord.js')
 
 function isNumeric(n) {
@@ -13,7 +15,7 @@ function isNumeric(n) {
 }
 
 class RookEmbed extends EmbedBuilder {
-  props;
+  // props: import('../../types/embed').EmbedProps
 
   async init(client) {
     // Get color figured out
@@ -31,7 +33,7 @@ class RookEmbed extends EmbedBuilder {
     // Get author figured out
     if (this.props?.author) {
       let author = {}
-      for (let [mprop, dprop] in Object.entries(
+      for (let [mprop, dprop] of Object.entries(
         {
           text:   "name",
           image:  "iconURL",
@@ -42,6 +44,7 @@ class RookEmbed extends EmbedBuilder {
           author[dprop] = this.props.author[mprop].trim()
         }
       }
+      // @ts-ignore
       this.props.author = author
     }
 
@@ -54,6 +57,7 @@ class RookEmbed extends EmbedBuilder {
       this.props.description = " "
     }
     if (typeof this.props.description == "object") {
+      // @ts-ignore
       this.props.description = this.props.description.join("\n")
     }
 
@@ -182,6 +186,7 @@ class RookEmbed extends EmbedBuilder {
         }
         this.setTitle(text.trim())
         if (hasURL) {
+          // @ts-ignore
           this.setURL(this.props.title.url.trim())
         }
       }
@@ -206,7 +211,11 @@ class RookEmbed extends EmbedBuilder {
       this.props.description &&
       this.props.description != ""
     ) {
-      this.setDescription(this.props.description)
+      let desc = this.props.description
+      if (typeof desc === "object") {
+        desc = desc.join("\n")
+      }
+      this.setDescription(desc)
     }
 
     // Set fields
@@ -214,13 +223,16 @@ class RookEmbed extends EmbedBuilder {
       let fields = []
       for (let fieldRow of this.props.fields) {
         let i = 0
+        // @ts-ignore
         if (fieldRow && fieldRow.length > 0) {
+          // @ts-ignore
           for (let field of fieldRow) {
             if (field) {
               fields.push(
                 {
                   name:   field.name.trim(),
                   value:  field.value + "",
+                  // @ts-ignore
                   inline: fieldRow.length > 1
                 }
               )
@@ -267,7 +279,7 @@ class RookEmbed extends EmbedBuilder {
       if (hasText || hasIcon) {
         let footer = { text: this.props.footer.text.trim() }
         if (this.props.footer?.image) {
-          footer.image = this.props.footer.image.trim()
+          footer.iconURL = this.props.footer.image.trim()
         }
         this.setFooter(footer)
       }
@@ -279,7 +291,8 @@ class RookEmbed extends EmbedBuilder {
       let isTimestamp = isNumeric(this.props.timestamp)
 
       if (isTimestamp) {
-        this.setTimestamp(this.props.timestamp.trim())
+        // @ts-ignore
+        this.setTimestamp(this.props.timestamp)
       } else if (doTimestamp) {
         this.setTimestamp()
       }

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 

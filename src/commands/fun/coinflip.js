@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require("../../classes/command/rcommand.class")
 
 module.exports = class CoinFlipCommand extends RookCommand {
@@ -22,6 +24,8 @@ module.exports = class CoinFlipCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     // Randomly choose between "Heads" and "Tails"

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
@@ -22,29 +24,25 @@ module.exports = class PingCommand extends RookCommand {
     )
   }
 
-  /**
-   * Do the thing!
-   * @param {RookClient}            client  Client Object
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   * @returns
-   */
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     console.log(`/${this.name}: Action`)
 
-    const reply = await interaction.fetchReply()
-    const ping = reply.createdTimestamp - interaction.createdTimestamp
+    const reply = await interaction?.fetchReply()
+    const ping = (reply?.createdTimestamp || 0) - (interaction?.createdTimestamp || 0)
 
     // Entities
     let entities = {
       bot: {
-        name:     client.user.name,
-        avatar:   client.user.avatarURL(),
-        username: client.user.username
+        name:     client.user?.displayName,
+        avatar:   client.user?.avatarURL(),
+        username: client.user?.username
       },
       user: {
-        name:     interaction.user.displayName,
-        avatar:   interaction.user.avatarURL(),
-        username: interaction.user.username
+        name:     interaction?.user.displayName,
+        avatar:   interaction?.user.avatarURL(),
+        username: interaction?.user.username
       },
       discord: { name: "Discord", avatar: "https://cdn.iconscout.com/icon/free/png-512/free-discord-logo-icon-download-in-svg-png-gif-file-formats--social-media-pack-logos-icons-3073764.png?f=webp&w=256" }
     }

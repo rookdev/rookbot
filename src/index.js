@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 require('@dotenvx/dotenvx').config()
 const { IntentsBitField } = require('discord.js')
 const { RookClient } = require('./classes/objects/rclient.class')
@@ -81,7 +83,10 @@ const client = new RookClient(
                     let channel = await client.guild.channels.cache.find(
                       c => c.id === channelID
                     )
-                    await channel.send(props)
+                    if (channel) {
+                      // @ts-ignore
+                      await channel?.send(props)
+                    }
                   }
                 },
                 editReply: async (props) => {
@@ -91,7 +96,10 @@ const client = new RookClient(
                     let channel = await client.guild.channels.cache.find(
                       c => c.id === channelID
                     )
-                    await channel.send(props)
+                    if (channel) {
+                      // @ts-ignore
+                      await channel?.send(props)
+                    }
                   }
                 }
               }

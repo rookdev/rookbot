@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const AsciiTable = require('ascii-table')
@@ -40,6 +42,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     this.props.description = []

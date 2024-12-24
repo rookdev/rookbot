@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { MessageFlags } = require('discord.js')
 const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../embed/rembed.class')
@@ -17,7 +19,10 @@ function isNumeric(n) {
   return (isaN || isNumStr) && !isBool
 }
 
-function setValue(input, defvalue="") {
+function setValue(input, defvalue) {
+  if (!defvalue) {
+    defvalue = ""
+  }
   return input ? input : defvalue
 }
 
@@ -26,26 +31,6 @@ String.prototype.ucfirst = function() {
 }
 
 class RookCommand {
-  name;
-  description;
-  options;
-  category;
-  testOptions;
-  channelName;
-  channel;
-  access;
-  permissions;
-  botPermissions;
-  permissionsRequired;
-  profile;
-  entities;
-  players;
-  pages;
-  error;
-  errors;
-  props;
-  ephemeral;
-
   constructor(client, comprops={}, props={}) {
     this.name                 = setValue(comprops.name, "unknown")
     this.description          = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
@@ -105,10 +90,12 @@ class RookCommand {
     this.DEV = !PROD
 
     this.props = {...props}
-    if (!this.props?.full) {
-      this.props.full = true
+    if (!Object.hasOwn(this.props, "full")) {
+      this.props["full"] = true
     }
-    this.props.players = this.players
+    if (!Object.hasOwn(this.props, "players")) {
+      this.props["players"] = this.players
+    }
 
     this.error = false
     this.ephemeral = false
@@ -126,7 +113,8 @@ class RookCommand {
     try {
       channelIDs = JSON.parse(
         fs.readFileSync(
-          `./src/dbs/${guildID}/channels.json`
+          `./src/dbs/${guildID}/channels.json`,
+          { encoding: "utf8" }
         )
       )
     } catch(err) {
@@ -309,7 +297,7 @@ class RookCommand {
       return true
     }
 
-    return false
+    return !this.error
   }
 
   async ship_it(interaction, independent=false, hasDeferred=false) {
@@ -323,7 +311,7 @@ class RookCommand {
       these_pagination.setEmbeds(
         this.pages,
         (page, index, array) => {
-          let footer_text = page.toJSON()?.footer?.footer_text || ""
+          let footer_text = page.toJSON()?.footer?.text || ""
           if (footer_text && (footer_text != "")) {
             footer_text = " • " + footer_text
           }
@@ -497,7 +485,7 @@ class RookCommand {
           )
           if (this.testOptions.hasOwnProperty("assert")) {
             if (buildResult != this.testOptions.assert) {
-              this.props.error = true
+              this.props["error"] = true
             }
           }
 

@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
+const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
 const timeFormat = require('../../utils/timeFormat.js')
 
 module.exports = class UserInfoCommand extends RookCommand {
@@ -34,10 +35,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       {...props}
     )
   }
-  /**
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+
   async action(client, interaction, coptions) {
     const targetUserInput = coptions['target-id']
 
@@ -54,7 +52,7 @@ module.exports = class UserInfoCommand extends RookCommand {
         title: { text: "Error" },
         description: `<@${targetUserId}> (ID: \`${targetUserId}\`) not found in '${interaction.guild.name}'!`
       }
-      return
+      return !this.error
     }
 
     // Access the server nickname, fallback to username

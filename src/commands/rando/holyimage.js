@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
+const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 
 async function get_url(in_url) {
   try {
@@ -52,11 +53,8 @@ module.exports = class HolyImageCommand extends RookCommand {
     )
   }
 
-  /**
-   * Sends an embed message in response to a slash command interaction.
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"
     let slugID = coptions['slug-id'] ?? "verify"

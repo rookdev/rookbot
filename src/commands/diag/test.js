@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class TestCommand extends RookCommand {
@@ -14,6 +16,8 @@ module.exports = class TestCommand extends RookCommand {
       {...comprops}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
     if (! this.DEV) {

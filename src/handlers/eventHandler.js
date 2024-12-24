@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const getAllFiles = require('../utils/getAllFiles')
 const path = require('path')
 

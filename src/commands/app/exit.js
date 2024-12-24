@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const UptimeCommand = require('../../commands/app/uptime.js')
 const unready = require('../../events/unready/exit')
@@ -37,6 +39,8 @@ module.exports = class ExitCommand extends BotDevCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async execute(client, interaction, coptions={}, independent=false) {
     if (
       interaction &&
@@ -55,5 +59,6 @@ module.exports = class ExitCommand extends BotDevCommand {
 
     console.log(`!!! EXIT`)
     process.exit(1337)
+    return true
   }
 }

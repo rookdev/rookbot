@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { ApplicationCommandOptionType } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
@@ -28,6 +30,8 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let new_nickname = coptions["bot-nickname"]
     let old_nickname = ""
@@ -46,7 +50,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
       if (!guild) {
         this.error = true
         this.props.description = `Guild not found [${guildID}]`
-        retun
+        return !this.error
       }
 
       this.props.title.text = `${this.props.title.text} in ${guild.name}`
@@ -54,13 +58,13 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
       let member = await guild.members.fetch(client.user.id).catch(err => {
         this.error = true
         this.props.description = `Fetch error [${client.user.id}]: ${err}`
-        return
+        return !this.error
       })
 
       if(!member || !member.user) {
         this.error = true
         this.props.description = "Member not found or invalid data"
-        return
+        return !this.error
       }
 
       old_nickname = member.displayName
@@ -87,7 +91,6 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
         `Error when setting nickname for ${client.user}: '${new_nickname}'`,
         e.stack
       ]
-      return
     }
 
     return !this.error

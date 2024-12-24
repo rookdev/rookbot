@@ -19,4 +19,5 @@ export type CommandProps = {
   /** Command Bot Permissions */    botPermissions?: number
   /** Command Access Label */       access?: string
   /** Command Test Options */       testOptions?: Array<CommandTestOption>
+  /** Test Independent? */          testIndependent?: boolean
 }

@@ -1,6 +1,6 @@
-const { ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 const path = require('path')
 
 module.exports = class MothCommand extends RookCommand {
@@ -21,18 +21,16 @@ module.exports = class MothCommand extends RookCommand {
       {...props}
     )
   }
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     // Path to the local video file
     const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'mothula.mp4')
 
     try {
       // Send the video to the channel the command was sent in
-      await interaction.editReply({
+      await interaction?.editReply({
         files: [videoPath]
       })
       this.null = true

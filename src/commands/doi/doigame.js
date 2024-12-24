@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const { serverGameName_base64encoded } = require('../../../config.json')
 
@@ -21,6 +23,8 @@ module.exports = class DOIGameCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     // Decode the base64 string

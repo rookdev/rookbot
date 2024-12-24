@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const timeConversion = require('../../utils/timeConversion.js')
 
@@ -21,6 +23,9 @@ module.exports = class UptimeCommand extends RookCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
     const uptime = await client.uptime
     this.props.description = [

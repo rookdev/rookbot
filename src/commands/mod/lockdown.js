@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction, PermissionFlagsBits } = require('discord.js');
+// @ts-nocheck
+
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 module.exports = class LockdownCommand extends ModCommand {
@@ -41,11 +42,7 @@ module.exports = class LockdownCommand extends ModCommand {
       {...props}
     )
   }
-  /**
-   *
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+
   async action(client, interaction, coptions) {
     const guildID = interaction.guild.id;
     const guildChannels = require(`../../dbs/${guildID}/channels.json`);
@@ -60,14 +57,14 @@ module.exports = class LockdownCommand extends ModCommand {
       this.error = true
       this.props.description = "Command not confirmed. Please confirm to proceed."
       this.ephemeral = true
-      return
+      return !this.error
     }
 
     if (!["lock", "unlock"].includes(action)) {
       this.error = true
       this.props.description = "Invalid action. Please use `lock` or `unlock`."
       this.ephemeral = true
-      return
+      return !this.error
     }
 
     let followUp = (this.DEV ? "DEV: " : "") + `Starting to ${action} all channels. This may take a moment...`
@@ -129,5 +126,7 @@ module.exports = class LockdownCommand extends ModCommand {
 
     this.props.description = (this.DEV ? "DEV: " : "") + `All channels have been **${action}ed** successfully! (${processedCount}/${channels.size} processed)`
     this.ephemeral = true
+
+    return true
   }
 }

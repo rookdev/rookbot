@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const path = require('path');
 
@@ -23,6 +25,8 @@ module.exports = class FugetaboutitCommand extends RookCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async execute(client, interaction, coptions={}, independent=false) {
     const videoPath = path.join(
       __dirname,
@@ -42,7 +46,8 @@ module.exports = class FugetaboutitCommand extends RookCommand {
     } catch (error) {
       this.error = true
       this.props.description = "Error uploading video"
-      return
     }
+
+    return !this.error
   }
 }

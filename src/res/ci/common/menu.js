@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import fs from "fs"
 import chalk from "chalk"
 const scripts = JSON.parse(fs.readFileSync("./scripts.json","utf8"))

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { program } = require('commander')
 const AsciiTable = require('ascii-table')
 const PACKAGE = require('./package.json')

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const areCommandsDifferent = require('../../utils/areCommandsDifferent')
 const getLocalCommands = require('../../utils/getLocalCommands')
 const fs = require('fs/promises')

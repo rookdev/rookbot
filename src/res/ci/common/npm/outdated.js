@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import shell from 'shelljs'
 
 console.log("NPM Outdated")
@@ -16,19 +18,19 @@ let debug = {
   }
 }
 
-let tmp = await shell.exec(
+let tmp_exec = await shell.exec(
   "npm list -g --depth=0",
   { silent: true }
 )
-tmp = tmp.stdout.trim()
+let tmp = tmp_exec.stdout.trim()
 debug.NPMCheckUpdates.exists.global = tmp.includes("npm-check-updates")
 // console.log(`NPM Check Updates ${debug.NPMCheckUpdates.exists.global ? "" :"not "}installed at Global level.`)
 
-tmp = await shell.exec(
+tmp_exec = await shell.exec(
   "npm list --depth=0",
   { silent: true }
 )
-tmp = tmp.stdout.trim()
+tmp = tmp_exec.stdout.trim()
 debug.NPMCheckUpdates.exists.user = tmp.includes("npm-check-updates")
 // console.log(`NPM Check Updates ${debug.NPMCheckUpdates.exists.user ? "" :"not "}installed at User level.`)
 
@@ -39,18 +41,18 @@ debug.NPMCheckUpdates.exists.user = tmp.includes("npm-check-updates")
 if (!(debug.NPMCheckUpdates.exists.global)) {
   if (!(debug.NPMCheckUpdates.exists.user)) {
     console.log("NPM Check Updates not installed at User level.")
-    tmp = await shell.exec(
+    tmp_exec = await shell.exec(
       "npm i -g npm-check-updates",
       { silent: true }
     )
-    debug.NPMCheckUpdates.installed.global = tmp.stderr.includes("npm ERR")
+    debug.NPMCheckUpdates.installed.global = tmp_exec.stderr.includes("npm ERR")
     if (!(debug.NPMCheckUpdates.exists.global)) {
       console.log("NPM Check Updates Global Install failed.")
-      tmp = await shell.exec(
+      tmp_exec = await shell.exec(
         "npm i npm-check-updates",
         { silent: true }
       )
-      debug.NPMCheckUpdates.installed.user = tmp.stderr.includes("npm ERR")
+      debug.NPMCheckUpdates.installed.user = tmp_exec.stderr.includes("npm ERR")
       if (!(debug.NPMCheckUpdates.installed.user)) {
         console.log("NPM Check Updates User Install failed.")
       }
@@ -70,29 +72,29 @@ if (
   // Use ./node_modules/.bin/* if linux
   // Use ./* if not linux
   shell.exec("which npm-check-updates")
-  let outdated = await shell.exec("npm-check-updates", { silent: true })
+  let outdated_exec = await shell.exec("npm-check-updates", { silent: true })
   if (
-    (outdated.stdout.trim() == "" && outdated.stderr.trim() == "") ||
-    (outdated.stdout.trim().includes(":)"))
+    (outdated_exec.stdout.trim() == "" && outdated_exec.stderr.trim() == "") ||
+    (outdated_exec.stdout.trim().includes(":)"))
   ) {
     exitCode = 0
   } else {
-    console.log(outdated.stdout.trim())
-    console.log(outdated.stderr.trim())
+    console.log(outdated_exec.stdout.trim())
+    console.log(outdated_exec.stderr.trim())
     exitCode = 1
   }
 }
 
 if (exitCode == 0) {
-  let outdated = await shell.exec("npm outdated", { silent: true })
+  let outdated_exec = await shell.exec("npm outdated", { silent: true })
   if (
-    (outdated.stdout.trim() == "" && outdated.stderr.trim() == "") ||
-    (outdated.stdout.trim().includes(":)"))
+    (outdated_exec.stdout.trim() == "" && outdated_exec.stderr.trim() == "") ||
+    (outdated_exec.stdout.trim().includes(":)"))
   ) {
     exitCode = 0
   } else {
-    console.log(outdated.stdout.trim())
-    console.log(outdated.stderr.trim())
+    console.log(outdated_exec.stdout.trim())
+    console.log(outdated_exec.stderr.trim())
     exitCode = 1
   }
 }

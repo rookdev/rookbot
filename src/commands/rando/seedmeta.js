@@ -1,6 +1,7 @@
-const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js')
+// @ts-nocheck
+
+const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 const timeFormat = require('../../utils/timeFormat')
 const { decode } = require('slugid')
 const strtotime = require('locutus/php/datetime/strtotime')
@@ -58,11 +59,8 @@ module.exports = class SeedMetaCommand extends RookCommand {
     )
   }
 
-  /**
-   * Sends an embed message in response to a slash command interaction.
-   * @param {RookClient} client
-   * @param {ChatInputCommandInteraction | null} interaction Interaction that called this command
-   */
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"
     let hashID = coptions['hash-id'] ?? ""
@@ -73,14 +71,14 @@ module.exports = class SeedMetaCommand extends RookCommand {
     if (hashID == "") {
       this.error = true
       this.props.description = `No hashID sent!`
-      return
+      return false
     }
 
     // Z3R
     if (gameID == "z3r") {
       hash_meta = await get_url(`http://alttp.mymm1.com/seeds/meta.php?hash=${hashID}`)
       this.props.image = { image: `http://alttp.mymm1.com/code/${hashID}.png` }
-      this.props.title = { text: "Z3R", image: this.props.image.image }
+      this.props.title = { text: "Z3R" }
       this.props.players.target = {
         name: this.props.title.text,
         avatar: this.props.image.image
@@ -90,7 +88,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         this.error = true
         this.props.description = `Hash data for '${hashID}' not found!`
         this.props.fields = []
-        return
+        return false
       }
 
       this.props.fields = [
@@ -185,7 +183,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
     if (gameID == "m3maprando") {
       let settings = await get_url(`http://maprando.com/seed/${hashID}/data/settings.json`)
       this.props.image = { image: `https://maprando.com/static/map_station_transparent.png` }
-      this.props.title = { text: "M3 Map Rando", image: this.props.image.image }
+      this.props.title = { text: "M3 Map Rando" }
       this.props.players.target = {
         name: this.props.title.text,
         avatar: this.props.image.image
@@ -195,7 +193,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         this.error = true
         this.props.description = `Settings data for '${hashID}' not found!`
         this.props.fields = []
-        return
+        return false
       }
 
       this.props.fields = [
@@ -309,7 +307,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
     // Z3M3
     if (gameID == "z3m3") {
       this.props.image = { image: `http://alttp.mymm1.com/holyimage/images/alttpo/smz3.png` }
-      this.props.title = { text: "SMZ3", image: this.props.image.image }
+      this.props.title = { text: "SMZ3" }
       this.props.players.target = {
         name: this.props.title.text,
         avatar: this.props.image.image
@@ -322,7 +320,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         this.error = true
         this.props.description = `Hash data for '${hashID}/${decoded}' not found!`
         this.props.fields = []
-        return
+        return false
       }
 
       let settings = hash_meta.worlds[0].settings

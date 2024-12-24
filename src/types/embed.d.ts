@@ -15,7 +15,7 @@ export type EmbedTitle = {
 export type EmbedField = {
   /** Field Name */   name: string
   /** Field Value */  value: string
-  /** Inline? */      inline: boolean
+  /** Inline? */      inline?: boolean
 }
 export type EmbedImage = {
   /** Image URL */  image: string
@@ -31,17 +31,19 @@ export type EmbedPlayer = {
 }
 // Members of RookEmbed
 export type EmbedProps = {
-  /** Embed Stripe Color */ color?: string
+  /** Embed Stripe Color */ color?: ColorResolvable | string
   /** Embed Author */       author?: EmbedAuthor
   /** Embed Thumbnail */    thumbnail?: EmbedThumbnail
+  /** Embed Caption */      caption?: EmbedTitle
   /** Embed Title */        title?: EmbedTitle
-  /** Embed Description */  description?: string
-  /** Embed Fields */       fields?: Array<EmbedField>
+  /** Embed Description */  description?: string | Array<string>
+  /** Embed Fields */       fields?: Array<Array<EmbedField>>
   /** Embed Image */        image?: EmbedImage
   /** Embed Footer */       footer?: EmbedFooter
-  /** Embed Timestamp */    timestamp?: number
+  /** Embed Timestamp */    timestamp?: number | boolean
   /** Embed Players */      players?: any
   /** Embed Flags */        flags?: number
+  /** Null? */              null?: boolean
   /** Ephemeral? */         ephemeral?: boolean
   /** Full? */              full?: boolean
 }

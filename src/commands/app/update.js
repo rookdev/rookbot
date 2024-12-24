@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')
 
@@ -19,6 +21,8 @@ module.exports = class UpdateCommand extends BotDevCommand {
       {...props}
     )
   }
+
+  // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
     let node_update = null

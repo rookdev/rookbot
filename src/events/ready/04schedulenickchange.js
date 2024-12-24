@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const scheduleNicknameChange = require('../../utils/scheduleNicknameChange');
 
 module.exports = async (client) => {
@@ -32,7 +34,7 @@ module.exports = async (client) => {
         }
 
         // If we got here, schedule the nickname change
-        await scheduleNicknameChange(client, member, guild.id)
+        await scheduleNicknameChange(client, member)
       } catch (error) {
         const member = null
       }

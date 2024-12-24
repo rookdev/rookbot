@@ -53,7 +53,7 @@ class BotDevCommand extends AdminCommand {
       if (!APPROVED_ROLES) {
         this.error = true
         this.props.description = "Failed to get Approved Roles."
-        return
+        return !this.error
       }
 
       // Bail if member doesn't have Approved Roles
@@ -63,7 +63,7 @@ class BotDevCommand extends AdminCommand {
         this.props.fields = []
         this.props.footer = {}
         this.props.image = ""
-        return
+        return !this.error
       }
     }
 
