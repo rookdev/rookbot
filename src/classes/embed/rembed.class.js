@@ -207,8 +207,14 @@ class RookEmbed extends EmbedBuilder {
       }
     }
     let versionText = `[v${client.profile.PACKAGE.version}]`
-    if (this.props.footer.text.indexOf(versionText) == -1) {
-      this.props.footer.text += " " + versionText
+    if (this.props.footer?.text) {
+      if (this.props.footer.text.indexOf(versionText) == -1) {
+        this.props.footer.text += " " + versionText
+      }
+    } else {
+      this.props.footer = {
+        text: versionText
+      }
     }
 
     // Set description
