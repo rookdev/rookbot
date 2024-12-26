@@ -320,8 +320,10 @@ class RookCommand {
             id:     interaction.user.id,
             name:   interaction.user.displayName,
             url:    "http://example.com/caller",
-            avatar: interaction.user.displayAvatarURL({ size: 128 }),
             tag:    interaction.user.tag
+          }
+          if (!interaction.user.bot) {
+            page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: 128 })
           }
           if (callerMember) {
             page.entities.callerMember = {
