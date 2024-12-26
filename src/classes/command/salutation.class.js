@@ -7,6 +7,7 @@ const colors = require('../../dbs/colors.json')
 const shell = require('shelljs')
 const path = require('path')
 const fs = require('fs')
+const timeConversion = require('../../utils/timeConversion.js')
 
 /**
  * @class
@@ -264,6 +265,13 @@ class SalutationCommand extends RookCommand {
     // If we're exiting
     if (mode == "exit") {
       this.props["fields"].push(
+        [
+          // Elapsed Time
+          {
+            name: "Elasped",
+            value: timeConversion(offlineDateTime.getTime() - launchedDateTime.getTime())
+          }
+        ],
         [
           // Current Time
           {
