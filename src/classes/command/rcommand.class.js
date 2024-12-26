@@ -332,8 +332,10 @@ class RookCommand {
               id:     callerMember.id,
               name:   callerMember.displayName,
               url:    "http://example.com/callerMember",
-              avatar: callerMember.displayAvatarURL({ size: 128 }),
               tag:    callerMember.user.tag
+            }
+            if (typeof callerMember?.displayAvatarURL === "function") {
+              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: 128 })
             }
           }
           if ((!page.entities?.guild) && (interaction?.guild)) {

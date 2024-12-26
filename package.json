@@ -15,7 +15,7 @@
     "nikose-dev": "node ./crun.js --cu nikose -p nikose",
     "navy-dev": "node ./crun.js -s doinavy",
     "rook-dev": "node ./crun.js -s rookdev",
-    "gitrook-dev": "node ./crun.js -l",
+    "gitrook-dev": "node ./crun.js -p gitrook -l",
     "castle-prod": "node ./crun.js --cu castle -e prod",
     "minnie-prod": "node ./crun.js --cu minnie -e prod",
     "nikose-prod": "node ./crun.js --cu nikose -e prod",
