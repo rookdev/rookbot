@@ -60,7 +60,9 @@ const client = new RookClient(
       try {
         let commandNames = [ "exit" ]
         for(let commandName of commandNames) {
-          const commandObject = localCommands.get(commandName)
+          const commandObject = localCommands.find(
+            c => c.name === commandName
+          )
           if (commandObject) {
             await commandObject.execute(
               client,
