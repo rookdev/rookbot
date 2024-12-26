@@ -322,9 +322,10 @@ class RookCommand {
             url:    "http://example.com/caller",
             tag:    interaction.user.tag
           }
-          if (!interaction.user.bot) {
+          if (typeof interaction.user?.displayAvatarURL === "function") {
             page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: 128 })
           }
+
           if (callerMember) {
             page.entities.callerMember = {
               type:   "callerMember",
