@@ -24,6 +24,11 @@ module.exports = class HelloCommand extends SalutationCommand {
   }
 
   async execute(client, interaction, coptions={}, independent=false) {
+    this.props.playerTypes = {
+      user: "bot",
+      target: "guild"
+    }
+
     return await super.execute(
       client,
       interaction,

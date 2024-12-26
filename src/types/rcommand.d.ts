@@ -142,13 +142,15 @@ declare class RookCommand {
   /**
    * Print the thing!
    *
-   * @param client  - Client Object
-   * @param pages   - Pages to print
+   * @param client      - Client Object
+   * @param interaction - Interaction that called the Command
+   * @param pages       - Pages to print
    *
    * @returns Promise<boolean | undefined>
    */
   print_it(
     client: RookClient,
+    interaction: ChatInputCommandInteraction,
     pages: Array<RookEmbed>
   )
   : Promise<boolean | undefined>

@@ -13,7 +13,11 @@ module.exports = class GuildStatusCommand extends RookCommand {
         test: "basic"
       }
     }
-    let props = {}
+    let props = {
+      title: {
+        text: "Guild Status"
+      }
+    }
     super(
       client,
       {...comprops},
@@ -24,15 +28,9 @@ module.exports = class GuildStatusCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    // Entities
-    let entities = {
-      user: { name: interaction.user.displayName, avatar: interaction.user.avatarURL(), username: interaction.user.username },
-      guild: { name: interaction.guild.name, avatar: interaction.guild.iconURL() }
-    }
-    // Players
-    this.props.players = {
-      user: entities.user,
-      target: entities.guild
+    this.props.playerTypes = {
+      user: "bot",
+      target: "guild"
     }
 
     let serverBoostEmoji = await interaction.guild.emojis.cache.find(
@@ -41,9 +39,9 @@ module.exports = class GuildStatusCommand extends RookCommand {
     if (!(serverBoostEmoji)) {
       serverBoostEmoji = "[*]"
     }
-    this.props.description = `***Guild Status for: ${interaction.guild.name}***`
+    this.props.title.text = `Guild Status for ${interaction.guild.name}`
     if (interaction.guild.features.length > 0) {
-      this.props.description += "\n\n"
+      this.props.description = ""
       this.props.description += "**Features**" + "\n" + '`'
       this.props.description += interaction.guild.features.join("`, `")
       this.props.description += '`'
@@ -75,7 +73,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
       )
     }
 
-    let created = interaction.guild.createdTimestamp
+    let createdDateTime = new Date(interaction.guild.createdTimestamp)
     this.props.fields.push(
       [
         {
@@ -102,7 +100,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
       [
         {
           name: "Created",
-          value: timeFormat(created)
+          value: timeFormat(createdDateTime.getTime())
         }
       ]
     )

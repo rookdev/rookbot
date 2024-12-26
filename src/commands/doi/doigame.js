@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-const { RookCommand } = require('../../classes/command/rcommand.class')
 const { serverGameName_base64encoded } = require('../../../config.json')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class DOIGameCommand extends RookCommand {
   constructor(client) {
@@ -39,6 +39,20 @@ module.exports = class DOIGameCommand extends RookCommand {
         title: {
           text: `Download ${serverGameName}`,
           url: guildMeta["downloads"]
+        },
+        playerTypes: {
+          user: "bot",
+          target: "target"
+        },
+        entities: {
+          target: {
+            type:   "game",
+            id:     0,
+            name:   serverGameName,
+            url:    "http://example.com/game",
+            avatar: "https://cdn.discordapp.com/icons/1282788953052676177/09ed26e7671ce6ad89227665c4bdfa11.webp?size=128",
+            tag:    "game"
+          }
         },
         description: `You can download ${serverGameName} below!`,
         fields: [

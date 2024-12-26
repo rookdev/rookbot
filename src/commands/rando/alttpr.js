@@ -44,7 +44,7 @@ module.exports = class ALttPRSeedCommand extends SeedAnnounceCommand {
   async execute(client, interaction, coptions={}, independent=false) {
     coptions = interaction.options
     let options = {
-      randomizer: "alttpr",
+      randomizer: "z3r",
       "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,
       "seed-url": coptions["seed-url"] ?? "",
       "prep-time": coptions["prep-time"] ?? 0

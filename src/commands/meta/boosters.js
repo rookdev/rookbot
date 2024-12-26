@@ -30,6 +30,11 @@ module.exports = class BoostersCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    this.props.playerTypes = {
+      user: "bot",
+      target: "guild"
+    }
+
     try {
       // Get the number of boosts in the server
       const boosts = interaction?.guild?.premiumSubscriptionCount
@@ -38,6 +43,7 @@ module.exports = class BoostersCommand extends RookCommand {
       const boostLevel = interaction?.guild?.premiumTier
 
       // Prepare a message to show the boost information
+      this.props.title.text = `Server Boost info for ${interaction?.guild?.name}`
       this.props.fields = [
         [
           {

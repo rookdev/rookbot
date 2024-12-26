@@ -50,9 +50,7 @@ const client = new RookClient(
   // Register Events
   console.log("---")
   await eventHandler(client)
-  client.guild = await client.guilds.cache.find(
-    g => g.id === client.guildID
-  )
+  client.guild = await client.guilds.fetch(client.guildID)
 
   if (process.env.GITHUB_WORKFLOW) {
     console.log(process.env.GITHUB_WORKFLOW)
@@ -62,9 +60,7 @@ const client = new RookClient(
       try {
         let commandNames = [ "exit" ]
         for(let commandName of commandNames) {
-          const commandObject = localCommands.find(
-            cmd => cmd.name === commandName
-          )
+          const commandObject = localCommands.get(commandName)
           if (commandObject) {
             await commandObject.execute(
               client,
@@ -80,9 +76,7 @@ const client = new RookClient(
                   let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
                   let channelID = channelIDs["bot-salutations"]
                   if (client.guild) {
-                    let channel = await client.guild.channels.cache.find(
-                      c => c.id === channelID
-                    )
+                    let channel = await client.guild.channels.fetch(channelID)
                     if (channel) {
                       // @ts-ignore
                       await channel?.send(props)

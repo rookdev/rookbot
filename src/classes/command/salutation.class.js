@@ -35,6 +35,7 @@ class SalutationCommand extends RookCommand {
 
     let mode_msg = ""
     let mode_tag = ""
+
     if (this.DEV) {
       this.props.color = colors["warning"]
       mode_msg = "DEV MODE"
@@ -170,8 +171,8 @@ class SalutationCommand extends RookCommand {
           "🟥"
         )
 
-    let offlineAt   = new Date().getTime()
-    let launchedAt  = client.readyTimestamp
+    let offlineDateTime   = new Date()
+    let launchedDateTime  = new Date(client.readyTimestamp)
 
     let server = {
       name: this?.channel?.guild.name ||
@@ -181,7 +182,11 @@ class SalutationCommand extends RookCommand {
       id: this?.channel?.guild.id ||
         interaction?.guild?.id ||
         client.guild.id ||
-        process.env?.GUILD_ID
+        process.env?.GUILD_ID,
+      avatar: this?.channel?.guild.iconURL({ size: 128 }) ||
+        interaction?.guild?.iconURL({ size: 128 }) ||
+        client.guild.iconURL({ size: 128 }) ||
+        ""
     }
     if (server?.id) {
       server.name = client?.guilds.cache.find(
@@ -251,7 +256,7 @@ class SalutationCommand extends RookCommand {
         // Launch Time
         {
           name: "Launched",
-          value: timeFormat(launchedAt)
+          value: timeFormat(launchedDateTime.getTime(), true)
         }
       ]
     ]
@@ -263,7 +268,7 @@ class SalutationCommand extends RookCommand {
           // Current Time
           {
             name: "Exited",
-            value: timeFormat(offlineAt)
+            value: timeFormat(offlineDateTime.getTime(), true)
           }
         ]
       )
@@ -351,50 +356,43 @@ class SalutationCommand extends RookCommand {
           if (!channel) { this.error = true; continue; }
 
           // If we found the channel
-          //  update the server info in the embed ot reflect this one
+          //  update the server info in the embed to reflect this one
           server = {
-            name: this?.channel?.guild.name ||
-              interaction?.guild?.name ||
-              client.guild.name ||
-              "?",
-            id: this?.channel?.guild.id ||
-              interaction?.guild?.id ||
-              client.guild.id ||
-              process.env?.GUILD_ID
-          }
-          if (server?.id) {
-            server.name = client?.guilds.cache.find(
-              g => g.id === server.id
-            )?.name || "?"
+            type:   "guild",
+            id:     guild.id,
+            name:   guild?.name || "?",
+            url:    "http://example.com/guild",
+            avatar: guild.iconURL({ size: 128 })
           }
 
           this.props.fields[1][0].value = server?.name || "?"
           this.props.fields[1][1].value = `\`${server.id}\``
 
-          // Make an embed
-          let embed = await new RookEmbed(client, this.props)
-          if (!embed) { this.error = true; return; }
+          this.props.entities.guild = server
 
-          this.null = true
-          await channel.send(
-            {
-              embeds: [ embed ]
+          let printResult = await this.print_it(client, interaction, [ this.props ])
+
+          if (printResult) {
+            let this_package = { embeds: this.pages }
+
+            await channel.send(this_package)
+            this.null = true
+
+            if (
+              interaction &&
+              interaction?.guild &&
+              interaction?.guild?.id &&
+              channel?.guild &&
+              channel?.guild?.id &&
+              interaction.guild.id === channel.guild.id &&
+              typeof interaction.editReply === "function"
+            ) {
+              await interaction.editReply(
+                {
+                  content: `See ${channel}!`
+                }
+              )
             }
-          )
-          if (
-            interaction &&
-            interaction?.guild &&
-            interaction?.guild?.id &&
-            channel?.guild &&
-            channel?.guild?.id &&
-            interaction.guild.id === channel.guild.id &&
-            typeof interaction.editReply === "function"
-          ) {
-            await interaction.editReply(
-              {
-                content: `See ${channel}!`
-              }
-            )
           }
         }
       }

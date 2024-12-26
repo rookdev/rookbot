@@ -1,10 +1,11 @@
 // @ts-nocheck
 
-const { PermissionFlagsBits, ApplicationCommandOptionType, time, TimestampStyles } = require('discord.js')
+const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
+const timeFormat = require('../../utils/timeFormat')
+const strtotime = require('locutus/php/datetime/strtotime')
 const path = require('path')
 const fs = require('fs')
-const timeFormat = require('../../utils/timeFormat')
 
 module.exports = class SearchCommand extends ModCommand {
   constructor(client) {
@@ -106,7 +107,7 @@ module.exports = class SearchCommand extends ModCommand {
       return !props.mod.error
     }
     // Get the guild member (to fetch nickname if present)
-    const guildMember = interaction.guild.members.cache.get(targetUserId);
+    const guildMember = await interaction.guild.members.fetch(targetUserId);
     const user = guildMember?.user || targetUser
 
     let logFileName = "" +
@@ -122,6 +123,12 @@ module.exports = class SearchCommand extends ModCommand {
       "botlogs",
       logFileName
     )
+
+    if (!fs.existsSync(logFilePath)) {
+      this.error = true
+      this.props.description = `Logs for '${region}${searchType.ucfirst()}' not found!`
+      return
+    }
 
     let logFile = fs.readFileSync(logFilePath, "utf8")
     let logLines = logFile.split("\n")
@@ -168,15 +175,42 @@ module.exports = class SearchCommand extends ModCommand {
       // let this_props: import('../../types/embed').EmbedProps = {
       let this_props = {
         title: { text: `Searching ${searchType}s` },
-        description: `**User**\n${user}`,
+        description: `**Target**\n${user}`,
         fields: []
       }
+      let this_ids = {}
       for(let logLine of foundLog) {
         logLine = logLine.trim()
         if(logLine.indexOf(": ") > -1) {
           let field_name = logLine.substring(0, logLine.indexOf(": "))
           let field_value = logLine.substring(logLine.indexOf(": ") + ": ".length)
           field_value = field_value.replace(/([\d]{5,})/, "`$1`")
+          if (logLine.indexOf("ID: ") > -1) {
+            let matches = logLine.match(/(?:[\D]+)([\d]+)/)
+            if (matches) {
+              this_ids[field_name] = matches[1].trim()
+            }
+          }
+          for (let userType of [
+            "Actor",
+            "Author",
+            "User"
+          ]) {
+            if(field_name.indexOf(userType) > -1) {
+              field_value = `<@${this_ids[userType]}> (ID: \`${this_ids[userType]}\`)`
+            }
+          }
+          if (field_name.indexOf("Channel") > -1) {
+            field_value = `<#${this_ids['Channel']}>` + " " +
+              `(ID: \`${this_ids['Channel']}\`)`
+          } else if (field_name.indexOf("Message") > -1) {
+            field_name = "Message"
+            field_value = "https://discord.com/channels"
+            field_value = `${field_value}/${this_ids['Guild']}`
+            field_value = `${field_value}/${this_ids['Channel']}`
+            field_value = `${field_value}/${this_ids['Message ID']}`
+            field_value = `${field_value} (ID: \`${this_ids['Message ID']}\`)`
+          }
           this_props.fields?.push(
             [
               {
@@ -186,13 +220,18 @@ module.exports = class SearchCommand extends ModCommand {
             ]
           )
         } else if(logLine.indexOf("Z]") > -1) {
-          let timestamp = Date.parse(logLine.replace("[","").replace("]",""))
-          let timestr = timeFormat(timestamp)
+          let timestampDateTime = new Date(
+            strtotime(
+              logLine
+                .replace("[","")
+                .replace("]","")
+            )
+          )
           this_props.fields?.push(
             [
               {
                 name: "Time",
-                value: timestr
+                value: timeFormat(timestampDateTime.getTime())
               }
             ]
           )

@@ -3,6 +3,7 @@
 const { AuditLogEvent, Message } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const timeFormat = require('../../utils/timeFormat')
 const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
@@ -32,10 +33,10 @@ module.exports = async (client, deletedMessage) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = client.channels.cache.get(guildChannels[log_type])
+    const logChannel = await client.channels.fetch(guildChannels[log_type])
 
-    if (!logChannel || !logChannel.isTextBased()) {
-      console.warn('Log channel not found or is not text-based.')
+    if (!logChannel) {
+      console.warn('Log channel not found.')
       return
     }
 
@@ -65,11 +66,48 @@ module.exports = async (client, deletedMessage) => {
     }
 
     // If entry exists, grab the user that deleted the message and display username + tag, if none, display 'Unknown'.
-    const deleter = await auditEntry?.executor || null
+    let deleter = auditEntry?.executor || null
+    if (deleter) {
+      let deleterMember = await deletedMessage.guild.members.fetch(deleter.id)
+      if (deleterMember) {
+        deleter = deleterMember
+      }
+    }
+    let deletedAuthor = deletedMessage.author
+    let deletedMember = await deletedMessage.guild.members.fetch(deletedAuthor.id)
+    if (deletedMember) {
+      deletedAuthor = deletedMember
+    }
 
     let fields = []
+    let players = {
+      target: {
+        name: deletedAuthor.displayName,
+        avatar: deletedAuthor.displayAvatarURL({ size: 128 })
+      }
+    }
+
+    let auditDateTime = new Date()
+    if (auditEntry?.createdTimestamp) {
+      auditDateTime = new Date(auditEntry.createdTimestamp)
+    }
+    if (auditDateTime) {
+      fields.push(
+        [
+          // Deleted DateTime
+          {
+            name: 'Deleted At',
+            value: auditDateTime
+              ? timeFormat(auditDateTime.getTime())
+              : 'Unknown'
+          }
+        ]
+      )
+    }
+
     fields.push(
       [
+        // Who wrote this?
         {
           name: 'Author',
           value: `<@${deletedMessage.author.id}>` + " " +
@@ -78,7 +116,12 @@ module.exports = async (client, deletedMessage) => {
       ]
     )
     if (deleter && deleter?.id) {
+      players.user = {
+        name: deleter.displayName,
+        avatar: deleter.displayAvatarURL({ size: 128 })
+      }
       fields.push(
+        // Deleted by someone we can capture
         [
           {
             name: 'Deleter',
@@ -88,7 +131,16 @@ module.exports = async (client, deletedMessage) => {
         ]
       )
     } else {
+      let clientMember = await deletedMessage.guild.members.fetch(client.user.id)
+      if (clientMember) {
+        players.user = {
+          name: clientMember.displayName,
+          avatar: clientMember.displayAvatarURL({ size: 128 })
+        }
+      }
       fields.push(
+        // Deleted by someone we can't capture
+        // Usually either self or a bot
         [
           {
             name: 'Deleter',
@@ -99,18 +151,33 @@ module.exports = async (client, deletedMessage) => {
     }
     fields.push(
       [
+        // Guild Info
         {
-          name: 'Message',
-          value: `${deletedMessage.url} (ID: \`${deletedMessage.id}\`)`
-        }
-      ],
-      [
+          name: 'Guild',
+          value: [
+            deletedMessage.guild.name,
+            `(ID: \`${deletedMessage.guild.id}\`)`
+          ]
+        },
+        // Channel Link
         {
           name: 'Channel',
-          value: `<#${deletedMessage.channel.id}>`
+          value: [
+            `<#${deletedMessage.channel.id}>`,
+            `(ID: \`${deletedMessage.channel.id}\`)`
+          ]
         }
       ],
       [
+        // Message Link
+        {
+          name: 'Message',
+          value: deletedMessage.url +
+            `(ID: \`${deletedMessage.id}\`)`
+        }
+      ],
+      [
+        // Message Content
         {
           name: 'Content',
           value: deletedMessage.content.slice(0,1024) || '*No content*'
@@ -125,16 +192,7 @@ module.exports = async (client, deletedMessage) => {
         text: '[Log] Message Deleted',
         emoji: "🚮"
       },
-      players: {
-        user: {
-          name: deletedMessage.author.displayName,
-          avatar: deletedMessage.author.displayAvatarURL( { size: 128 } )
-        },
-        target: {
-          name: deletedMessage.author.displayName,
-          avatar: deletedMessage.author.displayAvatarURL( { size: 128 } )
-        }
-      },
+      players: players,
       fields: fields
     })
 
@@ -169,8 +227,9 @@ module.exports = async (client, deletedMessage) => {
       `Guild:      ${deletedMessage.guild?.name} (ID: ${deletedMessage.guild?.id})`,
       // @ts-ignore
       `Channel:    #${deletedMessage.channel.name} (ID: ${deletedMessage.channel.id})`,
-      `Content:    ${deletedMessage.content}`,
       `Message ID: ${deletedMessage.id}`,
+      `Event:      Message Deleted`,
+      `Content:    ${deletedMessage.content}`,
       '--------------------------------'
     )
     // Append the log entry to the file

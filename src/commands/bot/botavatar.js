@@ -33,6 +33,11 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    this.props.playerTypes = {
+      user: "caller",
+      target: "bot"
+    }
+
     let new_avatar = coptions["avatar-url"]
     let old_avatar = client.user.displayAvatarURL()
 
@@ -44,11 +49,12 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
       if (["default","reset"].includes(new_avatar)) {
         new_avatar = "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true"
       }
-
       client.user.setAvatar(new_avatar)
-      this.players.target = {
-        avatar: old_avatar
+
+      if (!this.props.entities?.bot) {
+        this.props.entities.bot = {}
       }
+      this.props.entities.bot.avatar = old_avatar
       this.props.image = { image: new_avatar }
     } catch(e) {
       this.error = true

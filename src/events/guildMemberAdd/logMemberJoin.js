@@ -26,12 +26,14 @@ module.exports = async (client, newMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = client.channels.cache.get(guildChannels[log_type])
+    const logChannel = await client.channels.fetch(guildChannels[log_type])
 
-    if (!logChannel || !logChannel.isTextBased()) {
+    if (!logChannel) {
       console.warn('Log channel not found or is not text-based.')
       return
     }
+
+    let joinedDateTime = new Date(fetchedMember.joinedTimestamp)
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -42,8 +44,8 @@ module.exports = async (client, newMember) => {
       },
       players: {
         user: {
-          name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { size: 128 } )
+          name: fetchedMember.guild.name,
+          avatar: fetchedMember.guild.iconURL( { size: 128 } )
         },
         target: {
           name: newMember.user.displayName,
@@ -52,6 +54,17 @@ module.exports = async (client, newMember) => {
       },
       fields: [
         [
+          // Joined DateTime
+          {
+            name: 'Joined At',
+            value: joinedDateTime
+              ? timeFormat(joinedDateTime.getTime())
+              : 'Unknown' // Handle cases where joinedAt is null
+          }
+        ],
+        [
+          // Who Joined?
+          // Hyperlink in case the Mention doesn't load
           {
             name: 'Member Joined',
             value: `[${fetchedMember.user.tag}]` +
@@ -60,28 +73,24 @@ module.exports = async (client, newMember) => {
           }
         ],
         [
+          // Who Joined?
           {
             name: "Member Link",
             value: `<@${fetchedMember.user.id}>`
           }
         ],
         [
-          {
-            name: 'Joined At',
-            value: fetchedMember.joinedTimestamp
-              ? timeFormat(new Date(fetchedMember.joinedTimestamp))
-              : 'Unknown' // Handle cases where joinedAt is null
-          }
-        ],
-        [
+          // Joined what Guild?
           {
             name: 'Guild',
-            value: fetchedMember.guild.name + " " +
+            value: [
+              fetchedMember.guild.name,
               `(ID: \`${fetchedMember.guild.id}\`)`
+            ]
           }
         ]
       ]
-    });
+    })
 
     // Send the log embed to the log channel
     // @ts-ignore
@@ -101,7 +110,6 @@ module.exports = async (client, newMember) => {
       `User:    ${fetchedMember.user.tag} (ID: ${fetchedMember.user.id})`,
       `Guild:   ${fetchedMember.guild.name} (ID: ${fetchedMember.guild.id})`,
       `Event:   Member Joined`,
-      `User ID: ${fetchedMember.user.id}`,
       '--------------------------------'
     ].join('\n') + '\n\n'
 

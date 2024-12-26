@@ -79,9 +79,15 @@ module.exports = class SeedMetaCommand extends RookCommand {
       hash_meta = await get_url(`http://alttp.mymm1.com/seeds/meta.php?hash=${hashID}`)
       this.props.image = { image: `http://alttp.mymm1.com/code/${hashID}.png` }
       this.props.title = { text: "Z3R" }
-      this.props.players.target = {
-        name: this.props.title.text,
-        avatar: this.props.image.image
+      this.props.playerTypes = {
+        user: "bot",
+        target: "target"
+      }
+      this.props.entities = {
+        target: {
+          name: this.props.title.text,
+          avatar: "http://alttp.mymm1.com/holyimage/images/alttpo/z3r.png"
+        }
       }
 
       if (!hash_meta?.hash) {
@@ -90,6 +96,8 @@ module.exports = class SeedMetaCommand extends RookCommand {
         this.props.fields = []
         return false
       }
+
+      let generatedDateTime = new Date(strtotime(hash_meta?.generated))
 
       this.props.fields = [
         [
@@ -173,7 +181,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
           },
           {
             name: "Generation Date",
-            value: timeFormat(strtotime(hash_meta?.generated))
+            value: timeFormat(generatedDateTime.getTime())
           }
         ]
       ]
@@ -182,11 +190,17 @@ module.exports = class SeedMetaCommand extends RookCommand {
     // M3MapRando
     if (gameID == "m3maprando") {
       let settings = await get_url(`http://maprando.com/seed/${hashID}/data/settings.json`)
-      this.props.image = { image: `https://maprando.com/static/map_station_transparent.png` }
+      this.props.image = {}
       this.props.title = { text: "M3 Map Rando" }
-      this.props.players.target = {
-        name: this.props.title.text,
-        avatar: this.props.image.image
+      this.props.playerTypes = {
+        user: "bot",
+        target: "target"
+      }
+      this.props.entities = {
+        target: {
+          name: this.props.title.text,
+          avatar: "http://alttp.mymm1.com/holyimage/images/alttpo/m3maprando.gif"
+        }
       }
 
       if (!settings?.version) {
@@ -306,11 +320,17 @@ module.exports = class SeedMetaCommand extends RookCommand {
 
     // Z3M3
     if (gameID == "z3m3") {
-      this.props.image = { image: `http://alttp.mymm1.com/holyimage/images/alttpo/smz3.png` }
+      this.props.image = {}
       this.props.title = { text: "SMZ3" }
-      this.props.players.target = {
-        name: this.props.title.text,
-        avatar: this.props.image.image
+      this.props.playerTypes = {
+        user: "bot",
+        target: "target"
+      }
+      this.props.entities = {
+        target: {
+          name: this.props.title.text,
+          avatar: "http://alttp.mymm1.com/holyimage/images/alttpo/smz3.png"
+        }
       }
 
       let decoded = decode(hashID).replaceAll("-",'')

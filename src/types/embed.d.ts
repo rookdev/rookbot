@@ -1,4 +1,3 @@
-
 export type EmbedAuthor = {
   /** Author Name */      text: string
   /** Author Image URL */ image?: string
@@ -14,7 +13,7 @@ export type EmbedTitle = {
 }
 export type EmbedField = {
   /** Field Name */   name: string
-  /** Field Value */  value: string
+  /** Field Value */  value: string | Array<string>
   /** Inline? */      inline?: boolean
 }
 export type EmbedImage = {
@@ -42,6 +41,7 @@ export type EmbedProps = {
   /** Embed Footer */       footer?: EmbedFooter
   /** Embed Timestamp */    timestamp?: number | boolean
   /** Embed Players */      players?: any
+  /** Embed Player Types */ playerTypes?: Object<string>
   /** Embed Flags */        flags?: number
   /** Null? */              null?: boolean
   /** Ephemeral? */         ephemeral?: boolean

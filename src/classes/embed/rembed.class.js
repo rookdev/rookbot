@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+const { processExceptions } = require('better-npm-audit/src/utils/vulnerability')
 const { EmbedBuilder } = require('discord.js')
 
 function isNumeric(n) {
@@ -101,8 +102,9 @@ class RookEmbed extends EmbedBuilder {
 
     let bot = {
       name: "Bot",
-      avatar: client.profile?.defaults?.thumbnail.trim()
+      avatar: client.user.displayAvatarURL({ size: 128 })
     }
+
     if (!(props?.players)) {
       props.players = {
         bot: bot
@@ -204,6 +206,10 @@ class RookEmbed extends EmbedBuilder {
         this.props.footer = client.profile.footer
       }
     }
+    let versionText = `[v${client.profile.PACKAGE.version}]`
+    if (this.props.footer.text.indexOf(versionText) == -1) {
+      this.props.footer.text += " " + versionText
+    }
 
     // Set description
     if (
@@ -228,10 +234,15 @@ class RookEmbed extends EmbedBuilder {
           // @ts-ignore
           for (let field of fieldRow) {
             if (field) {
+              let field_value = field.value
+              if (typeof field_value === "object") {
+                field_value = field_value.join("\n")
+              }
+              field_value += ""
               fields.push(
                 {
                   name:   field.name.trim(),
-                  value:  field.value + "",
+                  value:  field_value,
                   // @ts-ignore
                   inline: fieldRow.length > 1
                 }

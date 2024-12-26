@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+const { serverGameName_base64encoded } = require('../../../config.json')
 const { ChatInputCommandInteraction } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
@@ -24,12 +25,27 @@ module.exports = class JustinCommand extends RookCommand {
   }
 
   async action(client, interaction, coptions={}) {
+    const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
     this.props = {
       title: {
         text: "Developer Portfolio: Justin Bohemier",
         url: "https://justinbohemier.wixsite.com/portfolio/game-design"
       },
       image: { image: "https://static.wixstatic.com/media/1e0275_aa58ad283e7e428a995f2b2aeda902e5~mv2.jpg/v1/fill/w_887,h_492,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/1e0275_aa58ad283e7e428a995f2b2aeda902e5~mv2.jpg" },
+      playerTypes: {
+        user: "bot",
+        target: "target"
+      },
+      entities: {
+        target: {
+          type:   "game",
+          id:     0,
+          name:   serverGameName,
+          url:    "http://example.com/game",
+          avatar: "https://cdn.discordapp.com/icons/1282788953052676177/09ed26e7671ce6ad89227665c4bdfa11.webp?size=128",
+          tag:    "game"
+        }
+      },
       description: "Explore the exciting video games created by Justin Bohemier!",
       fields: [
         [

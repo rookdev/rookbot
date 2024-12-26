@@ -91,7 +91,7 @@ module.exports = class LockdownCommand extends ModCommand {
       await Promise.allSettled(channelPromises);
 
       // Log the action in the logs channel (private)
-      const logs = client.channels.cache.get(guildChannels["logging"]);
+      const logs = await client.channels.fetch(guildChannels["logging"]);
       if (logs) {
         const capitalizedAction = action.charAt(0).toUpperCase() + action.slice(1);
         const embed = new RookEmbed(client, {

@@ -23,14 +23,14 @@ module.exports = async (client, oldMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = client.channels.cache.get(guildChannels[log_type])
+    const logChannel = await client.channels.fetch(guildChannels[log_type])
 
-    if (!logChannel || !logChannel.isTextBased()) {
+    if (!logChannel) {
       console.warn('Log channel not found or is not text-based.')
       return
     }
 
-    const leftAt = new Date()
+    const leftDateTime = new Date()
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -41,8 +41,8 @@ module.exports = async (client, oldMember) => {
       },
       players: {
         user: {
-          name: oldMember.user.displayName,
-          avatar: oldMember.user.displayAvatarURL( { size: 128 } )
+          name: oldMember.guild.name,
+          avatar: oldMember.guild.iconURL( { size: 128 } )
         },
         target: {
           name: oldMember.user.displayName,
@@ -51,6 +51,17 @@ module.exports = async (client, oldMember) => {
       },
       fields: [
         [
+          // Left DateTime
+          {
+            name: 'Left At',
+            value: leftDateTime
+              ? timeFormat(leftDateTime.getTime())
+              : 'Unknown' // Handle cases where leftAt is null
+          }
+        ],
+        [
+          // Who Left?
+          // Hyperlink in case Mention doesn't load
           {
             name: 'Member Left',
             value: `[${oldMember.user.tag}]` +
@@ -59,24 +70,20 @@ module.exports = async (client, oldMember) => {
           }
         ],
         [
+          // Who Left?
           {
             name: "Member Link",
             value: `<@${oldMember.user.id}>`
           }
         ],
         [
-          {
-            name: 'Left At',
-            value: leftAt
-              ? (timeFormat(leftAt) + ` (\`${leftAt.getTime()}\`)`)
-              : 'Unknown' // Handle cases where leftAt is null
-          }
-        ],
-        [
+          // Left what Guild?
           {
             name: 'Guild',
-            value: oldMember.guild.name + " " +
+            value: [
+              oldMember.guild.name,
               `(ID: \`${oldMember.guild.id}\`)`
+            ]
           }
         ]
       ]
@@ -100,7 +107,6 @@ module.exports = async (client, oldMember) => {
       `User:    ${oldMember.user.tag} (ID: ${oldMember.user.id})`,
       `Guild:   ${oldMember.guild.name} (ID: ${oldMember.guild.id})`,
       `Event:   Member Left`,
-      `User ID: ${oldMember.user.id}`,
       '--------------------------------'
     ].join('\n') + '\n\n'
 

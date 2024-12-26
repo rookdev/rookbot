@@ -207,8 +207,8 @@ module.exports = class PullCommand extends BotDevCommand {
 
     // Entities
     let entities = {
-      bot: { name: client.user.name, avatar: client.user.avatarURL(), username: client.user.username },
-      user: { name: interaction.user.displayName, avatar: interaction.user.avatarURL(), username: interaction.user.username }
+      bot: { name: client.user.name, avatar: client.user.displayAvatarURL(), username: client.user.username },
+      user: { name: interaction.user.displayName, avatar: interaction.user.displayAvatarURL(), username: interaction.user.username }
     }
     // Players
     this.props.players = {

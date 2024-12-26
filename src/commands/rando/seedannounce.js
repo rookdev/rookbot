@@ -43,8 +43,8 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           description: "Randomizer to choose",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "A Link to the Past Randomizer", value: "alttpr" },
-            { name: "Super Metroid + A Link to the Past Combination Randomizer", value: "smz3" },
+            { name: "A Link to the Past Randomizer", value: "z3r" },
+            { name: "Super Metroid + A Link to the Past Combination Randomizer", value: "z3m3" },
             { name: "Super Metroid Map Randomizer", value: "m3maprando" },
             { name: "Archipelago", value: "ap" }
           ],
@@ -68,16 +68,16 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       ],
       "aliases": [
         {
-          name: "alttpr",
-          options: { randomizer: "alttpr" }
+          name: "z3r",
+          options: { randomizer: "z3r" }
         },
         {
           name: "smmr",
           options: { randomizer: "m3maprando" }
         },
         {
-          name: "smz3",
-          options: { randomizer: "smz3" }
+          name: "z3m3",
+          options: { randomizer: "z3m3" }
         },
         {
           name: "ap",
@@ -96,14 +96,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    const randomizer = coptions.randomizer || "smz3"
+    const randomizer = coptions.randomizer || "z3m3"
 
     const pingMultiplayerRole = coptions['ping-multiplayer-role'] || false // Default to false
     const seedURL = coptions['seed_url'] || null
     const prepTimeMinutes = coptions['prep_time'] ?? 5 // Default to 5 minutes
 
       /*
-    const sahaBot = interaction.guild.members.fetch(userIDs['sahabot']);
+    const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot']);
 
     if (!sahaBot) {
       await interaction.reply({
@@ -141,8 +141,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       }
 
       const prepTime = prepTimeMinutes * 60 * 1000 // Convert minutes to milliseconds
-      const adjustedTime = new Date(now.getTime() + prepTime)
-      const timestamp = timeFormat(adjustedTime.getTime())
+      const adjustedDateTime = new Date(now.getTime() + prepTime)
 
       const randoData = require(`../../dbs/randos/${randomizer}.json`)
       const randoTitle = randoData.rando.player.name
@@ -155,14 +154,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       }
 
       // Select a random footer text
-      var randomFooterText = footerTexts[Math.floor(Math.random() * footerTexts.length)]
+      var randomFooterText = footerTexts[Math.floor(Math.random() * footerTexts.length)] || ""
 
       // Select a random major item
-      const randomMajorItem = majorItems[Math.floor(Math.random() * majorItems.length)]
-      const randomUselessItem = uselessItems[Math.floor(Math.random() * uselessItems.length)]
+      const randomMajorItem = majorItems[Math.floor(Math.random() * majorItems.length)] || ""
+      const randomUselessItem = uselessItems[Math.floor(Math.random() * uselessItems.length)] || ""
 
       // Modify the major item if it starts with "A " and if it's not at the beginning of the sentence
-      let formattedMajorItem = randomMajorItem
+      let formattedMajorItem = randomMajorItem || ""
       if (formattedMajorItem.startsWith('A ') && randomFooterText.indexOf('[MAJOR_ITEM]') > 0) {
         // Only lowercase the first letter if '[MAJOR_ITEM]' is in the middle
         formattedMajorItem = formattedMajorItem.charAt(0).toLowerCase() + formattedMajorItem.slice(1)
@@ -180,13 +179,20 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         name: randoData.rando.player.name,
         avatar: randoData.rando.player.avatar
       }
-      this.props.fields = [
+      let fields = []
+      fields.push(
         [
           { name: 'Group Name', value: groupName }
-        ],
-        [
-          { name: 'Scripts', value: randoData.rando.scripts }
-        ],
+        ]
+      )
+      if (randoData?.rando?.scripts && randoData.rando.scripts.length > 0) {
+        fields.push(
+          [
+            { name: 'Scripts', value: randoData.rando.scripts }
+          ]
+        )
+      }
+      fields.push(
         [
           {
             name: '__Start Game Reminder__',
@@ -196,13 +202,18 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         [
           {
             name: 'Game Start Time',
-            value: `The game will begin at ${timestamp}.`
+            value: `The game will begin at ${timeFormat(adjustedDateTime.getTime())}.`
           }
         ]
-      ]
-      this.props.footer = {
-        text: randomFooterText
+      )
+      this.props.fields = fields
+
+      if (randomFooterText != "") {
+        this.props.footer = {
+          text: randomFooterText
+        }
       }
+
 
       // Construct the content for the channel message
       let roleID = coptions["pingable-role-id"]

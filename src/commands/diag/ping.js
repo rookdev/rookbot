@@ -27,30 +27,15 @@ module.exports = class PingCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    this.props.playerTypes = {
+      user: "discord",
+      target: "caller"
+    }
+
     console.log(`/${this.name}: Action`)
 
     const reply = await interaction?.fetchReply()
     const ping = (reply?.createdTimestamp || 0) - (interaction?.createdTimestamp || 0)
-
-    // Entities
-    let entities = {
-      bot: {
-        name:     client.user?.displayName,
-        avatar:   client.user?.avatarURL(),
-        username: client.user?.username
-      },
-      user: {
-        name:     interaction?.user.displayName,
-        avatar:   interaction?.user.avatarURL(),
-        username: interaction?.user.username
-      },
-      discord: { name: "Discord", avatar: "https://cdn.iconscout.com/icon/free/png-512/free-discord-logo-icon-download-in-svg-png-gif-file-formats--social-media-pack-logos-icons-3073764.png?f=webp&w=256" }
-    }
-    // Players
-    this.props.players = {
-      user: entities.bot,
-      target: entities.discord
-    }
 
     this.props.fields = [
       [

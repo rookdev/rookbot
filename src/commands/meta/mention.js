@@ -31,11 +31,11 @@ module.exports = class MentionCommand extends RookCommand {
         }
       ],
       testOptions: [
-        { "target-id": "<#895062573999878234>" },
-        { "target-id": "<@&833812507012366366>" },
-        { "target-id": "<#895062573999878234>" },
-        { "target-id": "<@!263968998645956608>" },
-        { "target-id": "<#!1097065219014021130>" }
+        { "target-id": "<#895062573999878234>" },   // #bot-console
+        { "target-id": "<@&833812507012366366>" },  // @Admin
+        { "target-id": "<@!263968998645956608>" },  // @Minnie
+        { "target-id": "<@!1111517386588307536>" }, // @castIe
+        { "target-id": "<#!1097065219014021130>" }  // Voice:General
       ]
     }
     let props = {
@@ -90,6 +90,12 @@ module.exports = class MentionCommand extends RookCommand {
     //   `CalcType: ${targetType}`
     // )
 
+    this.props.playerTypes = {
+      user: "bot",
+      target: "discord"
+    }
+    this.props.entities = {}
+
     switch(targetType) {
       case "channel":
         targetMention = `<#${targetId}>`
@@ -99,6 +105,26 @@ module.exports = class MentionCommand extends RookCommand {
         break
       case "user":
         targetMention = `<@!${targetId}>`
+        let guild = await client.guilds.fetch(interaction.guild.id)
+        if (guild) {
+          let targetMember = await guild.members.fetch(targetId)
+          if (targetMember) {
+            this.props.playerTypes = {
+              user: "bot",
+              target: "target"
+            }
+            this.props.entities = {
+              target: {
+                type:   "target",
+                id:     targetId,
+                name:   targetMember.displayName,
+                url:    "http://example.com/target",
+                avatar: targetMember.displayAvatarURL({ size: 128 }),
+                tag:    targetMember.user.tag
+              }
+            }
+          }
+        }
         break
       default:
         targetMention = "Error"

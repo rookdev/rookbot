@@ -46,6 +46,11 @@ module.exports = class BotGuildsCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    this.props.playerTypes = {
+      user: "bot",
+      target: "bot"
+    }
+
     this.props.description = []
     this.props.description.push(
       `***Guilds that ${client.user} is in:***`,
@@ -64,8 +69,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
       if (owner?.user) {
         owner = owner.user
       }
-      let bot = await guildData.members.cache.get(client.user.id)
-      let botJoined = await new Date(bot.joinedTimestamp)
+      let bot = await guildData.members.fetch(client.user.id)
+      let botJoinedDateTime = new Date(bot.joinedTimestamp)
       sorted[bot.joinedTimestamp] = {
         guild: {
           name: guildData.name,
@@ -76,9 +81,9 @@ module.exports = class BotGuildsCommand extends RookCommand {
           discriminator: owner.discriminator,
           id: owner.id
         },
-        added: botJoined.toLocaleString(),
+        added: botJoinedDateTime.toLocaleString(),
         addedTimestamp: Math.floor(bot.joinedTimestamp / 1000),
-        addedHammertime: timeFormat(bot.joinedTimestamp)
+        addedHammertime: timeFormat(botJoinedDateTime.getTime())
       }
     }
     console.log("")
@@ -109,7 +114,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
 
     // Entities
     let entities = {
-      bot: { name: client.user.name, avatar: client.user.avatarURL(), username: client.user.username }
+      bot: { name: client.user.name, avatar: client.user.displayAvatarURL(), username: client.user.username }
     }
     // Players
     this.props.players = {

@@ -28,6 +28,12 @@ module.exports = class MemberCountCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    this.props.playerTypes = {
+      user: "bot",
+      target: "guild"
+    }
+    this.props.title.text = `Total Member Count for ${interaction?.guild.name}`
+
     try {
       // Fetch all members in the server to ensure the data is up-to-date
       const members = await interaction.guild.members.fetch()

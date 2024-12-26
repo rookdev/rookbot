@@ -64,7 +64,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
           if (!interaction?.member?.permissions.has(permission)) {
             console.log(`/${commandName} attempted without proper user perms`)
             await interaction?.reply({
-              content: 'Not enough permissions.',
+              content: 'User is missing permissions.',
               ephemeral: true
             })
             this.error = true

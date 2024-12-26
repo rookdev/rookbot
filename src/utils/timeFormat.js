@@ -1,22 +1,33 @@
 const { time, TimestampStyles } = require('discord.js')
 
-module.exports = (timestamp) => {
+module.exports = (timestamp, showSeconds=false) => {
   let platoError = (timestamp + "").length - 10
-  // console.log(
-  //   {
-  //     timestamp: timestamp,
-  //     platoError: platoError
-  //   }
-  // )
+  let adjustedStamp = 0
+
   if (platoError > 0) {
-    timestamp = Math.floor(timestamp / Math.pow(10, platoError))
+    adjustedStamp = Math.floor(timestamp / Math.pow(10, platoError))
   }
-  // console.log(
-  //   {
-  //     timestamp: timestamp
-  //   }
-  // )
-  return time(timestamp, TimestampStyles.LongDate) + " " +
-    time(timestamp, TimestampStyles.LongTime) + " " +
-    `\`(${timestamp})\``
+
+  let debug = {
+    prestamp: timestamp,
+    offstamp: platoError,
+    outstamp: adjustedStamp
+  }
+
+  if (adjustedStamp > 0) {
+    timestamp = adjustedStamp
+  }
+
+  let longDateTime  = time(timestamp, TimestampStyles.LongDateTime)
+  let longDate      = time(timestamp, TimestampStyles.LongDate)
+  let longTime      = time(timestamp, TimestampStyles.LongTime)
+  let returnTime    = longDateTime
+  if (showSeconds) {
+    returnTime = longDate + " " + longTime
+  }
+  returnTime += " " + `\`(${timestamp})\``
+
+  console.log("  " + JSON.stringify(debug))
+
+  return returnTime
 }

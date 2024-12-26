@@ -63,6 +63,9 @@ module.exports = class UserInfoCommand extends RookCommand {
     // Get the user's avatar URL
     const avatarURL = targetMember.displayAvatarURL({ size: 1024 })
 
+    let createdDateTime = new Date(targetMember.user.createdTimestamp)
+    let joinedDateTime  = new Date(targetMember.joinedTimestamp)
+
     let fields = [
       // Username
       [
@@ -77,7 +80,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Created",
-          value: timeFormat(targetMember.user.createdTimestamp)
+          value: timeFormat(createdDateTime.getTime())
         }
       ],
 
@@ -85,7 +88,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Joined",
-          value: timeFormat(targetMember.joinedTimestamp)
+          value: timeFormat(joinedDateTime.getTime())
         }
       ]
     ]
@@ -108,8 +111,10 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Bot Actions",
-          value: "🟩" + botCan + "\n" +
+          value: [
+            "🟩" + botCan,
             "🟥" + botCant
+          ]
         }
       ]
     )

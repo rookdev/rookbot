@@ -6,6 +6,7 @@ const { Message } = require('discord.js')
 const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
+const timeFormat = require('../../utils/timeFormat')
 
 /**
  * Logs edited messages from the server.
@@ -17,13 +18,13 @@ module.exports = async (client, oldMessage, newMessage) => {
   try {
     // Check for invalid or undefined data
     if (!newMessage) {
-      console.warn('MessageUpdate event received invalid data:', { oldMessage, newMessage })
+      console.warn('  MessageUpdate event received invalid data:', { oldMessage, newMessage })
       return
     }
 
     // Ensure the message is in a guild and not from a bot
     if (!newMessage.guild) {
-      console.warn('MessageUpdate occurred outside of a guild:', newMessage)
+      console.warn('  MessageUpdate occurred outside of a guild:', newMessage)
       return
     }
     if (newMessage.author?.bot) {
@@ -36,7 +37,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         oldMessage = await oldMessage.fetch()
       } catch (err) {
-        console.error('Failed to fetch old message:', err)
+        console.error('  Failed to fetch old message:', err)
         return
       }
     }
@@ -45,7 +46,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         newMessage = await newMessage.fetch()
       } catch (err) {
-        console.error('Failed to fetch new message:', err)
+        console.error('  Failed to fetch new message:', err)
         return
       }
     }
@@ -56,7 +57,7 @@ module.exports = async (client, oldMessage, newMessage) => {
 
     // Skip if the content hasn't changed
     if (oldContent === newContent) {
-      console.warn('No content change detected.')
+      // console.warn('  No content change detected.')
       return
     }
 
@@ -68,7 +69,18 @@ module.exports = async (client, oldMessage, newMessage) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = client.channels.cache.get(guildChannels[log_type])
+    const logChannel = await client.channels.fetch(guildChannels[log_type])
+
+    let editor = newMessage.author
+    let editMember = await newMessage.guild.members.fetch(editor.id)
+    if (editMember) {
+      editor = editMember
+    }
+
+    let player = {
+      name: editor.displayName,
+      avatar: editor.displayAvatarURL( { size: 128 } )
+    }
 
     const embed = new RookEmbed(client, {
       color: colors["info"], // Orange for message updates
@@ -77,16 +89,19 @@ module.exports = async (client, oldMessage, newMessage) => {
         emoji: "✏️"
       },
       players: {
-        user: {
-          name: newMessage.author.displayName,
-          avatar: newMessage.author.displayAvatarURL( { size: 128 } )
-        },
-        target: {
-          avatar: newMessage.author.displayAvatarURL( { size: 128 } )
-        }
+        user: player,
+        target: player
       },
       fields: [
         [
+          // Edited DateTime
+          {
+            name: 'Edited At',
+            value: timeFormat(new Date().getTime())
+          }
+        ],
+        [
+          // Who wrote it?
           {
             name: 'Author',
             value: `<@${newMessage.author.id}>` + " " +
@@ -94,24 +109,40 @@ module.exports = async (client, oldMessage, newMessage) => {
           }
         ],
         [
+          // Guild Info
           {
-            name: 'Message',
-            value: `${newMessage.url} (ID: \`${newMessage.id}\`)`
-          }
-        ],
-        [
+            name: 'Guild',
+            value: [
+              newMessage.guild.name,
+              `(ID: \`${newMessage.guild.id}\`)`
+            ]
+          },
+          // Channel Link
           {
             name: 'Channel',
-            value: `<#${newMessage.channel.id}>`
+            value: [
+              `<#${newMessage.channel.id}>`,
+              `(ID: \`${newMessage.channel.id}\`)`
+            ]
           }
         ],
         [
+          // Message Link
+          {
+            name: 'Message',
+            value: newMessage.url +
+              `(ID: \`${newMessage.id}\`)`
+          }
+        ],
+        [
+          // Old Content
           {
             name: 'Old Content',
             value: oldContent.slice(0,1024) || '*No old content*' // Ensure there's always a default value
           }
         ],
         [
+          // New Content
           {
             name: 'New Content',
             value: newContent.slice(0,1024) || '*No new content*' // Ensure there's always a default value
@@ -121,11 +152,11 @@ module.exports = async (client, oldMessage, newMessage) => {
     });
 
     // Send the embed to the log channel, if found and valid
-    if (logChannel?.isTextBased()) {
+    if (logChannel) {
       // @ts-ignore
       await logChannel.send({ embeds: [embed] })
     } else {
-      console.warn('Log channel not found or not a text-based channel.')
+      console.warn('Log channel not found.')
     }
 
     // Optional: Save the edited message to a log file
@@ -140,11 +171,13 @@ module.exports = async (client, oldMessage, newMessage) => {
     const logEntry = [
       `[${new Date().toISOString()}]`,
       `Author:      ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
+      `Guild:       ${newMessage.guild?.name} (ID: ${newMessage.guild?.id})`,
       // @ts-ignore
       `Channel:     #${newMessage.channel.name}`,
+      `Message ID:  ${newMessage.id}`,
+      `Event:       Message Edited`,
       `Old Content: ${oldContent}`,
       `New Content: ${newContent}`,
-      `Message ID:  ${newMessage.id}`,
       '--------------------------------'
     ].join('\n') + '\n\n'
 

@@ -35,6 +35,10 @@ module.exports = class BotSourceCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // all done in constructor
+    this.props.playerTypes = {
+      user: "bot",
+      target: "bot"
+    }
     return !this.error
   }
 }

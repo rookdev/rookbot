@@ -33,6 +33,11 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    this.props.playerTypes = {
+      user: "caller",
+      target: "bot"
+    }
+
     let new_nickname = coptions["bot-nickname"]
     let old_nickname = ""
 

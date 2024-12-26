@@ -95,11 +95,15 @@ module.exports = class HolyImageCommand extends RookCommand {
       if(image_url.indexOf("http://") < 0 && image_url.indexOf("https://") < 0) {
         image_url = `http://alttp.mymm1.com/holyimage/${image_url}`
       }
-      this.props.players = {
-        user: {
+      this.props.playerTypes = {
+        user: "minnie",
+        target: "target"
+      }
+      this.props.entities = {
+        minnie: {
           name: "Minnie's Holy Images",
           url: "http://alttp.mymm1.com/holyimage/",
-          avatar: "https://images-ext-1.discordapp.net/external/KJ12pcqE9iTvRJCKDFVbENEb9GsOoP62ZQlGRScJ4aw/%3Fsize%3D1024/https/cdn.discordapp.com/avatars/263968998645956608/b4767c97e4643d5a2f98d7deca0c0d67.webp?format=webp&width=683&height=683"
+          avatar: "https://cdn.discordapp.com/avatars/263968998645956608/f3e20428f32ae6ebea3be438916027b8.webp?size=128"
         },
         target: {
           name: "Holy Image",

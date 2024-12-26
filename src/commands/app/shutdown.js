@@ -34,6 +34,11 @@ module.exports = class ShutdownCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async execute(client, interaction, coptions={}, independent=false) {
+    this.props.playerTypes = {
+      user: "caller",
+      target: "bot"
+    }
+
     this.channel = await this.getChannel(client)
 
     if (interaction) {
@@ -84,15 +89,9 @@ module.exports = class ShutdownCommand extends BotDevCommand {
 
     if (!processed_pm2) {
       console.log(`🟡/${this.name}: Skipping PM2!`)
-      // Entities
-      let entities = {
-        bot: { name: client.user?.displayName, avatar: client.user?.avatarURL(), username: client.user?.username },
-        user: { name: interaction?.user.displayName, avatar: interaction?.user.avatarURL(), username: interaction?.user.username }
-      }
-      // Players
-      this.props.players = {
-        user: entities.user,
-        target: entities.bot
+      this.props.playerTypes = {
+        user: "bot",
+        target: "guild"
       }
 
       this.props.description = `${action} <@${client.user?.id}>`

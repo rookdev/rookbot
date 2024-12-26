@@ -3,6 +3,7 @@
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const timeFormat = require('../../utils/timeFormat')
 const path = require('path')
 const fs = require('fs')
 
@@ -53,22 +54,37 @@ module.exports = class SayCommand extends ModCommand {
       let result = await channel.send(message)
       let props = {}
       let embeds = {}
+      let resultDateTime = new Date(result.createdTimestamp)
       props.mod = {
         fields: [
           [
             {
-              name: "Guild",
-              value: interaction?.guild?.name + " " + `(ID: \`${interaction?.guild?.id}\`)`
-            },
-            {
-              name: "Channel",
-              value: `https://discord.com/channels/${result?.guild?.id}/${result?.channel?.id}` + " " + `(ID: \`${channel?.id}\`)`
+              name: "Time",
+              value: timeFormat(resultDateTime.getTime())
             }
           ],
           [
             {
               name: "User",
               value: `${interaction.user} (ID: \`${interaction.user.id}\`)`
+            }
+          ],
+          [
+            {
+              name: "Guild",
+              value:
+                [
+                  interaction?.guild?.name,
+                  `(ID: \`${interaction?.guild?.id}\`)`
+                ]
+            },
+            {
+              name: "Channel",
+              value:
+                [
+                  `<#${result?.channel?.id}>`,
+                  `(ID: \`${channel?.id}\`)`
+                ]
             }
           ],
           [
@@ -102,8 +118,8 @@ module.exports = class SayCommand extends ModCommand {
         `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
         `Guild:       ${result.guild.name} (ID: ${result.guild.id})`,
         `Channel:     #${result.channel.name} (ID: ${result.channel.id})`,
-        `Content:     ${message}`,
         `Message ID:  ${result.id}`,
+        `Content:     ${message}`,
         '--------------------------------'
       ]
 

@@ -427,7 +427,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = interaction.guild.members.cache.get(targetUserId);
+    const guildMember = await interaction.guild.members.fetch(targetUserId);
     const user = guildMember?.user || targetUser
 
     // Attempt to ACTION the user
@@ -498,6 +498,7 @@ class ModCommand extends AdminCommand {
 
       // Determine the name to display (use nickname if available, otherwise default to tag or username)
       const targetUserName = guildMember?.nickname || targetUser.username;
+      let printResult = false
 
       if (success) {
         // Public ModPost for ACTION
@@ -505,6 +506,10 @@ class ModCommand extends AdminCommand {
         props.public.title = {
           emoji: "🟢",
           text: "[ModPost] Success!"
+        }
+        props.public.playerTypes = {
+          user: "bot",
+          target: "guild"
         }
         props.public.description = [
           (this.DEV ? "DEV: " : "") +
@@ -515,7 +520,9 @@ class ModCommand extends AdminCommand {
           reason +
           ")"
         ]
-        embeds.public = await new RookEmbed(client, props.public)
+        printResult = await this.print_it(client, interaction, [ props.public ])
+        embeds.public = this.pages[0]
+        this.pages = []
         interaction.channel.send(
           {
             embeds: [ embeds.public ]
@@ -551,9 +558,15 @@ class ModCommand extends AdminCommand {
               emoji: "⚠️",
               text: (this.DEV ? "[DM] " : "") + pretty_name
             },
+            playerTypes: {
+              user: "bot",
+              target: "guild"
+            },
             description: dm_desc
           }
-          embeds.dm = await new RookEmbed(client, props.dm)
+          printResult = await this.print_it(client, interaction, [ props.dm ])
+          embeds.dm = this.pages[0]
+          this.pages = []
           if (!this.DEV) {
             await targetUser.send(
               {
@@ -571,24 +584,29 @@ class ModCommand extends AdminCommand {
               emoji: "🟢",
               text: "[YouPost] Success!"
             },
+            playerTypes: {
+              user: "bot",
+              target: "target"
+            },
+            entities: {
+              target: {
+                name: targetUser.displayName,
+                avatar: targetUser.displayAvatarURL({ size: 128 })
+              }
+            },
             ephemeral: true
           }
-          // Don't link user
-          if (["ban","unban","kick"].includes(this.name)) {
-            props.mod.description = [
-              `✅ User **${targetUserName}** successfully **${tenses.past}** via DMs!`,
-            ]
-          } else {
-            // Do link user
-            props.mod.description = [
-              `✅ User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
-            ]
-          }
+          // Do link user
+          props.mod.description = [
+            `✅ User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
+          ]
           props.mod.description.push(
             "",
             `Message: ${props.dm.description}`
           )
-          embeds.mod = await new RookEmbed(client, props.mod)
+          printResult = await this.print_it(client, interaction, [ props.mod ])
+          embeds.mod = this.pages[0]
+          this.pages = []
           interaction.followUp(
             {
               embeds: [ embeds.mod ],
@@ -609,7 +627,9 @@ class ModCommand extends AdminCommand {
             ],
             ephemeral: true
           }
-          embeds.mod = await new RookEmbed(client, props.mod)
+          printResult = await this.print_it(client, interaction, [ props.mod ])
+          embeds.mod = this.pages[0]
+          this.pages = []
           interaction.followUp(
             {
               embeds: [ embeds.mod ],
@@ -631,38 +651,112 @@ class ModCommand extends AdminCommand {
           if(this.DEV) {
             emoji = "[DEV]" + emoji
           }
+
+          let logFields = []
+          let now = new Date()
+          logFields.push(
+            [
+              // Logged DateTime
+              {
+                name: 'Time',
+                value: timeFormat(now.getTime())
+              }
+            ],
+            [
+              // Who'd what happen to?
+              {
+                name: 'User ' + tenses.past.ucfirst(),
+                value: `${targetUser}\n(ID: \`${targetUserId}\`)`
+              },
+              // Whodunnit?
+              {
+                name: tenses.past.ucfirst() + ' By',
+                value: [
+                  interaction.user,
+                  `(ID: \`${interaction.user.id}\`)`
+                ]
+              }
+            ],
+            [
+              // Guild Info
+              {
+                name: 'Guild',
+                value: interaction.guild.name + "\n" +
+                  `(ID: \`${interaction.guild.id}\`)`
+              }
+            ]
+          )
+
+          // Timeout
+          if (durationSeconds != 0) {
+            let untilDateTime = new Date(now.getTime() + durationMilliseconds)
+            logFields.push(
+              [
+                // Seconds
+                {
+                  name: 'Timeout Seconds',
+                  value: `${durationSeconds} seconds`
+                },
+                // Duration
+                {
+                  name: 'Timeout Duration',
+                  value: timeConversion(durationMilliseconds)
+                }
+              ],
+              [
+                // Until
+                {
+                  name: 'Timeout Until',
+                  value: timeFormat(untilDateTime.getTime())
+                }
+              ]
+            )
+          }
+
+          if (role != "") {
+            logFields.push(
+              [
+                // Role
+                {
+                  name: 'Role',
+                  value: role
+                }
+              ]
+            )
+          }
+
+          logFields.push(
+            [
+              // Reason
+              {
+                name: 'Reason',
+                value: reason
+              }
+            ]
+          )
+
           props.log = {
             color: this.name == "unban" ? colors["good"] : colors["bad"],
             title: {
               emoji: emoji,
               text: "[Log] User " + tenses.past.ucfirst()
             },
-            fields: [
-              [
-                { name: 'User ' + tenses.past.ucfirst(),  value: `${targetUser}\n(ID: \`${targetUserId}\`)` },
-                { name: tenses.past.ucfirst() + ' By',    value: `${interaction.user}\n(ID: \`${interaction.user.id}\`)` }
-              ]
-            ]
+            playerTypes: {
+              user: "caller",
+              target: "target"
+            },
+            entities: {
+              target: {
+                name: targetUser.displayName,
+                avatar: targetUser.displayAvatarURL({ size: 128 })
+              }
+            },
+            fields: logFields
           }
-          if (
-            [
-              "ban",
-              "kick",
-              "mute",
-              "timeout",
-              "warn"
-            ].includes(this.name)
-          ) {
-            props.log.fields.push(
-              [
-                {
-                  name: "Reason",
-                  value: reason
-                }
-              ]
-            )
-          }
-          embeds.log = await new RookEmbed(client, props.log)
+
+          printResult = await this.print_it(client, interaction, [ props.log ])
+          embeds.log = this.pages[0]
+          this.pages = []
           logsChannel.send(
             {
               embeds: [ embeds.log ]

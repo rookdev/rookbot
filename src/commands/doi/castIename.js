@@ -56,9 +56,13 @@ module.exports = class CastleNameCommand extends RookCommand {
       const result = await changeNickname(client, member)
 
       if (result?.success) {
-        this.props.players.target = {
+        this.props.playerTypes = {
+          user: "caller",
+          target: "target"
+        }
+        this.props.entities.target = {
           name: member.user.displayName,
-          avatar: member.user.avatarURL()
+          avatar: member.user.displayAvatarURL()
         }
         this.props.title = { text: "Nickname Changed" }
         this.props.description = result.message

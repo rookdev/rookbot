@@ -48,31 +48,6 @@ class RookCommand {
     this.profile = client.profile
     this.pages = []
 
-    let client_user = client.user
-    this.entities = {
-      "bot": {
-        id:             client_user.id,
-        name:           client_user?.nickname || client_user.displayName || client_user.id,
-        avatar:         client_user.displayAvatarURL(),
-        username:       client_user.username,
-        discriminator:  client_user.discriminator,
-        tag:            client_user.tag
-      },
-      "discord": {
-        id:             "0",
-        name:           "Discord",
-        avatar:         "https://cdn.iconscout.com/icon/free/png-512/free-discord-logo-icon-download-in-svg-png-gif-file-formats--social-media-pack-logos-icons-3073764.png?f=webp&w=256",
-        username:       "discord",
-        discriminator:  "0",
-        tag:            "discord"
-      }
-    }
-    this.players = {
-      bot:    {},
-      user:   {},
-      target: {}
-    }
-
     let PROD = false
     let DEV = true
     if (this.profile?.DEV && this.profile.DEV) {
@@ -95,6 +70,11 @@ class RookCommand {
     }
     if (!Object.hasOwn(this.props, "players")) {
       this.props["players"] = this.players
+    }
+    this.props.entities = {}
+    this.props.playerTypes = {
+      user: "bot",
+      target: "caller"
     }
 
     this.error = false
@@ -262,7 +242,7 @@ class RookCommand {
     return handle_result
   }
 
-  async print_it(client, pages) {
+  async print_it(client, interaction, pages) {
     console.log(`/${this.name}: Print it...`)
 
     if (!pages || (pages.length == 0)) {
@@ -272,6 +252,112 @@ class RookCommand {
     if (pages) {
       let i = 0
       for (let page of pages) {
+        /**
+         * entities
+         *  discord
+         *  bot
+         *  botMember
+         *  caller
+         *  callerMember
+         *  guild
+         */
+        /**
+         * players
+         *  user
+         *  target
+         */
+        if (!page?.entities) {
+          page.entities = {}
+        }
+        if (!page?.playerTypes) {
+          page.playerTypes = {
+            user: "bot",
+            target: "caller"
+          }
+        }
+        page.entities.discord = {
+          type:   "discord",
+          id:     0,
+          name:   "Discord",
+          url:    "http://example.com/discord",
+          avatar: "https://cdn.iconscout.com/icon/free/png-512/free-discord-logo-icon-download-in-svg-png-gif-file-formats--social-media-pack-logos-icons-3073764.png?f=webp&w=256",
+          tag:    "discord"
+        }
+        page.entities.bot = {
+          type:   "bot",
+          id:     client.user.id,
+          name:   client.user.displayName,
+          url:    "http://example.com/bot",
+          avatar: client.user.displayAvatarURL({ size: 128 }),
+          tag:    client.user.tag
+        }
+        // if (!page.entities?.guild) {
+        //   page.entities.guild = {
+        //     type:   "guild",
+        //     id:     client?.application?.guild?.id,
+        //     name:   client?.application?.guild?.name,
+        //     url:    "http://example.com/guild",
+        //     avatar: client?.application?.guild?.iconURL({ size: 128 })
+        //   }
+        // }
+        if (interaction) {
+          let clientMember = await interaction?.guild?.members.cache.find(
+            g => g.id === client.user.id
+          )
+          let callerMember = await interaction?.member
+          if (clientMember) {
+            page.entities.botMember = {
+              type:   "botMember",
+              id:     clientMember.id,
+              name:   clientMember.displayName,
+              url:    "http://example.com/botMember",
+              avatar: clientMember.displayAvatarURL({ size: 128 }),
+              tag:    clientMember.user.tag
+            }
+          }
+          page.entities.caller = {
+            type:   "caller",
+            id:     interaction.user.id,
+            name:   interaction.user.displayName,
+            url:    "http://example.com/caller",
+            avatar: interaction.user.displayAvatarURL({ size: 128 }),
+            tag:    interaction.user.tag
+          }
+          if (callerMember) {
+            page.entities.callerMember = {
+              type:   "callerMember",
+              id:     callerMember.id,
+              name:   callerMember.displayName,
+              url:    "http://example.com/callerMember",
+              avatar: callerMember.displayAvatarURL({ size: 128 }),
+              tag:    callerMember.user.tag
+            }
+          }
+          if ((!page.entities?.guild) && (interaction?.guild)) {
+            page.entities.guild = {
+              type:   "guild",
+              id:     interaction.guild.id,
+              name:   interaction.guild.name,
+              url:    "http://example.com/guild",
+              avatar: interaction.guild.iconURL({ size: 128 })
+            }
+          }
+        }
+        for (let playerType of ["user", "target"]) {
+          for (let entityType of ["bot", "caller"]) {
+            if (page.playerTypes[playerType] == entityType) {
+              let memberType = entityType + "Member"
+              if (page.entities[memberType]) {
+                page.playerTypes[playerType] = memberType
+              }
+            }
+          }
+        }
+        page.players = {
+          user: page.entities[page.playerTypes.user],
+          target: page.entities[page.playerTypes.target]
+        }
+
         if (page?.ephemeral && page.ephemeral) {
           // console.log(`/${this.name}: Page ${i} is Ephemeral`)
           this.ephemeral = true
@@ -294,7 +380,7 @@ class RookCommand {
         i += 1
       }
 
-      return true
+      return this.pages
     }
 
     return !this.error
@@ -311,15 +397,18 @@ class RookCommand {
       these_pagination.setEmbeds(
         this.pages,
         (page, index, array) => {
-          let footer_text = page.toJSON()?.footer?.text || ""
-          if (footer_text && (footer_text != "")) {
-            footer_text = " • " + footer_text
-          }
-          return page.setFooter(
-            {
-              text: `Page: ${index+1}/${array.length}${footer_text}`
+          let this_footer = page.toJSON()?.footer
+          if (this_footer) {
+            if (this_footer.text) {
+              this_footer.text = ` • ${this_footer.text}`
             }
-          )
+            this_footer.text = `Page: ${index+1}/${array.length}${this_footer.text}`
+            if (this_footer?.icon_url && (this_footer.icon_url != "")) {
+              this_footer.iconURL = this_footer.icon_url
+            }
+            return page.setFooter(this_footer)
+          }
+          return page.setFooter()
         }
       )
       these_pagination.render()
@@ -360,7 +449,7 @@ class RookCommand {
   async send(client, interaction, pages, independent=false, hasDeferred=false) {
     console.log(`/${this.name}: Full Send it!`)
 
-    let printResult = await this.print_it(client, pages)
+    let printResult = await this.print_it(client, interaction, pages)
     // if (printResult) { console.log(`/${this.name}: Printed!`) }
 
     let shipResult = await this.ship_it(
@@ -391,12 +480,12 @@ class RookCommand {
     )
     Table.addRow(
       "Channel",
-      await interaction?.guild?.channels?.cache?.find(c => c.id === interaction?.channelId)?.name,
+      await interaction?.channel?.name,
       interaction?.channelId
     )
     Table.addRow(
       "Interaction",
-      "",
+      interaction ? "Yes" : "No",
       interaction.id
     )
     Table.addRow(
@@ -413,29 +502,6 @@ class RookCommand {
     }
 
     let hasDeferred = await this.handle_deferrment(interaction)
-
-    if (interaction) {
-      let caller = await interaction?.guild?.members.cache.find(
-        u => u.id === interaction.user.id
-      )
-      if (caller) {
-        this.entities.caller = {
-          id:             caller.id,
-          name:           caller.nickname || caller.displayName || caller.id,
-          avatar:         caller.displayAvatarURL(),
-          username:       caller.user.username,
-          discriminator:  caller.user.discriminator,
-          tag:            caller.user.tag
-        }
-      }
-      if (interaction?.guild) {
-        this.entities.guild = {
-          id:     interaction.guild.id,
-          name:   interaction.guild.name,
-          avatar: interaction.guild.iconURL()
-        }
-      }
-    }
 
     let buildResult = await this.build(client, interaction, coptions)
 
