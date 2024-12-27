@@ -1,5 +1,13 @@
 // @ts-nocheck
 
+/**
+ * Discord Stuff
+ *  Chat Slash Command Interaction
+ *  Guild Member
+ *  Message Flags
+ *  Permission Flags
+ *  Role Object
+ */
 const {
   ChatInputCommandInteraction,
   GuildMember,
@@ -7,14 +15,20 @@ const {
   PermissionFlagsBits,
   Role
 } = require('discord.js')
+// Admin Command
 const { AdminCommand } = require('./admincommand.class')
+// Bsae Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
+// Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/timeConversion')
+// Use Discord Hammertime
 const timeFormat = require('../../utils/timeFormat')
+// Standardized colors
 const colors = require('../../dbs/colors.json')
-const path = require('path')
-const fs = require('fs')
+const path = require('path')  // Easy filepath management
+const fs = require('fs')      // Filesystem manipulation
 
+// Does this resemble a number?
 function isNumeric(n) {
   let isaN      = !isNaN(n)
   let isBool    = typeof n === "boolean"
@@ -67,7 +81,7 @@ class ModCommand extends AdminCommand {
    *
    * @param {ChatInputCommandInteraction} interaction Interaction that called the command
    * @param {GuildMember}                 user        User that we're modifying
-   * @param {Object.<string, string>}     roles       Roles that we're adjusting
+   * @param {Object.<string, import('discord.js').RoleResolvable | number | string>}     roles       Roles that we're adjusting
    * @param {string}                      [reason]    Reason?
    */
   async adjust_roles(
@@ -105,6 +119,7 @@ class ModCommand extends AdminCommand {
       if (
         (
           matches ||
+          // @ts-ignore
           (parseInt(addRole + "") == addRole) ||
           isNumeric(addRole)
         ) &&
@@ -139,6 +154,7 @@ class ModCommand extends AdminCommand {
       if (
         (
           matches ||
+          // @ts-ignore
           (parseInt(remRole + "") == remRole) ||
           isNumeric(remRole)
         ) &&
@@ -498,6 +514,7 @@ class ModCommand extends AdminCommand {
 
       // Determine the name to display (use nickname if available, otherwise default to tag or username)
       const targetUserName = guildMember?.nickname || targetUser.username;
+      // let printResult: boolean | Array<string> = false
       let printResult = false
 
       if (success) {

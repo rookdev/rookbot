@@ -1,20 +1,22 @@
-// @ts-nocheck
+// @ts-check
+const { program } = require('commander')  // Commander for CLI management
+const AsciiTable = require('ascii-table') // Pretty-print in console
+const PACKAGE = require('./package.json') // Node Package data
+const shell = require('shelljs')          // Run shell commands
+const path = require('path')              // Easy filepath management
+const fs = require('fs')                  // Filesystem manipulation
 
-const { program } = require('commander')
-const AsciiTable = require('ascii-table')
-const PACKAGE = require('./package.json')
-const shell = require('shelljs')
-const path = require('path')
-const fs = require('fs')
-
+// This is what is intended to run dotenvx
+// Print Package version
 console.log("")
 console.log("---")
 console.log("dotenvx Entrypoint:")
 console.log(PACKAGE.name, "v" + PACKAGE.version)
 
+// Create CLI structure
 program
-  .name(PACKAGE.name)
-  .version(PACKAGE.version)
+  .name(PACKAGE.name)       // App Name
+  .version(PACKAGE.version) // App Version
   .usage("[OPTIONS]...")
   // Profile Name
   .option(
@@ -36,7 +38,7 @@ program
   .option(
     "-s, --server <username>", "Server Token .env to load"
   )
-  // Long
+  // Long; run all sanity checks
   .option(
     "-l, --long", "Long?", false
   )
@@ -45,12 +47,17 @@ program
     "-e, --environment <dev|prod>", "Environment to load",
     "development"
   )
+  // Load canned options (crun.json)
   .option(
     "-lo, --loadoptions", "Load canned options (crun.json)"
   )
+  // Parse passed arguments
   .parse(process.argv)
 
+// Gather passed arguments
 let options = program.opts()
+
+// If we're loading canned options, get them
 if (options.loadoptions && options.loadoptions != "") {
   options = require(
     path.join(
@@ -59,6 +66,7 @@ if (options.loadoptions && options.loadoptions != "") {
     )
   )
 } else {
+  // Else, write what we used this time to canned options
   fs.writeFileSync(
     path.join(
       __dirname,
@@ -71,21 +79,25 @@ if (options.loadoptions && options.loadoptions != "") {
 // console.log("Options:")
 // console.log(JSON.stringify(options, null, "  "))
 
-let dotenvx = shell.exec("which dotenvx", { silent: true })
-let uname = shell.exec("uname", { silent: true })
+let dotenvx = shell.exec("which dotenvx", { silent: true }) // Collect dotenvx location
+let uname = shell.exec("uname", { silent: true })           // Get OS name
 
+// Get dotenvx executable path
 let bin = dotenvx.stdout.trim()
 console.log(bin)
+
+// If Windows, just run bare executable
 if (bin.indexOf("WinGet") > -1 || uname.stdout.trim().indexOf("MINGW") > -1) {
   bin = "dotenvx"
 }
-let envs = ""
-let args = []
 
-let haveCUser   = options.cu
-let haveUser    = options.user
-let haveClient  = options.client
-let haveServer  = options.server
+let envs = "" // Bucket for env vars to pass to dotenvx
+let args = [] // Bucket for CLI arguments to pass to run.js
+
+let haveCUser   = options.cu      // Bundled Client & User
+let haveUser    = options.user    // User
+let haveClient  = options.client  // Client
+let haveServer  = options.server  // Server
 
 let user = ""
 let client = ""
@@ -96,19 +108,23 @@ let profile = ""
 
 // CUser
 if (haveCUser && !haveUser && !haveClient) {
+  // Set User Token & Client ID
   envs += `-f ./env/devs/.env.token.${options.cu} `
   envs += `-f ./env/devs/.env.client.${options.cu} `
   user = options.cu
   client = options.cu
 } else {
+  // Set User Token
   if (haveUser && !haveServer) {
     envs += `-f ./env/devs/.env.token.${options.user} `
     user = options.user
   }
+  // Set Server Token
   if (!haveUser && haveServer) {
     envs += `-f ./env/servers/.env.token.${options.server} `
     server = options.server
   }
+  // Set Client ID
   if (haveClient) {
     envs += `-f ./env/devs/.env.client.${options.client} `
     client = options.client
@@ -121,11 +137,13 @@ if (options.environment) {
   envs += `-f ./env/envs/.env.${env} `
 }
 
+// Long Mode?
 if (options.long) {
   args.push("-l")
   // @ts-ignore
   long = true
 }
+// Profile to load
 if (options.profile) {
   args.push(
     `-p ${options.profile}`
@@ -133,6 +151,7 @@ if (options.profile) {
   profile = options.profile
 }
 
+// Pretty-print selections to console
 const Table = new AsciiTable("Selected Options:", {})
 Table.addRow("Dev Token", user)
 Table.addRow("Server Token", server)
@@ -142,6 +161,7 @@ Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? "Yes" : "No")
 console.log(Table.toString())
 
+// Use dotenvx with env vars to use node to run run.js with CLI args
 let command = []
 command.push(bin.trim())
 command.push("run")
@@ -150,5 +170,6 @@ command.push("--")
 command.push("node ./run.js")
 command.push(args.join(" "))
 
+// Print & run shell command
 console.log("CLI Command:", command.join(" "))
 shell.exec(command.join(" "))

@@ -27,7 +27,7 @@ module.exports = (timestamp, showSeconds=false) => {
   }
   returnTime += " " + `\`(${timestamp})\``
 
-  console.log("  " + JSON.stringify(debug))
+  console.log("   " + JSON.stringify(debug))
 
   return returnTime
 }

@@ -18,13 +18,13 @@ module.exports = async (client, oldMember, newMember) => {
   try {
     // Check if the nickname has changed
     if (oldMember.nickname === newMember.nickname) {
-      console.warn('  No nickname change detected.')
+      console.warn('   No nickname change detected.')
       return false
     }
 
     // Ensure the member is in a guild
     if (!newMember.guild) {
-      console.warn('  GuildMemberUpdate occurred outside of a guild:', newMember)
+      console.warn('   GuildMemberUpdate occurred outside of a guild:', newMember)
       return false
     }
 

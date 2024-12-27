@@ -1,5 +1,9 @@
+// @ts-nocheck
+// Discord Permission Flags
 const { PermissionFlagsBits } = require('discord.js')
-const { AdminCommand } = require('./admincommand.class')
+// Admin Command
+const { AdminCommand } = require('../command/admincommand.class')
+// Filesystem manipulation
 const fs = require('fs')
 
 /**
@@ -41,6 +45,8 @@ class BotDevCommand extends AdminCommand {
     this.ROLES = {} // populate in build()
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   // Build the response
   async build(client, interaction, coptions={}) {
     console.log(`/${this.name}: BotDev Build`)
@@ -61,8 +67,8 @@ class BotDevCommand extends AdminCommand {
         this.error = true
         this.props.description = this.errors.adminOnly
         this.props.fields = []
-        this.props.footer = {}
-        this.props.image = ""
+        this.props.footer = { text: "" }
+        this.props.image = { image: "" }
         return !this.error
       }
     }

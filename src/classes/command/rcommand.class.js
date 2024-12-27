@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 const { MessageFlags } = require('discord.js')
 const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../embed/rembed.class')

@@ -85,8 +85,17 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 
 ## Step 4: Set Up Environment Variables
 
-1. **Create a `.env.GLOBAL` File**:
-   - This step doesn't have specific instructions yet
+1. **Create a Global Environment Variable File**:
+   - Copy `.env.example` to `.env.GLOBAL`
+     ```bash
+     cp .env.example .env.GLOBAL
+     ```
+
+1. **Slice Global Environment Variable File into individual files**
+   - Run script
+     ```bash
+     python ./resources/ci/common/create_envs.py
+     ```
 
 ---
 

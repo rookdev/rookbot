@@ -25,8 +25,9 @@ module.exports = (client) => {
           (eventFile.indexOf("interactionCreate") < 0) &&
           (eventFile.indexOf("messageUpdate") < 0)
         ) {
-          console.log(`Event: ${eventFolder.split('\\').slice(-1)[0]}`)
-          console.log(` Script: ${eventFile.split('\\').slice(-1)[0]}`)
+          console.log(new Date().toISOString())
+          console.log(` Event: ${eventFolder.split('\\').slice(-1)[0]}`)
+          console.log(`  Script: ${eventFile.split('\\').slice(-1)[0]}`)
         }
         const eventFunction = require(eventFile)
         await eventFunction(client, ...args) // Pass all arguments to the event function

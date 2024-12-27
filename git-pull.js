@@ -1,8 +1,7 @@
-// @ts-nocheck
-
-const shell = require('shelljs')
-const fs = require('fs')
-let PACKAGE = JSON.parse(fs.readFileSync("./package.json", "utf8"))
+// @ts-check
+// Standalone git pull
+const PACKAGE = require('./package.json') // Node Package data
+const shell = require('shelljs')          // Run shell commands
 
 console.log("GIT PULL")
 console.log("========")

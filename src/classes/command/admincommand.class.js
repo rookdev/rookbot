@@ -1,5 +1,9 @@
+// @ts-nocheck
+// Discord Permission Flags
 const { PermissionFlagsBits } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../command/rcommand.class')
+// Filesystem manipulation
 const fs = require('fs')
 
 class AdminCommand extends RookCommand {
@@ -17,6 +21,7 @@ class AdminCommand extends RookCommand {
     )
 
     // Disable sources for AdminCommand and children
+    // FIXME: NYI
     for (let source of ["user", "search"]) {
       if (!(this.flags)) {
         this.flags = {}
@@ -34,6 +39,8 @@ class AdminCommand extends RookCommand {
     this.ROLES = {} // populate in build()
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   // Build the response
   async build(client, interaction, coptions={}) {
     console.log(`/${this.name}: Admin Build`)
@@ -46,7 +53,7 @@ class AdminCommand extends RookCommand {
       if (!APPROVED_ROLES) {
         this.error = true
         this.props.description = "Failed to get Approved Roles."
-        return
+        return false
       }
 
       // Bail if member doesn't have Approved Roles
@@ -56,7 +63,7 @@ class AdminCommand extends RookCommand {
         this.props.fields = []
         this.props.footer = {}
         this.props.image = ""
-        return
+        return false
       }
     }
 
