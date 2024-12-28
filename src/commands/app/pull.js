@@ -3,6 +3,7 @@
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')
 const fs = require('fs')
+const { ApplicationCommandOptionType } = require('discord.js')
 
 /**
  * @class
@@ -17,6 +18,13 @@ module.exports = class PullCommand extends BotDevCommand {
       name: "pull",
       category: "app",
       description: "Pull from Main",
+      options: [
+        {
+          name: "branch",
+          description: "Override branch to pull from",
+          type: ApplicationCommandOptionType.String
+        }
+      ],
       flags: {
         test: "basic"
       }
@@ -39,6 +47,16 @@ module.exports = class PullCommand extends BotDevCommand {
       current: "",
       latest: "",
       new: ""
+    }
+
+    if (!this.DEV) {
+      // Checkout
+      try {
+        let selectedBranch = coptions["branch"] ?? "main"
+        shell.exec(`git checkout ${selectedBranch}`)
+      } catch(err) {
+        console.log(err.stack)
+      }
     }
 
     // Get Branch
@@ -75,12 +93,6 @@ module.exports = class PullCommand extends BotDevCommand {
     }
 
     if (!this.DEV) {
-      // Checkout
-      try {
-        shell.exec("git checkout main")
-      } catch(err) {
-        console.log(err.stack)
-      }
       // Pull
       try {
         shell.exec("git pull origin")

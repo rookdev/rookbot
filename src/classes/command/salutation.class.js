@@ -257,7 +257,7 @@ class SalutationCommand extends RookCommand {
         // Launch Time
         {
           name: "Launched",
-          value: timeFormat(launchedDateTime.getTime(), true)
+          value: timeFormat(launchedDateTime.getTime(), { showSeconds: true })
         }
       ]
     ]
