@@ -37,7 +37,12 @@
       "name": "pull",
       "category": "app",
       "description": "Pull from Main",
-      "options": [],
+      "options": [
+        {
+          "name": "branch",
+          "description": "Override branch to pull from"
+        }
+      ],
       "access": "BotDev",
       "segment": "local"
     },
