@@ -59,7 +59,7 @@ const client = new RookClient(
   },
   // Profile to load
   options.profile
-)
+);
 
 (async () => {
   // Initialize Client Object
