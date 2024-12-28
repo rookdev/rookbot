@@ -37,6 +37,12 @@ module.exports = class SMMRSeedCommand extends SeedAnnounceCommand {
           description: 'The number of minutes to prepare before the game starts.',
           type: ApplicationCommandOptionType.Integer
         }
+      ],
+      testOptions: [
+        {},
+        { "ping-multiplayer-role": true },
+        { "seed-url": "https://maprando.com/seed/wPvtmGMpc" },
+        { "prep-time": 60 }
       ]
     }
     super(

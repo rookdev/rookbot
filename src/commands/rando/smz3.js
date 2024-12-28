@@ -37,6 +37,12 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
           description: 'The number of minutes to prepare before the game starts.',
           type: ApplicationCommandOptionType.Integer
         }
+      ],
+      testOptions: [
+        {},
+        { "ping-multiplayer-role": true },
+        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
+        { "prep-time": 60 }
       ]
     }
     super(

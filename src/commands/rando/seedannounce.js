@@ -74,6 +74,21 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           type: ApplicationCommandOptionType.Integer
         }
       ],
+      testOptions: [
+        {},
+        { randomizer: "z3r" },
+        { randomizer: "z3r", "ping-multiplayer-role": true },
+        { randomizer: "z3r", "seed-url": "https://alttpr.com/h/0yAONb6XMV" },
+        { randomizer: "z3r", "prep-time": 60 },
+        { randomizer: "z3m3" },
+        { randomizer: "z3m3", "ping-multiplayer-role": true },
+        { randomizer: "z3m3", "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
+        { randomizer: "z3m3", "prep-time": 60 },
+        { randomizer: "m3maprando" },
+        { randomizer: "m3maprando", "ping-multiplayer-role": true },
+        { randomizer: "m3maprando", "seed-url": "https://maprando.com/seed/wPvtmGMpc" },
+        { randomizer: "m3maprando", "prep-time": 60 },
+      ],
       "aliases": [
         {
           name: "z3r",

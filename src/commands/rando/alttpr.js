@@ -37,6 +37,12 @@ module.exports = class ALttPRSeedCommand extends SeedAnnounceCommand {
           description: 'The number of minutes to prepare before the game starts.',
           type: ApplicationCommandOptionType.Integer
         }
+      ],
+      testOptions: [
+        {},
+        { "ping-multiplayer-role": true },
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV" },
+        { "prep-time": 60 }
       ]
     }
     super(
