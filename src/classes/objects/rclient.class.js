@@ -16,7 +16,7 @@ class RookClient extends Client {
     // Guild Object
     this.guild        = null
     // Guild ID
-    this.guildID      = process.env.GUILD_ID || "1303864272832565268"
+    this.guildID      = process.env?.GUILD_ID ?? "1303864272832565268"
     // Loaded Profile Name
     this.profileName  = profileName
     // Loaded Profile
@@ -25,9 +25,7 @@ class RookClient extends Client {
 
   async init() {
     // Set the Guild
-    this.guild = await this.guilds.cache.find(
-      g => g.id === this.guildID
-    )
+    this.guild = await this.guilds.cache.get(this.guildID)
   }
 }
 

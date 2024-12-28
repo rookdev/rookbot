@@ -62,11 +62,11 @@ const client = new RookClient(
 );
 
 (async () => {
-  // Initialize Client Object
-  await client.init()
-
   // Log in Client Object
   await client.login(process.env.TOKEN)
+
+  // Initialize Client Object
+  await client.init()
 
   // Register Events
   console.log("---")
