@@ -276,7 +276,7 @@ class SalutationCommand extends RookCommand {
           // Current Time
           {
             name: "Exited",
-            value: timeFormat(offlineDateTime.getTime(), true)
+            value: timeFormat(offlineDateTime.getTime(), { showSeconds: true })
           }
         ]
       )

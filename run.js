@@ -29,14 +29,14 @@ program
 
 // Gather passed arguments
 const options = program.opts()
-// console.log("Options:")
+// console.log("Options")
 // console.log(JSON.stringify(options, null, "  "))
 
 let long = options.long       // Long Mode?
 let profile = options.profile // Profile to load
 
 // Pretty-print selections to console
-const Table = new AsciiTable("Selected Options:", {})
+const Table = new AsciiTable("Selected Options", {})
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? "Yes" : "No")
 console.log(Table.toString())

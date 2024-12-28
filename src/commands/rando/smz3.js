@@ -23,6 +23,11 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
           type: ApplicationCommandOptionType.Boolean
         },
         {
+          name: "pingable-role-id",
+          description: "Role ID number to ping",
+          type: ApplicationCommandOptionType.String
+        },
+        {
           name: 'seed-url',
           description: 'The URL of the seed to play',
           type: ApplicationCommandOptionType.String
@@ -45,9 +50,10 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
     coptions = interaction.options
     let options = {
       randomizer: "z3m3",
-      "ping-multiplayer-role": coptions["ping-multiplayer-role"] ?? false,
-      "seed-url": coptions["seed-url"] ?? "",
-      "prep-time": coptions["prep-time"] ?? 0
+      "ping-multiplayer-role": (await interaction.options.get("ping-multiplayer-role")?.value) ?? false,
+      "pingable-role-id": (await interaction.options.get("pingable-role-id")?.value) ?? 0,
+      "seed-url": (await interaction.options.get("seed-url")?.value) ?? "",
+      "prep-time": (await interaction.options.get("prep-time")?.value) ?? 0
     }
     return await super.execute(
       client,

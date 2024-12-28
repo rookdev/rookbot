@@ -1,8 +1,11 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType } = require('discord.js');
-const { RookCommand } = require('../../classes/command/rcommand.class');
+const { ApplicationCommandOptionType } = require('discord.js')
+const SeedMetaCommand = require('./seedmeta.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 const timeFormat = require('../../utils/timeFormat.js')
+const path = require('path')
+const fs = require('fs')
 
 function article(input="") {
   for (let vowel of "aeiou".split("")) {
@@ -56,6 +59,11 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           type: ApplicationCommandOptionType.Boolean
         },
         {
+          name: "pingable-role-id",
+          description: "Role ID number to ping",
+          type: ApplicationCommandOptionType.String
+        },
+        {
           name: 'seed-url',
           description: 'The URL of the seed to play',
           type: ApplicationCommandOptionType.String
@@ -98,9 +106,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
   async action(client, interaction, coptions) {
     const randomizer = coptions.randomizer || "z3m3"
 
-    const pingMultiplayerRole = coptions['ping-multiplayer-role'] || false // Default to false
-    const seedURL = coptions['seed_url'] || null
-    const prepTimeMinutes = coptions['prep_time'] ?? 5 // Default to 5 minutes
+    const pingMultiplayerRole = coptions['ping-multiplayer-role'] ?? false // Default to false
+    let roleID = coptions['pingable-role-id'] ?? 0
+    const seedURL = coptions['seed-url'] ?? null
+    const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
 
       /*
     const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot']);
@@ -202,7 +211,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         [
           {
             name: 'Game Start Time',
-            value: `The game will begin at ${timeFormat(adjustedDateTime.getTime())}.`
+            value: `The game will begin at ${timeFormat(adjustedDateTime.getTime())} which is ${timeFormat(adjustedDateTime.getTime(), { relative: true })}.`
           }
         ]
       )
@@ -214,11 +223,33 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         }
       }
 
-
       // Construct the content for the channel message
-      let roleID = coptions["pingable-role-id"]
-      let messageContent = pingMultiplayerRole ? `<@&${roleID}>` : ""
-      messageContent += article(randoTitle).ucfirst() + ` ${randoTitle} game has been generated!`
+      let roleIDs = {}
+      let roleIDsPath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'dbs',
+        interaction?.guild.id,
+        'roleIDs.json'
+      )
+      if (fs.existsSync(roleIDsPath)) {
+        roleIDs = require(roleIDsPath)
+      }
+      if (roleID == 0) {
+        roleID = roleIDs["pingable-multiplayer-role"] ?? 0
+      }
+
+      let roleObject = null;
+      if (roleID != 0) {
+        roleObject = interaction?.guild?.roles.cache.find(
+          r => r.id === roleID
+        )
+      }
+      let pinger = (pingMultiplayerRole && (roleID != 0)) ? `<@&${roleID}>` : ""
+      this.content = pinger
+
+      this.props.description = article(randoTitle).ucfirst() + ` ${randoTitle} game has been generated!`
 
       if (
         isValidURLFromDomain(
@@ -226,10 +257,8 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           randoData.rando.permalink
         )
       ) {
-        messageContent += `\nYou can download it from here: ${seedURL}`
+        this.props.description += `\nYou can download it from here: ${seedURL}`
       }
-
-      this.props.description = messageContent
 
       // Silent conclusion (no visible follow-up)
 
@@ -242,5 +271,34 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     }
 
     return !this.error
+  }
+
+  async execute(client, interaction, coptions) {
+    await super.execute(client, interaction, coptions)
+
+    if (interaction && (coptions?.randomizer)) {
+      const randoData = require(`../../dbs/randos/${coptions.randomizer}.json`)
+      if (coptions["seed-url"] && isValidURLFromDomain(coptions["seed-url"], randoData.rando.permalink)) {
+        let seedMeta = new SeedMetaCommand(client)
+        seedMeta.channel = interaction.channel
+        let hashID = coptions["seed-url"].endsWith('/') ? coptions["seed-url"].substring(0, coptions["seed-url"].length - 1) : coptions["seed-url"]
+        hashID = hashID.split("/")
+        hashID = hashID[hashID.length - 1]
+        let buildResult = await seedMeta.build(
+          client,
+          interaction,
+          {
+            "hash-id": hashID,
+            "game-id": coptions.randomizer
+          }
+        )
+        let sendResult = await seedMeta.send(
+          client,
+          interaction,
+          seedMeta.pages,
+          true
+        )
+      }
+    }
   }
 }

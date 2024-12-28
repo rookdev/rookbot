@@ -45,6 +45,7 @@ class RookCommand {
     this.errors               = require('../../dbs/errors.json')
 
     this.profile = client.profile
+    this.content = ""
     this.pages = []
 
     let PROD = false
@@ -149,6 +150,21 @@ class RookCommand {
           }
         }
       }
+    }
+
+    if (coptions) {
+      let Table = new AsciiTable(
+        "Build Options",
+        {}
+      )
+        .setHeading(
+          "Option",
+          "Value"
+        )
+      for (let [oName, oVal] of Object.entries(coptions)) {
+        Table.addRow(oName, oVal)
+      }
+      console.log(Table.toString())
     }
 
     let actionResult = await this.action(client, interaction, coptions)
@@ -394,6 +410,9 @@ class RookCommand {
     console.log(`/${this.name}: ...and Ship it!`)
 
     let this_package = { embeds: this.pages }
+    if (this.content && this.content != "") {
+      this_package.content = this.content
+    }
 
     if (this.pages.length > 1) {
       console.log(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
@@ -467,37 +486,52 @@ class RookCommand {
   }
 
   async execute(client, interaction, coptions, independent=false) {
-    const Table = new AsciiTable(
+    let Table = new AsciiTable(
       `/${this.name}` + " : " + new Date().toISOString(),
       {}
     )
-    Table.setHeading(
-      "",
-      "Name",
-      "ID"
-    )
-    Table.setAlign(2, AsciiTable.RIGHT)
-    Table.addRow(
-      "Guild",
-      interaction?.member?.guild?.name,
-      interaction?.guildId
-    )
-    Table.addRow(
-      "Channel",
-      await interaction?.channel?.name,
-      interaction?.channelId
-    )
-    Table.addRow(
-      "Interaction",
-      interaction ? "Yes" : "No",
-      interaction.id
-    )
-    Table.addRow(
-      "User",
-      interaction?.user?.username,
-      interaction?.user?.id
-    )
+      .setHeading(
+        "",
+        "Name",
+        "ID"
+      )
+      .setAlign(2, AsciiTable.RIGHT)
+      .addRow(
+        "Guild",
+        interaction?.member?.guild?.name,
+        interaction?.guildId
+      )
+      .addRow(
+        "Channel",
+        await interaction?.channel?.name,
+        interaction?.channelId
+      )
+      .addRow(
+        "Interaction",
+        interaction ? "Yes" : "No",
+        interaction.id
+      )
+      .addRow(
+        "User",
+        interaction?.user?.username,
+        interaction?.user?.id
+      )
     console.log(Table.toString())
+
+    if (coptions) {
+      Table = new AsciiTable(
+        "Execute Options",
+        {}
+      )
+        .setHeading(
+          "Option",
+          "Value"
+        )
+      for (let [oName, oVal] of Object.entries(coptions)) {
+        Table.addRow(oName, oVal)
+      }
+      console.log(Table.toString())
+    }
 
     console.log(`/${this.name}: Execute`)
 

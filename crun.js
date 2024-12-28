@@ -76,7 +76,7 @@ if (options.loadoptions && options.loadoptions != "") {
   )
 }
 
-// console.log("Options:")
+// console.log("Options")
 // console.log(JSON.stringify(options, null, "  "))
 
 let dotenvx = shell.exec("which dotenvx", { silent: true }) // Collect dotenvx location
@@ -152,7 +152,7 @@ if (options.profile) {
 }
 
 // Pretty-print selections to console
-const Table = new AsciiTable("Selected Options:", {})
+const Table = new AsciiTable("Selected Options", {})
 Table.addRow("Dev Token", user)
 Table.addRow("Server Token", server)
 Table.addRow("Dev Client ID", client)

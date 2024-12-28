@@ -1,44 +1,65 @@
 // @ts-nocheck
-
+// Set up env vars
 require('@dotenvx/dotenvx').config()
+// Get Intents bitfields
 const { IntentsBitField } = require('discord.js')
+// Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
+// Event Handler
 const eventHandler = require('./handlers/eventHandler')
-const { program } = require('commander')
-const AsciiTable = require('ascii-table')
-const PACKAGE = require("../package.json")
+const { program } = require('commander')    // Commander for CLI management
+const AsciiTable = require('ascii-table')   // Pretty-print in console
+const PACKAGE = require("../package.json")  // Node Package data
 
+// This is the Main Bot Runner
+// Print Package version
 console.log("")
 console.log("---")
 console.log("Bot Main:")
 console.log(PACKAGE.name, "v" + PACKAGE.version)
 
+// Create CLI structure
 program
+// Profile Name
   .option(
     "-p, --profile <profile>", "Profile", "default"
   )
+  // Parse passed arguments
   .parse(process.argv)
 
+// Gather passed arguments
 const options = program.opts()
-// console.log("Options:")
+// console.log("Options")
 // console.log(JSON.stringify(options, null, "  "))
 
-let profile = options.profile
-const Table = new AsciiTable("Selected Options:", {})
+let profile = options.profile // Profile to load
+// Pretty-print selections to console
+const Table = new AsciiTable("Selected Options", {})
 Table.addRow("Selected Profile", profile)
 console.log(Table.toString())
 
+// Create RookClient object
 const client = new RookClient(
   {
+    /**
+     * Intents:
+     *  Guilds
+     *  GuildMembers
+     *  GuildMessages
+     *  MessageContent
+     */
     intents: [
       IntentsBitField.Flags.Guilds,
       IntentsBitField.Flags.GuildMembers,
       IntentsBitField.Flags.GuildMessages,
       IntentsBitField.Flags.MessageContent
-    ]
+    ],
+    // All bot to mention roles
+    allowedMentions: { parse: ["roles"] }
   },
+  // Profile to load
   options.profile
-);
+)
 
 (async () => {
   // Initialize Client Object
@@ -50,22 +71,28 @@ const client = new RookClient(
   // Register Events
   console.log("---")
   await eventHandler(client)
-  client.guild = await client.guilds.fetch(client.guildID)
 
+  // If this is a GitHub Actions run
   if (process.env.GITHUB_WORKFLOW) {
     console.log(process.env.GITHUB_WORKFLOW)
+    // Set Timeout
     setTimeout(async () => {
+      // Get local commands
       const getLocalCommands = require('./utils/getLocalCommands')
       const localCommands = getLocalCommands(client)
       try {
+        // Run Exit
         let commandNames = [ "exit" ]
         for(let commandName of commandNames) {
           const commandObject = localCommands.find(
             c => c.name === commandName
           )
           if (commandObject) {
+            // Execute Command
             await commandObject.execute(
+              // Pass RookClient object
               client,
+              // Fake an Interaction object
               {
                 client: client,
                 member: { user: { tag: "gitrook" } },
@@ -108,7 +135,7 @@ const client = new RookClient(
         console.log(err.stack)
       }
     },
-    // 5 * 1000)
+    // Do this after 60 seconds
     60 * 1000)
   }
 })()

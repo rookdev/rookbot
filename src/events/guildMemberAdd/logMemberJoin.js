@@ -34,6 +34,57 @@ module.exports = async (client, newMember) => {
     }
 
     let joinedDateTime = new Date(fetchedMember.joinedTimestamp)
+    let logFields = [
+      [
+        // Joined DateTime
+        {
+          name: 'Joined At',
+          value: joinedDateTime
+            ? timeFormat(joinedDateTime.getTime())
+            : 'Unknown' // Handle cases where joinedAt is null
+        }
+      ],
+      [
+        // Who Joined?
+        // Hyperlink in case the Mention doesn't load
+        {
+          name: 'Member Joined',
+          value: `[${fetchedMember.user.tag}]` +
+            `(https://discord.com/users/${fetchedMember.user.id})` + " " +
+            `(ID: \`${fetchedMember.user.id}\`)`
+        }
+      ],
+      [
+        // Who Joined?
+        {
+          name: "Member Link",
+          value: `<@${fetchedMember.user.id}>`
+        }
+      ],
+      [
+        // Joined what Guild?
+        {
+          name: 'Guild',
+          value: [
+            fetchedMember.guild.name,
+            `(ID: \`${fetchedMember.guild.id}\`)`
+          ]
+        }
+      ]
+    ]
+
+    if (newMember.roles.cache.find(
+      r => r.name === "Member"
+    )) {
+      logFields.push(
+        [
+          {
+            name: "Member Role?",
+            value: "Yes"
+          }
+        ]
+      )
+    }
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -52,44 +103,7 @@ module.exports = async (client, newMember) => {
           avatar: newMember.user.displayAvatarURL( { size: 128 } )
         }
       },
-      fields: [
-        [
-          // Joined DateTime
-          {
-            name: 'Joined At',
-            value: joinedDateTime
-              ? timeFormat(joinedDateTime.getTime())
-              : 'Unknown' // Handle cases where joinedAt is null
-          }
-        ],
-        [
-          // Who Joined?
-          // Hyperlink in case the Mention doesn't load
-          {
-            name: 'Member Joined',
-            value: `[${fetchedMember.user.tag}]` +
-              `(https://discord.com/users/${fetchedMember.user.id})` + " " +
-              `(ID: \`${fetchedMember.user.id}\`)`
-          }
-        ],
-        [
-          // Who Joined?
-          {
-            name: "Member Link",
-            value: `<@${fetchedMember.user.id}>`
-          }
-        ],
-        [
-          // Joined what Guild?
-          {
-            name: 'Guild',
-            value: [
-              fetchedMember.guild.name,
-              `(ID: \`${fetchedMember.guild.id}\`)`
-            ]
-          }
-        ]
-      ]
+      fields: logFields
     })
 
     // Send the log embed to the log channel
