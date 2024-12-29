@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+// Instance Greeting
 const { SalutationCommand } = require('../../classes/command/salutation.class.js')
 
 /**
@@ -24,11 +25,13 @@ module.exports = class HelloCommand extends SalutationCommand {
   }
 
   async execute(client, interaction, coptions={}, independent=false) {
+    // Set EmbedPlayerTypes: Bot|Guild
     this.props.playerTypes = {
       user: "bot",
       target: "guild"
     }
 
+    // Call SalutationCommand.execute() with { mode: "boot" }
     return await super.execute(
       client,
       interaction,

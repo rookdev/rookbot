@@ -1,6 +1,8 @@
 // @ts-nocheck
 
+// Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+// Rook Client
 const { RookClient } = require('../objects/rclient.class')
 
 /**

@@ -6,6 +6,13 @@ const { RookCommand } = require('../command/rcommand.class')
 // Filesystem manipulation
 const fs = require('fs')
 
+/**
+ * @class
+ * @classdesc Build a Command for Admins-only
+ * @this {AdminCommand}
+ * @extends {RookCommand}
+ * @public
+ */
 class AdminCommand extends RookCommand {
   constructor(client, comprops, props) {
     // BotPerms: Administrator
@@ -67,6 +74,7 @@ class AdminCommand extends RookCommand {
       }
     }
 
+    // Process canned option values into sent option values
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
@@ -78,6 +86,7 @@ class AdminCommand extends RookCommand {
       }
     }
 
+    // Run the action
     let actionResult = await this.action(client, interaction, coptions)
 
     return actionResult && !this.error

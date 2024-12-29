@@ -189,7 +189,7 @@ module.exports = async (client, oldMember, newMember) => {
     }
 
     // Optional: Save the nickname change to a log file
-    const DEV = process.env.ENV_ACTIVE === "development"
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',

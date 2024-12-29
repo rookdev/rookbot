@@ -28,6 +28,7 @@ class BotDevCommand extends AdminCommand {
     )
 
     // Disable sources for AdminCommand and children
+    // FIXME: NYI
     for (let source of ["user", "search"]) {
       if (!(this.flags)) {
         this.flags = {}
@@ -73,6 +74,7 @@ class BotDevCommand extends AdminCommand {
       }
     }
 
+    // Process canned option values into sent option values
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
@@ -84,6 +86,7 @@ class BotDevCommand extends AdminCommand {
       }
     }
 
+    // Run the action
     let actionResult = await this.action(client, interaction, coptions)
 
     return actionResult && !this.error

@@ -17,7 +17,7 @@ const {
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('./admincommand.class')
-// Bsae Rook Embed
+// Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/timeConversion')
@@ -29,6 +29,7 @@ const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 
 // Does this resemble a number?
+// FIXME: Consolidate
 function isNumeric(n) {
   let isaN      = !isNaN(n)
   let isBool    = typeof n === "boolean"
@@ -94,12 +95,15 @@ class ModCommand extends AdminCommand {
   ) {
 
     console.log("Adjust Roles:",user.displayName,roles)
+
+    // Bail if we don't have a User object
     if (!user) {
       this.error = true
       this.props.description = "No member loaded."
       return
     }
 
+    // Bail if we don't have any roles to set
     if (!roles) {
       this.error = true
       this.props.description = "No roles provided."
@@ -113,9 +117,12 @@ class ModCommand extends AdminCommand {
     let matches = null
     let success = false
 
+    // If we're adding a Role
     if (Object.keys(roles).includes("add")) {
       addRole = roles.add
+      // Get the number
       matches = (addRole + "").match(/([\d]+)/)
+      // If we found something and it's a number
       if (
         (
           matches ||
@@ -126,6 +133,7 @@ class ModCommand extends AdminCommand {
         // @ts-ignore
         addRole != 0
       ) {
+        // Search for Role object by RoleID
         if (matches) {
           addRole = matches[1]
         }
@@ -133,10 +141,12 @@ class ModCommand extends AdminCommand {
           role => role.id === addRole
         )
       } else {
+        // Search for the Role object by Role Name
         addRole = await interaction.guild?.roles.cache.find(
           role => role.name === addRole
         )
       }
+      // Add the Role
       // @ts-ignore
       if (addRole && addRole != 0) {
         try {
@@ -148,9 +158,13 @@ class ModCommand extends AdminCommand {
         }
       }
     }
+
+    // If we're removing a Role
     if (Object.keys(roles).includes("remove")) {
       remRole = roles.remove
+      // Get the number
       matches = (remRole + "").match(/([\d]+)/)
+      // If we found something and it's a number
       if (
         (
           matches ||
@@ -161,6 +175,7 @@ class ModCommand extends AdminCommand {
         // @ts-ignore
         remRole != 0
       ) {
+        // Search for the Role object by RoleID
         if (matches) {
           remRole = matches[1]
         }
@@ -168,10 +183,12 @@ class ModCommand extends AdminCommand {
           role => role.id === remRole
         )
       } else {
+        // Search for the Role object by Role Name
         remRole = await interaction.guild?.roles.cache.find(
           role => role.name === remRole
         )
       }
+      // Remove the Role
       // @ts-ignore
       if (remRole && remRole != 0) {
         try {
@@ -184,6 +201,7 @@ class ModCommand extends AdminCommand {
       }
     }
 
+    // Bail, if after all that, we failed to find a proper Role
     if (addRole == 0 && remRole == 0) {
       this.error = true
       this.props.description = "No roles found."
@@ -247,16 +265,16 @@ class ModCommand extends AdminCommand {
     let MUTED_ID    = interaction.options.getString("muted-role-id")   || null
 
     if (!this.DEV) {
-      let mainRole = MEMBER_ROLE  || MEMBER_ID
-      let muteRole = MUTED_ROLE   || MUTED_ID
+      let mainRole = MEMBER_ROLE  || MEMBER_ID  // Member Role
+      let muteRole = MUTED_ROLE   || MUTED_ID   // Muted Role
 
-      // If no Member Role
+      // Bail if no Member Role
       if (!mainRole) {
         this.error = true
         this.props.description = `${MEMBER_ROLE} Member Role not found in server.`
         return false
       }
-      // If no Muted Role
+      // Bail if no Muted Role
       if (!muteRole) {
         this.error = true
         this.props.description = `${MUTED_ROLE} Muted Role not found in server.`
@@ -319,6 +337,7 @@ class ModCommand extends AdminCommand {
   }
 
   async action(client, interaction, coptions) {
+    // FIXME: Temporary hack to not allow on Live Server
     if (interaction) {
       if (interaction?.guild.id) {
         if (interaction.guild.id === "1282788953052676177") {
@@ -409,6 +428,9 @@ class ModCommand extends AdminCommand {
 
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '');  // Remove <@>, <@!>, and >
+
+    // If we're doing something that Discord actually does something with
+    //  require a User ID and don't allow a Mention
     if(
       [
         "ban",
@@ -452,6 +474,7 @@ class ModCommand extends AdminCommand {
       // ACTION the user
       if (!this.DEV) {
         switch(this.name) {
+          // Role Add
           case "role_add":
             success = await this.add_role(
               interaction,
@@ -459,6 +482,8 @@ class ModCommand extends AdminCommand {
               role
             ) || false
             break
+
+          // Role Remove
           case "role_remove":
             success = await this.remove_role(
               interaction,
@@ -466,16 +491,22 @@ class ModCommand extends AdminCommand {
               role
             ) || false
             break
+
+          // Ban
           case "ban":
             success = await interaction.guild.members.ban(
               targetUserId, { reason }
             )
             break
+
+          // Kick
           case "kick":
             success = await interaction.guild.members.kick(
               targetUserId, { reason }
             )
             break
+
+          // Mute
           case "mute":
             success = await this.mute_user(
               interaction,
@@ -483,17 +514,23 @@ class ModCommand extends AdminCommand {
               reason
             ) || false
             break
+
+          // Timeout
           case "timeout":
             success = await guildMember.timeout(
               durationMilliseconds,
               reason
             )
             break
+
+          // Unban
           case "unban":
             success = await interaction.guild.members.unban(
               targetUserId
             )
             break
+
+          // Unmute
           case "unmute":
             success = await this.unmute_user(
               interaction,
@@ -501,6 +538,8 @@ class ModCommand extends AdminCommand {
               reason
             ) || false
             break
+
+          // Warn
           case "warn":
             success = true
             // success = await interaction.guild.members.warn(
@@ -871,6 +910,7 @@ class ModCommand extends AdminCommand {
       return !this.error
     }
 
+    // Process canned option values into sent option values
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
@@ -882,6 +922,7 @@ class ModCommand extends AdminCommand {
       }
     }
 
+    // Run the action
     let actionResult = await this.action(client, interaction, coptions)
 
     return actionResult && !this.error

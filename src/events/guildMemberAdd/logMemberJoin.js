@@ -111,7 +111,7 @@ module.exports = async (client, newMember) => {
     await logChannel.send({ embeds: [logEmbed] })
 
     // Save the joining member to a log file
-    const DEV = process.env.ENV_ACTIVE === "development"
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',

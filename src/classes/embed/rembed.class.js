@@ -1,8 +1,9 @@
 // @ts-nocheck
-
-const { processExceptions } = require('better-npm-audit/src/utils/vulnerability')
+// We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
 
+// Does this resemble a number?
+// FIXME: Consolidate
 function isNumeric(n) {
   let isaN      = !isNaN(n)
   let isBool    = typeof n === "boolean"
@@ -50,7 +51,6 @@ class RookEmbed extends EmbedBuilder {
     }
 
     // Get description figured out
-    // All Hail the Bold Space
     let noDesc    = (!(this.props?.description))
     let undefDesc = (typeof this.props.description === "undefined")
     let nullDesc  = (!(noDesc || undefDesc)) && (! this.props?.description)
@@ -75,6 +75,7 @@ class RookEmbed extends EmbedBuilder {
       this.props.timestamp = true
     }
 
+    // Initialize EmbedPlayers
     this.props.players = {
       bot:    {},
       user:   {},
@@ -196,6 +197,8 @@ class RookEmbed extends EmbedBuilder {
 
     // Hack footer
     if (client.profile?.DEV && client.profile.DEV) {
+      // If we're in Development Mode
+      //  Move the footer text to the end of the description
       if (client.profile?.footer) {
         if (this.props?.footer?.text) {
           if (this.props.description != "") {
@@ -206,6 +209,8 @@ class RookEmbed extends EmbedBuilder {
         this.props.footer = client.profile.footer
       }
     }
+
+    // Make sure version number is in the footer text
     let versionText = `[v${client.profile.PACKAGE.version}]`
     if (this.props.footer?.text) {
       if (this.props.footer.text.indexOf(versionText) == -1) {
@@ -218,6 +223,7 @@ class RookEmbed extends EmbedBuilder {
     }
 
     // Set description
+    // Array.join() if it's an array
     if (
       this.props?.description &&
       this.props.description &&
@@ -231,6 +237,10 @@ class RookEmbed extends EmbedBuilder {
     }
 
     // Set fields
+    // Fields should be an array of arrays
+    // Each top-level is a row
+    // Make them all inline
+    // Fill each row to three with dummy fields
     if (this.props?.fields) {
       let fields = []
       for (let fieldRow of this.props.fields) {
@@ -288,7 +298,6 @@ class RookEmbed extends EmbedBuilder {
       let hasText = this.props.footer?.text
       let hasIcon = this.props.footer?.image
 
-      // All Hail the Bold Space
       if (!hasText) {
         this.props.footer.text = " "
       }

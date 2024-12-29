@@ -1,9 +1,11 @@
 // @ts-nocheck
 
-const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
-const shell = require('shelljs')
-const fs = require('fs')
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// BotDevCommand
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
+const shell = require('shelljs')  // Run shell commands
+const fs = require('fs')          // Filesystem management
 
 /**
  * @class
@@ -42,7 +44,8 @@ module.exports = class PullCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    let BRANCH = ""
+    let BRANCH = "" // Branch Name
+    // Commit Data
     let COMMITS = {
       current: "",
       latest: "",
@@ -124,12 +127,15 @@ module.exports = class PullCommand extends BotDevCommand {
       console.log(err.stack)
     }
 
+    // Get Client User
     let user = client?.user
 
+    // Bucket for console output
     let console_output = [
       "---"
     ]
 
+    // Print Name & Version number
     console_output.push(
       "Updating " +
       (user ? user.username : "") +
@@ -166,6 +172,7 @@ module.exports = class PullCommand extends BotDevCommand {
     */
     this.props.fields = [
       [
+        // Branch Name
         {
           name: "Branch",
           value:
@@ -180,6 +187,7 @@ module.exports = class PullCommand extends BotDevCommand {
 
     this.props.fields.push(
       [
+        // Old Commit ID
         {
           name: "Old Commit",
           value: `[\`${COMMITS.current}\`](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.current})`
@@ -191,6 +199,7 @@ module.exports = class PullCommand extends BotDevCommand {
     if (COMMITS.fresh != COMMITS.current) {
       this.props.fields.push(
         [
+          // New Commit ID
           {
             name: "New Commit",
             value: `[\`${COMMITS.fresh}\`](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.fresh})`
@@ -199,6 +208,7 @@ module.exports = class PullCommand extends BotDevCommand {
       )
       this.props.fields.push(
         [
+          // We updated
           {
             name: "Updated?",
             value: "Yes"
@@ -209,6 +219,7 @@ module.exports = class PullCommand extends BotDevCommand {
       this.props.fields[1][0].name = "Same Commit"
       this.props.fields.push(
         [
+          // We didn't update
           {
             name: "Updated?",
             value: "No"

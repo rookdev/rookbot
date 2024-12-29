@@ -94,7 +94,7 @@ module.exports = async (client, oldMember) => {
     await logChannel.send({ embeds: [logEmbed] });
 
     // Save the leaving member to a log file
-    const DEV = process.env.ENV_ACTIVE === "development"
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',

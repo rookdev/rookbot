@@ -1,7 +1,8 @@
 // @ts-nocheck
 
+// BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
-const shell = require('shelljs')
+const shell = require('shelljs')  // Run shell commands
 
 /**
  * @class
@@ -32,6 +33,7 @@ module.exports = class InstallCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    // Run npm i
     let node_install = null
     try {
       node_install = shell.exec(
@@ -43,12 +45,15 @@ module.exports = class InstallCommand extends BotDevCommand {
       console.log(err.stack)
     }
 
+    // Get Client User
     let user = client?.user
 
+    // Bucket for console output
     let console_output = [
       "---"
     ]
 
+    // Print Name & Version number
     console_output.push(
       "Installing " +
       (user ? user.username : "") +

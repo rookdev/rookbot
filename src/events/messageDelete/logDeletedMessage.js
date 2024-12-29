@@ -202,7 +202,7 @@ module.exports = async (client, deletedMessage) => {
     await logChannel.send({ embeds: [logEmbed] })
 
     // Optional: Save the deleted message to a log file
-    const DEV = process.env.ENV_ACTIVE === "development"
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',

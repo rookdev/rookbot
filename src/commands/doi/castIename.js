@@ -13,7 +13,8 @@ module.exports = class CastleNameCommand extends RookCommand {
       flags: {
         test: "basic"
       },
-      permissions: [ PermissionFlagsBits.ManageNicknames ]
+      permissionsRequired: [ PermissionFlagsBits.ViewChannel ],
+      botPermissions: [ PermissionFlagsBits.ManageNicknames ]
     }
     let props = {}
     super(

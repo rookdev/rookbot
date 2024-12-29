@@ -160,7 +160,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     }
 
     // Optional: Save the edited message to a log file
-    const DEV = process.env.ENV_ACTIVE === "development"
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',

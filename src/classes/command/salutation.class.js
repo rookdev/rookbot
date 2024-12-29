@@ -1,13 +1,16 @@
 // @ts-nocheck
-
+// Base Rook Command
 const { RookCommand } = require('./rcommand.class.js')
+// Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class.js')
-const timeFormat = require('../../utils/timeFormat.js')
-const colors = require('../../dbs/colors.json')
-const shell = require('shelljs')
-const path = require('path')
-const fs = require('fs')
+// Pretty-print time durations
 const timeConversion = require('../../utils/timeConversion.js')
+// Use Discord Hammertime
+const timeFormat = require('../../utils/timeFormat.js')
+const colors = require('../../dbs/colors.json') // Standardized Colors
+const shell = require('shelljs')                // Run shell commands
+const path = require('path')                    // Easy filepath management
+const fs = require('fs')                        // Filesystem manipulation
 
 /**
  * @class
@@ -28,25 +31,33 @@ class SalutationCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    // Mode, default to "boot"
     let mode        = coptions?.mode || "boot"
+    // Label for On/Offline
     let onlineness  = mode == "boot" ? "Online" : "Offline"
+    // Label for Un/Ready
     let readiness   = mode == "boot" ? "Ready"  : "Unready"
-    let BRANCH      = null
-    let COMMIT      = null
+
+    let BRANCH      = null  // Branch Name
+    let COMMIT      = null  // Commit ID
 
     let mode_msg = ""
     let mode_tag = ""
 
+    // Set Message
     if (this.DEV) {
+      // Development Mode
       this.props.color = colors["warning"]
       mode_msg = "DEV MODE"
       mode_tag = "!!!"
     } else {
+      // Production Mode
       this.props.color = colors["success"]
       mode_msg = "PROD MODE"
       mode_tag = "\*\*\*"
     }
 
+    // Booting
     if (mode == "boot") {
       this.props.caption = { text: "Hello World" }
       this.props.title = {
@@ -57,6 +68,7 @@ class SalutationCommand extends RookCommand {
       onlineness = "Online"
       readiness = "Ready"
     } else if (mode == "exit") {
+      // Exiting
       this.props.caption = { text: "Later, man!" },
       this.props.title = {
         text: this.props["caption"].text,
@@ -70,6 +82,8 @@ class SalutationCommand extends RookCommand {
     }
     mode_msg = `${mode_tag} ${mode_msg} ${mode_tag}`
 
+    // Git Repository info
+    // FIXME: Extrapolate
     let git_info = {
       user: "mysterypaintwo",
       repo: "rookbot"
@@ -109,6 +123,7 @@ class SalutationCommand extends RookCommand {
     // Get Client User
     let user = client?.user
 
+    // Bucket for console output
     let console_output = [
       "---"
     ]
@@ -126,13 +141,13 @@ class SalutationCommand extends RookCommand {
 
     // Print User
     if(this.DEV) {
-      // DEV
+      // Development Mode
       console_output.push(
         mode_msg,
         `Footer Tag:  "${this.profile.name}"`
       )
     } else {
-      // PROD
+      // Production Mode
       console_output.push(
         mode_msg,
         'Footer Tag:  "' + (user ? user.username : "") + '"'
@@ -159,22 +174,25 @@ class SalutationCommand extends RookCommand {
 
     this.props.description =
       console_output[2]
-        .replace(   // DEV
+        .replace(   // Development Mode
           /!!!/g,
           "🟧"
         )
-        .replace(   // PROD
+        .replace(   // Production Mode
           /\*\*\*/g,
           "🟩"
         )
-        .replace(   // EXIT
+        .replace(   // Exiting
           /vvv/g,
           "🟥"
         )
 
-    let offlineDateTime   = new Date()
+    // When did we launch?
     let launchedDateTime  = new Date(client.readyTimestamp)
+    // If we're exiting, we're doing it now
+    let offlineDateTime   = new Date()
 
+    // Build default server info
     let server = {
       name: this?.channel?.guild.name ||
         interaction?.guild?.name ||
@@ -378,14 +396,19 @@ class SalutationCommand extends RookCommand {
 
           this.props.entities.guild = server
 
+          // Print this page
           let printResult = await this.print_it(client, interaction, [ this.props ])
 
           if (printResult) {
+            // Set up package
             let this_package = { embeds: this.pages }
 
+            // Send package
             await channel.send(this_package)
             this.null = true
 
+            // Edit the interaction reply to
+            //  Link to the channel we sent it to
             if (
               interaction &&
               interaction?.guild &&
@@ -406,10 +429,14 @@ class SalutationCommand extends RookCommand {
       }
     }
 
+    // If we're booting, return with exit code
     if (mode == "boot") {
       return !this.error
     } else if (mode == "exit") {
+      // If we're exiting
+      //  Alert with GOODBYE action
       console.log(`!!! GOODBYE`)
+      // Exit with exit code 1339
       process.exit(1339)
     }
   }
