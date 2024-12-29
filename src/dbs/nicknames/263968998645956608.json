@@ -1,0 +1,29 @@
+{
+  "name": "Minnie",
+  "id": "263968998645956608",
+  "mode": "build",
+  "parts": {
+    "pre": [
+      "Miss",
+      "Ms"
+    ],
+    "names": [
+      "Minn",
+      "Minnie",
+      "Minerva",
+      "Athena"
+    ],
+    "post": [
+      "Trethewey"
+    ],
+    "suffix": [
+      "Sprite Queen",
+      "Queen of the Sprites"
+    ]
+  },
+  "prefixes": {
+    "1282788953052676177": "[Admin] ",
+    "1297216081110372474": "[Server] ",
+    "745409743593406634": "DEV | "
+  }
+}

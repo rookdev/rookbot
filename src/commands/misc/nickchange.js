@@ -96,7 +96,7 @@ module.exports = class NickChangeCommand extends RookCommand {
       if (result?.success) {
         this.props.title = { text: "Nickname Changed" }
         this.props.description = result.message
-        console.log(result.message)
+        // console.log(result.message)
       } else {
         this.error = true
         this.props.title = { text: "Nickname Not Changed" }
