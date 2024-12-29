@@ -16,18 +16,18 @@ module.exports = async (client, interaction) => {
       cmd => cmd.name === interaction.commandName
     )
 
-    if (!commandObject) return;
+    if (!commandObject) return
 
     if (commandObject.devOnly) {
-      let roleName = "botdev";
-      let roleUserNames = roles[roleName];
-      let roleUserIDs = [];
+      let roleName = "botdev"
+      let roleUserNames = roles[roleName]
+      let roleUserIDs = []
       for (let [userName, userID] of Object.entries(userIDs)) {
         if (roleUserNames.includes(userName)) {
-          roleUserIDs.push(userID);
+          roleUserIDs.push(userID)
         }
       }
-      console.log(roleName,roleUserNames,roleUserIDs);
+      console.log(roleName,roleUserNames,roleUserIDs)
       if (!roleUserIDs.includes(interaction.member.id)) {
         interaction.reply({
           content: 'Only developers are allowed to run this command.',
@@ -79,8 +79,8 @@ module.exports = async (client, interaction) => {
       }
     }
 
-    await commandObject.execute(client, interaction);
+    await commandObject.execute(client, interaction)
   } catch (error) {
-    console.log(`There was an error running this command: ${error.stack}`);
+    console.log(`There was an error running this command: ${error.stack}`)
   }
 }

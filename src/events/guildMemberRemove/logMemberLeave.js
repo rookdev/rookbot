@@ -91,7 +91,7 @@ module.exports = async (client, oldMember) => {
 
     // Send the log embed to the log channel
     // @ts-ignore
-    await logChannel.send({ embeds: [logEmbed] });
+    await logChannel.send({ embeds: [logEmbed] })
 
     // Save the leaving member to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")

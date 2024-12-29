@@ -355,9 +355,9 @@ class ModCommand extends AdminCommand {
     // Get Guild Channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get User Input
-    const targetUserInput = coptions["target-id"];
+    const targetUserInput = coptions["target-id"]
     // Get Reason
-    const reason = coptions["reason"] || 'No reason provided';
+    const reason = coptions["reason"] || 'No reason provided'
     // Get Role
     const role = interaction.options?.getString("role")?.replace(/[<@&>]/g, "") || ""
     // Get Timeout Duration
@@ -427,7 +427,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Extract user ID from mention (if it's a mention)
-    const targetUserId = targetUserInput.replace(/[<@!>]/g, '');  // Remove <@>, <@!>, and >
+    const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
 
     // If we're doing something that Discord actually does something with
     //  require a User ID and don't allow a Mention
@@ -454,9 +454,9 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the user to be ACTIONed
-    let targetUser;
+    let targetUser
     try {
-      targetUser = await client.users.fetch(targetUserId);
+      targetUser = await client.users.fetch(targetUserId)
     } catch (error) {
       props.mod.error = true
       props.mod.description = "User not found."
@@ -465,7 +465,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await interaction.guild.members.fetch(targetUserId);
+    const guildMember = await interaction.guild.members.fetch(targetUserId)
     const user = guildMember?.user || targetUser
 
     // Attempt to ACTION the user
@@ -552,7 +552,7 @@ class ModCommand extends AdminCommand {
       }
 
       // Determine the name to display (use nickname if available, otherwise default to tag or username)
-      const targetUserName = guildMember?.nickname || targetUser.username;
+      const targetUserName = guildMember?.nickname || targetUser.username
       // let printResult: boolean | Array<string> = false
       let printResult = false
 
@@ -673,7 +673,7 @@ class ModCommand extends AdminCommand {
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
-          console.log(`Failed to DM user: ${dmError.message}`);
+          console.log(`Failed to DM user: ${dmError.message}`)
           props.mod = {
             color: colors["red"],
             title: { text: "[YouPost] Error" },
@@ -702,11 +702,20 @@ class ModCommand extends AdminCommand {
         if (guildChannels[log_check]) {
           log_type = log_check
         }
-        const logsChannel = await this.getChannel(client, interaction, log_type);
+
+        /**
+         * Region that this is being sent to
+         *  Development
+         *  Production; also sends to Discord Audit Log
+         */
+        let region = ((!this.DEV) ? "Production" : "Development")
+
+        const logsChannel = await this.getChannel(client, interaction, log_type)
         if (logsChannel) {
           if(this.DEV) {
             emoji = "[DEV]" + emoji
           }
+
 
           let logFields = []
           let now = new Date()
@@ -791,6 +800,16 @@ class ModCommand extends AdminCommand {
             ]
           )
 
+          logFields.push(
+            [
+              // Region
+              {
+                name: "Region",
+                value: region
+              }
+            ]
+          )
+
           props.log = {
             color: this.name == "unban" ? colors["good"] : colors["bad"],
             title: {
@@ -852,6 +871,7 @@ class ModCommand extends AdminCommand {
         }
         logEntry.push(
           `Reason:   ${reason}`,
+          `Region:   ${region}`,
           '--------------------------------'
         )
         fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")

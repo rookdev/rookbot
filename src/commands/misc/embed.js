@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+// AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
 
 module.exports = class EmbedCommand extends AdminCommand {

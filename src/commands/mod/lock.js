@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
@@ -70,7 +70,7 @@ module.exports = class LockCommand extends ModCommand {
           ]
         }
         const embed = new RookEmbed(client, props)
-        logs.send({ embeds: [ embed ] });
+        logs.send({ embeds: [ embed ] })
         console.log(`/${this.name}: LogPost`)
       } else {
         console.log("Logs channel not found.")
@@ -79,7 +79,7 @@ module.exports = class LockCommand extends ModCommand {
       // Complete the interaction with a private success message
       this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **locked**!`
     } catch (error) {
-      console.log(`There was an error when locking the channel: ${error.stack}`);
+      console.log(`There was an error when locking the channel: ${error.stack}`)
       this.error = true
       this.ephemeral = true
       this.props.description = `I couldn't lock <#${channel.id}>.`

@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand

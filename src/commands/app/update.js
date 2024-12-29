@@ -1,7 +1,8 @@
 // @ts-nocheck
 
+// BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
-const shell = require('shelljs')
+const shell = require('shelljs')  // Run shell commands
 
 module.exports = class UpdateCommand extends BotDevCommand {
   constructor(client) {
@@ -25,6 +26,7 @@ module.exports = class UpdateCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    // Run Node Update
     let node_update = null
     try {
       node_update = shell.exec("npm run-script update")
@@ -33,12 +35,15 @@ module.exports = class UpdateCommand extends BotDevCommand {
       console.log(err.stack)
     }
 
+    // Get Client User
     let user = client?.user
 
+    // Bucket for console output
     let console_output = [
       "---"
     ]
 
+    // Print Name & Version number
     console_output.push(
       "Updating " +
       (user ? user.username : "") +

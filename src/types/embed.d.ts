@@ -24,9 +24,17 @@ export type EmbedFooter = {
   /** Footer Image URL */ image?: string
 }
 export type EmbedPlayer = {
+  /** Player Type */    type?: string
+  /** Player ID */      id?: string | number
   /** Player Name */    name: string
-  /** Player URL */     url: string
+  /** Player URL */     url?: string
   /** Player Avatar */  avatar: string
+  /** Player Tag */     tag?: string
+}
+export type EmbedEntities = {
+  /** User */   user?: EmbedPlayer
+  /** Caller */ caller?: EmbedPlayer
+  /** Target */ target?: EmbedPlayer
 }
 // Members of RookEmbed
 export type EmbedProps = {
@@ -44,6 +52,7 @@ export type EmbedProps = {
   /** Embed Player Types */ playerTypes?: Object<string>
   /** Embed Flags */        flags?: number
   /** Null? */              null?: boolean
+  /** Entities */           entities?: EmbedEntities
   /** Ephemeral? */         ephemeral?: boolean
   /** Full? */              full?: boolean
 }

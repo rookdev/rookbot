@@ -1,11 +1,14 @@
 // @ts-nocheck
+// Command Option Types, Permission Flags
 const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js')
-const { changeNickname } = require('../../utils/changeNickname')  // Import the changeNickname function
+// Change User Nickname
+const { changeNickname } = require('../../utils/changeNickname')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class NickChangeCommand extends RookCommand {
-  constructor(client) {
-    let comprops = {
+  constructor(client, comprops, props) {
+    comprops = comprops || {
       name: "nickchange",
       category: "doi",
       description: "Immediately triggers a nickname change for specified user",
@@ -25,7 +28,7 @@ module.exports = class NickChangeCommand extends RookCommand {
       permissionsRequired: [ PermissionFlagsBits.ManageNicknames ],
       botPermissions: [ PermissionFlagsBits.ManageNicknames ]
     }
-    let props = {}
+    props = props || {}
     super(
       client,
       {...comprops},
@@ -39,7 +42,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     // Get Guild ID
     const guildID = interaction.guild.id
     // Get User Input
-    const targetUserInput = coptions["target-id"]
+    const targetUserInput = coptions["target-id"] || "1111517386588307536"
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
 
@@ -47,8 +50,10 @@ module.exports = class NickChangeCommand extends RookCommand {
       // Get this guild
       const guild = await client.guilds.fetch(guildID)
       if (!guild) {
+        // Bail if no Guild
         this.error = true
         this.props.description = `Guild not found [${guildID}]`
+        return false
       }
 
       // Find User

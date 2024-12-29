@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+// Base Rook Command
 const { RookCommand } = require("../../classes/command/rcommand.class")
 
 module.exports = class CoinFlipCommand extends RookCommand {

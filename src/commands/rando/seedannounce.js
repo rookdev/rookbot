@@ -23,7 +23,7 @@ function isValidURLFromDomain(input, domain) {
     const url = new URL(input)
 
     // Check if the hostname and protocol match the expected domain
-    const expectedUrl = new URL(domain);
+    const expectedUrl = new URL(domain)
     return (
       url.hostname === expectedUrl.hostname &&
       url.protocol === expectedUrl.protocol
@@ -127,14 +127,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
 
       /*
-    const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot']);
+    const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
 
     if (!sahaBot) {
       await interaction.reply({
         content: `Sahasrala bot not found on this server. <@${userIDs['sahabot']}>`,
         ephemeral: true,
-      });
-      return;
+      })
+      return
     }*/
 
     // Defer reply silently
@@ -147,7 +147,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // Get the current timestamp and add <prepTimeMinutes> minutes of prep time
       const now = new Date()
 
-      const maxAllowedMinutes = 10080;
+      const maxAllowedMinutes = 10080
       if (prepTimeMinutes > maxAllowedMinutes) {
         this.error = true
         // Respond with an error message if something goes wrong
@@ -198,11 +198,12 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       randomFooterText = randomFooterText.replace('[USELESS_ITEM]', randomUselessItem)
 
       // Create the embed
-      let players = {}
-      players["target"] = {
-        name: randoData.rando.player.name,
-        avatar: randoData.rando.player.avatar
+      this.props.playerTypes = {
+        user: "bot",
+        target: "caller"
       }
+      this.props.image = { image: randoData.rando.player.avatar }
+
       let fields = []
       fields.push(
         [
@@ -255,7 +256,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         roleID = roleIDs["pingable-multiplayer-role"] ?? 0
       }
 
-      let roleObject = null;
+      let roleObject = null
       if (roleID != 0) {
         roleObject = interaction?.guild?.roles.cache.find(
           r => r.id === roleID

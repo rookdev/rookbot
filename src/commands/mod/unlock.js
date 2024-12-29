@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const colors = require('../../dbs/colors.json')
@@ -33,9 +33,9 @@ module.exports = class UnlockCommand extends ModCommand {
   }
 
   async action(client, interaction, coptions) {
-    const guildID = interaction.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
-    const channelID = coptions['channel'];
+    const guildID = interaction.guild.id
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    const channelID = coptions['channel']
     const channel = await client.channels.fetch(channelID)
 
     try {
@@ -43,7 +43,7 @@ module.exports = class UnlockCommand extends ModCommand {
         // Unlock the channel by allowing SEND_MESSAGES for @everyone
         await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
           SendMessages: null, // Removes the overwrite
-        });
+        })
       }
 
       // Send public confirmation in the channel
@@ -52,12 +52,12 @@ module.exports = class UnlockCommand extends ModCommand {
         title: { text: '[ModPost] Channel Unlocked!', emoji: '🟡' },
         description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **unlocked**.`,
       }
-      const embed = new RookEmbed(client, embedProps);
-      channel.send({ embeds: [ embed ] });
+      const embed = new RookEmbed(client, embedProps)
+      channel.send({ embeds: [ embed ] })
       console.log(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
-      const logs = await client.channels.fetch(guildChannels["logging"]);
+      const logs = await client.channels.fetch(guildChannels["logging"])
       if (logs && !this.DEV) {
         let props = {
           color: colors["success"],
@@ -70,16 +70,16 @@ module.exports = class UnlockCommand extends ModCommand {
           ]
         }
         const embed = new RookEmbed(client, props)
-        logs.send({ embeds: [ embed ] });
+        logs.send({ embeds: [ embed ] })
         console.log(`/${this.name}: LogPost`)
       } else {
-        console.log("Logs channel not found.");
+        console.log("Logs channel not found.")
       }
 
       // Complete the interaction with a private success message
       this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **unlocked**!`
     } catch (error) {
-      console.log(`There was an error when unlocking the channel: ${error.stack}`);
+      console.log(`There was an error when unlocking the channel: ${error.stack}`)
       this.error = true
       this.ephemeral = true
       this.props.description = `I couldn't unlock <#${channel.id}>.`

@@ -1,9 +1,9 @@
 // @ts-nocheck
 
+// Game Data
 const { serverGameName_base64encoded } = require('../../../config.json')
-const { ChatInputCommandInteraction } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
 
 module.exports = class JustinCommand extends RookCommand {
   constructor(client) {
@@ -25,6 +25,7 @@ module.exports = class JustinCommand extends RookCommand {
   }
 
   async action(client, interaction, coptions={}) {
+    // Get Game Name
     const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
     this.props = {
       title: {

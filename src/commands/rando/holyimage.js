@@ -1,6 +1,8 @@
 // @ts-nocheck
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 async function get_url(in_url) {
@@ -56,22 +58,28 @@ module.exports = class HolyImageCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    let gameID = coptions['game-id'] ?? "z3r"
-    let slugID = coptions['slug-id'] ?? "verify"
+    let gameID = coptions['game-id'] ?? "z3r"     // Get Game ID
+    let slugID = coptions['slug-id'] ?? "verify"  // Get Slug ID
     // console.log(gameID,slugID)
 
+    // Get Game Names
     let gameNames = await get_url(`http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`)
+    // Get this Game Name
     let gameName = gameNames["games"][gameID]
 
+    // Get this game's Holy Images
     let holyimages  = await get_url(`http://alttp.mymm1.com/holyimage/holyimages-${gameID}.json`)
 
     let image = null
 
+    // Cycle through this game's Holy Images
     for(let this_image of holyimages[gameID]) {
       if(
         (this_image.slug == slugID) ||
         (this_image?.aliases && (this_image.aliases.indexOf(slugID) > -1))
       ) {
+        // If this Image matches the one we want...
+
         // console.log(
         //   this_image.title,
         //   this_image.slug,
@@ -80,46 +88,58 @@ module.exports = class HolyImageCommand extends RookCommand {
         image = this_image
       }
       if(image) {
+        // We found the Image we want, bounce
         break
       }
     }
 
+    // If we retrieved a Holy Image
     if(image) {
+      // Page URL
       let page_url = `http://alttp.mymm1.com/holyimage/${gameID}-${slugID}.html`
+      // Set Title
       this.props.title = {
         text: image.title,
         url: page_url
       }
 
+      // Get Image URL
       let image_url = image.url
       if(image_url.indexOf("http://") < 0 && image_url.indexOf("https://") < 0) {
         image_url = `http://alttp.mymm1.com/holyimage/${image_url}`
       }
+      // Set EmbedPlayerTypes to User|Target
       this.props.playerTypes = {
-        user: "minnie",
+        user: "user",
         target: "target"
       }
       this.props.entities = {
-        minnie: {
+        // Override User
+        user: {
           name: "Minnie's Holy Images",
           url: "http://alttp.mymm1.com/holyimage/",
           avatar: "https://cdn.discordapp.com/avatars/263968998645956608/f3e20428f32ae6ebea3be438916027b8.webp?size=128"
         },
+        // Override Target
         target: {
           name: "Holy Image",
           avatar: image_url
         }
       }
 
+      // Get Image Description
+      // Convert <a> tags to md
       let desc = image.desc
         .replaceAll(/<a href="([^"]+)">([^<]+)<\/a>/igm, '[$2]($1)')
         .replaceAll(/<a href="([^"]+)" title="([^"]+)">([^<]+)<\/a>/igm, '[$3]($1 "$2")')
 
+      // Add See Also
       let seeAlsoSearch = "<br /><br />See also:"
       if(desc.indexOf(seeAlsoSearch) > -1) {
         desc = desc.substring(0, desc.indexOf(seeAlsoSearch))
       }
 
+      // Convert linebreaks
       desc = desc.replaceAll("<br />", "\n")
       desc = desc.replaceAll("<br/>", "\n")
       desc = desc.replaceAll("<br>", "\n")
@@ -129,6 +149,7 @@ module.exports = class HolyImageCommand extends RookCommand {
       this.props.fields = []
       this.props.fields.push(
         [
+          // Game
           {
             name: "Game",
             value: gameName
@@ -139,6 +160,7 @@ module.exports = class HolyImageCommand extends RookCommand {
       if(image.credit) {
         this.props.fields.push(
           [
+            // Credit
             {
               name: "Credit",
               value: `*${image.credit}*`
@@ -146,6 +168,7 @@ module.exports = class HolyImageCommand extends RookCommand {
           ]
         )
       }
+      // See Alsos
       if(image["see-also"]) {
         let alsos = ""
         for(let also of image["see-also"]) {
@@ -168,9 +191,13 @@ module.exports = class HolyImageCommand extends RookCommand {
         )
       }
 
+      // Mode
       let source = image.mode == "redirect" ? "Redirect" : "Source"
       this.props.fields.push(
         [
+          // Links
+          //  Index Listing
+          //  Source
           {
             name: "Links",
             value: `[Index Listing](http://alttp.mymm1.com/holyimage/debug.php?game=${gameID}), [${source}](${page_url})`

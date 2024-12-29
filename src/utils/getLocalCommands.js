@@ -10,7 +10,7 @@ module.exports = (client, exceptions = []) => {
   )
 
   for (const commandCategory of commandCategories) {
-    const commandFiles = getAllFiles(commandCategory);
+    const commandFiles = getAllFiles(commandCategory)
 
     for (const commandFile of commandFiles) {
       let commandObject = require(commandFile)

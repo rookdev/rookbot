@@ -1,8 +1,10 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType, ChatInputCommandInteraction } = require('discord.js');
+// Command Option Types
+const { ApplicationCommandOptionType } = require('discord.js')
+// BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
+// Get Local Commands
 const getLocalCommands = require('../../utils/getLocalCommands')
 
 module.exports = class TestSuiteCommand extends BotDevCommand {
@@ -39,7 +41,10 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
 
   async action(client, interaction, coptions={}) {
     console.log(`/${this.name}: Action`)
+
+    // Get Local Commands
     const localCommands = getLocalCommands(client)
+    // Get requested Command Name
     let commandName = coptions["command-name"]
 
     try {
@@ -94,9 +99,9 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
 
       // Run the test function
       console.log(`/${this.name}/${commandObject.name}`)
-      await commandObject.test(client, interaction);
+      await commandObject.test(client, interaction)
     } catch (error) {
-      console.log(`There was an error running this command: ${error.stack}`);
+      console.log(`There was an error running this command: ${error.stack}`)
     }
     this.null = true
 

@@ -99,7 +99,7 @@ module.exports = class SearchCommand extends ModCommand {
     let props = {}
 
     try {
-      targetUser = await client.users.fetch(targetUserId);
+      targetUser = await client.users.fetch(targetUserId)
     } catch (error) {
       props.mod.error = true
       props.mod.description = "User not found."
@@ -107,7 +107,7 @@ module.exports = class SearchCommand extends ModCommand {
       return !props.mod.error
     }
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await interaction.guild.members.fetch(targetUserId);
+    const guildMember = await interaction.guild.members.fetch(targetUserId)
     const user = guildMember?.user || targetUser
 
     let logFileName = "" +

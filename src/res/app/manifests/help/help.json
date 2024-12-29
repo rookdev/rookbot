@@ -154,14 +154,6 @@
       "options": [],
       "access": "unset",
       "segment": "local"
-    },
-    "guildstatus": {
-      "name": "guildstatus",
-      "category": "bot",
-      "description": "Guild Status",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
     }
   },
   "botdev": {
@@ -321,18 +313,10 @@
     }
   },
   "meta": {
-    "boosters": {
-      "name": "boosters",
+    "guildstatus": {
+      "name": "guildstatus",
       "category": "meta",
-      "description": "Displays the number of boosters and the server boost level",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
-    },
-    "membercount": {
-      "name": "membercount",
-      "category": "meta",
-      "description": "Displays the total number of registered members on the server.",
+      "description": "Guild Status",
       "options": [],
       "access": "unset",
       "segment": "local"

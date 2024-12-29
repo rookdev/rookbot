@@ -1,6 +1,8 @@
-// @ts-nocheck
+// @ts-check
 
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+// Command Option Types, Permission Flags
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class.js')
 
 module.exports = class BanCommand extends ModCommand {

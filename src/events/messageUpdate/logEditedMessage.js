@@ -149,7 +149,7 @@ module.exports = async (client, oldMessage, newMessage) => {
           }
         ]
       ]
-    });
+    })
 
     // Send the embed to the log channel, if found and valid
     if (logChannel) {

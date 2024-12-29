@@ -1,6 +1,8 @@
-// @ts-nocheck
+// @ts-check
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class DiceRollCommand extends RookCommand {
@@ -43,8 +45,8 @@ module.exports = class DiceRollCommand extends RookCommand {
   }
 
   async action(client, interaction, coptions) {
-    const count = coptions.count
-    const sides = coptions.sides ?? 6
+    const count = coptions.count      // Number of dice
+    const sides = coptions.sides ?? 6 // Number of sides per die
 
     // Roll the dice and collect results
     const rolls = Array.from({ length: count }, () => Math.floor(Math.random() * sides) + 1)

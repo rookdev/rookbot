@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 const { Client } = require('discord.js')              // Get Discord Client
 const getProfile = require('../../utils/getProfile')  // Get loaded Profile
 

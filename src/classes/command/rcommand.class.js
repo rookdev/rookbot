@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 const { MessageFlags } = require('discord.js')            // Message Flags
 const { Pagination } = require('pagination.djs')          // Pagination
 const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
@@ -240,20 +241,21 @@ class RookCommand {
 
     // editReply "thinking" if first reply
     if (hasDeferred && canEdit) {
-      console.log(`/${this.name}: Editing Reply`)
       try {
         if (!isEphemeral) {
+          console.log(`/${this.name}: Editing Corporeal Reply`)
           await interaction.editReply(this_package)
+          handle_result = true
         } else {
-          console.log(`/${this.name}: Preparing Ephemeral Response`)
+          console.log(`/${this.name}: Editing Ephemeral Reply`)
           await interaction.editReply(this_package)
+          handle_result = true
         }
-        // handle_result = true
       } catch(e) {
         // console.log(e)
         // handle_result = false
       }
-        handle_result = true
+      handle_result = true
     } else if (!hasReply && canReply) {
       // reply if edited "thinking"
       console.log(`/${this.name}: Posting Reply`)
@@ -276,9 +278,10 @@ class RookCommand {
       }
     }
 
-    if (isEphemeral) {
+    if (!handle_result && isEphemeral) {
       // send followup and delete reply
       console.log(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
+      console.log(this_package)
       await interaction.followUp(this_package)
       await interaction.deleteReply()
       handle_result = true

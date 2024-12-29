@@ -1,6 +1,6 @@
-import { EmbedBuilder } from "discord.js";
-import { EmbedProps } from "./embed";
-import { RookClient } from "../classes/objects/rclient.class";
+import { EmbedBuilder } from "discord.js"
+import { EmbedProps } from "./embed"
+import { RookClient } from "../classes/objects/rclient.class"
 
 /**
  * @class

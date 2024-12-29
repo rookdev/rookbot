@@ -1,7 +1,8 @@
 // @ts-nocheck
 
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const path = require('path')
+const path = require('path')  // Easy filepath management
 
 module.exports = class MothCommand extends RookCommand {
   constructor(client) {
@@ -38,6 +39,7 @@ module.exports = class MothCommand extends RookCommand {
       this.error = true
       this.props.description = "There was an error uploading the video."
       console.log(`There was an error when uploading the video: ${error.stack}`)
+      return false
     }
 
     return !this.error

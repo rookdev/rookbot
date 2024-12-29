@@ -1,6 +1,8 @@
 // @ts-nocheck
 
+// Game Metadata
 const { serverGameName_base64encoded } = require('../../../config.json')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class DOIGameCommand extends RookCommand {
@@ -30,7 +32,9 @@ module.exports = class DOIGameCommand extends RookCommand {
     // Decode the base64 string
     const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
 
+    // Get Guild ID
     const guildID = interaction.guild.id
+    // Get Guild Metadata
     const guildMeta = require(`../../dbs/${guildID}/meta.json`)
 
     try {

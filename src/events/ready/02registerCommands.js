@@ -77,7 +77,7 @@ module.exports = async (client) => {
           } catch (error) {
             console.error(`  ❌ Failed to delete: "${name}":`, error.message)
           }
-          continue;
+          continue
         }
 
         if (areCommandsDifferent(existingCommand, localCommand)) {
@@ -181,7 +181,7 @@ module.exports = async (client) => {
       }
     }
 
-    console.log('  🎉 Registration completed');
+    console.log('  🎉 Registration completed')
     await fs.writeFile(
       "./src/res/app/manifests/help/help.json",
       (

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const scheduleNicknameChange = require('../../utils/scheduleNicknameChange');
+const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
 
 module.exports = async (client) => {
   // Guilds to search in

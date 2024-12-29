@@ -1,7 +1,10 @@
-// @ts-nocheck
+// @ts-check
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
+// Use Discord Hammertime
 const timeFormat = require('../../utils/timeFormat.js')
 
 module.exports = class UserInfoCommand extends RookCommand {
@@ -37,6 +40,7 @@ module.exports = class UserInfoCommand extends RookCommand {
   }
 
   async action(client, interaction, coptions) {
+    // Get Target User Input
     const targetUserInput = coptions['target-id']
 
     // Extract user ID from mention (if it's a mention)
@@ -71,8 +75,10 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Username",
-          value: `\`${targetMember.user.tag}\`` +
-          "(ID: " + `\`${targetMember.id}\`` + ")"
+          value: [
+            `\`${targetMember.user.tag}\`` +
+            "(ID: " + `\`${targetMember.id}\`` + ")"
+          ]
         }
       ],
 
@@ -93,10 +99,11 @@ module.exports = class UserInfoCommand extends RookCommand {
       ]
     ]
 
+    // How can the Bot interact with this User?
     let botActions = {
-      "🤖": targetMember.user.bot,
-      "🛠": targetMember.manageable,
-      "🔨": targetMember.moderatable
+      "🤖": targetMember.user.bot,    // Is this User a Bot?
+      "🛠": targetMember.manageable,  // Can the Bot manage this User?
+      "🔨": targetMember.moderatable  // Can the Bot moderate this User?
     }
     let botCan = ""
     let botCant = ""
@@ -109,6 +116,7 @@ module.exports = class UserInfoCommand extends RookCommand {
     }
     fields.push(
       [
+        // Bot Actions
         {
           name: "Bot Actions",
           value: [
@@ -120,9 +128,22 @@ module.exports = class UserInfoCommand extends RookCommand {
     )
 
     this.props = {
-      caption: {
+      playerTypes: {
+        user: "target",
+        target: "caller"
+      },
+      entities: {
+        target: {
+          type: "target",
+          text: targetUserName,
+          url: avatarURL,
+          avatar: avatarURL
+        }
+      },
+      title: {
         text: targetUserName,
-        url: avatarURL
+        url: avatarURL,
+        avatar: avatarURL
       },
       color: targetMember.user.hexAccentColor,
       fields: fields,

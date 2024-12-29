@@ -44,7 +44,7 @@
   "rando": {
     "player": {
       "name": "Super Metroid Map Randomizer",
-      "avatar": "https://maprando.com/static/map_station_transparent.png"
+      "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/m3maprando.gif"
     },
     "scripts": [
       "[Unstable June 2024 (`esync-v20240601-smz3`)](https://github.com/alttpo/alttpo/releases/tag/esync-v20240601-smz3) and [SMMR `ROMMapping.as`](https://drive.google.com/file/d/1vlltxwFO5kjOiCUvMD1abIuMNFOJFbO6/view?usp=sharing)"

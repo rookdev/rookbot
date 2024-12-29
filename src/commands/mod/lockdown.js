@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 
@@ -44,14 +44,14 @@ module.exports = class LockdownCommand extends ModCommand {
   }
 
   async action(client, interaction, coptions) {
-    const guildID = interaction.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
+    const guildID = interaction.guild.id
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
 
-    const action = coptions['action'];
-    const confirm = coptions['confirm'];
+    const action = coptions['action']
+    const confirm = coptions['confirm']
     const channels = interaction.guild.channels.cache.filter(
       ch => ch.isTextBased() || ch.isVoiceBased()
-    );
+    )
 
     if (!["true"].includes(confirm)) {
       this.error = true
@@ -71,10 +71,10 @@ module.exports = class LockdownCommand extends ModCommand {
     await interaction.followUp({
       content: followUp,
       ephemeral: true,
-    });
+    })
 
-    let processedCount = 0;
-    let processedChannels = [];
+    let processedCount = 0
+    let processedChannels = []
     if(!this.DEV) {
       const channelPromises = channels.map(channel =>
         channel.permissionOverwrites
@@ -82,18 +82,18 @@ module.exports = class LockdownCommand extends ModCommand {
             SendMessages: action === 'lock' ? false : null,
           })
           .then(() => {
-            processedCount++;
-            processedChannels.push(channel.id); // Log successful channel IDs
+            processedCount++
+            processedChannels.push(channel.id) // Log successful channel IDs
           })
           .catch(error => console.log(`Failed for ${channel.id}: ${error.message}`))
-      );
+      )
 
-      await Promise.allSettled(channelPromises);
+      await Promise.allSettled(channelPromises)
 
       // Log the action in the logs channel (private)
-      const logs = await client.channels.fetch(guildChannels["logging"]);
+      const logs = await client.channels.fetch(guildChannels["logging"])
       if (logs) {
-        const capitalizedAction = action.charAt(0).toUpperCase() + action.slice(1);
+        const capitalizedAction = action.charAt(0).toUpperCase() + action.slice(1)
         const embed = new RookEmbed(client, {
           color: action === 'lock' ? '#FF0000' : '#00FF00',
           title: {
@@ -117,11 +117,11 @@ module.exports = class LockdownCommand extends ModCommand {
               }
             ]
           ]
-        });
-        logs.send({ embeds: [embed] });
+        })
+        logs.send({ embeds: [embed] })
       }
     } else {
-      console.log("Logs channel not found.");
+      console.log("Logs channel not found.")
     }
 
     this.props.description = (this.DEV ? "DEV: " : "") + `All channels have been **${action}ed** successfully! (${processedCount}/${channels.size} processed)`

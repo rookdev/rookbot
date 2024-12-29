@@ -1,8 +1,7 @@
 // @ts-nocheck
 
-const { ChatInputCommandInteraction } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const { RookClient } = require('../../classes/objects/rclient.class')
 
 module.exports = class PingCommand extends RookCommand {
   constructor(client) {
@@ -27,6 +26,7 @@ module.exports = class PingCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    // Set EmbedPlayerTypes to Discord|Caller
     this.props.playerTypes = {
       user: "discord",
       target: "caller"
@@ -34,15 +34,19 @@ module.exports = class PingCommand extends RookCommand {
 
     console.log(`/${this.name}: Action`)
 
+    // Get Reply object
     const reply = await interaction?.fetchReply()
+    // Find difference in time
     const ping = (reply?.createdTimestamp || 0) - (interaction?.createdTimestamp || 0)
 
     this.props.fields = [
       [
+        // Client Ping
         {
           name: "Client",
           value: `${ping}ms`
         },
+        // Websocket Ping
         {
           name: "Websocket",
           value: `${client.ws.ping}ms`

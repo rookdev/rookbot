@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 
 module.exports = class BotSourceCommand extends RookCommand {
@@ -35,6 +36,7 @@ module.exports = class BotSourceCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // all done in constructor
+    // Set EmbedPlayerTypes to Bot|Bot
     this.props.playerTypes = {
       user: "bot",
       target: "bot"

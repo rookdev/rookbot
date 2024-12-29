@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
 

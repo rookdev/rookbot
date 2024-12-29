@@ -1,6 +1,8 @@
 // @ts-nocheck
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class ColorCommand extends RookCommand {
@@ -36,6 +38,7 @@ module.exports = class ColorCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    // Get hex color input
     const hexInput = coptions.hex.replace('#', '').toUpperCase()
 
     // Validate hex string

@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 // Base Rook Command
 const { RookCommand } = require('./rcommand.class.js')
 // Base Rook Embed
@@ -366,20 +367,20 @@ class SalutationCommand extends RookCommand {
         if (fs.existsSync(channelsJSONPath)) {
           // Find the Guild Channel to send the embed to
           let channelIDs = require(channelsJSONPath)
-          if (!channelIDs) { this.error = true; continue; }
+          if (!channelIDs) { this.error = true; continue }
 
           let channelID = channelIDs["bot-salutations"]
-          if (!channelID) { this.error = true; continue; }
+          if (!channelID) { this.error = true; continue }
 
           let guild = await client.guilds.cache.find(
             g => g.id === guildID
           )
-          if (!guild) { this.error = true; continue; }
+          if (!guild) { this.error = true; continue }
 
           let channel = await guild?.channels.cache.find(
             c => c.id === channelID
           )
-          if (!channel) { this.error = true; continue; }
+          if (!channel) { this.error = true; continue }
 
           // If we found the channel
           //  update the server info in the embed to reflect this one

@@ -32,7 +32,7 @@ const manageCommands = async (
         }
       )
 
-      await Promise.all(deletePromises);
+      await Promise.all(deletePromises)
       console.log('   👍 All commands deleted.')
     } else {
       console.log('   ⏩ Command deletion skipped.')

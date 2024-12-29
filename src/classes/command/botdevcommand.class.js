@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 // Discord Permission Flags
 const { PermissionFlagsBits } = require('discord.js')
 // Admin Command

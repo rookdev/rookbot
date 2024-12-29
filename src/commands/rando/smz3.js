@@ -1,6 +1,8 @@
-// @ts-nocheck
+// @ts-check
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// SeedAnnounceCommand
 const SeedAnnounceCommand = require('../rando/seedannounce')
 
 /**

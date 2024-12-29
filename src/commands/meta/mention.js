@@ -1,6 +1,8 @@
 // @ts-nocheck
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
 
 module.exports = class MentionCommand extends RookCommand {
@@ -54,8 +56,11 @@ module.exports = class MentionCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    // Get Target Input
     let targetInput   = coptions["target-id"]
-    let targetId      = targetInput.replace(/[<#@&!>]/g, '');  // Remove <@>, <@!>, and >
+    // Get Target ID
+    let targetId      = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
+    // Get Target Type
     let targetType    = coptions["target-type"] || "channel"
     let targetMention = ""
 
@@ -70,6 +75,7 @@ module.exports = class MentionCommand extends RookCommand {
 
     for(let [check, mentionType] of Object.entries
       (
+        // Check for Mention Type
         {
           "\@\!": "user",
           "@":    "user",
@@ -82,6 +88,7 @@ module.exports = class MentionCommand extends RookCommand {
         targetType = mentionType
       }
     }
+    // If @&, it's a Role Mention
     if(targetInput.indexOf("@") > -1 && targetInput.indexOf("&") > -1) {
       targetType = "role"
     }
@@ -92,23 +99,28 @@ module.exports = class MentionCommand extends RookCommand {
 
     this.props.playerTypes = {
       user: "bot",
-      target: "discord"
+      target: "guild"
     }
-    this.props.entities = {}
 
     switch(targetType) {
+      // Channel
       case "channel":
         targetMention = `<#${targetId}>`
         break
+      // Role
       case "role":
         targetMention = `<@&${targetId}>`
         break
+      // User
       case "user":
         targetMention = `<@!${targetId}>`
+        // Get Guild
         let guild = await client.guilds.fetch(interaction.guild.id)
         if (guild) {
+          // Get Guild Member
           let targetMember = await guild.members.fetch(targetId)
           if (targetMember) {
+            // Set Target to Member
             this.props.playerTypes = {
               user: "bot",
               target: "target"
@@ -130,7 +142,7 @@ module.exports = class MentionCommand extends RookCommand {
         targetMention = "Error"
         this.error = true
         this.props.description = `Invalid channel type ['${targetType}']`
-        break
+        return false
     }
 
     // console.log(
@@ -143,24 +155,28 @@ module.exports = class MentionCommand extends RookCommand {
     if(!this.error) {
       this.props.fields = [
         [
+          // Mention Type
           {
             name: "Type",
             value: targetType
           }
         ],
         [
+          // Mention ID
           {
             name: "ID",
             value: `\`${targetId}\``
           }
         ],
         [
+          // Mention Link
           {
             name: "Mention",
             value: targetMention
           }
         ],
         [
+          // Mention Raw Code
           {
             name: "Code",
             value: `\`${targetMention}\``

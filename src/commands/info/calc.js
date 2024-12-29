@@ -1,8 +1,10 @@
 // @ts-nocheck
 
+// Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const { evaluate } = require('mathjs')
+const { evaluate } = require('mathjs')  // Evaluate math expression
 
 module.exports = class CalcCommand extends RookCommand {
   constructor(client) {
@@ -41,7 +43,7 @@ module.exports = class CalcCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    const expression = coptions.expression
+    const expression = coptions.expression  // Get the math expression
 
     try {
       // Evaluate the math expression
@@ -62,6 +64,7 @@ module.exports = class CalcCommand extends RookCommand {
       // Send an error embed if the math expression is invalid
       this.error = true
       this.props.description = "Invalid math expression. Please try again."
+      return false
     }
 
     return !this.error
