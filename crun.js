@@ -53,7 +53,7 @@ program
   )
   // Load canned options (crun.json)
   .option(
-    "-lo, --loadoptions", "Load canned options (crun.json)"
+    "--lo, --loadoptions", "Load canned options (crun.json)"
   )
   // Parse passed arguments
   .parse(process.argv)
