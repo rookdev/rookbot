@@ -64,8 +64,6 @@ async function callCommands(commandNames) {
           }
         }
       );
-    } else {
-      console.log(localCommands)
     }
   }
 }
