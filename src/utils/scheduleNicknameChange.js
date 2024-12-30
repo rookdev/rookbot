@@ -32,7 +32,7 @@ function scheduleNicknameChange(client, member) {
     }
   })
 
-  console.log("  Scheduled nickname changes for user:", member.user.tag)
+  console.log(`   Scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
 }
 
 module.exports = scheduleNicknameChange

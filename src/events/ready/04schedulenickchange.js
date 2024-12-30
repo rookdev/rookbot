@@ -3,38 +3,34 @@
 const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
 
 module.exports = async (client) => {
-  // Guilds to search in
-  let guilds = [
-    "745409743593406634"
+  // Users to search for
+  let users = [
+    "263968998645956608",   // Minnie
+    "1111517386588307536",  // castIe
   ]
-  for(let guildID in guilds) {
-    // Find the guild
-    let guild = await client.guilds.cache.find(
-      g => g.id === guildID
-    )
-    // Users to search for
-    let users = [
-      "1111517386588307536"
+  // Cycle through users
+  for(let userID of users) {
+    // Guilds to search in
+    let guilds = [
+      "1282788953052676177",  // DoI Main
+      "1297216081110372474",  // DoI Navy
+      "1303864272832565268",  // rook
+      "745409743593406634",   // TridentBot
     ]
-    for(let userID in users) {
+    // Cycle through guilds
+    for(let guildID of guilds) {
+      // Find the guild
+      let guild = await client.guilds.cache.find(
+        g => g.id === guildID
+      )
       try {
         // Get the guild member
-        const member = await guild.members.fetch(
-          userID,
-          { force: true }
-        ).catch(
-          err => {
-            console.error("Fetch error:", err)
-          }
-        )
+        const member = await guild.members.fetch(userID, { force: true }) || null
 
-        // If it broke, throw an error
-        if (!member || !member.user) {
-          throw new Error("Member not found or invalid data.")
+        if (member) {
+          // If we got here, schedule the nickname change
+          await scheduleNicknameChange(client, member)
         }
-
-        // If we got here, schedule the nickname change
-        await scheduleNicknameChange(client, member)
       } catch (error) {
         const member = null
       }
