@@ -162,17 +162,23 @@ async function changeNickname(client, member) {
     success = false
     message.push(`No Member sent.`)
 
-    return { success: success, message: message }
+    return {
+      success: success,
+      message: message
+    }
   }
 
   if (!client?.guilds) {
     success = false
     message.push(`Couldn't load Client Guilds.`)
 
-    return { success: success, message: message }
+    return {
+      success: success,
+      message: message
+    }
   }
 
-  message.push(`${client.user} changing nickname of '${member.user.tag}'.`)
+  message.push(`${client.user} changing nickname of '${member.user.tag}' in '${member.guild.name}'.`)
 
   let guildID = member.guild.id
   let guildData = client.guilds.cache.get(guildID)
@@ -192,14 +198,20 @@ async function changeNickname(client, member) {
     success = false
     message.push(`No nickname choices for '${member.user.tag}'.`)
 
-    return { success: success, message: message }
+    return {
+      success: success,
+      message: message
+    }
   }
 
   if (oldNickname == newNickname) {
     success = false
     message.push(`No new nickname generated for '${member.user.tag}'.`)
 
-    return { success: success, message: message }
+    return {
+      success: success,
+      message: message
+    }
   }
 
   // Get Client User from This Guild

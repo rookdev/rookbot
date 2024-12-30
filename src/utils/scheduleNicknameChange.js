@@ -19,16 +19,19 @@ function scheduleNicknameChange(client, member) {
     try {
 
       // Call the changeNickname function to change the nickname
-      const result = await changeNickname(client, member)
+      let result = await changeNickname(client, member)
+      if (typeof result.message === "object") {
+        result.message = result.message.join("\n")
+      }
 
       // Check the result and log accordingly
       if (result.success) {
-        console.log(`  Changed nickname of ${member.user.tag}: ${result.message}`)
+        // console.log(`   Changed nickname of '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
       } else {
-        console.error(`  Error changing nickname for ${member.user.tag}: ${result.message}`)
+        // console.error(`   Error changing nickname for '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
       }
     } catch (err) {
-      console.error("  Error changing nickname:", err)
+      // console.error("   Error changing nickname:", err)
     }
   })
 
