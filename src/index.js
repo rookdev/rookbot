@@ -11,6 +11,65 @@ const { program } = require('commander')    // Commander for CLI management
 const AsciiTable = require('ascii-table')   // Pretty-print in console
 const PACKAGE = require("../package.json")  // Node Package data
 
+async function callCommands(commandNames) {
+  if (!typeof commandNames === "object") {
+    commandNames = [commandNames]
+  }
+
+  // Get local commands
+  const getLocalCommands = require('./utils/getLocalCommands')
+  const localCommands = getLocalCommands(client)
+
+  for(let commandName of commandNames) {
+    const commandObject = localCommands.find(
+      c => c.name === commandName
+    )
+    if (commandObject) {
+      // Execute Command
+      await commandObject.execute(
+        // Pass RookClient object
+        client,
+        // Fake an Interaction object
+        {
+          client: client,
+          member: { user: { tag: "gitrook" } },
+          user: {
+            name: "gitrook",
+            avatarURL: () => { return "https://cdn.discordapp.com/avatars/1313777189187223603/4bc7c1dc2b41b0bd7f77945bcc55feef.webp?size=128" },
+            username: "gitrook"
+          },
+          reply: async (props) => {
+            let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
+            let channelID = channelIDs["bot-salutations"]
+            if (client.guild) {
+              let channel = await client.guild.channels.fetch(channelID)
+              if (channel) {
+                // @ts-ignore
+                await channel?.send(props)
+              }
+            }
+          },
+          editReply: async (props) => {
+            let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
+            let channelID = channelIDs["bot-salutations"]
+            if (client.guild) {
+              let channel = await client.guild.channels.cache.find(
+                c => c.id === channelID
+              )
+              if (channel) {
+                // @ts-ignore
+                await channel?.send(props)
+              }
+            }
+          }
+        }
+      );
+    } else {
+      console.log(localCommands)
+    }
+  }
+}
+
 // This is the Main Bot Runner
 // Print Package version
 console.log("")
@@ -84,62 +143,16 @@ const client = new RookClient(
   // If this is a GitHub Actions run
   if (process.env.GITHUB_WORKFLOW) {
     console.log(process.env.GITHUB_WORKFLOW)
-    // Set Timeout
+
+    // Run Hello
+    await callCommands("hello")
+
+    // Set Timeout to call Exit
     setTimeout(async () => {
-      // Get local commands
-      const getLocalCommands = require('./utils/getLocalCommands')
-      const localCommands = getLocalCommands(client)
       try {
         // Run Exit
         let commandNames = [ "exit" ]
-        for(let commandName of commandNames) {
-          const commandObject = localCommands.find(
-            c => c.name === commandName
-          )
-          if (commandObject) {
-            // Execute Command
-            await commandObject.execute(
-              // Pass RookClient object
-              client,
-              // Fake an Interaction object
-              {
-                client: client,
-                member: { user: { tag: "gitrook" } },
-                user: {
-                  name: "gitrook",
-                  avatarURL: () => { return "https://cdn.discordapp.com/avatars/1313777189187223603/4bc7c1dc2b41b0bd7f77945bcc55feef.webp?size=128" },
-                  username: "gitrook"
-                },
-                reply: async (props) => {
-                  let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
-                  let channelID = channelIDs["bot-salutations"]
-                  if (client.guild) {
-                    let channel = await client.guild.channels.fetch(channelID)
-                    if (channel) {
-                      // @ts-ignore
-                      await channel?.send(props)
-                    }
-                  }
-                },
-                editReply: async (props) => {
-                  let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
-                  let channelID = channelIDs["bot-salutations"]
-                  if (client.guild) {
-                    let channel = await client.guild.channels.cache.find(
-                      c => c.id === channelID
-                    )
-                    if (channel) {
-                      // @ts-ignore
-                      await channel?.send(props)
-                    }
-                  }
-                }
-              }
-            );
-          } else {
-            console.log(localCommands)
-          }
-        }
+        await callCommands(commandNames)
       } catch(err) {
         console.log(err.stack)
       }
