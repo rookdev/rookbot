@@ -62,8 +62,8 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
       }
 
       // If UserPermissions
-      if (commandObject.permissionsRequired?.length) {
-        for (const permission of commandObject.permissionsRequired) {
+      if (commandObject.userPermissions?.length) {
+        for (const permission of commandObject.userPermissions) {
           // If we're missing one, abort
           // @ts-ignore
           if (!interaction?.member?.permissions.has(permission)) {

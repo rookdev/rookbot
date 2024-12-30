@@ -13,7 +13,7 @@ module.exports = async (client) => {
     const localCommands = getLocalCommands(client)
 
     // Determine if we are in development or production mode
-    let isDevelopment = process.env.ENV_ACTIVE === 'development'
+    let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
     let commandsManager = null
 
     if (isDevelopment) {
@@ -41,7 +41,7 @@ module.exports = async (client) => {
         access,
         autocomplete = null,
         deleted
-      } = localCommand
+      } = await localCommand
       let slimoptions = []
       for(let option of options) {
         slimoptions.push(
@@ -120,7 +120,7 @@ module.exports = async (client) => {
         }
 
         if (name.indexOf("Command") > -1) {
-          let cmd = new localCommand()
+          let cmd = await new localCommand()
           name = cmd.name
           category = cmd.category
           description = cmd.description

@@ -69,8 +69,8 @@ class AdminCommand extends RookCommand {
         this.error = true
         this.props.description = this.errors.adminOnly
         this.props.fields = []
-        this.props.footer = {}
-        this.props.image = ""
+        this.props.footer = { text: "" }
+        this.props.image = { image: "" }
         return false
       }
     }

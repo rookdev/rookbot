@@ -15,7 +15,7 @@ export type CommandProps = {
   /** Command Category */           category?: string
   /** Command Default Channel */    channelName?: string
   /** Command Global Permissions */ permissions?: number
-  /** Command User Permissions */   permissionsRequired?: number
+  /** Command User Permissions */   userPermissions?: number
   /** Command Bot Permissions */    botPermissions?: number
   /** Command Access Label */       access?: string
   /** Command Test Options */       testOptions?: Array<CommandTestOption>

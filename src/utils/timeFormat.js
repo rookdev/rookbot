@@ -34,7 +34,7 @@ module.exports = (timestamp, options) => {
     returnTime = relativeTime
   }
 
-  console.log("   " + JSON.stringify(debug))
+  // console.log("   " + JSON.stringify(debug))
 
   return returnTime
 }

@@ -41,18 +41,18 @@ String.prototype.ucfirst = function() {
 class RookCommand {
   constructor(client, comprops={}, props={}) {
     // Set sent Command properties
-    this.name                 = setValue(comprops.name, "unknown")
-    this.description          = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
-    this.options              = setValue(comprops.options, [])
-    this.category             = setValue(comprops.category, "unknown")
-    this.testOptions          = setValue(comprops.testOptions, [])
-    this.testIndependent      = setValue(comprops.testIndependent, false)
-    this.channelName          = "bot-console"
-    this.access               = setValue(comprops.access, "unset")
-    this.permissions          = setValue(comprops.permissions, 0)
-    this.botPermissions       = setValue(comprops.botPermissions, this.permissions)
-    this.permissionsRequired  = setValue(comprops.permissionsRequired, this.permissions)
-    this.errors               = require('../../dbs/errors.json')
+    this.name             = setValue(comprops.name, "unknown")
+    this.description      = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
+    this.options          = setValue(comprops.options, [])
+    this.category         = setValue(comprops.category, "unknown")
+    this.testOptions      = setValue(comprops.testOptions, [])
+    this.testIndependent  = setValue(comprops.testIndependent, false)
+    this.channelName      = "bot-console"
+    this.access           = setValue(comprops.access, "unset")
+    this.permissions      = setValue(comprops.permissions, 0)
+    this.botPermissions   = setValue(comprops.botPermissions, this.permissions)
+    this.userPermissions  = setValue(comprops.userPermissions, this.permissions)
+    this.errors           = require('../../dbs/errors.json')
 
     // Initialize global properties
     this.profile = client.profile // Loaded Profile
@@ -577,14 +577,14 @@ class RookCommand {
 
     if (interaction) {
       // Permissions Required
-      if (this.permissionsRequired) {
+      if (this.userPermissions) {
         let member = interaction.guild?.members.cache.find(
           g => g.id === interaction.user.id
         )
         Table.addRow(
           "User Permissions",
-          this.permissionsRequired,
-          member?.permissions?.has(this.permissionsRequired[0])
+          this.userPermissions,
+          member?.permissions?.has(this.userPermissions[0])
         )
       }
       if (this.botPermissions) {

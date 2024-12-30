@@ -10,7 +10,11 @@ const getProfile = require('../../utils/getProfile')  // Get loaded Profile
  * @public
  */
 class RookClient extends Client {
-  constructor(args={}, profileName="default") {
+  constructor(
+    args={},
+    profileName="default",
+    options={}
+  ) {
     super(args) // Create Discord Client object
 
     // Commands
@@ -23,6 +27,10 @@ class RookClient extends Client {
     this.profileName  = profileName
     // Loaded Profile
     this.profile      = getProfile(this.profileName)
+
+    for (let [optName, optVal] of Object.entries(options)) {
+      this.profile[optName] = optVal
+    }
   }
 
   async init() {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, AuditLogEvent, PermissionFlagsBits } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const timeFormat = require('../../utils/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
@@ -45,8 +45,8 @@ module.exports = class SearchCommand extends ModCommand {
           description: "Development or Production Logs?",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "Production", value: "" },
-            { name: "Development", value: "DEV" }
+            { name: "Production",   value: "" },
+            { name: "Development",  value: "DEV" }
           ]
         }
       ],
@@ -110,66 +110,124 @@ module.exports = class SearchCommand extends ModCommand {
     const guildMember = await interaction.guild.members.fetch(targetUserId)
     const user = guildMember?.user || targetUser
 
-    let logFileName = "" +
+    let foundLogs = {}
+    let i = 0
+
+    if (["DEV",""].includes(region)) {
+      let logFileName = "" +
       region +
       (searchType != "ghostMessage" ? "member" : "") +
       searchType +
       "s.log"
 
-    let logFilePath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "botlogs",
-      logFileName
-    )
+      let logFilePath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "botlogs",
+        logFileName
+      )
 
-    if (!fs.existsSync(logFilePath)) {
-      this.error = true
-      this.props.description = `Logs for '${region}${searchType.ucfirst()}' not found!`
-      return
-    }
-
-    let logFile = fs.readFileSync(logFilePath, "utf8")
-    let logLines = logFile.split("\n")
-    let foundLogs = {}
-    let i = 0
-    for(let line of logLines) {
-      line = line.trim()
-      if(
-        (
-          (line.indexOf("Author:") > -1) ||
-          (line.indexOf("User:") > -1)
-        ) &&
-        (line.indexOf(targetUserId) > -1)
-      ) {
-        let beginning = i
-        let running = true
-        while(running) {
-          if(logLines[beginning].indexOf("[") > -1) {
-            running = false
-          } else {
-            beginning = beginning - 1
-          }
-        }
-        running = true
-        let end = beginning + 1
-        while(running) {
-          if(
-            (logLines[end].indexOf("[") > -1) ||
-            (logLines[end].substring(0,3) == "---") ||
-            (logLines[end].trim() == "")
-          ) {
-            running = false
-          } else {
-            end = end + 1
-          }
-        }
-        let foundLog = logLines.slice(beginning, end)
-        foundLogs[foundLog[0]] = foundLog
+      if (!fs.existsSync(logFilePath)) {
+        this.error = true
+        this.props.description = `Logs for '${region}${searchType.ucfirst()}' not found!`
+        return
       }
-      i = i + 1
+
+      let logFile = fs.readFileSync(logFilePath, "utf8")
+      let logLines = logFile.split("\n")
+      for(let line of logLines) {
+        line = line.trim()
+        if(
+          (
+            (line.indexOf("Author:") > -1) ||
+            (line.indexOf("User:") > -1)
+          ) &&
+          (line.indexOf(targetUserId) > -1)
+        ) {
+          let beginning = i
+          let running = true
+          while(running) {
+            if(logLines[beginning].indexOf("[") > -1) {
+              running = false
+            } else {
+              beginning = beginning - 1
+            }
+          }
+          running = true
+          let end = beginning + 1
+          while(running) {
+            if(
+              (logLines[end].indexOf("[") > -1) ||
+              (logLines[end].substring(0,3) == "---") ||
+              (logLines[end].trim() == "")
+            ) {
+              running = false
+            } else {
+              end = end + 1
+            }
+          }
+          let foundLog = logLines.slice(beginning, end)
+          foundLogs[foundLog[0]] = foundLog
+        }
+        i = i + 1
+      }
     }
+
+    if (searchType == "Ban") {
+      let now = new Date()
+      const fetchedLogs = await interaction.guild.fetchAuditLogs({
+        type: AuditLogEvent.MemberBanAdd
+      })
+
+      const bans = await interaction.guild.bans.fetch()
+      const bansJSON = bans.toJSON()
+      let slimBans = {}
+      let banNum = 0
+      for (let ban of bansJSON) {
+        delete ban.guild
+        const auditEntry = await fetchedLogs?.entries.find(
+          a =>
+            a.target.id === ban.user.id
+        )
+        let banner = auditEntry?.executor || null
+        let bannerData = {}
+        if (banner) {
+          bannerData = {
+            name: banner.username,
+            id: banner.id,
+            avatar: banner.displayAvatarURL({ size: 128 })
+          }
+        }
+        let thisNow = now.getTime() + (banNum * 1000)
+        let logEntry = [
+          `[${now.toISOString()}]`,
+          `User:     ${ban.user.username} (ID: ${ban.user.id})`
+        ]
+        if (banner) {
+          logEntry.push(`Actor:    ${bannerData?.name} (ID: ${bannerData?.id})`)
+        }
+        logEntry.push(`Action:   Banned`)
+        logEntry.push(`Guild:    ${interaction.guild.name} (ID: ${interaction.guild.id})`)
+        logEntry.push(`Reason:   ${ban.reason}`)
+        logEntry.push(`Region:   Discord`)
+        logEntry.push(`--------------------------------`)
+
+        let slimBan = {
+          name: ban.user.username + "#" + ban.user.discriminator,
+          id: ban.user.id,
+          banner: bannerData,
+          avatar: ban.user.displayAvatarURL({ size: 128 }),
+          reason: ban.reason,
+          logEntry: {
+            [thisNow]: logEntry
+          }
+        }
+        foundLogs[thisNow] = slimBan.logEntry[thisNow]
+        banNum += 1
+      }
+    }
+
     i = 1
     for(let [timestamp, foundLog] of Object.entries(foundLogs)) {
       // let this_props: import('../../types/embed').EmbedProps = {
@@ -186,7 +244,7 @@ module.exports = class SearchCommand extends ModCommand {
           let field_value = logLine.substring(logLine.indexOf(": ") + ": ".length)
           field_value = field_value.replace(/([\d]{5,})/, "`$1`")
           if (logLine.indexOf("ID: ") > -1) {
-            let matches = logLine.match(/(?:[\D]+)([\d]+)/)
+            let matches = logLine.match(/(?:[\D]+) ([\d]+)/)
             if (matches) {
               this_ids[field_name] = matches[1].trim()
             }

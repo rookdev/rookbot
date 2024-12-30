@@ -170,6 +170,14 @@ module.exports = async (client, oldMember, newMember) => {
       fields: fields
     })
 
+    let console_log = {
+      guild: newMember.guild.name,
+      member: newMember.user.tag,
+      oldName: oldNick,
+      newName: newNick
+    }
+    console.log("   " + JSON.stringify(console_log))
+
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)

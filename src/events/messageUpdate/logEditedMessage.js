@@ -151,6 +151,15 @@ module.exports = async (client, oldMessage, newMessage) => {
       ]
     })
 
+    let console_log = {
+      guild: newMessage.guild.name,
+      member: newMessage.author.tag,
+      action: "edit",
+      channel: newMessage.channel.name,
+      message: newMessage.id
+    }
+    console.log("   " + JSON.stringify(console_log))
+
     // Send the embed to the log channel, if found and valid
     if (logChannel) {
       // @ts-ignore
@@ -159,7 +168,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       console.warn('Log channel not found.')
     }
 
-    // Optional: Save the edited message to a log file
+    // Save the edited message to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,

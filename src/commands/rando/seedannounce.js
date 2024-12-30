@@ -46,10 +46,22 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           description: "Randomizer to choose",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "A Link to the Past Randomizer", value: "z3r" },
-            { name: "Super Metroid + A Link to the Past Combination Randomizer", value: "z3m3" },
-            { name: "Super Metroid Map Randomizer", value: "m3maprando" },
-            { name: "Archipelago", value: "ap" }
+            {
+              name:   "A Link to the Past Randomizer",
+              value:  "z3r"
+            },
+            {
+              name:   "Super Metroid + A Link to the Past Combination Randomizer",
+              value:  "z3m3"
+            },
+            {
+              name:   "Super Metroid Map Randomizer",
+              value:  "m3maprando"
+            },
+            {
+              name:   "Archipelago",
+              value: "ap"
+            }
           ],
           required: true
         },

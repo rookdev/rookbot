@@ -25,7 +25,7 @@ module.exports = class NickChangeCommand extends RookCommand {
         { "target-id": "1111517386588307536" }, // castIe
         { "target-id": "263968998645956608" }   // Minnie
       ],
-      permissionsRequired: [ PermissionFlagsBits.ManageNicknames ],
+      userPermissions: [ PermissionFlagsBits.ManageNicknames ],
       botPermissions: [ PermissionFlagsBits.ManageNicknames ]
     }
     props = props || {}

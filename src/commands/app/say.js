@@ -41,7 +41,7 @@ module.exports = class SayCommand extends ModCommand {
           type: ApplicationCommandOptionType.Channel
         }
       ],
-      permissionsRequired: [ PermissionFlagsBits.ManageMessages ],
+      userPermissions: [ PermissionFlagsBits.ManageMessages ],
       botPermissions: [ PermissionFlagsBits.SendMessages ]
     }
     let props = {}

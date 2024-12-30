@@ -34,16 +34,25 @@ module.exports = class SeedMetaCommand extends RookCommand {
           description: "Game ID to call from",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "A Link to the Past Randomizer", value: "z3r" },
-            { name: "Super Metroid + A Link to the Past Combination Randomizer", value: "z3m3" },
-            { name: "Super Metroid Map Randomizer", value: "m3maprando" }
+            {
+              name:   "A Link to the Past Randomizer",
+              value:  "z3r"
+            },
+            {
+              name:   "Super Metroid + A Link to the Past Combination Randomizer",
+              value:  "z3m3"
+            },
+            {
+              name:   "Super Metroid Map Randomizer",
+              value:  "m3maprando"
+            }
           ]
         }
       ],
       testOptions: [
-        { "game-id": "z3r", "hash-id": "0yAONb6XMV" },
-        { "game-id": "z3m3", "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
-        { "game-id": "m3maprando", "hash-id": "wPvtmGMpc" }
+        { "game-id": "z3r",         "hash-id": "0yAONb6XMV" },
+        { "game-id": "z3m3",        "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
+        { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" }
       ]
     }
     let props = {

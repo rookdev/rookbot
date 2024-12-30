@@ -133,6 +133,14 @@
       "access": "unset",
       "segment": "local"
     },
+    "botinvite": {
+      "name": "botinvite",
+      "category": "bot",
+      "description": "Invite rookbot",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
     "botnickname": {
       "name": "botnickname",
       "category": "bot",

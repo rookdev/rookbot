@@ -24,6 +24,10 @@ program
   .option(
     "-l, --long", "Long?", false
   )
+  // Delete Commands
+  .option(
+    "--del", "Delete?", false
+  )
   // Parse passed arguments
   .parse(process.argv)
 
@@ -33,12 +37,14 @@ const options = program.opts()
 // console.log(JSON.stringify(options, null, "  "))
 
 let long = options.long       // Long Mode?
+let del = options.del         // Delete Commands?
 let profile = options.profile // Profile to load
 
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? "Yes" : "No")
+Table.addRow("Delete Commands?", del ? "Yes" : "No")
 console.log(Table.toString())
 
 // If Long Mode
@@ -69,6 +75,9 @@ let UNHANDLED_REJECTIONS = false
 let args = [
   `-p ${options.profile}`
 ]
+if (del) {
+  args.push("--del")
+}
 
 // Use node to run ./src/index.js with CLI args
 let command = "node "

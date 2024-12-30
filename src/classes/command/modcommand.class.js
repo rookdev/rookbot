@@ -54,9 +54,9 @@ function isNumeric(n) {
 class ModCommand extends AdminCommand {
   constructor(client, comprops, props) {
     // If we don't have UserPermissions defined
-    if (!comprops?.permissionsRequired) {
+    if (!comprops?.userPermissions) {
       // Default to KickMembers
-      comprops.permissionsRequired = [ PermissionFlagsBits.KickMembers ]
+      comprops.userPermissions = [ PermissionFlagsBits.KickMembers ]
     }
     // If we don't have BotPermissions defined
     if (!comprops?.botPermssions) {

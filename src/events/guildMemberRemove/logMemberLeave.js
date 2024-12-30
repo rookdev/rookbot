@@ -89,6 +89,12 @@ module.exports = async (client, oldMember) => {
       ]
     })
 
+    let console_log = {
+      guild: oldMember.guild.name,
+      member: oldMember.user.tag
+    }
+    console.log("   " + JSON.stringify(console_log))
+
     // Send the log embed to the log channel
     // @ts-ignore
     await logChannel.send({ embeds: [logEmbed] })

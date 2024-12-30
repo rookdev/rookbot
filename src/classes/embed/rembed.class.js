@@ -196,8 +196,31 @@ class RookEmbed extends EmbedBuilder {
       }
     }
 
-    // Hack footer
-    if (client.profile?.DEV && client.profile.DEV) {
+    let footerDev = client.profile?.DEV && client.profile.DEV
+    // Hack footer for PROD Mode
+    if (!footerDev) {
+      let profileFooterText = client.profile.footer?.text && client.profile.footer.text.trim() != "" ? client.profile.footer.text.trim() : ""
+      let profileFooterImage = client.profile.footer?.image && client.profile.footer.image.trim() != "" ? client.profile.footer.image.trim() : ""
+      if (!this.props?.footer) {
+        this.props.footer = {
+          text: "",
+          image: ""
+        }
+      }
+      if (profileFooterText != "" && this.props.footer.text.trim() != "") {
+        this.props.footer.text = this.props.footer.text.trim() + " • " + profileFooterText
+      } else {
+        this.props.footer.text = profileFooterText
+      }
+      if (profileFooterImage != "" && this.props.footer.image.trim() != "") {
+        this.props.footer.image = this.props.footer.image.trim() + " • " + profileFooterImage
+      } else {
+        this.props.footer.image = profileFooterImage
+      }
+    }
+
+    // Hack footer for DEV Mode
+    if (footerDev) {
       // If we're in Development Mode
       //  Move the footer text to the end of the description
       if (client.profile?.footer) {

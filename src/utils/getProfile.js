@@ -1,11 +1,12 @@
 const fs = require('fs')
 
 const getProfile = (profileName="default") => {
-  let profile = {}
-  let defaults = {}
+  let profile = {}  // Main Profile object
+  let defaults = {} // Defaults
 
-  // console.log(`Searching for '${profileName}' Profile!`)
+  console.log(`Searching for '${profileName}' Profile!`)
 
+  // Get Defaults
   try {
     defaults = JSON.parse(fs.readFileSync("./src/dbs/defaults.json", "utf8"))
   } catch(err) {
@@ -13,6 +14,7 @@ const getProfile = (profileName="default") => {
     process.exit(1)
   }
 
+  // Get Profile
   try {
     if (fs.existsSync("./src/PROFILE.json")) {
       profile = JSON.parse(fs.readFileSync("./src/PROFILE.json", "utf8"))
@@ -26,10 +28,11 @@ const getProfile = (profileName="default") => {
       profileName in profile.profiles
     ) {
       profile = profile.profiles[profileName]
-      // console.log(`Loaded '${profileName}' Profile!`)
+      profile.defaults = defaults
+      console.log(`Loaded '${profileName}' Profile!`)
     } else {
       profile = defaults
-      // console.log("Loaded Default Profile!")
+      console.log("Loaded Default Profile!")
     }
   } catch(err) {
     console.log("🔴getProfile: PROFILE manifest not found!")
@@ -37,7 +40,6 @@ const getProfile = (profileName="default") => {
     process.exit(1)
   }
 
-  profile.defaults = defaults
   profile.profileName = profileName
 
   try {

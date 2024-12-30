@@ -86,6 +86,12 @@ module.exports = async (client, newMember) => {
       )
     }
 
+    let console_log = {
+      guild: fetchedMember.guild.name,
+      member: fetchedMember.user.tag
+    }
+    console.log("   " + JSON.stringify(console_log))
+
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
       color: colors["good"], // Green for new members joining

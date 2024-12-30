@@ -21,7 +21,7 @@ module.exports = class CastleNameCommand extends NickChangeCommand {
       flags: {
         test: "basic"
       },
-      permissionsRequired: [ PermissionFlagsBits.ViewChannel ],
+      userPermissions: [ PermissionFlagsBits.ViewChannel ],
       botPermissions: [ PermissionFlagsBits.ManageNicknames ]
     }
     let props = {}

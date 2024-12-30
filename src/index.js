@@ -24,6 +24,9 @@ program
   .option(
     "-p, --profile <profile>", "Profile", "default"
   )
+  .option(
+    "--del", "Delete Commands?", false
+  )
   // Parse passed arguments
   .parse(process.argv)
 
@@ -32,10 +35,12 @@ const options = program.opts()
 // console.log("Options")
 // console.log(JSON.stringify(options, null, "  "))
 
-let profile = options.profile // Profile to load
+let deleteCommands = options.del  // Delete Commands?
+let profile = options.profile     // Profile to load
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
 Table.addRow("Selected Profile", profile)
+Table.addRow("Delete Commands?", deleteCommands ? "Yes" : "No")
 console.log(Table.toString())
 
 // Create RookClient object
@@ -58,7 +63,11 @@ const client = new RookClient(
     allowedMentions: { parse: ["roles"] }
   },
   // Profile to load
-  options.profile
+  process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+  {
+    deleteCommands: deleteCommands,
+    DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+  }
 );
 
 (async () => {

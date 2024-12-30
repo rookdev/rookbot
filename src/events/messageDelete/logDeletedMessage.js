@@ -73,8 +73,20 @@ module.exports = async (client, deletedMessage) => {
         deleter = deleterMember
       }
     }
+
+    // Get Author of message
     let deletedAuthor = deletedMessage.author
-    let deletedMember = await deletedMessage.guild.members.fetch(deletedAuthor.id)
+
+    // Get Author Member of message
+    let deletedMember = null
+    try {
+      // This fails if the member has left
+      deletedMember = await deletedMessage.guild.members.fetch(deletedAuthor.id)
+    } catch (error) {
+      // do nothing
+    }
+
+    // If we've got an Author Member, use it instead
     if (deletedMember) {
       deletedAuthor = deletedMember
     }
@@ -196,6 +208,14 @@ module.exports = async (client, deletedMessage) => {
       fields: fields
     })
 
+    let console_log = {
+      guild: deletedMessage.guild.name,
+      member: deletedMessage.author.tag,
+      action: "delete",
+      channel: deletedMessage.channel.name,
+      message: deletedMessage.id
+    }
+    console.log("   " + JSON.stringify(console_log))
 
     // Send the log embed to the log channel
     // @ts-ignore

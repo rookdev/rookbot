@@ -53,8 +53,8 @@ module.exports = async (client, interaction) => {
       }
     }
 
-    if (commandObject.permissionsRequired?.length) {
-      for (const permission of commandObject.permissionsRequired) {
+    if (commandObject.userPermissions?.length) {
+      for (const permission of commandObject.userPermissions) {
         if (!interaction.member.permissions.has(permission)) {
           interaction.reply({
             content: 'User is missing permissions.',

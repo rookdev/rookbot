@@ -47,6 +47,10 @@ program
     "-e, --environment <dev|prod>", "Environment to load",
     "development"
   )
+  // Delete Commands?
+  .option(
+    "--del", "Delete Commands", false
+  )
   // Load canned options (crun.json)
   .option(
     "-lo, --loadoptions", "Load canned options (crun.json)"
@@ -104,6 +108,7 @@ let client = ""
 let server = ""
 let env = ""
 let long = ""
+let del = ""
 let profile = ""
 
 // CUser
@@ -137,18 +142,24 @@ if (options.environment) {
   envs += `-f ./env/envs/.env.${env} `
 }
 
-// Long Mode?
-if (options.long) {
-  args.push("-l")
-  // @ts-ignore
-  long = true
-}
 // Profile to load
 if (options.profile) {
   args.push(
     `-p ${options.profile}`
   )
   profile = options.profile
+}
+// Delete Commands?
+if (options.del) {
+  args.push("--del")
+  // @ts-ignore
+  del = true
+}
+// Long Mode?
+if (options.long) {
+  args.push("-l")
+  // @ts-ignore
+  long = true
 }
 
 // Pretty-print selections to console
@@ -159,6 +170,7 @@ Table.addRow("Dev Client ID", client)
 Table.addRow("Development/Production", env)
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? "Yes" : "No")
+Table.addRow("Delete Commands?", del ? "Yes" : "No")
 console.log(Table.toString())
 
 // Use dotenvx with env vars to use node to run run.js with CLI args

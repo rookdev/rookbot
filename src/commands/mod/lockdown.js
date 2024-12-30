@@ -17,7 +17,7 @@ module.exports = class LockdownCommand extends ModCommand {
           type: ApplicationCommandOptionType.String,
           required: true,
           choices: [
-            { name: "Lock", value: "lock" },
+            { name: "Lock",   value: "lock" },
             { name: "Unlock", value: "unlock" }
           ]
         },
@@ -27,8 +27,8 @@ module.exports = class LockdownCommand extends ModCommand {
           type: ApplicationCommandOptionType.String,
           required: true,
           choices: [
-            { name: "False", value: "false" },
-            { name: "True", value: "true" }
+            { name: "False",  value: "false" },
+            { name: "True",   value: "true" }
           ]
         }
       ],
