@@ -43,8 +43,8 @@ module.exports = (client) => {
           // Print DateTime
           console.log(new Date().toISOString())
           // Print eventName & scriptName
-          console.log(` Event: ${eventFolder.split('\\').slice(-1)[0]}`)
-          console.log(`  Script: ${eventFile.split('\\').slice(-1)[0]}`)
+          console.log(` Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
+          console.log(`  Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
         }
         // Include event script
         const eventFunction = require(eventFile)
