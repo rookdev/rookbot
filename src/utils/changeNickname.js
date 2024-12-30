@@ -144,7 +144,8 @@ async function selectMember(member) {
     }
   }
 
-  if ((oldNickname == newNickname) || (newNickname.length >= 32)) {
+  if ((oldNickname == newNickname) || (newNickname.length > 32)) {
+    console.log(`Attempted to change '${member.user.username}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
     newNickname = await selectMember(member)
   }
 
