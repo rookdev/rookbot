@@ -19,6 +19,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
           name: "bot-nickname",
           description: "Bot Nickname",
           type: ApplicationCommandOptionType.String,
+          maxLength: 32,
           required: true
         }
       ]
@@ -52,6 +53,14 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
     // Default or Reset goes back to Global Name
     if (["default","reset"].includes(new_nickname)) {
       new_nickname = client.user.displayName
+    }
+
+    // Bail if over 32 characters
+    //  Technically, new SlashCommand interface validates this
+    if (new_nickname.length > 32) {
+      this.error = true
+      this.props.description = `Nickname '${new_nickname}' is too long, maximum is 32 characters.`
+      return false
     }
 
     try {

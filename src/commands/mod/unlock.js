@@ -1,9 +1,12 @@
 // @ts-nocheck
 
+// Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json')
+const colors = require('../../dbs/colors.json') // Standardized colors
 
 // Multiple messages
 
@@ -18,8 +21,8 @@ module.exports = class UnlockCommand extends ModCommand {
           name: "channel",
           description: "The channel to unlock.",
           type: ApplicationCommandOptionType.Channel,
-          required: true,
-        },
+          required: true
+        }
       ],
       permissions: [ PermissionFlagsBits.ManageChannels ]
     }
@@ -32,10 +35,16 @@ module.exports = class UnlockCommand extends ModCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
+    // Get Guild ID
     const guildID = interaction.guild.id
+    // Get BotDev-defined list of channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    // Get requested Channel ID
     const channelID = coptions['channel']
+    // Get requested Channel
     const channel = await client.channels.fetch(channelID)
 
     try {

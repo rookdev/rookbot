@@ -1,22 +1,54 @@
 // @ts-nocheck
 
 const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
+const path = require('path')
+const fs = require('fs')
+
+// Does this resemble a number?
+// FIXME: Consolidate
+function isNumeric(n) {
+  let isaN      = !isNaN(n)
+  let isBool    = typeof n === "boolean"
+  let isStr     = typeof n === "string"
+  let isNumStr  = (
+    isStr &&
+    ((n.replace(/\D/g, '') + "") == (n + ""))
+  )
+
+  return (isaN || isNumStr) && !isBool
+}
 
 module.exports = async (client) => {
+  // Get nickname data
+  let nicknameDataPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "dbs",
+    "nicknames",
+  )
+
   // Users to search for
-  let users = [
-    "263968998645956608",   // Minnie
-    "1111517386588307536",  // castIe
-  ]
+  let users = fs.readdirSync(nicknameDataPath)
+    // Filter JSON documents that are numeric
+    .filter(
+      (fileName) => fileName.indexOf(".json") > -1 &&
+        isNumeric(fileName.substring(0, fileName.indexOf(".") - 1))
+    )
+    // Strip .json extension
+    .map(
+      (fileName) => fileName.replace(".json","")
+    )
+    // Skip first document
+    .slice(1)
   // Cycle through users
   for(let userID of users) {
     // Guilds to search in
-    let guilds = [
-      "1282788953052676177",  // DoI Main
-      "1297216081110372474",  // DoI Navy
-      "1303864272832565268",  // rook
-      "745409743593406634",   // TridentBot
-    ]
+    let guilds = fs.readdirSync(path.join(nicknameDataPath,".."))
+      // Filter folders that are numeric
+      .filter(
+        (fileName) => isNumeric(fileName)
+      )
     // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild

@@ -37,8 +37,12 @@ module.exports = class SearchCommand extends ModCommand {
         {
           name: "target-id",
           description: "User ID to search for",
-          type: ApplicationCommandOptionType.String,
-          required: true
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "guild-id",
+          description: "Guild ID to search in",
+          type: ApplicationCommandOptionType.String
         },
         {
           name: "region",

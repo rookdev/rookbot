@@ -1,7 +1,10 @@
 // @ts-nocheck
 
+// Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 module.exports = class LockdownCommand extends ModCommand {
@@ -43,16 +46,22 @@ module.exports = class LockdownCommand extends ModCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
+    // Get Guild ID
     const guildID = interaction.guild.id
+    // Get BotDev-defined list of channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
 
-    const action = coptions['action']
-    const confirm = coptions['confirm']
+    const action = coptions['action']   // Un/Lock
+    const confirm = coptions['confirm'] // Confirm
+    // Filter Channels based on Text/Voice
     const channels = interaction.guild.channels.cache.filter(
       ch => ch.isTextBased() || ch.isVoiceBased()
     )
 
+    // Bail if True not sent for Confirm
     if (!["true"].includes(confirm)) {
       this.error = true
       this.props.description = "Command not confirmed. Please confirm to proceed."
@@ -60,6 +69,8 @@ module.exports = class LockdownCommand extends ModCommand {
       return !this.error
     }
 
+    // Bail if something other than Un/Lock selected
+    //  Technically, new SlashCommand interface validates this
     if (!["lock", "unlock"].includes(action)) {
       this.error = true
       this.props.description = "Invalid action. Please use `lock` or `unlock`."
@@ -67,25 +78,34 @@ module.exports = class LockdownCommand extends ModCommand {
       return !this.error
     }
 
+    // Post FollowUp YouPost
     let followUp = (this.DEV ? "DEV: " : "") + `Starting to ${action} all channels. This may take a moment...`
-    await interaction.followUp({
-      content: followUp,
-      ephemeral: true,
-    })
+    await interaction.followUp(
+      {
+        content: followUp,
+        ephemeral: true,
+      }
+    )
 
     let processedCount = 0
     let processedChannels = []
     if(!this.DEV) {
+      // If Production,
+      //  Edit the channels
       const channelPromises = channels.map(channel =>
         channel.permissionOverwrites
-          .edit(interaction.guild.roles.everyone, {
-            SendMessages: action === 'lock' ? false : null,
-          })
+          .edit(
+            interaction.guild.roles.everyone, {
+              SendMessages: action === 'lock' ? false : null,
+            }
+          )
           .then(() => {
             processedCount++
             processedChannels.push(channel.id) // Log successful channel IDs
           })
-          .catch(error => console.log(`Failed for ${channel.id}: ${error.message}`))
+          .catch(
+            error => console.log(`Failed for ${channel.id}: ${error.message}`)
+          )
       )
 
       await Promise.allSettled(channelPromises)

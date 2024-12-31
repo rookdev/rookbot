@@ -494,7 +494,7 @@
       "options": [
         {
           "name": "amount",
-          "description": "The number of messages to delete (1-100).",
+          "description": "The number of messages to delete (1 - 100)",
           "required": true
         },
         {
@@ -563,8 +563,11 @@
         },
         {
           "name": "target-id",
-          "description": "User ID to search for",
-          "required": true
+          "description": "User ID to search for"
+        },
+        {
+          "name": "guild-id",
+          "description": "Guild ID to search in"
         },
         {
           "name": "region",

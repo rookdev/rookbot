@@ -3,6 +3,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 const SeedMetaCommand = require('./seedmeta.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const getSeedFields = require('../../utils/getSeedFields.js')
 const timeFormat = require('../../utils/timeFormat.js')
 const path = require('path')
 const fs = require('fs')
@@ -24,10 +25,7 @@ function isValidURLFromDomain(input, domain) {
 
     // Check if the hostname and protocol match the expected domain
     const expectedUrl = new URL(domain)
-    return (
-      url.hostname === expectedUrl.hostname &&
-      url.protocol === expectedUrl.protocol
-    )
+    return (url.hostname === expectedUrl.hostname)
   } catch (error) {
     // If URL constructor throws, the input is not a valid URL
     return false
@@ -217,33 +215,6 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       this.props.image = { image: randoData.rando.player.avatar }
 
       let fields = []
-      fields.push(
-        [
-          { name: 'Group Name', value: groupName }
-        ]
-      )
-      if (randoData?.rando?.scripts && randoData.rando.scripts.length > 0) {
-        fields.push(
-          [
-            { name: 'Scripts', value: randoData.rando.scripts }
-          ]
-        )
-      }
-      fields.push(
-        [
-          {
-            name: '__Start Game Reminder__',
-            value: 'Please wait on the Start Game with everyone until the game begins.'
-          }
-        ],
-        [
-          {
-            name: 'Game Start Time',
-            value: `The game will begin at ${timeFormat(adjustedDateTime.getTime())} which is ${timeFormat(adjustedDateTime.getTime(), { relative: true })}.`
-          }
-        ]
-      )
-      this.props.fields = fields
 
       if (randomFooterText != "") {
         this.props.footer = {
@@ -277,16 +248,66 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       let pinger = (pingMultiplayerRole && (roleID != 0)) ? `<@&${roleID}>` : ""
       this.content = pinger
 
-      this.props.description = article(randoTitle).ucfirst() + ` ${randoTitle} game has been generated!`
+      // Announcement
+      this.props.description = [
+        article(randoTitle).ucfirst() + ` ${randoTitle} game has been generated!`
+      ]
 
+      // Permalink
+      if (seedURL && seedURL.endsWith("/")) {
+        seedURL = seedURL.substring(0,seedURL.length - 1)
+      }
       if (
         isValidURLFromDomain(
           seedURL,
           randoData.rando.permalink
         )
       ) {
-        this.props.description += `\nYou can download it from here: ${seedURL}`
+        this.props.description.push(
+          `You can download it from here: ${seedURL}`
+        )
+
+        // Get metadata fields
+        let hashID = seedURL.split("/")
+        hashID = hashID[hashID.length - 1]
+        this.props.fields = await getSeedFields(hashID, randomizer)
+      } else {
+        this.props.fields = []
       }
+
+      this.props.description.push(
+        ""  // A blank space, baby
+      )
+
+      // Group Name
+      this.props.description.push(
+        '**Group Name**',
+        groupName,
+        ""  // A blank space, baby
+      )
+
+      // Scripts
+      if (randoData?.rando?.scripts && randoData.rando.scripts.length > 0) {
+        this.props.description.push(
+          `**Scripts**`,
+          randoData.rando.scripts,
+          ""  // A blank space, baby
+        )
+      }
+
+      // Start Game Reminder
+      this.props.description.push(
+        '__**Start Game Reminder**__',
+        'Please wait on the Start Game with everyone until the game begins.',
+        ""  // A blank space, baby
+      )
+
+      // Game Start Time
+      this.props.description.push(
+        '**Game Start Time**',
+        `The game will begin at ${timeFormat(adjustedDateTime.getTime())} which is ${timeFormat(adjustedDateTime.getTime(), { relative: true })}.`
+        // No blank space, baby
+      )
 
       // Silent conclusion (no visible follow-up)
 

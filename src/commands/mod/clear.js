@@ -1,7 +1,10 @@
 // @ts-nocheck
 
+// Permission Flags
 const { PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+const { PurgeCommand } = require('../mod/purge')
 
 module.exports = class ClearCommand extends ModCommand {
   constructor(client) {
@@ -11,35 +14,25 @@ module.exports = class ClearCommand extends ModCommand {
       description: "Clear Messages",
       permissions: [ PermissionFlagsBits.ManageMessages ]
     }
-    let props = {}
 
     super(
       client,
       {...comprops},
-      {...props}
+      {}
     )
   }
 
-  async action(client, interaction, coptions={}) {
-    this.props.title = {
-      text: "Clearing messages..."
-    }
-    this.props.description = ""
+  // declare props: import('../../types/embed').EmbedProps
 
-    let duration = "5s"
-    let limit = 100
-    if(!this.DEV) {
-      await interaction.channel.messages.fetch( {
-        limit: limit
-      })
-      .then(messages => {
-        interaction.channel.bulkDelete(messages)
-      })
-      this.props.description = `Clearing ${limit} messages in ${duration}.`
-    } else {
-      this.props.description = (this.DEV ? "DEV: " : "") + `Clearing ${limit} messages in ${duration}.`
+  async execute(client, interaction, coptions={}, independent=false) {
+    let cmd = new PurgeCommand(client)
+    let options = {
+      amount: 100
     }
-
-    return true
+    return await cmd.execute(
+      client,
+      interaction,
+      options
+    )
   }
 }

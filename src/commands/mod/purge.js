@@ -1,11 +1,14 @@
 // @ts-nocheck
 
+// Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json')
-const path = require('path')
-const fs = require('fs')
+const colors = require('../../dbs/colors.json') // Standardized colors
+const path = require('path')                    // Easy filepath management
+const fs = require('fs')                        // Filesystem manipulation
 
 module.exports = class PurgeCommand extends ModCommand {
   constructor(client) {
@@ -16,8 +19,10 @@ module.exports = class PurgeCommand extends ModCommand {
       options: [
         {
           name: "amount",
-          description: "The number of messages to delete (1-100).",
+          description: "The number of messages to delete (1 - 100)",
           type: ApplicationCommandOptionType.Integer,
+          minValue: 1,
+          maxValue: 100,
           required: true
         },
         {
@@ -29,6 +34,7 @@ module.exports = class PurgeCommand extends ModCommand {
       permissions: [ PermissionFlagsBits.ManageMessages ]
     }
     let props = {}
+
     super(
       client,
       {...comprops},
@@ -36,8 +42,12 @@ module.exports = class PurgeCommand extends ModCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions={}) {
+    // Get Amount
     const messagesToDelete = coptions.amount
+    // Get Channel
     const channel = coptions.channel || interaction.channel
 
     let props = {
@@ -47,6 +57,8 @@ module.exports = class PurgeCommand extends ModCommand {
     }
     let embeds = {}
 
+    // Amount between 1 & 100
+    //  Technically, new SlashCommand interface validates this
     if (messagesToDelete < 1 || messagesToDelete > 100) {
       props.mod.error = true
       props.mod.ephemeral = true
@@ -55,16 +67,18 @@ module.exports = class PurgeCommand extends ModCommand {
       return !props.mod.error
     }
 
-    let success = false
-    let deletedMessages = null
+    let success = false         // Success?
+    let deletedMessages = null  // Deleted Messages
 
     try {
+      // Try to delete the messages
       deletedMessages = await channel.bulkDelete(
         messagesToDelete,
         true
       )
       success = true
     } catch (error) {
+      // Something failed
       success = false
       this.error = true
       this.ephemeral = true
@@ -72,6 +86,7 @@ module.exports = class PurgeCommand extends ModCommand {
       return !this.error
     }
 
+    // We succeeded
     if (success) {
       props.public = {
         color: colors["success"],
@@ -92,6 +107,7 @@ module.exports = class PurgeCommand extends ModCommand {
       console.log(`/${this.name}: ModPost`)
     }
 
+    // Log the event
     if (success && (!this.DEV || true)) {
       const logsChannel = await this.getChannel(client, interaction, "logging")
       if (logsChannel) {
@@ -118,6 +134,7 @@ module.exports = class PurgeCommand extends ModCommand {
       }
     }
 
+    // Log to file
     let now = new Date()
     let logFilePath = path.join(
       __dirname,
@@ -139,6 +156,7 @@ module.exports = class PurgeCommand extends ModCommand {
     fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
     console.log(`/${this.name}: LogFile`)
 
+    // If error, report error to Mod
     if (!success) {
       // Reply to Mod if error for ACTION
       this.ephemeral = true

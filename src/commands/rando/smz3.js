@@ -47,6 +47,7 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
         { "prep-time": 60 }
       ]
     }
+
     super(
       client,
       {...comprops},
@@ -55,14 +56,19 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
   }
 
   async execute(client, interaction, coptions={}, independent=false) {
+    // Load sent options
     coptions = interaction.options
+
+    // Set options
     let options = {
       randomizer: "z3m3",
-      "ping-multiplayer-role": (await interaction.options.get("ping-multiplayer-role")?.value) ?? false,
-      "pingable-role-id": (await interaction.options.get("pingable-role-id")?.value) ?? 0,
-      "seed-url": (await interaction.options.get("seed-url")?.value) ?? "",
-      "prep-time": (await interaction.options.get("prep-time")?.value) ?? 0
+      "ping-multiplayer-role": (await coptions.get("ping-multiplayer-role")?.value) ?? false,
+      "pingable-role-id": (await coptions.get("pingable-role-id")?.value) ?? 0,
+      "seed-url": (await coptions.get("seed-url")?.value) ?? "",
+      "prep-time": (await coptions.get("prep-time")?.value) ?? 0
     }
+
+    // Send to SeedAnnounceCommand
     return await super.execute(
       client,
       interaction,

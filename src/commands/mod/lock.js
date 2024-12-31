@@ -1,9 +1,12 @@
 // @ts-nocheck
 
+// Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json')
+const colors = require('../../dbs/colors.json') // Standardized colors
 
 // Multiple messages
 
@@ -19,7 +22,7 @@ module.exports = class LockCommand extends ModCommand {
           description: "The channel to lock.",
           type: ApplicationCommandOptionType.Channel,
           required: true
-        },
+        }
       ],
       permissions: [ PermissionFlagsBits.ManageChannels ]
     }
@@ -32,18 +35,26 @@ module.exports = class LockCommand extends ModCommand {
     )
   }
 
+  // declare props: import('../../types/embed').EmbedProps
+
   async action(client, interaction, coptions) {
+    // Get Guild ID
     const guildID = interaction.guild.id
+    // Get BotDev-defined list of Guild Channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    // Get requested Channel ID
     const channelID = coptions['channel']
+    // Get Channel from Guild based on Channel ID
     const channel = await client.channels.fetch(channelID)
 
     try {
       if (!this.DEV) {
         // Lock the channel by denying SEND_MESSAGES for @everyone
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
-          SendMessages: false,
-        })
+        await channel.permissionOverwrites.edit(
+          interaction.guild.roles.everyone, {
+            SendMessages: false,
+          }
+        )
       }
 
       // Send public confirmation in the channel

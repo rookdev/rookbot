@@ -351,7 +351,7 @@ class ModCommand extends AdminCommand {
     let lastingError
 
     // Get Guild ID
-    const guildID = interaction.guild.id
+    const guildID = coptions["guild-id"] || interaction.guild.id
     // Get Guild Channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get User Input
