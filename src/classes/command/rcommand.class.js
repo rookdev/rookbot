@@ -45,6 +45,8 @@ class RookCommand {
     this.description      = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
     this.options          = setValue(comprops.options, [])
     this.category         = setValue(comprops.category, "unknown")
+    this.aliases          = setValue(comprops.aliases, [])
+    this.defaultOptions   = setValue(comprops.defaultOptions, {})
     this.testOptions      = setValue(comprops.testOptions, [])
     this.testIndependent  = setValue(comprops.testIndependent, false)
     this.channelName      = "bot-console"
@@ -101,6 +103,118 @@ class RookCommand {
     }
   }
 
+  async botLevelCompare(client, member, silent=false) {
+    let msg = ""
+    if (!member) {
+      if (!silent) {
+        this.error = true
+        this.props.playerTypes = {
+          user: "bot",
+          target: "bot"
+        }
+        msg = "No member given."
+        this.props.description = msg
+        console.log(msg)
+      }
+      return false
+    }
+
+    if (!member?.guild) {
+      if (!silent) {
+        this.error = true
+        this.props.playerTypes = {
+          user: "bot",
+          target: "target"
+        }
+        msg = `No guild found for ${member}.`
+        this.props.description = msg
+        console.log(msg)
+      }
+      return false
+    }
+
+    if (member.id === member.guild.ownerId) {
+      if (!silent) {
+        this.error = true
+        this.props.playerTypes = {
+          user: "bot",
+          target: "target"
+        }
+        msg = [
+          `Bot can't manage user.`,
+          `${member} is Owner of *${member.guild.name}*.`
+        ]
+        this.props.description = msg
+      }
+      return false
+    }
+
+    let clientMember = member.guild.members.me
+    if (!clientMember) {
+      if (!silent) {
+        this.error = true
+        this.props.playerTypes = {
+          user: "bot",
+          target: "bot"
+        }
+        msg = `Bot not found in *${member.guild.name}*.`
+        this.props.description = msg
+      }
+      return false
+    }
+
+    let clientPos = clientMember.roles.highest.position
+    let memberPos = member.roles.highest.position
+    if (clientPos <= memberPos) {
+      if (!silent) {
+        this.error = true
+        this.props.playerTypes = {
+          user: "bot",
+          target: "target"
+        }
+        msg = [
+          `Bot can't manage user.`,
+          `${member}'s highest role is greater than or equal to ${clientMember}.`
+        ]
+        this.props.description = msg
+      }
+      return false
+    }
+    return true
+  }
+  async botCanEdit(client, member, silent=false) {
+    let canEdit = member?.manageable && member.manageable
+    let msg = ""
+
+    if (!member) {
+      if (!silent) {
+        this.error = true
+        msg = "No member given."
+        this.props.description = msg
+      }
+      return false
+    }
+
+    canEdit = await this.botLevelCompare(client, member, silent)
+    return canEdit
+  }
+  async botCanMod(client, member, silent=false) {
+    let canMod = member?.moderatable && member.moderatable
+    let msg = ""
+
+    if (!member) {
+      if (!silent) {
+        this.error = true
+        msg = "No member given."
+        this.props.description = msg
+      }
+      return false
+    }
+
+    canMod = await this.botLevelCompare(client, member, silent)
+    return canMod
+  }
+
   async getChannel(client, interaction, channelType) {
     channelType = channelType || this.channelName
 
@@ -132,9 +246,7 @@ class RookCommand {
     // If it's a number
     if (isNumeric(channelID)) {
       // Search for Channel object by ChannelID
-      channel = await guild?.channels.cache.find(
-        c => c.id === channelID
-      )
+      channel = await guild?.channels.fetch(channelID)
     } else if (typeof channelID == "string") {
       // Search for Channel object ny Channel Name
       channel = await guild?.channels.cache.find(
@@ -180,10 +292,18 @@ class RookCommand {
       }
     }
 
+    if (this.defaultOptions) {
+      for (let [optName, optVal] of Object.entries(this.defaultOptions)) {
+        if ((!(coptions.hasOwnProperty(optName)))) {
+          coptions[optName] = optVal
+        }
+      }
+    }
+
     // If we've got options sent, print them
-    if (coptions && coptions.length > 0) {
+    if (coptions && Object.keys(coptions).length > 0) {
       let Table = new AsciiTable(
-        "Build Options",
+        `/${this.name} : Build Options`,
         {}
       )
         .setHeading(
@@ -198,6 +318,12 @@ class RookCommand {
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)
+
+    // If there's an error
+    //  Set it for this set of props
+    if (this.error) {
+      this.props.error = true
+    }
 
     return actionResult && !this.error
   }
@@ -337,9 +463,7 @@ class RookCommand {
         // If we've got an Interaction
         if (interaction) {
           // Get Guild version of Client User
-          let clientMember = await interaction?.guild?.members.cache.find(
-            g => g.id === client.user.id
-          )
+          let clientMember = interaction.guild.members.me
           // Get Guild version of Caller
           let callerMember = await interaction?.member
 
@@ -462,6 +586,8 @@ class RookCommand {
       // We're setting the footer to include the page number
       console.log(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
       let these_pagination = await new Pagination(interaction)
+      // Set to all users for control
+      these_pagination.setAuthorizedUsers()
       these_pagination.setEmbeds(
         this.pages,
         (page, index, array) => {
@@ -550,6 +676,7 @@ class RookCommand {
         "ID"
       )
       .setAlign(2, AsciiTable.RIGHT)
+      .setBorder('|','-','•','•')
       // Guild it was in
       .addRow(
         "Guild",
@@ -578,9 +705,7 @@ class RookCommand {
     if (interaction) {
       // Permissions Required
       if (this.userPermissions) {
-        let member = interaction.guild?.members.cache.find(
-          g => g.id === interaction.user.id
-        )
+        let member = await interaction.guild?.members.fetch(interaction.user.id)
         Table.addRow(
           "User Permissions",
           this.userPermissions,
@@ -588,9 +713,7 @@ class RookCommand {
         )
       }
       if (this.botPermissions) {
-        let clientMember = interaction.guild?.members.cache.find(
-          g => g.id === client.user.id
-        )
+        let clientMember = interaction.guild.members.me
         Table.addRow(
           "Bot Permissions",
           this.botPermissions,
@@ -601,9 +724,9 @@ class RookCommand {
     console.log(Table.toString())
 
     // Options sent at Execution time
-    if (coptions) {
+    if (coptions && Object.keys(coptions).length > 0) {
       Table = new AsciiTable(
-        "Execute Options",
+        `/${this.name} : Execute Options`,
         {}
       )
         .setHeading(
@@ -672,6 +795,11 @@ class RookCommand {
       }
       // Cycle through test options
       for (let thisTest of this.testOptions) {
+        // Reset props
+        this.props = {}
+        // Reset error
+        this.error = false
+
         // If One Book
         if (testBook) {
           // Build this Page
@@ -727,6 +855,8 @@ class RookCommand {
       // Else, no test options sent, just execute as normal
       execResult = await this.execute(client, interaction)
     }
+
+    console.log(''.padEnd(50, "*"))
 
     return execResult && !this.error
   }

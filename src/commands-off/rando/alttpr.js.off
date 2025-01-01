@@ -3,20 +3,20 @@
 // Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
 // SeedAnnounceCommand
-const SeedAnnounceCommand = require('../rando/seedannounce')
+const SeedAnnounceCommand = require('../../commands/rando/seedannounce')
 
 /**
  * @class
- * @classdesc SMALttPR Seed Announcer
- * @this {SMZ3SeedCommand}
+ * @classdesc Super Metroid Map Randomizer Seed Announcer
+ * @this {ALttPRSeedCommand}
  * @extends {SeedAnnounceCommand}
  * @public
  */
-module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
+module.exports = class ALttPRSeedCommand extends SeedAnnounceCommand {
   constructor(client) {
     let comprops = {
-      name: "smz3",
-      description: "SMZ3 Seed Announcer",
+      name: "alttpr",
+      description: "A Link to the Past Randomizer Seed Announcer",
       category: "rando",
       options: [
         {
@@ -43,7 +43,7 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
       testOptions: [
         {},
         { "ping-multiplayer-role": true },
-        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV" },
         { "prep-time": 60 }
       ]
     }
@@ -61,7 +61,7 @@ module.exports = class SMZ3SeedCommand extends SeedAnnounceCommand {
 
     // Set options
     let options = {
-      randomizer: "z3m3",
+      randomizer: "z3r",
       "ping-multiplayer-role": (await coptions.get("ping-multiplayer-role")?.value) ?? false,
       "pingable-role-id": (await coptions.get("pingable-role-id")?.value) ?? 0,
       "seed-url": (await coptions.get("seed-url")?.value) ?? "",

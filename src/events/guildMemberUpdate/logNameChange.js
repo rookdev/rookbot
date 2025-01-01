@@ -115,7 +115,7 @@ module.exports = async (client, oldMember, newMember) => {
         ]
       )
     } else {
-      let clientMember = await newMember.guild.members.fetch(client.user.id)
+      let clientMember = newMember.guild.members.me
       if (clientMember) {
         players.user = {
           name: clientMember.displayName,

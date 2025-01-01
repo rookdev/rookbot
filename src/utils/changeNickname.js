@@ -178,25 +178,46 @@ async function changeNickname(client, member) {
     }
   }
 
-  message.push(`${client.user} changing nickname of '${member.user.tag}' in '${member.guild.name}'.`)
+  if (member.guild.ownerId === member.id) {
+    success = false
+    message.push(`Can't adjust nickname. ${member} is Guild Owner of *${member.guild.name}*.`)
 
+    return {
+      success: success,
+      message: message
+    }
+  }
+
+  // Get Guild ID
   let guildID = member.guild.id
+  // Get Guild Data
   let guildData = client.guilds.cache.get(guildID)
+
+  // Get Client User from This Guild
+  clientMember = guildData.members.me
+  const memberPos = await member.roles.highest.position
+  const clientPos = await clientMember.roles.highest.position
+  if (memberPos >= clientPos) {
+    success = false
+    message.push(`Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in *${guildData.name}*.`)
+
+    return {
+      success: success,
+      message: message
+    }
+  }
+
+  message.push(`${clientMember} changing nickname of '${member.user.tag}' in *${guildData.name}*.`)
+
   let oldNickname = member.displayName
   let newNickname = ""
 
-  if ([
-    "1111517386588307536",  // castIe
-    "1017468471669440692",  // lostflake
-    "263968998645956608"    // Minnie
-  ].includes(member.id)) {
-    newNickname = await selectMember(member)
-    newNickname = newNickname.trim()
-  }
+  newNickname = await selectMember(member)
+  newNickname = newNickname.trim()
 
   if (newNickname == "") {
     success = false
-    message.push(`No nickname choices for '${member.user.tag}'.`)
+    message.push(`Failed to adjust nickname. No nickname choices for '${member.user.tag}'.`)
 
     return {
       success: success,
@@ -206,7 +227,7 @@ async function changeNickname(client, member) {
 
   if (oldNickname == newNickname) {
     success = false
-    message.push(`No new nickname generated for '${member.user.tag}'.`)
+    message.push(`Failed to adjust nickname. No new nickname generated for '${member.user.tag}'.`)
 
     return {
       success: success,
@@ -214,8 +235,6 @@ async function changeNickname(client, member) {
     }
   }
 
-  // Get Client User from This Guild
-  clientMember = await guildData?.members?.fetch(client.user.id)
   // Get User from This Guild
   let guildMember = await guildData?.members?.fetch(member.id)
 
@@ -223,10 +242,16 @@ async function changeNickname(client, member) {
     // Set new nickname
     await guildMember.setNickname(newNickname)
     success = true
-    message.push(`🟩*${guildData.name}*: **${clientMember.displayName}** changed target nickname to *${newNickname}*.`)
+    message.push(
+      // `🟩*${guildData.name}*: ` +
+      `${clientMember} changed target nickname to *${newNickname}*.`
+    )
   } catch(error) {
     success = false
-    message.push(`🟥*${guildData.name}*: **${clientMember.displayName}** failed to change target nickname. Error: *${error.message}*`)
+    message.push(
+      // `🟥*${guildData.name}*: ` +
+      `${clientMember} failed to change target nickname. Error: *${error.message}*`
+    )
     // console.log(
     //   {
     //     guild: guildData.name,

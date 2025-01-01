@@ -209,9 +209,7 @@ class SalutationCommand extends RookCommand {
         ""
     }
     if (server?.id) {
-      server.name = client?.guilds.cache.find(
-        g => g.id === server.id
-      )?.name || "?"
+      server.name = await client?.guilds.fetch(server.id)?.name || "?"
     }
 
     this.props["fields"] = [
@@ -328,7 +326,7 @@ class SalutationCommand extends RookCommand {
         // Get Client User
         let clientMember = null
         if (user) {
-          clientMember = await guildData?.members?.fetch(user.id)
+          clientMember = await guildData.members.me
         }
 
         // If we're booting up
@@ -372,14 +370,10 @@ class SalutationCommand extends RookCommand {
           let channelID = channelIDs["bot-salutations"]
           if (!channelID) { this.error = true; continue }
 
-          let guild = await client.guilds.cache.find(
-            g => g.id === guildID
-          )
+          let guild = await client.guilds.fetch(guildID)
           if (!guild) { this.error = true; continue }
 
-          let channel = await guild?.channels.cache.find(
-            c => c.id === channelID
-          )
+          let channel = await guild?.channels.fetch(channelID)
           if (!channel) { this.error = true; continue }
 
           // If we found the channel

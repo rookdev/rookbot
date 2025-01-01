@@ -53,9 +53,7 @@ async function callCommands(commandNames) {
             let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
             let channelID = channelIDs["bot-salutations"]
             if (client.guild) {
-              let channel = await client.guild.channels.cache.find(
-                c => c.id === channelID
-              )
+              let channel = await client.guild.channels.fetch(channelID)
               if (channel) {
                 // @ts-ignore
                 await channel?.send(props)

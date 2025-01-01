@@ -18,6 +18,7 @@ export type CommandProps = {
   /** Command User Permissions */   userPermissions?: number
   /** Command Bot Permissions */    botPermissions?: number
   /** Command Access Label */       access?: string
+  /** Command Aliases */            aliases?: Array<Object<string, any>>
   /** Command Test Options */       testOptions?: Array<CommandTestOption>
   /** Test Independent? */          testIndependent?: boolean
 }

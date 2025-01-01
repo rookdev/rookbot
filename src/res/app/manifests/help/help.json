@@ -6,7 +6,7 @@
       "description": "Exit rookbot",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "help": {
       "name": "help",
@@ -23,7 +23,7 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "install": {
       "name": "install",
@@ -31,7 +31,7 @@
       "description": "Install Node Modules",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "pull": {
       "name": "pull",
@@ -44,7 +44,7 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "shutdown": {
       "name": "shutdown",
@@ -52,7 +52,7 @@
       "description": "Shutdown (and restart if pm2) rookbot",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "update": {
       "name": "update",
@@ -60,7 +60,7 @@
       "description": "Update Node Modules",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "uptime": {
       "name": "uptime",
@@ -68,7 +68,7 @@
       "description": "Uptime",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     }
   },
   "bot": {
@@ -78,7 +78,7 @@
       "description": "Goodbye",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "hello": {
       "name": "hello",
@@ -86,7 +86,7 @@
       "description": "Hello",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "say": {
       "name": "say",
@@ -104,7 +104,7 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "new"
     },
     "botavatar": {
       "name": "botavatar",
@@ -118,7 +118,7 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "botguilds": {
       "name": "botguilds",
@@ -131,7 +131,7 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "botinvite": {
       "name": "botinvite",
@@ -139,7 +139,7 @@
       "description": "Invite rookbot",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "botnickname": {
       "name": "botnickname",
@@ -153,7 +153,7 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     },
     "botsrc": {
       "name": "botsrc",
@@ -161,7 +161,7 @@
       "description": "Links to the GitHub repository of rookbot",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     }
   },
   "botdev": {
@@ -177,7 +177,7 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "new"
     }
   },
   "diagnostic": {
@@ -187,7 +187,7 @@
       "description": "Pong!",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     },
     "test": {
       "name": "test",
@@ -195,18 +195,10 @@
       "description": "Test",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "new"
     }
   },
   "doi": {
-    "castlename": {
-      "name": "castlename",
-      "category": "doi",
-      "description": "Immediately triggers a nickname change for castle, to a random castle-esque name",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
-    },
     "doigame": {
       "name": "doigame",
       "category": "doi",
@@ -682,31 +674,6 @@
     }
   },
   "rando": {
-    "alttpr": {
-      "name": "alttpr",
-      "category": "rando",
-      "description": "A Link to the Past Randomizer Seed Announcer",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        }
-      ],
-      "access": "unset",
-      "segment": "local"
-    },
     "holyimage": {
       "name": "holyimage",
       "category": "rando",
@@ -727,7 +694,7 @@
     "seedannounce": {
       "name": "seedannounce",
       "category": "rando",
-      "description": "Starts a specified Randonizer Game with all necessary details",
+      "description": "Starts a specified Randomizer Game with all necessary details",
       "options": [
         {
           "name": "randomizer",
@@ -754,6 +721,31 @@
       "access": "unset",
       "segment": "local"
     },
+    "z3r": {
+      "name": "z3r",
+      "category": "rando",
+      "description": "Starts a Z3R Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "access": "unset",
+      "segment": "new"
+    },
     "seedmeta": {
       "name": "seedmeta",
       "category": "rando",
@@ -767,56 +759,6 @@
         {
           "name": "game-id",
           "description": "Game ID to call from"
-        }
-      ],
-      "access": "unset",
-      "segment": "local"
-    },
-    "smmr": {
-      "name": "smmr",
-      "category": "rando",
-      "description": "Super Metroid Map Randomizer Seed Announcer",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        }
-      ],
-      "access": "unset",
-      "segment": "local"
-    },
-    "smz3": {
-      "name": "smz3",
-      "category": "rando",
-      "description": "SMZ3 Seed Announcer",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
         }
       ],
       "access": "unset",

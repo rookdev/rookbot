@@ -137,9 +137,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await interaction.guild?.roles.cache.find(
-          role => role.id === addRole
-        )
+        addRole = await interaction.guild?.roles.fetch(addRole)
       } else {
         // Search for the Role object by Role Name
         addRole = await interaction.guild?.roles.cache.find(
@@ -179,9 +177,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await interaction.guild?.roles.cache.find(
-          role => role.id === remRole
-        )
+        remRole = await interaction.guild?.roles.fetch(remRole)
       } else {
         // Search for the Role object by Role Name
         remRole = await interaction.guild?.roles.cache.find(
@@ -467,6 +463,9 @@ class ModCommand extends AdminCommand {
     // Get the guild member (to fetch nickname if present)
     const guildMember = await interaction.guild.members.fetch(targetUserId)
     const user = guildMember?.user || targetUser
+
+    // Check Editable
+    let editable = this.botCanEdit(client, guildMember)
 
     // Attempt to ACTION the user
     let success = false

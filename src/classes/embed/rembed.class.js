@@ -3,6 +3,8 @@
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
 
+const colors = require('../../dbs/colors.json') // Standardized colors
+
 // Does this resemble a number?
 // FIXME: Consolidate
 function isNumeric(n) {
@@ -90,6 +92,14 @@ class RookEmbed extends EmbedBuilder {
     // Get props
     this.props = {...props}
     this.init(client)
+
+    if (this.props?.error && this.props.error) {
+      if (!this.props?.title) {
+        this.props.title = { text: "" }
+      }
+      this.props.title.text = "Error"
+      this.props.color = colors["bad"]
+    }
 
     // Set color
     if (this.props?.color) {

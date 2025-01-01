@@ -23,10 +23,13 @@ module.exports = class UserInfoCommand extends RookCommand {
         }
       ],
       testOptions: [
-        { "target-id": "263968998645956608" },  // Minnie
-        { "target-id": "1111517386588307536" }, // castle
         { "target-id": "1307416505171968011" }, // rookbot (Minnie)
+        { "target-id": "263968998645956608" },  // Minnie
+        { "target-id": "1111517386588307536" }, // castIe
+        { "target-id": "283321345612185611" },  // Murder
+        { "target-id": "1017468471669440692" }, // lostflake
         { "target-id": "942642507488034841" },  // TridentBot
+        { "target-id": "211926100681424906" },  // Nikose
         { "target-id": "375068222057086976" }   // DoI Dev
       ]
     }
@@ -101,9 +104,9 @@ module.exports = class UserInfoCommand extends RookCommand {
 
     // How can the Bot interact with this User?
     let botActions = {
-      "🤖": targetMember.user.bot,    // Is this User a Bot?
-      "🛠": targetMember.manageable,  // Can the Bot manage this User?
-      "🔨": targetMember.moderatable  // Can the Bot moderate this User?
+      "🤖": targetMember.user.bot,          // Is this User a Bot?
+      "🛠": await this.botCanEdit(client, targetMember, true),  // Can the Bot manage this User?
+      "🔨": await this.botCanMod(client, targetMember, true)    // Can the Bot moderate this User?
     }
     let botCan = ""
     let botCant = ""

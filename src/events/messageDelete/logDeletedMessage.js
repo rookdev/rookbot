@@ -143,7 +143,7 @@ module.exports = async (client, deletedMessage) => {
         ]
       )
     } else {
-      let clientMember = await deletedMessage.guild.members.fetch(client.user.id)
+      let clientMember = deletedMessage.guild.members.me
       if (clientMember) {
         players.user = {
           name: clientMember.displayName,

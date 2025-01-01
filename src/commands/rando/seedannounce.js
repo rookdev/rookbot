@@ -37,7 +37,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     comprops = comprops || {
       name: "seedannounce",
       category: "rando",
-      description: "Starts a specified Randonizer Game with all necessary details",
+      description: "Starts a specified Randomizer Game with all necessary details",
       options: [
         {
           name: "randomizer",
@@ -58,7 +58,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
             },
             {
               name:   "Archipelago",
-              value: "ap"
+              value:  "ap"
             }
           ],
           required: true
@@ -102,18 +102,22 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       "aliases": [
         {
           name: "z3r",
+          description: "Starts a Z3R Game with all necessary details",
           options: { randomizer: "z3r" }
         },
         {
           name: "smmr",
+          description: "Starts a Super Metroid Map Randomizer Game with all necessary details",
           options: { randomizer: "m3maprando" }
         },
         {
           name: "z3m3",
+          description: "Starts a Z3M3 Game with all necessary details",
           options: { randomizer: "z3m3" }
         },
         {
           name: "ap",
+          description: "Starts an Archipelago Game with all necessary details",
           options: { randomizer: "ap" }
         }
       ]
@@ -241,9 +245,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
       let roleObject = null
       if (roleID != 0) {
-        roleObject = interaction?.guild?.roles.cache.find(
-          r => r.id === roleID
-        )
+        roleObject = await interaction?.guild?.roles.fetch(roleID)
       }
       let pinger = (pingMultiplayerRole && (roleID != 0)) ? `<@&${roleID}>` : ""
       this.content = pinger
@@ -320,34 +322,5 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     }
 
     return !this.error
-  }
-
-  async execute(client, interaction, coptions) {
-    await super.execute(client, interaction, coptions)
-
-    if (interaction && (coptions?.randomizer)) {
-      const randoData = require(`../../dbs/randos/${coptions.randomizer}.json`)
-      if (coptions["seed-url"] && isValidURLFromDomain(coptions["seed-url"], randoData.rando.permalink)) {
-        let seedMeta = new SeedMetaCommand(client)
-        seedMeta.channel = interaction.channel
-        let hashID = coptions["seed-url"].endsWith('/') ? coptions["seed-url"].substring(0, coptions["seed-url"].length - 1) : coptions["seed-url"]
-        hashID = hashID.split("/")
-        hashID = hashID[hashID.length - 1]
-        let buildResult = await seedMeta.build(
-          client,
-          interaction,
-          {
-            "hash-id": hashID,
-            "game-id": coptions.randomizer
-          }
-        )
-        let sendResult = await seedMeta.send(
-          client,
-          interaction,
-          seedMeta.pages,
-          true
-        )
-      }
-    }
   }
 }

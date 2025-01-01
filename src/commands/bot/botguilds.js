@@ -82,22 +82,21 @@ module.exports = class BotGuildsCommand extends RookCommand {
       let bot = await guildData.members.fetch(client.user.id)
       let botJoinedDateTime = new Date(bot.joinedTimestamp)
       // Get Guild Data
-      sorted[bot.joinedTimestamp] = {
-        // Guild Name & ID
-        guild: {
-          name: guildData.name,
-          id: guildID
-        },
-        // Owner Username & ID
-        owner: {
-          tag: owner.user.tag,
-          id: owner.id
-        },
-        // Get Joined DateTime
-        added: botJoinedDateTime.toLocaleString(),
-        addedTimestamp: Math.floor(bot.joinedTimestamp / 1000),
-        addedHammertime: timeFormat(botJoinedDateTime.getTime())
+      let thisGuild = {}
+      thisGuild.guild = {
+        name: guildData.name,
+        id: guildID
       }
+      if (owner) {
+        thisGuild.owner = {
+          username: owner.username,
+          id: owner.id
+        }
+      }
+      thisGuild.added = botJoinedDateTime.toLocaleString()
+      thisGuild.addedTimestamp = Math.floor(bot.joinedTimestamp / 1000)
+      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.getTime())
+      sorted[bot.joinedTimestamp] = thisGuild
     }
 
     console.log("")
@@ -116,13 +115,13 @@ module.exports = class BotGuildsCommand extends RookCommand {
         let tier = guildData.guild.premiumTier
         if (!tier) { tier = 0 }
         Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
-          .addRow("Owner",`\'${guildData.owner.tag}\'`,`(ID:\'${guildData.owner.id}\')`)
+          .addRow("Owner",`\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
           .addRow("Added",guildData.added)
           .addRow("Tier",tier)
           .addRow("")
         this.props.description.push(
           `**Guild:** ${guildData.guild.name} (ID:\`${guildData.guild.id}\`)`,
-          `**Owner:** \`${guildData.owner.username}#${guildData.owner.discriminator}\` (ID:\`${guildData.owner.id}\`, <@${guildData.owner.id}>)`,
+          `**Owner:** \`${guildData.owner.username}\` (ID:\`${guildData.owner.id}\`, <@${guildData.owner.id}>)`,
           `**Added:** ${guildData.addedHammertime}`,
           `**Tier:** ${tier}`,
           ""

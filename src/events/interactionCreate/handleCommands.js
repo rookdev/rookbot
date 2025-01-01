@@ -12,11 +12,27 @@ module.exports = async (client, interaction) => {
   const localCommands = getLocalCommands(client)
 
   try {
-    const commandObject = localCommands.find(
+    let commandObject = localCommands.find(
       cmd => cmd.name === interaction.commandName
     )
 
-    if (!commandObject) return
+    let coptions = {}
+    if (!commandObject) {
+      for (let cmd of localCommands) {
+        if (cmd?.aliases && cmd.aliases.length > 0) {
+          for (let alias of cmd.aliases) {
+            if (alias.name === interaction.commandName) {
+              commandObject = cmd
+              coptions = alias.options
+              console.log(`/${alias.name} is an alias of /${cmd.name} with`, coptions)
+            }
+          }
+        }
+      }
+      if (!commandObject) {
+        return
+      }
+    }
 
     if (commandObject.devOnly) {
       let roleName = "botdev"
@@ -79,7 +95,11 @@ module.exports = async (client, interaction) => {
       }
     }
 
-    await commandObject.execute(client, interaction)
+    await commandObject.execute(
+      client,
+      interaction,
+      coptions
+    )
   } catch (error) {
     console.log(`There was an error running this command: ${error.stack}`)
   }

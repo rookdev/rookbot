@@ -3,7 +3,7 @@
 // Permission Flags
 const { PermissionFlagsBits } = require('discord.js')
 // NickChangeCommand
-const NickChangeCommand = require("../misc/nickchange")
+const NickChangeCommand = require("../../commands/misc/nickchange")
 
 /**
  * @class

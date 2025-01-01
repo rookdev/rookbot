@@ -18,6 +18,11 @@ function isNumeric(n) {
   return (isaN || isNumStr) && !isBool
 }
 
+// natSort
+function natSort(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true });
+}
+
 module.exports = async (client) => {
   // Get nickname data
   let nicknameDataPath = path.join(
@@ -41,6 +46,7 @@ module.exports = async (client) => {
     )
     // Skip first document
     .slice(1)
+    .sort(natSort)
   // Cycle through users
   for(let userID of users) {
     // Guilds to search in
@@ -49,15 +55,36 @@ module.exports = async (client) => {
       .filter(
         (fileName) => isNumeric(fileName)
       )
+      .sort(natSort)
     // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
       let guild = await client.guilds.cache.find(
         g => g.id === guildID
       )
+      if (!guild) {
+        continue
+      }
+
       try {
         // Get the guild member
         const member = await guild.members.fetch(userID, { force: true }) || null
+        // If guild owner, bail
+        if (member.guild.ownerId === member.id) {
+          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          continue
+        }
+
+        // Get the client member
+        const clientMember  = guild.members.me
+        const clientPos     = await clientMember.roles.highest.position
+        const memberPos     = await member.roles.highest.position
+
+        // If member is at or over bot, bail
+        if (memberPos >= clientPos) {
+          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
+          continue
+        }
 
         if (member) {
           // If we got here, schedule the nickname change

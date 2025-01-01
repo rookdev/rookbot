@@ -55,10 +55,14 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
       if (["default","reset"].includes(new_avatar)) {
         new_avatar = "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true"
       }
+
       // Set the new Avatar
       client.user.setAvatar(new_avatar)
 
-      if (!this.props.entities?.bot) {
+      if (!this.props?.entities) {
+        this.props.entities = {}
+      }
+      if (!this.props?.entities?.bot) {
         this.props.entities.bot = {}
       }
       this.props.entities.bot.avatar = old_avatar
