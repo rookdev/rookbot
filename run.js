@@ -42,6 +42,7 @@ let profile = options.profile // Profile to load
 
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
+Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? "Yes" : "No")
 Table.addRow("Delete Commands?", del ? "Yes" : "No")

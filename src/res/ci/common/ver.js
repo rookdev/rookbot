@@ -44,6 +44,7 @@ for(let module of [ "node", "npm", "discord.js" ]) {
 data[ PACKAGE.name ] = { current: `${PACKAGE.version}` }
 
 let Table = new AsciiTable(`♖ ${PACKAGE.name} ♖`, {})
+  .setBorder('|','-','•','•')
   .setHeading(
     "App",
     "Current",

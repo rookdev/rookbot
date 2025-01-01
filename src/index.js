@@ -94,6 +94,7 @@ let deleteCommands = options.del  // Delete Commands?
 let profile = options.profile     // Profile to load
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
+Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
 Table.addRow("Delete Commands?", deleteCommands ? "Yes" : "No")
 console.log(Table.toString())

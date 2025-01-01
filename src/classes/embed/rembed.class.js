@@ -184,19 +184,28 @@ class RookEmbed extends EmbedBuilder {
       this.setAuthor(author)
     }
 
-    // Set thumbnail
-    this.setThumbnail(avatars.thumbnail.avatar)
+    if (this.props.thumbnail?.image == "<NONE>") {
+      avatars.thumbnail.avatar = ""
+    }
+
+    if (avatars.thumbnail.avatar != "") {
+      // Set thumbnail
+      this.setThumbnail(avatars.thumbnail.avatar)
+    }
 
     // Set title
     if (this.props?.title) {
       let hasEmoji  = this.props.title?.emoji
-      let hasText   = this.props.title?.text
+      let hasText   = this.props.title?.text && this.props.title.text != "<NONE>"
       let hasURL    = this.props.title?.url
-      let text      = this.props.title?.text ? this.props.title.text : "No Title"
+      let text      = hasText ? this.props.title.text : ""
 
       if (hasText || hasURL) {
         if (hasEmoji) {
           text = `${this.props.title.emoji}${text}`
+        }
+        if (hasURL && !hasText) {
+          text = "URL"
         }
         this.setTitle(text.trim())
         if (hasURL) {
@@ -206,9 +215,10 @@ class RookEmbed extends EmbedBuilder {
       }
     }
 
+    let footerNone = this.props.footer?.text && this.props.footer.text == "<NONE>"
     let footerDev = client.profile?.DEV && client.profile.DEV
     // Hack footer for PROD Mode
-    if (!footerDev) {
+    if (!(footerDev || footerNone)) {
       let profileFooterText = client.profile.footer?.text && client.profile.footer.text.trim() != "" ? client.profile.footer.text.trim() : ""
       let profileFooterImage = client.profile.footer?.image && client.profile.footer.image.trim() != "" ? client.profile.footer.image.trim() : ""
       if (!this.props?.footer) {
@@ -230,7 +240,7 @@ class RookEmbed extends EmbedBuilder {
     }
 
     // Hack footer for DEV Mode
-    if (footerDev) {
+    if (footerDev && !footerNone) {
       // If we're in Development Mode
       //  Move the footer text to the end of the description
       if (client.profile?.footer) {
@@ -244,15 +254,17 @@ class RookEmbed extends EmbedBuilder {
       }
     }
 
-    // Make sure version number is in the footer text
-    let versionText = `[v${client.profile.PACKAGE.version}]`
-    if (this.props.footer?.text) {
-      if (this.props.footer.text.indexOf(versionText) == -1) {
-        this.props.footer.text += " " + versionText
-      }
-    } else {
-      this.props.footer = {
-        text: versionText
+    if (!footerNone) {
+      // Make sure version number is in the footer text
+      let versionText = `[v${client.profile.PACKAGE.version}]`
+      if (this.props.footer?.text) {
+        if (this.props.footer.text.indexOf(versionText) == -1) {
+          this.props.footer.text += " " + versionText
+        }
+      } else {
+        this.props.footer = {
+          text: versionText
+        }
       }
     }
 
@@ -329,8 +341,8 @@ class RookEmbed extends EmbedBuilder {
 
     // Set footer
     if (this.props?.footer) {
-      let hasText = this.props.footer?.text
-      let hasIcon = this.props.footer?.image
+      let hasText = this.props.footer?.text && !footerNone
+      let hasIcon = this.props.footer?.image && !footerNone
 
       if (!hasText) {
         this.props.footer.text = " "

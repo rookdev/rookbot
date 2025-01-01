@@ -164,6 +164,7 @@ if (options.long) {
 
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
+Table.setBorder('|','-','•','•')
 Table.addRow("Dev Token", user)
 Table.addRow("Server Token", server)
 Table.addRow("Dev Client ID", client)

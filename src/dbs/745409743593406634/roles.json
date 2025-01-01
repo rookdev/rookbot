@@ -8,6 +8,9 @@
   "mod": [
     "Mod"
   ],
+  "booster": [
+    "Fake Booster"
+  ],
   "access": [
     "Accepted Values"
   ],

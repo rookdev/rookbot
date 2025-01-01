@@ -306,6 +306,7 @@ class RookCommand {
         `/${this.name} : Build Options`,
         {}
       )
+        .setBorder('|','-','•','•')
         .setHeading(
           "Option",
           "Value"
@@ -587,7 +588,7 @@ class RookCommand {
       console.log(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
       let these_pagination = await new Pagination(interaction)
       // Set to all users for control
-      these_pagination.setAuthorizedUsers()
+      these_pagination.setAuthorizedUsers([])
       these_pagination.setEmbeds(
         this.pages,
         (page, index, array) => {

@@ -106,6 +106,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     console.log(`${client.user.username}#${client.user.discriminator} (ID:${client.user.id}) is on ${Object.keys(sorted).length} ${plural}!`)
 
     const Table = new AsciiTable("", {})
+      .setBorder('|','-','•','•')
       .setHeading("Type","Name","ID")
 
     // Cycle through guilds
