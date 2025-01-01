@@ -33,14 +33,15 @@ class SalutationCommand extends RookCommand {
 
   async action(client, interaction, coptions) {
     // Mode, default to "boot"
-    let mode        = coptions?.mode || "boot"
+    let mode          = coptions?.mode || "boot"
     // Label for On/Offline
-    let onlineness  = mode == "boot" ? "Online" : "Offline"
+    let onlineness    = mode == "boot" ? "Online" : "Offline"
     // Label for Un/Ready
-    let readiness   = mode == "boot" ? "Ready"  : "Unready"
+    let readiness     = mode == "boot" ? "Ready"  : "Unready"
 
-    let BRANCH      = null  // Branch Name
-    let COMMIT      = null  // Commit ID
+    let BRANCH        = null  // Branch Name
+    let COMMIT        = null  // Commit ID
+    let COMMIT_TITLE  = ""
 
     let mode_msg = ""
     let mode_tag = ""
@@ -117,6 +118,7 @@ class SalutationCommand extends RookCommand {
       if (COMMIT && (COMMIT.length > 0)) {
         COMMIT = COMMIT[1]
       }
+      COMMIT_TITLE = git_log.split("\n")[4].trim()
     } catch (err) {
       console.log(err)
     }
@@ -156,9 +158,10 @@ class SalutationCommand extends RookCommand {
     }
 
     console_output.push(
-      `Profile Key: '${this.profile.profileName}'`,
-      `Branch Key:  <${BRANCH}>`,
-      `Commit ID:   [${COMMIT}]`,
+      `Profile Key:   '${this.profile.profileName}'`,
+      `Branch Key:    <${BRANCH}>`,
+      `Commit ID:     [${COMMIT}]`,
+      `Commit Title:  ${COMMIT_TITLE}`,
       `Bot is ${readiness}!`,
       ""
     )
@@ -170,7 +173,8 @@ class SalutationCommand extends RookCommand {
      * console_output[4] = Profile  Key
      * console_output[5] = Branch   Key
      * console_output[6] = Commit   ID
-     * console_output[7] = Readiness
+     * console_output[7] = Commit   Title
+     * console_output[8] = Readiness
      */
 
     this.props.description =
@@ -268,6 +272,7 @@ class SalutationCommand extends RookCommand {
                 `[${COMMIT}]`,
                 `[\`${COMMIT}\`](${git_info.root}/tree/${COMMIT})`
               )
+            + ": " + `\`${COMMIT_TITLE}\``
         }
       ],
       [
@@ -306,12 +311,12 @@ class SalutationCommand extends RookCommand {
           name: "Status",
           value:
             user ?
-              console_output[7]
+              console_output[8]
                 .replace(
                   "Bot",
                   `<@${user.id}>`
                 ) :
-                console_output[7]
+                console_output[8]
         }
       ]
     )
