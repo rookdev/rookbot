@@ -464,7 +464,7 @@ class RookCommand {
         // If we've got an Interaction
         if (interaction) {
           // Get Guild version of Client User
-          let clientMember = interaction.guild.members.me
+          let clientMember = interaction.guild?.members.me
           // Get Guild version of Caller
           let callerMember = await interaction?.member
 
