@@ -5,5 +5,6 @@
   "failure":  "#FF0000",
   "success":  "#00FF00",
   "bad":      "#FF0000",
-  "good":     "#00FF00"
+  "good":     "#00FF00",
+  "boosts":   "#F47FFF"
 }

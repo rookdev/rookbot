@@ -129,11 +129,11 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "🥇Tournament",
-          value: hash_meta?.tournament ? "Yes" : "No"
+          value: hash_meta?.tournament ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
         {
           name: "👢Pseudoboots",
-          value: hash_meta?.pseudoboots ? "Yes" : "No"
+          value: hash_meta?.pseudoboots ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
       ],
       [
@@ -143,7 +143,7 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "#️Hash ID",
-          value: `[\`${hash_meta?.hash}\`](http://alttpr.com/h/${hash_meta?.hash})`
+          value: `[${hash_meta?.hash.inlinecode()}](http://alttpr.com/h/${hash_meta?.hash})`
         },
         {
           name: "Generation Date",
@@ -212,7 +212,7 @@ module.exports = async (hashID, gameID="z3r") => {
       [
         {
           name: "🗺️Transition Letters?",
-          value: settings?.other_settings.transition_letters ? "Yes" : "No"
+          value: settings?.other_settings.transition_letters ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
         {
           name: "🔒Door Locks Size",
@@ -230,21 +230,21 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "✨Energy-Free Shinesparks?",
-          value: settings?.other_settings.energy_free_shinesparks ? "Yes" : "No"
+          value: settings?.other_settings.energy_free_shinesparks ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
         {
           name: "🌡️Ultra-Low QoL?",
-          value: settings?.other_settings.ultra_low_qol ? "Yes" : "No"
+          value: settings?.other_settings.ultra_low_qol ? this.profile.emojis.check : this.profile.emojis.nocheck
         }
       ],
       [
         {
           name: "🥇Race Mode?",
-          value: settings?.other_settings.race_mode ? "Yes" : "No"
+          value: settings?.other_settings.race_mode ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
         {
           name: "#️Hash ID",
-          value: `[\`${hashID}\`](https://maprando.com/seed/${hashID})`
+          value: `[${hashID.inlinecode()}](https://maprando.com/seed/${hashID})`
         },
         {
           name: "📝Metadata",
@@ -261,7 +261,7 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "👀Visualizer",
-          value: `[\`${hashID}\`](https://maprando.com/seed/${hashID}/data/visualizer/index.html)`
+          value: `[${hashID.inlinecode()}](https://maprando.com/seed/${hashID}/data/visualizer/index.html)`
         }
       ]
     ]
@@ -371,21 +371,21 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "🥇Tournament",
-          value: settings?.race == "true" ? "Yes" : "No"
+          value: settings?.race == "true" ? this.profile.emojis.check : this.profile.emojis.nocheck
         }
       ],
       [
         {
           name: "#️Race Hash",
-          value: `\`${hash_meta?.hash}\``
+          value: hash_meta?.hash.inlinecode()
         },
         {
           name: "#️Seed ID",
-          value: `[\`${hashID}\`](https://samus.link/seed/${hashID})`
+          value: `[${hashID.inlinecode()}](https://samus.link/seed/${hashID})`
         },
         {
           name: "#️Seed Guid",
-          value: `[\`${decoded}\`](https://samus.link/api/seed/${decoded})`
+          value: `[${decoded.inlinecode()}](https://samus.link/api/seed/${decoded})`
         }
       ]
     ]

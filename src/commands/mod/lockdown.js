@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Permission Flags
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// Command Option Types, Message Flags, Permission Flags
+const { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -80,12 +80,11 @@ module.exports = class LockdownCommand extends ModCommand {
 
     // Post FollowUp YouPost
     let followUp = (this.DEV ? "DEV: " : "") + `Starting to ${action} all channels. This may take a moment...`
-    await interaction.followUp(
-      {
-        content: followUp,
-        ephemeral: true,
-      }
-    )
+    let intOptions = {
+      content: followUp,
+      flags: MessageFlags.Ephemeral
+    }
+    await interaction.followUp(intOptions)
 
     let processedCount = 0
     let processedChannels = []

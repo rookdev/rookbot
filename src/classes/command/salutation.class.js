@@ -8,7 +8,6 @@ const { RookEmbed } = require('../embed/rembed.class.js')
 const timeConversion = require('../../utils/timeConversion.js')
 // Use Discord Hammertime
 const timeFormat = require('../../utils/timeFormat.js')
-const colors = require('../../dbs/colors.json') // Standardized Colors
 const shell = require('shelljs')                // Run shell commands
 const path = require('path')                    // Easy filepath management
 const fs = require('fs')                        // Filesystem manipulation
@@ -49,12 +48,12 @@ class SalutationCommand extends RookCommand {
     // Set Message
     if (this.DEV) {
       // Development Mode
-      this.props.color = colors["warning"]
+      this.props.color = client.profile.colors.warning
       mode_msg = "DEV MODE"
       mode_tag = "!!!"
     } else {
       // Production Mode
-      this.props.color = colors["success"]
+      this.props.color = client.profile.colors.success
       mode_msg = "PROD MODE"
       mode_tag = "\*\*\*"
     }
@@ -64,7 +63,7 @@ class SalutationCommand extends RookCommand {
       this.props.caption = { text: "Hello World" }
       this.props.title = {
         text: this.props["caption"].text,
-        emoji: "🔼"
+        emoji: client.profile.emojis.up
       }
 
       onlineness = "Online"
@@ -74,9 +73,9 @@ class SalutationCommand extends RookCommand {
       this.props.caption = { text: "Later, man!" },
       this.props.title = {
         text: this.props["caption"].text,
-        emoji: "🔽"
+        emoji: client.profile.emojis.down
       }
-      this.props.color = colors["error"]
+      this.props.color = this.profile.colors.bad
       mode_tag = "vvv"
 
       onlineness = "Offline"
@@ -181,15 +180,15 @@ class SalutationCommand extends RookCommand {
       console_output[2]
         .replace(   // Development Mode
           /!!!/g,
-          "🟧"
+          client.profile.emojis.dev
         )
         .replace(   // Production Mode
           /\*\*\*/g,
-          "🟩"
+          client.profile.emojis.prod
         )
         .replace(   // Exiting
           /vvv/g,
-          "🟥"
+          client.profile.emojis.bad
         )
 
     // When did we launch?
@@ -207,9 +206,9 @@ class SalutationCommand extends RookCommand {
         interaction?.guild?.id ||
         client.guild.id ||
         process.env?.GUILD_ID,
-      avatar: this?.channel?.guild.iconURL({ size: 128 }) ||
-        interaction?.guild?.iconURL({ size: 128 }) ||
-        client.guild.iconURL({ size: 128 }) ||
+      avatar: this?.channel?.guild.iconURL({ size: Math.pow(2, 7) }) ||
+        interaction?.guild?.iconURL({ size: Math.pow(2, 7) }) ||
+        client.guild.iconURL({ size: Math.pow(2, 7) }) ||
         ""
     }
     if (server?.id) {
@@ -238,7 +237,7 @@ class SalutationCommand extends RookCommand {
             console_output[4].substring(console_output[4].indexOf(':') + 2)
               .replace(
                 `'${this.profile.profileName}'`,
-                `\`${this.profile.profileName}\``
+                this.profile.profileName.codeblock()
               )
         }
       ],
@@ -261,7 +260,7 @@ class SalutationCommand extends RookCommand {
             console_output[5].substring(console_output[5].indexOf(':') + 2)
               .replace(
                 `<${BRANCH}>`,
-                `[\`${BRANCH}\`](${git_info.root}/tree/${BRANCH})`
+                `[${BRANCH.inlinecode()}](${git_info.root}/tree/${BRANCH})`
               )
         },
         {
@@ -270,9 +269,9 @@ class SalutationCommand extends RookCommand {
             console_output[6].substring(console_output[6].indexOf(':') + 2)
               .replace(
                 `[${COMMIT}]`,
-                `[\`${COMMIT}\`](${git_info.root}/tree/${COMMIT})`
+                `[${COMMIT.inlinecode()}](${git_info.root}/tree/${COMMIT})`
               )
-            + ": " + `\`${COMMIT_TITLE}\``
+            + ": " + COMMIT_TITLE.inlinecode()
         }
       ],
       [
@@ -388,11 +387,11 @@ class SalutationCommand extends RookCommand {
             id:     guild.id,
             name:   guild?.name || "?",
             url:    "http://example.com/guild",
-            avatar: guild.iconURL({ size: 128 })
+            avatar: guild.iconURL({ size: Math.pow(2, 7) })
           }
 
           this.props.fields[1][0].value = server?.name || "?"
-          this.props.fields[1][1].value = `\`${server.id}\``
+          this.props.fields[1][1].value = server.id.codeblock()
 
           this.props.entities.guild = server
 

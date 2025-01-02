@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+const { MessageFlags } = require('discord.js')
 const getLocalCommands = require('../../utils/getLocalCommands')
 
 module.exports = async (client, interaction) => {
@@ -45,10 +46,11 @@ module.exports = async (client, interaction) => {
       }
       console.log(roleName,roleUserNames,roleUserIDs)
       if (!roleUserIDs.includes(interaction.member.id)) {
-        interaction.reply({
-          content: 'Only developers are allowed to run this command.',
-          ephemeral: true
-        })
+        let intOptions = {
+          content: `${client.profile.emojis.fail} Only BotDevs are allowed to run this command.`,
+          flags: MessageFlags.Ephemeral
+        }
+        interaction.reply(intOptions)
         return
       }
     }
@@ -61,10 +63,11 @@ module.exports = async (client, interaction) => {
         }
       }
       if (!(testGuilds.includes(interaction.guild.id))) {
-        interaction.reply({
-          content: 'This command cannot be ran here.',
-          ephemeral: true
-        })
+        let intOptions = {
+          content: `${client.profile.emojis.fail} This command cannot be ran here.`,
+          flags: MessageFlags.Ephemeral
+        }
+        interaction.reply(intOptions)
         return
       }
     }
@@ -72,10 +75,11 @@ module.exports = async (client, interaction) => {
     if (commandObject.userPermissions?.length) {
       for (const permission of commandObject.userPermissions) {
         if (!interaction.member.permissions.has(permission)) {
-          interaction.reply({
-            content: 'User is missing permissions.',
-            ephemeral: true
-          })
+          let intOptions = {
+            content: `${client.profile.emojis.user} User is missing permissions.`,
+            flags: MessageFlags.Ephemeral
+          }
+          interaction.reply(intOptions)
           return
         }
       }
@@ -86,10 +90,11 @@ module.exports = async (client, interaction) => {
         const bot = interaction.guild.members.me
 
         if (!bot.permissions.has(permission)) {
-          interaction.reply({
-            content: "Bot is missing permissions.",
-            ephemeral: true
-          })
+          let intOptions = {
+            content: `${client.profile.emojis.bot} Bot is missing permissions.`,
+            flags: MessageFlags.Ephemeral
+          }
+          interaction.reply(intOptions)
           return
         }
       }

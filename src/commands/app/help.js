@@ -105,27 +105,41 @@ module.exports = class HelpCommand extends RookCommand {
     for(let [sectionName, sectionCmds] of Object.entries(showJSON)) {
       // Cycle through commands
       for(let [cmdName, cmd] of Object.entries(sectionCmds)) {
-        let fields = [
+        let fields = []
+        fields.push(
           [
             // Command Name
             {
               name: "Name",
-              value: `\`/${cmd.name}\``
+              value: cmd.name.inlinecode()
             },
             // Command Category
             {
               name: "Category",
-              value: `\`${cmd.category}\``
+              value: cmd.category.inlinecode()
             }
-          ],
+          ]
+        )
+
+        // If we've got a Parent Command, note it
+        if (cmd?.parent) {
+          fields[0].push(
+            {
+              name: "Parent",
+              value: cmd.parent.inlinecode()
+            }
+          )
+        }
+
+        fields.push(
           [
             // Command Description
             {
               name: "Description",
-              value: cmd.description || " "
+              value: cmd?.description || " "
             }
           ]
-        ]
+        )
 
         // If we've set the Command Access, note it
         if (cmd?.access && cmd.access.toLowerCase() != "unset") {
@@ -146,7 +160,7 @@ module.exports = class HelpCommand extends RookCommand {
             // If we've got an option and it's got a name
             if (option && option?.name) {
               // Set the name
-              let optionName = `Option: \`${option.name}\``
+              let optionName = `Option: ${option.name.inlinecode()}`
               if (option?.required && option.required) {
                 optionName += " - *required*"
               }

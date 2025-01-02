@@ -6,7 +6,6 @@ const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.j
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json') // Standardized colors
 
 // Multiple messages
 
@@ -59,7 +58,7 @@ module.exports = class LockCommand extends ModCommand {
 
       // Send public confirmation in the channel
       const embedProps = {
-        color: colors["bad"],
+        color: this.profile.colors.bad,
         title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
         description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **locked**.`,
       }
@@ -71,12 +70,12 @@ module.exports = class LockCommand extends ModCommand {
       const logs = await client.channels.fetch(guildChannels["logging"])
       if (logs && !this.DEV) {
         let props = {
-          color: colors["bad"],
+          color: this.profile.colors.bad,
           title: { text: "[Log] Channel Locked", emoji: "🔒" },
           fields: [
             [
-              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: \`${channel.id}\`)` },
-              { name: 'Locked By',      value: `${interaction.user}\n(ID: \`${interaction.user.id}\`)` }
+              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${channel.id.inlinecode()})` },
+              { name: 'Locked By',      value: `${interaction.user}\n(ID: ${interaction.user.id.inlinecode()})` }
             ]
           ]
         }

@@ -3,6 +3,11 @@
   "id": "283321345612185611",
   "mode": "build",
   "parts": {
+    "pre": [
+      "Chef",
+      "Doctor",
+      "Dr"
+    ],
     "names": [
       "Murder"
     ],
@@ -16,6 +21,6 @@
     ]
   },
   "prefixes": {
-    "1282788953052676177": "[Head Admin] "
+    "1282788953052676177":  { "name": "DoI Main", "prefix": "[Head Admin] " }
   }
 }

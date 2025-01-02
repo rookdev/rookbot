@@ -5,7 +5,6 @@ const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
 const UptimeCommand = require('../../commands/app/uptime.js')
 const unready = require('../../events/unready/exit')  // unreadyEvent
-const colors = require('../../dbs/colors.json')       // Standardized colors
 
 // Multiple messages
 
@@ -28,10 +27,10 @@ module.exports = class ExitCommand extends BotDevCommand {
     }
     let props = {
       title: {
-        emoji:  "⏹️",
+        emoji:  client.profile.emojis.stop,
         text:   "Exit"
       },
-      color: colors["bad"]
+      color: client.profile.colors.bad
     }
 
     super(

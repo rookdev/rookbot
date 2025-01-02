@@ -64,8 +64,12 @@ module.exports = class ColorCommand extends RookCommand {
       image: { image: `https://png-pixel.com/${dims}-${hexInput.toLowerCase()}ff.png` },
       fields: [
         [
-          { name: 'Hex', value: `\`#${hexInput}\`` },
-          { name: 'RGB', value: `(${r}, ${g}, ${b})` }
+          { name: 'Hex', value: `#${hexInput}`.codeblock() },
+          { name: 'RGB', value: `(${r}, ${g}, ${b})`.codeblock() }
+        // ],
+        // [
+        //   { name: 'HSL', value: ("(" + rgbToHsl(r, g, b).join(", ") + ")").codeblock() },
+        //   { name: 'HSV', value: ("(" + rgbToHsv(r, g, b).join(", ") + ")").codeblock() }
         ]
       ]
     }

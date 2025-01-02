@@ -140,7 +140,7 @@ async function selectMember(member) {
 
   if ("prefixes" in namesDB) {
     if (member.guild.id in namesDB.prefixes) {
-      newNickname = `${namesDB.prefixes[member.guild.id]}${newNickname}`
+      newNickname = `${namesDB.prefixes[member.guild.id].prefix}${newNickname}`
     }
   }
 

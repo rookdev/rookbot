@@ -2,6 +2,7 @@
 const { program } = require('commander')  // Commander for CLI management
 const AsciiTable = require('ascii-table') // Pretty-print in console
 const PACKAGE = require('./package.json') // Node Package data
+const emojis = require('./src/dbs/emojis.json') // Global Emojis
 const shell = require('shelljs')          // Run shell commands
 const path = require('path')              // Easy filepath management
 const fs = require('fs')                  // Filesystem manipulation
@@ -170,8 +171,8 @@ Table.addRow("Server Token", server)
 Table.addRow("Dev Client ID", client)
 Table.addRow("Development/Production", env)
 Table.addRow("Selected Profile", profile)
-Table.addRow("Long Load", long ? "Yes" : "No")
-Table.addRow("Delete Commands?", del ? "Yes" : "No")
+Table.addRow("Long Load", long ? emojis.check : emojis.nocheck)
+Table.addRow("Delete Commands?", del ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // Use dotenvx with env vars to use node to run run.js with CLI args

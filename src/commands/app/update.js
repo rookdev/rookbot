@@ -64,11 +64,9 @@ module.exports = class UpdateCommand extends BotDevCommand {
 
     */
 
-    console_output.push(`
-      \`\`\`` + "\n" +
-      node_update +
-      `\`\`\`
-    `)
+    console_output.push(
+      ("\n" + node_update).codeblock()
+    )
     this.props.description = console_output
 
     return !this.error

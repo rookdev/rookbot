@@ -179,7 +179,7 @@ module.exports = class PullCommand extends BotDevCommand {
             console_output[2].substring(console_output[2].indexOf(':') + 2)
             .replace(
               `<${BRANCH}>`,
-              `[\`${BRANCH}\`](https://github.com/mysterypaintwo/rookbot/tree/${BRANCH})`
+              `[${BRANCH.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${BRANCH})`
             )
         }
       ]
@@ -190,7 +190,7 @@ module.exports = class PullCommand extends BotDevCommand {
         // Old Commit ID
         {
           name: "Old Commit",
-          value: `[\`${COMMITS.current}\`](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.current})`
+          value: `[${COMMITS.current.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.current})`
         }
       ]
     )
@@ -202,7 +202,7 @@ module.exports = class PullCommand extends BotDevCommand {
           // New Commit ID
           {
             name: "New Commit",
-            value: `[\`${COMMITS.fresh}\`](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.fresh})`
+            value: `[${COMMITS.fresh.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.fresh})`
           }
         ]
       )
@@ -211,7 +211,7 @@ module.exports = class PullCommand extends BotDevCommand {
           // We updated
           {
             name: "Updated?",
-            value: "Yes"
+            value: this.profile.emojis.check
           }
         ]
       )
@@ -222,7 +222,7 @@ module.exports = class PullCommand extends BotDevCommand {
           // We didn't update
           {
             name: "Updated?",
-            value: "No"
+            value: this.profile.emojis.nocheck
           }
         ]
       )

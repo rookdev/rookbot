@@ -1,4 +1,5 @@
 const { REST, Routes } = require('discord.js')
+const emojis = require ("../dbs/emojis.json")
 
 const manageCommands = async (
   deleteCommands,
@@ -11,7 +12,7 @@ const manageCommands = async (
 
   try {
     if (deleteCommands) {
-      console.log(`  🗑 Deleting commands for bot: ${botName}`)
+      console.log(`  ${emojis.delete} Deleting commands for bot: ${botName}`)
       const commands = await rest.get(
         Routes.applicationGuildCommands(
           clientId,
@@ -21,7 +22,7 @@ const manageCommands = async (
 
       const deletePromises = commands.map(
         (command) => {
-          console.log(`   🗑 Deleting: "${command.name}"`)
+          console.log(`   ${emojis.delete} Deleting: "${command.name}"`)
           rest.delete(
             Routes.applicationGuildCommand(
               clientId,
@@ -33,12 +34,12 @@ const manageCommands = async (
       )
 
       await Promise.all(deletePromises)
-      console.log('   👍 All commands deleted.')
+      console.log(`   ${emojis.yes} All commands deleted.`)
     } else {
-      console.log('   ⏩ Command deletion skipped.')
+      console.log(`   ${emojis.skip} Command deletion skipped.`)
     }
   } catch (error) {
-    console.error(`   ❌ Error managing commands for bot: ${botName}`, error)
+    console.error(`   ${emojis.fail} Error managing commands for bot: ${botName}`, error)
   }
 }
 

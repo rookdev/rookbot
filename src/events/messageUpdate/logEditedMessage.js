@@ -3,10 +3,9 @@
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const { Message } = require('discord.js')
-const colors = require('../../dbs/colors.json')
+const timeFormat = require('../../utils/timeFormat')
 const path = require('path')
 const fs = require('fs')
-const timeFormat = require('../../utils/timeFormat')
 
 /**
  * Logs edited messages from the server.
@@ -79,11 +78,11 @@ module.exports = async (client, oldMessage, newMessage) => {
 
     let player = {
       name: editor.displayName,
-      avatar: editor.displayAvatarURL( { size: 128 } )
+      avatar: editor.displayAvatarURL( { size: Math.pow(2, 7) } )
     }
 
     const embed = new RookEmbed(client, {
-      color: colors["info"], // Orange for message updates
+      color: client.profile.colors.info,
       title: {
         text: '[Log] Message Edited',
         emoji: "✏️"
@@ -105,7 +104,7 @@ module.exports = async (client, oldMessage, newMessage) => {
           {
             name: 'Author',
             value: `<@${newMessage.author.id}>` + " " +
-              `(ID: \`${newMessage.author.id}\`)`
+              `(ID: ${newMessage.author.id.inlinecode()})`
           }
         ],
         [
@@ -114,7 +113,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Guild',
             value: [
               newMessage.guild.name,
-              `(ID: \`${newMessage.guild.id}\`)`
+              `(ID: ${newMessage.guild.id.inlinecode()})`
             ]
           },
           // Channel Link
@@ -122,7 +121,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Channel',
             value: [
               `<#${newMessage.channel.id}>`,
-              `(ID: \`${newMessage.channel.id}\`)`
+              `(ID: ${newMessage.channel.id.inlinecode()})`
             ]
           }
         ],
@@ -131,7 +130,7 @@ module.exports = async (client, oldMessage, newMessage) => {
           {
             name: 'Message',
             value: newMessage.url +
-              `(ID: \`${newMessage.id}\`)`
+              `(ID: ${newMessage.id.inlinecode()})`
           }
         ],
         [

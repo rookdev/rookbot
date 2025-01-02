@@ -121,8 +121,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
           .addRow("Tier",tier)
           .addRow("")
         this.props.description.push(
-          `**Guild:** ${guildData.guild.name} (ID:\`${guildData.guild.id}\`)`,
-          `**Owner:** \`${guildData.owner.username}\` (ID:\`${guildData.owner.id}\`, <@${guildData.owner.id}>)`,
+          `**Guild:** ${guildData.guild.name} (ID:${guildData.guild.id.inlinecode()})`,
+          `**Owner:** ${guildData.owner.username.inlinecode()} (ID:${guildData.owner.id.inlinecode()}, <@${guildData.owner.id}>)`,
           `**Added:** ${guildData.addedHammertime}`,
           `**Tier:** ${tier}`,
           ""

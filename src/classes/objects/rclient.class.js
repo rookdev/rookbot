@@ -27,6 +27,10 @@ class RookClient extends Client {
     this.profileName  = profileName
     // Loaded Profile
     this.profile      = getProfile(this.profileName)
+    // Global Colors
+    this.profile.colors = require("../../dbs/colors.json")
+    // Global Emojis
+    this.profile.emojis = require("../../dbs/emojis.json")
 
     for (let [optName, optVal] of Object.entries(options)) {
       this.profile[optName] = optVal

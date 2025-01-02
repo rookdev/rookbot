@@ -6,7 +6,6 @@ const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.j
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json') // Standardized colors
 const path = require('path')                    // Easy filepath management
 const fs = require('fs')                        // Filesystem manipulation
 
@@ -29,6 +28,13 @@ module.exports = class PurgeCommand extends ModCommand {
           name: "channel",
           description: "Channel to purge messages from.",
           type: ApplicationCommandOptionType.Channel
+        }
+      ],
+      aliases: [
+        {
+          name: "clear",
+          description: "Purge 100 messages",
+          options: { amount: 100 }
         }
       ],
       permissions: [ PermissionFlagsBits.ManageMessages ]
@@ -89,9 +95,9 @@ module.exports = class PurgeCommand extends ModCommand {
     // We succeeded
     if (success) {
       props.public = {
-        color: colors["success"],
+        color: this.profile.colors.success,
         title: {
-          emoji: "🟢",
+          emoji: this.profile.emojis.good,
           text: "[ModPost] Success!"
         },
         description: [
@@ -119,7 +125,7 @@ module.exports = class PurgeCommand extends ModCommand {
           fields: [
             [
               { name: "Channel",    value: channel },
-              { name: "Purged By",  value: `${interaction.user} (ID: \`${interaction.user.id}\`)` },
+              { name: "Purged By",  value: `${interaction.user} (ID: ${interaction.user.id.inlinecode()})` },
               { name: "Amount",     value: deletedMessages.size }
             ]
           ]

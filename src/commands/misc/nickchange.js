@@ -32,7 +32,12 @@ module.exports = class NickChangeCommand extends RookCommand {
       ],
       aliases: [
         {
-          name: "castIename",
+          name: "castiename",
+          description: "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
+          options: { "target-id": "1111517386588307536" }
+        },
+        {
+          name: "castlename",
           description: "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
           options: { "target-id": "1111517386588307536" }
         }
@@ -67,7 +72,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     this.props.entities = {
       caller: {
         name: interaction.user.displayName,
-        avatar: interaction.user.displayAvatarURL({ size: 128 })
+        avatar: interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
       }
     }
 
@@ -115,14 +120,14 @@ module.exports = class NickChangeCommand extends RookCommand {
         user: "bot",
         target: "guild"
       }
-      this.props.description = `Member not found [\`${targetUserId}\`] in *${guild.name}*.`
+      this.props.description = `Member not found [${targetUserId.inlinecode()}] in *${guild.name}*.`
       return false
     }
 
     // Set Target to command target
     this.props.entities.target = {
       name: member?.displayName,
-      avatar: member.displayAvatarURL({ size: 128 })
+      avatar: member.displayAvatarURL({ size: Math.pow(2, 7) })
     }
 
     // Check Editable

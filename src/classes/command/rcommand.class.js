@@ -9,34 +9,9 @@ const AsciiTable = require('ascii-table')
 // Filesystem management
 const fs = require('fs')
 
-// Does this resemble a number?
-// FIXME: Consolidate
-function isNumeric(n) {
-  let isaN      = !isNaN(n)
-  let isBool    = typeof n === "boolean"
-  let isStr     = typeof n === "string"
-  let isNumStr  = (
-    isStr &&
-    ((n.replace(/\D/g, '') + "") == (n + ""))
-  )
-
-  return (isaN || isNumStr) && !isBool
-}
-
-// Set value with a fallback
-// FIXME: Consolidate
-function setValue(input, defvalue) {
-  if (!defvalue) {
-    defvalue = ""
-  }
-  return input ? input : defvalue
-}
-
-// Add ucfirst() to String
-// FIXME: Consolidate
-String.prototype.ucfirst = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1)
-}
+const { isNumeric } = require("../../utils/numFuncs")
+const { setValue } = require("../../utils/globalFuncs")
+const stringFuncs = require("../../utils/stringFuncs")
 
 class RookCommand {
   constructor(client, comprops={}, props={}) {
@@ -112,7 +87,7 @@ class RookCommand {
           user: "bot",
           target: "bot"
         }
-        msg = "No member given."
+        msg = `${this.profile.emojis.fail} No member given.`
         this.props.description = msg
         console.log(msg)
       }
@@ -126,7 +101,7 @@ class RookCommand {
           user: "bot",
           target: "target"
         }
-        msg = `No guild found for ${member}.`
+        msg = `${this.profile.emojis.fail} No guild found for ${member}.`
         this.props.description = msg
         console.log(msg)
       }
@@ -141,7 +116,7 @@ class RookCommand {
           target: "target"
         }
         msg = [
-          `Bot can't manage user.`,
+          `${this.profile.emojis.fail} Bot can't manage user.`,
           `${member} is Owner of *${member.guild.name}*.`
         ]
         this.props.description = msg
@@ -157,7 +132,7 @@ class RookCommand {
           user: "bot",
           target: "bot"
         }
-        msg = `Bot not found in *${member.guild.name}*.`
+        msg = `${this.profile.emojis.fail} Bot not found in *${member.guild.name}*.`
         this.props.description = msg
       }
       return false
@@ -173,7 +148,7 @@ class RookCommand {
           target: "target"
         }
         msg = [
-          `Bot can't manage user.`,
+          `${this.profile.emojis.fail} Bot can't manage user.`,
           `${member}'s highest role is greater than or equal to ${clientMember}.`
         ]
         this.props.description = msg
@@ -189,7 +164,7 @@ class RookCommand {
     if (!member) {
       if (!silent) {
         this.error = true
-        msg = "No member given."
+        msg = `${this.profile.emojis.fail} No member given.`
         this.props.description = msg
       }
       return false
@@ -205,7 +180,7 @@ class RookCommand {
     if (!member) {
       if (!silent) {
         this.error = true
-        msg = "No member given."
+        msg = `${this.profile.emojis.fail} No member given.`
         this.props.description = msg
       }
       return false
@@ -342,11 +317,11 @@ class RookCommand {
         deferMsg += " [Ephemeral]"
       }
       console.log(deferMsg)
-      await interaction.deferReply(
-        {
-          ephemeral: this.ephemeral
-        }
-      )
+      let intOptions = {}
+      if (this.ephemeral) {
+        intOptions = { flags: MessageFlags.Ephemeral }
+      }
+      await interaction.deferReply(intOptions)
       hasDeferred = true
     }
 
@@ -457,7 +432,7 @@ class RookCommand {
           id:     client.user.id,
           name:   client.user.displayName,
           url:    "http://example.com/bot",
-          avatar: client.user.displayAvatarURL({ size: 128 }),
+          avatar: client.user.displayAvatarURL({ size: Math.pow(2, 7) }),
           tag:    client.user.tag
         }
 
@@ -475,7 +450,7 @@ class RookCommand {
               id:     clientMember.id,
               name:   clientMember.displayName,
               url:    "http://example.com/botMember",
-              avatar: clientMember.displayAvatarURL({ size: 128 }),
+              avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) }),
               tag:    clientMember.user.tag
             }
           }
@@ -489,7 +464,7 @@ class RookCommand {
             tag:    interaction.user.tag
           }
           if (typeof interaction.user?.displayAvatarURL === "function") {
-            page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: 128 })
+            page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
           }
 
           // Guild Caller Entity
@@ -502,7 +477,7 @@ class RookCommand {
               tag:    callerMember.user.tag
             }
             if (typeof callerMember?.displayAvatarURL === "function") {
-              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: 128 })
+              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: Math.pow(2, 7) })
             }
           }
 
@@ -514,7 +489,7 @@ class RookCommand {
               id:     interaction.guild.id,
               name:   interaction.guild.name,
               url:    "http://example.com/guild",
-              avatar: interaction.guild.iconURL({ size: 128 })
+              avatar: interaction.guild.iconURL({ size: Math.pow(2, 7) })
             }
           }
         }
@@ -693,7 +668,7 @@ class RookCommand {
       // Interaction associated with it
       .addRow(
         "Interaction",
-        interaction ? "Yes" : "No",
+        interaction ? this.profile.emojis.check : this.profile.emojis.nocheck,
         interaction.id
       )
       // Whodunnit?

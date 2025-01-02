@@ -57,7 +57,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       this.error = true
       this.props = {
         title: { text: "Error" },
-        description: `<@${targetUserId}> (ID: \`${targetUserId}\`) not found in '${interaction.guild.name}'!`
+        description: `<@${targetUserId}> (ID: ${targetUserId.inlinecode()}) not found in '${interaction.guild.name}'!`
       }
       return !this.error
     }
@@ -79,8 +79,8 @@ module.exports = class UserInfoCommand extends RookCommand {
         {
           name: "Username",
           value: [
-            `\`${targetMember.user.tag}\`` +
-            "(ID: " + `\`${targetMember.id}\`` + ")"
+            targetMember.user.tag.inlinecode() + " " +
+            "(ID: " + targetMember.id.inlinecode() + ")"
           ]
         }
       ],
@@ -89,7 +89,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Created",
-          value: timeFormat(createdDateTime.getTime())
+          value: timeFormat(createdDateTime.getTime(), { with: "relative" })
         }
       ],
 
@@ -97,7 +97,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       [
         {
           name: "Joined",
-          value: timeFormat(joinedDateTime.getTime())
+          value: timeFormat(joinedDateTime.getTime(), { with: "relative" })
         }
       ]
     ]
@@ -148,7 +148,7 @@ module.exports = class UserInfoCommand extends RookCommand {
         url: avatarURL,
         avatar: avatarURL
       },
-      color: targetMember.user.hexAccentColor,
+      color: targetMember?.displayHexColor || targetMember?.user?.accentHexColor,
       fields: fields,
       image: { image: avatarURL }
     }

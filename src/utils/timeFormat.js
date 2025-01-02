@@ -1,10 +1,12 @@
 const { time, TimestampStyles } = require('discord.js')
+const stringFuncs = require("../utils/stringFuncs")
 
 module.exports = (timestamp, options) => {
   let platoError = (timestamp + "").length - 10
   let adjustedStamp = 0
   let showSeconds = options?.showSeconds
   let relative = options?.relative
+  let withRelative = (options?.with == "relative")
 
   if (platoError > 0) {
     adjustedStamp = Math.floor(timestamp / Math.pow(10, platoError))
@@ -19,7 +21,6 @@ module.exports = (timestamp, options) => {
   if (adjustedStamp > 0) {
     timestamp = adjustedStamp
   }
-
   let longDateTime  = time(timestamp, TimestampStyles.LongDateTime)
   let longDate      = time(timestamp, TimestampStyles.LongDate)
   let longTime      = time(timestamp, TimestampStyles.LongTime)
@@ -28,9 +29,11 @@ module.exports = (timestamp, options) => {
   if (showSeconds) {
     returnTime = longDate + " " + longTime
   }
-  returnTime += " " + `\`(${timestamp})\``
+  returnTime += " " + `(${timestamp.inlinecode()})`
 
-  if (relative) {
+  if (withRelative) {
+    returnTime += ` (${relativeTime})`
+  } else if (relative) {
     returnTime = relativeTime
   }
 

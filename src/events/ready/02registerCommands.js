@@ -33,20 +33,23 @@ async function extractCommand(command) {
 function buildCommandHelp(cmdParts, segment="local") {
   let cmdHelp = {}
   let slimoptions = []
-  for(let option of cmdParts.options) {
-    slimoptions.push(
-      {
-        name: option.name,
-        description: option.description,
-        required: option.required
-      }
-    )
+  if (cmdParts?.options && cmdParts.options.length > 0) {
+    for(let option of cmdParts.options) {
+      slimoptions.push(
+        {
+          name: option.name,
+          description: option.description,
+          required: option.required
+        }
+      )
+    }
   }
   cmdHelp = {
     name: cmdParts.name,
     category: cmdParts.category,
     description: cmdParts.description,
     options: slimoptions,
+    parent: cmdParts?.parent,
     access: cmdParts.access,
     segment: segment
   }
@@ -64,24 +67,31 @@ async function registerCommand(
     cmd => cmd.name === cmdParts.name
   )
 
+  // Add to Help
+  if(!(cmdParts.category in help)) {
+    help[cmdParts.category] = {}
+  }
+  help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "local")
+
   // If command already exists
   if (existingCommand) {
     // If we're deleting it
     //  Delete it and return
     if (cmdParts.deleted) {
-      console.log(`  🗑 Deleting: "${cmdParts.name}"`)
+      console.log(`  ${client.profile.emojis.delete} Deleting: "${cmdParts.name}"`)
       try {
         await commandsManager.delete(existingCommand.id)
         delete client.commands[cmdParts.name]
+        delete help[cmdParts.category][cmdParts.name]
       } catch (error) {
-        console.error(`  ❌ Failed to delete: "${cmdParts.name}":`, error.message)
+        console.error(`  ${client.profile.emojis.fail} Failed to delete: "${cmdParts.name}":`, error.message)
       }
       return
     }
 
     // If they're different
     if (areCommandsDifferent(existingCommand, cmdParts)) {
-      console.log(`  🔁 Updating: "${cmdParts.name}"`)
+      console.log(`  ${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
       try {
         // Edit it
         await commandsManager.edit(
@@ -94,7 +104,7 @@ async function registerCommand(
         // Else
         if (error.code === 429) {
           // Rate Limit, try again soon
-          console.warn(`  ⏳ Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
+          console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
           // Wait
           await wait(error.retry_after || 1000)
           // Try to edit again
@@ -104,20 +114,26 @@ async function registerCommand(
           )
           // Save it
           client.commands[cmdParts.name] = await commandsManager.fetch(existingCommand.id)
+
+          // Add to Help
+          if(!(cmdParts.category in help)) {
+            help[cmdParts.category] = {}
+          }
+          help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "edited")
         } else {
           // Failed to edit
-          console.error(`  ❌ Failed to edit: "${cmdParts.name}":`, error.message)
+          console.error(`  ${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message)
         }
       }
     } else {
       // No change
-      console.log(`  ✅ Current: "${cmdParts.name}"`)
+      console.log(`  ${client.profile.emojis.check} Current: "${cmdParts.name}"`)
       client.commands[cmdParts.name] = existingCommand
     }
   } else {
     // Doesn't exist yet or we deleted it
     if (cmdParts.deleted) {
-      console.log(`  ⏩ Skipping deleted: "${cmdParts.name}"`)
+      console.log(`  ${client.profile.emojis.skip} Skipping deleted: "${cmdParts.name}"`)
       return
     }
 
@@ -128,22 +144,22 @@ async function registerCommand(
     }
 
     // Register New Command
-    console.log(`  👍 Registering new: "${cmdParts.name}"`)
+    console.log(`  ${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
     try {
+      // Create New
+      let newCommand = await commandsManager.create(cmdParts)
+      client.commands[cmdParts.name] = newCommand
+
       // Add to Help
       if(!(cmdParts.category in help)) {
         help[cmdParts.category] = {}
       }
       help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "new")
-
-      // Create New
-      let newCommand = await commandsManager.create(cmdParts)
-      client.commands[cmdParts.name] = newCommand
     } catch (error) {
       // If error
       if (error.code === 429) {
         // Rate Limit, try again soon
-        console.warn(`  ⏳ Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
+        console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
         // Wait
         await wait(error.retry_after || 1000)
         // Try to create again
@@ -152,13 +168,19 @@ async function registerCommand(
         client.commands[cmdParts.name] = newCommand
       } else {
         // Failed to register
-        console.error(`  ❌ Failed to register: "${cmdParts.name}":`, error.message)
+        console.error(`  ${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
       }
     }
   }
 }
 
 module.exports = async (client) => {
+  let purge = false
+
+  if (purge) {
+    return
+  }
+
   try {
     const testGuildID = process.env.GUILD_ID
     const localCommands = getLocalCommands(client)
@@ -173,10 +195,10 @@ module.exports = async (client) => {
         console.error(`  ❌ Test guild not found: ${testGuildID}`)
         return
       }
-      console.log(`  🛠 Running in development mode. Using test server: '${testGuild.name}' [${testGuildID}]`)
+      console.log(`  ${client.profile.emojis.devText} Running in development mode. Using test server: '${testGuild.name}' [${testGuildID}]`)
       commandsManager = testGuild.commands
     } else {
-      console.log('  🌐 Running in production mode. Registering global commands.')
+      console.log(`  ${client.profile.emojis.prodText} Running in production mode. Registering global commands.`)
       commandsManager = client.application.commands
     }
 
@@ -186,13 +208,6 @@ module.exports = async (client) => {
     for (const localCommand of localCommands) {
       // Get Command Parts
       let cmdParts = await extractCommand(localCommand)
-
-      // Prepare Help
-      if(!(cmdParts.category in help)) {
-        help[cmdParts.category] = {}
-      }
-      // Build Help and Save it
-      help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts)
 
       // Attempt to register command
       await registerCommand(
@@ -205,6 +220,7 @@ module.exports = async (client) => {
       // Print aliases if present
       if (cmdParts.aliases && cmdParts.aliases.length > 0) {
         // continue
+        let parentName = cmdParts.name
         for (let alias of cmdParts.aliases) {
           cmdParts.name = alias?.name
           cmdParts.description = alias?.description
@@ -213,13 +229,16 @@ module.exports = async (client) => {
           if (cmdParts?.options && cmdParts.options.length > 0) {
             for (let i in cmdParts.options) {
               let option = cmdParts.options[i]
-              if (!Object.keys(alias?.options).includes(option.name)) {
-                newOptions.push(option)
+              if (alias?.options) {
+                if (!Object.keys(alias?.options).includes(option.name)) {
+                  newOptions.push(option)
+                }
               }
             }
           }
 
           cmdParts.options = newOptions
+          cmdParts.parent = parentName
 
           if (cmdParts.options.length == 0) {
             delete cmdParts.options
@@ -237,7 +256,7 @@ module.exports = async (client) => {
       }
     }
 
-    console.log('  🎉 Registration completed')
+    console.log(`  ${client.profile.emojis.success} Registration completed`)
     await fs.writeFile(
       "./src/res/app/manifests/help/help.json",
       (
@@ -250,6 +269,6 @@ module.exports = async (client) => {
       ).replace(/\n/g, "\r\n")
     )
   } catch (error) {
-    console.error(`  ❌ Registration error: ${error.stack}`)
+    console.error(`  ${client.profile.emojis.fail} Registration error: ${error.stack}`)
   }
 }

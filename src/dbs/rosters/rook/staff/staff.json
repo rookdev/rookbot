@@ -1,0 +1,21 @@
+{
+  "stripe": "#ffffff",
+  "title": "Staff",
+  "avatar": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
+  "members": {
+    "developer": {
+      "title": "Developer",
+      "users": [
+        "castierook",
+        "matrethewey"
+      ]
+    },
+    "bot-steward": {
+      "title": "Bot Steward",
+      "users": [
+        "nikosetyris",
+        "shallow."
+      ]
+    }
+  }
+}

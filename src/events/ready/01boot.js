@@ -15,6 +15,6 @@ module.exports = async (client) => {
       process.env.TOKEN
     )
   } else {
-    console.log('  🟢 Command deletion is disabled.')
+    console.log(`  ${client.profile.emojis.good} Command deletion is disabled.`)
   }
 }

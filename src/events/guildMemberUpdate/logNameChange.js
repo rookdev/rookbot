@@ -4,7 +4,6 @@ const { AuditLogEvent, GuildMember } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/timeFormat')
-const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
 
@@ -73,7 +72,7 @@ module.exports = async (client, oldMember, newMember) => {
     let players = {
       target: {
         name: newMember.displayName,
-        avatar: newMember.displayAvatarURL({ size: 128 })
+        avatar: newMember.displayAvatarURL({ size: Math.pow(2, 7) })
       }
     }
     if (auditDateTime) {
@@ -95,14 +94,14 @@ module.exports = async (client, oldMember, newMember) => {
         {
           name: 'User',
           value: `<@${newMember.user.id}>` + " " +
-            `(ID: \`${newMember.user.id}\`)`
+            `(ID: ${newMember.user.id.inlinecode()})`
         }
       ]
     )
     if (updater && updater?.id) {
       players.user = {
         name: updater.displayName,
-        avatar: updater.displayAvatarURL({ size: 128 })
+        avatar: updater.displayAvatarURL({ size: Math.pow(2, 7) })
       }
       fields.push(
         // Updated by someone we can capture
@@ -110,7 +109,7 @@ module.exports = async (client, oldMember, newMember) => {
           {
             name: 'Updater',
             value: `<@${updater.id}>` + " " +
-              `(ID: \`${updater.id}\`)`
+              `(ID: ${updater.id.inlinecode()})`
           }
         ]
       )
@@ -119,7 +118,7 @@ module.exports = async (client, oldMember, newMember) => {
       if (clientMember) {
         players.user = {
           name: clientMember.displayName,
-          avatar: clientMember.displayAvatarURL({ size: 128 })
+          avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) })
         }
       }
       fields.push(
@@ -140,7 +139,7 @@ module.exports = async (client, oldMember, newMember) => {
           name: 'Guild',
           value: [
             newMember.guild.name,
-            `(ID: \`${newMember.guild.id}\`)`
+            `(ID: ${newMember.guild.id.inlinecode()})`
           ]
         }
       ],
@@ -161,7 +160,7 @@ module.exports = async (client, oldMember, newMember) => {
     )
 
     const embed = new RookEmbed(client, {
-      color: colors["info"], // Gold color for nickname changes
+      color: client.profile.colors.info,
       title: {
         text: '[Log] Nickname Changed',
         emoji: "✏️"

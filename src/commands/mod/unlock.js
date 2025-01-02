@@ -6,7 +6,6 @@ const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.j
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const colors = require('../../dbs/colors.json') // Standardized colors
 
 // Multiple messages
 
@@ -57,8 +56,8 @@ module.exports = class UnlockCommand extends ModCommand {
 
       // Send public confirmation in the channel
       const embedProps = {
-        color: colors["success"],
-        title: { text: '[ModPost] Channel Unlocked!', emoji: '🟡' },
+        color: this.profile.colors.success,
+        title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.warning },
         description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **unlocked**.`,
       }
       const embed = new RookEmbed(client, embedProps)
@@ -69,8 +68,8 @@ module.exports = class UnlockCommand extends ModCommand {
       const logs = await client.channels.fetch(guildChannels["logging"])
       if (logs && !this.DEV) {
         let props = {
-          color: colors["success"],
-          title: { text: "[Log] Channel Unlocked", emoji: "🔒" },
+          color: this.profile.colors.success,
+          title: { text: "[Log] Channel Unlocked", emoji: this.profile.emojis.unlock },
           fields: [
             [
               { name: 'Channel Unlocked', value: `<#${channel.id}>\n(ID: ${channel.id})` },

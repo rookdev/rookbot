@@ -74,11 +74,9 @@ module.exports = class InstallCommand extends BotDevCommand {
 
     */
 
-    console_output.push(`
-      \`\`\`` + "\n" +
-      node_install +
-      `\`\`\`
-    `)
+    console_output.push(
+      ("\n" + node_install).codeblock()
+    )
     this.props.description = console_output
 
     return !this.error

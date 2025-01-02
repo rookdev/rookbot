@@ -23,8 +23,6 @@ const { RookEmbed } = require('../embed/rembed.class')
 const timeConversion = require('../../utils/timeConversion')
 // Use Discord Hammertime
 const timeFormat = require('../../utils/timeFormat')
-// Standardized colors
-const colors = require('../../dbs/colors.json')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 
@@ -99,14 +97,14 @@ class ModCommand extends AdminCommand {
     // Bail if we don't have a User object
     if (!user) {
       this.error = true
-      this.props.description = "No member loaded."
+      this.props.description = `${this.profile.emojis.fail} No member loaded.`
       return
     }
 
     // Bail if we don't have any roles to set
     if (!roles) {
       this.error = true
-      this.props.description = "No roles provided."
+      this.props.description = `${this.profile.emojis.fail} No roles provided.`
       return
     }
 
@@ -200,7 +198,7 @@ class ModCommand extends AdminCommand {
     // Bail, if after all that, we failed to find a proper Role
     if (addRole == 0 && remRole == 0) {
       this.error = true
-      this.props.description = "No roles found."
+      this.props.description = `${this.profile.emojis.fail} No roles found.`
       return false
     }
 
@@ -267,13 +265,13 @@ class ModCommand extends AdminCommand {
       // Bail if no Member Role
       if (!mainRole) {
         this.error = true
-        this.props.description = `${MEMBER_ROLE} Member Role not found in server.`
+        this.props.description = `${this.profile.emojis.fail} ${MEMBER_ROLE} Member Role not found in server.`
         return false
       }
       // Bail if no Muted Role
       if (!muteRole) {
         this.error = true
-        this.props.description = `${MUTED_ROLE} Muted Role not found in server.`
+        this.props.description = `${this.profile.emojis.fail} ${MUTED_ROLE} Muted Role not found in server.`
         return false
       }
 
@@ -304,9 +302,9 @@ class ModCommand extends AdminCommand {
         roles,
         reason
       ) || false
-      this.props.description = `<@${user.id}> has been ${voice}d`
+      this.props.description = `${this.profile.emojis.prod} <@${user.id}> has been ${voice}d`
     } else {
-      this.props.description = `<@${user.id}> *would be* **${voice}d** if this wasn't in DEV Mode`
+      this.props.description = `${this.profile.emojis.dev} <@${user.id}> *would be* **${voice}d** if this wasn't in DEV Mode`
     }
 
     return success
@@ -338,7 +336,7 @@ class ModCommand extends AdminCommand {
       if (interaction?.guild.id) {
         if (interaction.guild.id === "1282788953052676177") {
           this.error = true
-          this.props.description = `/${this.name} not ready for Live Server yet.`
+          this.props.description = `${this.profile.emojis.fail} /${this.name} not ready for Live Server yet.`
           return false
         }
       }
@@ -353,7 +351,7 @@ class ModCommand extends AdminCommand {
     // Get User Input
     const targetUserInput = coptions["target-id"]
     // Get Reason
-    const reason = coptions["reason"] || 'No reason provided'
+    const reason = coptions["reason"] || `${this.profile.emojis.fail} No reason provided`
     // Get Role
     const role = interaction.options?.getString("role")?.replace(/[<@&>]/g, "") || ""
     // Get Timeout Duration
@@ -441,8 +439,8 @@ class ModCommand extends AdminCommand {
         props.mod.error = true
         props.mod.ephemeral = true
         props.mod.description = [
-          `Can't **${this.name}** a mention! Must use user ID!`,
-          `ID: \`${targetUserId}\``
+          `${this.profile.emojis.fail} Can't **${this.name}** a mention! Must use user ID!`,
+          `ID: ${targetUserId}`.codeblock()
         ]
         this.props = props.mod
         return false
@@ -455,7 +453,7 @@ class ModCommand extends AdminCommand {
       targetUser = await client.users.fetch(targetUserId)
     } catch (error) {
       props.mod.error = true
-      props.mod.description = "User not found."
+      props.mod.description = `${this.profile.emojis.fail} User not found.`
       this.props = props.mod
       return false
     }
@@ -557,9 +555,9 @@ class ModCommand extends AdminCommand {
 
       if (success) {
         // Public ModPost for ACTION
-        props.public.color = colors["success"]
+        props.public.color = this.profile.colors.success
         props.public.title = {
-          emoji: "🟢",
+          emoji: this.profile.emojis.good,
           text: "[ModPost] Success!"
         }
         props.public.playerTypes = {
@@ -570,7 +568,7 @@ class ModCommand extends AdminCommand {
           (this.DEV ? "DEV: " : "") +
           `User **${targetUserName}** has been **${tenses.past}**`,
           "(" +
-          // `ID: \`${targetUserId}\`; ` +  // Don't add userID to ModPost
+          // `ID: ${targetUserId.inlinecode()}; ` +  // Don't add userID to ModPost
           (role != "" ? `Role: ${role}; Reason: ` : "") +
           reason +
           ")"
@@ -608,9 +606,9 @@ class ModCommand extends AdminCommand {
             dm_desc = dm_desc.replace(" from ", " by staff in ")
           }
           props.dm = {
-            color: colors["bad"],
+            color: this.profile.colors.warning,
             title: {
-              emoji: "⚠️",
+              emoji: this.profile.emojis.warn,
               text: (this.DEV ? "[DM] " : "") + pretty_name
             },
             playerTypes: {
@@ -634,9 +632,9 @@ class ModCommand extends AdminCommand {
           // Reply to Mod for DM about ACTION
           this.ephemeral = true
           props.mod = {
-            color: colors["success"],
+            color: this.profile.colors.success,
             title: {
-              emoji: "🟢",
+              emoji: this.profile.emojis.good,
               text: "[YouPost] Success!"
             },
             playerTypes: {
@@ -646,14 +644,14 @@ class ModCommand extends AdminCommand {
             entities: {
               target: {
                 name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: 128 })
+                avatar: targetUser.displayAvatarURL({ size: Math.pow(2, 7) })
               }
             },
             ephemeral: true
           }
           // Do link user
           props.mod.description = [
-            `✅ User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
+            `${this.profile.emojis.check} User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
           ]
           props.mod.description.push(
             "",
@@ -672,12 +670,12 @@ class ModCommand extends AdminCommand {
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
-          console.log(`Failed to DM user: ${dmError.message}`)
+          console.log(`${this.profile.emojis.fail} Failed to DM user: ${dmError.message}`)
           props.mod = {
-            color: colors["red"],
+            color: this.profile.colors.error,
             title: { text: "[YouPost] Error" },
             description: [
-              `I couldn't send the DM to the user (ID: ${targetUserId}).`,
+              `${this.profile.emojis.fail} I couldn't send the DM to the user (ID: ${targetUserId}).`,
               `They might have DMs disabled.`
             ],
             ephemeral: true
@@ -723,21 +721,24 @@ class ModCommand extends AdminCommand {
               // Logged DateTime
               {
                 name: 'Time',
-                value: timeFormat(now.getTime())
+                value: timeFormat(now.getTime(), { with: "relative" })
               }
             ],
             [
               // Who'd what happen to?
               {
                 name: 'User ' + tenses.past.ucfirst(),
-                value: `${targetUser}\n(ID: \`${targetUserId}\`)`
+                value: [
+                  targetUser,
+                  `(ID: ${targetUserId.inlinecode()})`
+                ]
               },
               // Whodunnit?
               {
                 name: tenses.past.ucfirst() + ' By',
                 value: [
                   interaction.user,
-                  `(ID: \`${interaction.user.id}\`)`
+                  `(ID: ${interaction.user.id.inlinecode()})`
                 ]
               }
             ],
@@ -746,7 +747,7 @@ class ModCommand extends AdminCommand {
               {
                 name: 'Guild',
                 value: interaction.guild.name + "\n" +
-                  `(ID: \`${interaction.guild.id}\`)`
+                  `(ID: ${interaction.guild.id.inlinecode()})`
               }
             ]
           )
@@ -810,7 +811,7 @@ class ModCommand extends AdminCommand {
           )
 
           props.log = {
-            color: this.name == "unban" ? colors["good"] : colors["bad"],
+            color: this.name == "unban" ? this.profile.colors.good : this.profile.colors.bad,
             title: {
               emoji: emoji,
               text: "[Log] User " + tenses.past.ucfirst()
@@ -822,7 +823,7 @@ class ModCommand extends AdminCommand {
             entities: {
               target: {
                 name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: 128 })
+                avatar: targetUser.displayAvatarURL({ size: Math.pow(2, 7) })
               }
             },
             fields: logFields
@@ -838,7 +839,7 @@ class ModCommand extends AdminCommand {
           )
           console.log(`/${this.name}: LogPost`)
         } else {
-          console.log("Logs channel not found.")
+          console.log(`${this.profile.emojis.fail} Logs channel not found.`)
         }
 
         // LogFile for ACTION
@@ -884,7 +885,7 @@ class ModCommand extends AdminCommand {
     if (!success) {
       // Reply to Mod if error for ACTION
       this.ephemeral = true
-      let msg = `There was an error when ${tenses.active}`
+      let msg = `${this.profile.emojis.fail} There was an error when ${tenses.active}`
       if (lastingError) {
         msg += `: ${lastingError.stack}`
       }
@@ -892,7 +893,7 @@ class ModCommand extends AdminCommand {
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true
-      props.mod.description = `I couldn't ${tenses.present} ${targetUser} (ID: \`${targetUserId}\`).`
+      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} (ID: ${targetUserId.inlinecode()}).`
       embeds.mod = await new RookEmbed(client, props.mod)
       await this.send(
         client,
@@ -915,7 +916,7 @@ class ModCommand extends AdminCommand {
     // Bail if we don't have intended Approved Roles data
     if (!APPROVED_ROLES) {
       this.error = true
-      this.props.description = "Failed to get Approved Roles."
+      this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles.`
       return false
     }
 

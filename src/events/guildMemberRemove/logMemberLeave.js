@@ -4,7 +4,6 @@ const { GuildMember } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/timeFormat.js')
-const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
 
@@ -34,7 +33,7 @@ module.exports = async (client, oldMember) => {
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
-      color: colors["bad"], // Red for member leaving
+      color: client.profile.colors.bad,
       title: {
         text: '[Log] Member Left',
         emoji: "🚶‍♂️🚪"
@@ -42,11 +41,11 @@ module.exports = async (client, oldMember) => {
       players: {
         user: {
           name: oldMember.guild.name,
-          avatar: oldMember.guild.iconURL( { size: 128 } )
+          avatar: oldMember.guild.iconURL( { size: Math.pow(2, 7) } )
         },
         target: {
           name: oldMember.user.displayName,
-          avatar: oldMember.user.displayAvatarURL( { size: 128 } )
+          avatar: oldMember.user.displayAvatarURL( { size: Math.pow(2, 7) } )
         }
       },
       fields: [
@@ -66,7 +65,7 @@ module.exports = async (client, oldMember) => {
             name: 'Member Left',
             value: `[${oldMember.user.tag}]` +
               `(https://discord.com/users/${oldMember.user.id})` + " " +
-              `(ID: \`${oldMember.user.id}\`)`
+              `(ID: ${oldMember.user.id.inlinecode()})`
           }
         ],
         [
@@ -82,7 +81,7 @@ module.exports = async (client, oldMember) => {
             name: 'Guild',
             value: [
               oldMember.guild.name,
-              `(ID: \`${oldMember.guild.id}\`)`
+              `(ID: ${oldMember.guild.id.inlinecode()})`
             ]
           }
         ]

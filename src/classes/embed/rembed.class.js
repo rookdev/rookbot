@@ -3,8 +3,6 @@
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
 
-const colors = require('../../dbs/colors.json') // Standardized colors
-
 // Does this resemble a number?
 // FIXME: Consolidate
 function isNumeric(n) {
@@ -26,7 +24,8 @@ class RookEmbed extends EmbedBuilder {
     // Get color figured out
     if (
       (!(this.props?.color)) ||
-      (this.props?.color && this.props.color.trim() == "")
+      (this.props?.color && this.props.color.trim() == "") ||
+      (this.props.color.trim() == "default")
     ) {
       let color = client.profile?.stripe || "#000000"
       let eggs  = require('../../dbs/eggs.json')
@@ -98,7 +97,7 @@ class RookEmbed extends EmbedBuilder {
         this.props.title = { text: "" }
       }
       this.props.title.text = "Error"
-      this.props.color = colors["bad"]
+      this.props.color = client.profile.colors.error
     }
 
     // Set color
@@ -114,7 +113,7 @@ class RookEmbed extends EmbedBuilder {
 
     let bot = {
       name: "Bot",
-      avatar: client.user.displayAvatarURL({ size: 128 })
+      avatar: client.user.displayAvatarURL({ size: Math.pow(2, 7) })
     }
 
     if (!(props?.players)) {
@@ -296,28 +295,37 @@ class RookEmbed extends EmbedBuilder {
           // @ts-ignore
           for (let field of fieldRow) {
             if (field) {
-              let field_value = field.value
-              if (typeof field_value === "object") {
-                field_value = field_value.join("\n")
-              }
-              field_value += ""
-              fields.push(
-                {
-                  name:   field.name.trim(),
-                  value:  field_value,
-                  // @ts-ignore
-                  inline: fieldRow.length > 1
+              if (
+                field?.name &&
+                field.name.trim() != "" &&
+                field?.value
+              ) {
+                let field_value = field.value
+                if (
+                  typeof field_value === "object" &&
+                  field_value?.length > 0
+                ) {
+                  field_value = field_value.join("\n")
                 }
-              )
-              i += 1
+                field_value += ""
+                fields.push(
+                  {
+                    name:   field.name.trim(),
+                    value:  field_value,
+                    // @ts-ignore
+                    inline: fieldRow.length > 1
+                  }
+                )
+                i += 1
+              }
             }
           }
           if (i > 1 && i < 3) {
             for (; i < 3; i++) {
               fields.push(
                 {
-                  name:   " ",
-                  value:  " ",
+                  name:   client.profile.emojis.null,
+                  value:  client.profile.emojis.null,
                   inline: true
                 }
               )
@@ -345,7 +353,7 @@ class RookEmbed extends EmbedBuilder {
       let hasIcon = this.props.footer?.image && !footerNone
 
       if (!hasText) {
-        this.props.footer.text = " "
+        this.props.footer.text = this.profile.emojis.null
       }
 
       if (hasText || hasIcon) {

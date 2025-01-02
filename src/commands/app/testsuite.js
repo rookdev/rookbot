@@ -68,10 +68,11 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
           // @ts-ignore
           if (!interaction?.member?.permissions.has(permission)) {
             console.log(`/${commandName} attempted without proper user perms`)
-            await interaction?.reply({
-              content: 'User is missing permissions.',
-              ephemeral: true
-            })
+            let intOptions = {
+              content: `${this.profile.emojis.user} User is missing permissions.`,
+              flags: MessageFlags.Ephemeral
+            }
+            await interaction?.reply(intOptions)
             this.error = true
             return !this.error
           }
@@ -86,10 +87,11 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
             // If we're missing one, abort
             if (!bot.permissions.has(permission)) {
               console.log(`/${commandName} attempted without proper bot perms`)
-              await interaction.reply({
-                content: "I don't have enough permissions.",
-                ephemeral: true
-              })
+              let intOptions = {
+                content: `${this.profile.emojis.bot} Bot is missing permissions.`,
+                flags: MessageFlags.Ephemeral
+              }
+              await interaction?.reply(intOptions)
               this.error = true
               return !this.error
             }

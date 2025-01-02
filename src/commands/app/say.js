@@ -5,7 +5,7 @@
  *  Command Option Types
  *  Permission Flags
  */
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -54,7 +54,8 @@ module.exports = class SayCommand extends ModCommand {
 
   async execute(client, interaction, coptions={}, independent=false) {
     // Defer Ephemeral
-    await interaction.deferReply({ ephemeral: true })
+    let intOptions = { flags: MessageFlags.Ephemeral }
+    await interaction.deferReply(intOptions)
 
     // Get Channel
     let channel = interaction.options.getChannel("channel") ?? interaction.channel
@@ -91,7 +92,7 @@ module.exports = class SayCommand extends ModCommand {
             // Whodunnit?
             {
               name: "User",
-              value: `${interaction.user} (ID: \`${interaction.user.id}\`)`
+              value: `${interaction.user} (ID: ${interaction.user.id.inlinecode()})`
             }
           ],
           [
@@ -101,7 +102,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   interaction?.guild?.name,
-                  `(ID: \`${interaction?.guild?.id}\`)`
+                  `(ID: ${interaction?.guild?.id.inlinecode()})`
                 ]
             },
             // Sent to what Channel?
@@ -110,7 +111,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   `<#${result?.channel?.id}>`,
-                  `(ID: \`${channel?.id}\`)`
+                  `(ID: ${channel?.id.inlinecode()})`
                 ]
             }
           ],
@@ -118,7 +119,7 @@ module.exports = class SayCommand extends ModCommand {
             // Message Link
             {
               name: "Message",
-              value: `https://discord.com/channels/${result?.guild?.id}/${result?.channel?.id}/${result?.id} (ID: \`${result?.id}\`)`
+              value: `https://discord.com/channels/${result?.guild?.id}/${result?.channel?.id}/${result?.id} (ID: ${result?.id.inlinecode()})`
             }
           ],
           [

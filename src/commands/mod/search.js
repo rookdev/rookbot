@@ -200,7 +200,7 @@ module.exports = class SearchCommand extends ModCommand {
           bannerData = {
             name: banner.username,
             id: banner.id,
-            avatar: banner.displayAvatarURL({ size: 128 })
+            avatar: banner.displayAvatarURL({ size: Math.pow(2, 7) })
           }
         }
         let thisNow = now.getTime() + (banNum * 1000)
@@ -221,7 +221,7 @@ module.exports = class SearchCommand extends ModCommand {
           name: ban.user.username + "#" + ban.user.discriminator,
           id: ban.user.id,
           banner: bannerData,
-          avatar: ban.user.displayAvatarURL({ size: 128 }),
+          avatar: ban.user.displayAvatarURL({ size: Math.pow(2, 7) }),
           reason: ban.reason,
           logEntry: {
             [thisNow]: logEntry
@@ -259,19 +259,19 @@ module.exports = class SearchCommand extends ModCommand {
             "User"
           ]) {
             if(field_name.indexOf(userType) > -1) {
-              field_value = `<@${this_ids[userType]}> (ID: \`${this_ids[userType]}\`)`
+              field_value = `<@${this_ids[userType]}> (ID: ${this_ids[userType].inlinecode()})`
             }
           }
           if (field_name.indexOf("Channel") > -1) {
             field_value = `<#${this_ids['Channel']}>` + " " +
-              `(ID: \`${this_ids['Channel']}\`)`
+              `(ID: ${this_ids['Channel'].inlinecode()})`
           } else if (field_name.indexOf("Message") > -1) {
             field_name = "Message"
             field_value = "https://discord.com/channels"
             field_value = `${field_value}/${this_ids['Guild']}`
             field_value = `${field_value}/${this_ids['Channel']}`
             field_value = `${field_value}/${this_ids['Message ID']}`
-            field_value = `${field_value} (ID: \`${this_ids['Message ID']}\`)`
+            field_value = `${field_value} (ID: ${this_ids['Message ID'].inlinecode()})`
           }
           this_props.fields?.push(
             [

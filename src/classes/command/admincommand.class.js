@@ -60,7 +60,7 @@ class AdminCommand extends RookCommand {
       // Bail if we don't have intended Approved Roles data
       if (!APPROVED_ROLES) {
         this.error = true
-        this.props.description = "Failed to get Approved Roles."
+        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles.`
         return false
       }
 

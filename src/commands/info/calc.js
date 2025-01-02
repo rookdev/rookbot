@@ -52,10 +52,10 @@ module.exports = class CalcCommand extends RookCommand {
       // Create and send the embed
       this.props.fields = [
         [
-          { name: "Expression", value: `\`${expression}\`` }
+          { name: "Expression", value: expression.codeblock() }
         ],
         [
-          { name: "Result",     value: `\`${result}\`` }
+          { name: "Result",     value: result.codeblock() }
         ]
       ]
     } catch (error) {

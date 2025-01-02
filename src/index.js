@@ -10,6 +10,7 @@ const eventHandler = require('./handlers/eventHandler')
 const { program } = require('commander')    // Commander for CLI management
 const AsciiTable = require('ascii-table')   // Pretty-print in console
 const PACKAGE = require("../package.json")  // Node Package data
+const emojis = require('./dbs/emojis.json') // Global Emojis
 
 async function callCommands(commandNames) {
   if (!typeof commandNames === "object") {
@@ -96,7 +97,7 @@ let profile = options.profile     // Profile to load
 const Table = new AsciiTable("Selected Options", {})
 Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
-Table.addRow("Delete Commands?", deleteCommands ? "Yes" : "No")
+Table.addRow("Delete Commands?", deleteCommands ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // Create RookClient object

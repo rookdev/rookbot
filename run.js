@@ -2,6 +2,7 @@
 const { program } = require('commander')  // Commander for CLI management
 const AsciiTable = require('ascii-table') // Pretty-print in console
 const PACKAGE = require('./package.json') // Node Package data
+const emojis = require('./src/dbs/emojis.json') // Global Emojis
 const shell = require('shelljs')          // Run shell commands
 
 // This is what is intended to run Bot Main (./src/index.js)
@@ -44,8 +45,8 @@ let profile = options.profile // Profile to load
 const Table = new AsciiTable("Selected Options", {})
 Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
-Table.addRow("Long Load", long ? "Yes" : "No")
-Table.addRow("Delete Commands?", del ? "Yes" : "No")
+Table.addRow("Long Load", long ? emojis.check : emojis.nocheck)
+Table.addRow("Delete Commands?", del ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // If Long Mode

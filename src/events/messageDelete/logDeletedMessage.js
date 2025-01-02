@@ -4,7 +4,6 @@ const { AuditLogEvent, Message } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/timeFormat')
-const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
 
@@ -56,7 +55,7 @@ module.exports = async (client, deletedMessage) => {
         a.target.id === deletedMessage.author.id &&
         a.extra.channel.id === deletedMessage.channel.id &&
         // Ignore entries that are older than 20 seconds to reduce false positives.
-        Date.now() - a.createdTimestamp < 20000
+        Date.now() - a.createdTimestamp < 20 * 1000
     )
 
     if (auditEntry) {
@@ -95,7 +94,7 @@ module.exports = async (client, deletedMessage) => {
     let players = {
       target: {
         name: deletedAuthor.displayName,
-        avatar: deletedAuthor.displayAvatarURL({ size: 128 })
+        avatar: deletedAuthor.displayAvatarURL({ size: Math.pow(2, 7) })
       }
     }
 
@@ -123,14 +122,14 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Author',
           value: `<@${deletedMessage.author.id}>` + " " +
-            `(ID: \`${deletedMessage.author.id}\`)`
+            `(ID: ${deletedMessage.author.id.inlinecode()})`
         }
       ]
     )
     if (deleter && deleter?.id) {
       players.user = {
         name: deleter.displayName,
-        avatar: deleter.displayAvatarURL({ size: 128 })
+        avatar: deleter.displayAvatarURL({ size: Math.pow(2, 7) })
       }
       fields.push(
         // Deleted by someone we can capture
@@ -138,7 +137,7 @@ module.exports = async (client, deletedMessage) => {
           {
             name: 'Deleter',
             value: `<@${deleter.id}>` + " " +
-              `(ID: \`${deleter.id}\`)`
+              `(ID: ${deleter.id.inlinecode()})`
           }
         ]
       )
@@ -147,7 +146,7 @@ module.exports = async (client, deletedMessage) => {
       if (clientMember) {
         players.user = {
           name: clientMember.displayName,
-          avatar: clientMember.displayAvatarURL({ size: 128 })
+          avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) })
         }
       }
       fields.push(
@@ -168,7 +167,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Guild',
           value: [
             deletedMessage.guild.name,
-            `(ID: \`${deletedMessage.guild.id}\`)`
+            `(ID: ${deletedMessage.guild.id.inlinecode()})`
           ]
         },
         // Channel Link
@@ -176,7 +175,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Channel',
           value: [
             `<#${deletedMessage.channel.id}>`,
-            `(ID: \`${deletedMessage.channel.id}\`)`
+            `(ID: ${deletedMessage.channel.id.inlinecode()})`
           ]
         }
       ],
@@ -185,7 +184,7 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Message',
           value: deletedMessage.url +
-            `(ID: \`${deletedMessage.id}\`)`
+            `(ID: ${deletedMessage.id.inlinecode()})`
         }
       ],
       [
@@ -199,7 +198,7 @@ module.exports = async (client, deletedMessage) => {
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
-      color: colors["bad"], // Orange for message updates
+      color: client.profile.colors.bad,
       title: {
         text: '[Log] Message Deleted',
         emoji: "🚮"

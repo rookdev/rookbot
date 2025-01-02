@@ -49,8 +49,7 @@ module.exports = class TimeCommand extends RookCommand {
       require("timezone/America/Los_Angeles")
     )
 
-    this.props.description = "```"
-
+    this.props.description = ""
     for(let zone of tzs) {
       let locale = (zone.includes("America") && !zone.includes("St_Johns")) ? "en_US" : "en_AU"
       let tmp = mytz(now, locale, "%Z: %x %T", zone)
@@ -62,8 +61,9 @@ module.exports = class TimeCommand extends RookCommand {
       console.log(tmp)
       this.props.description += tmp + "\n"
     }
-    this.props.description += "```" + "\n"
+    this.props.description = this.props.description.codeblock()
 
+    this.props.description += "\n"
     let tmp = `Local: ` + timeFormat(now)
     this.props.description += tmp
     console.log(tmp)

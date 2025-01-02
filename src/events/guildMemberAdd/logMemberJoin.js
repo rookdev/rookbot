@@ -4,7 +4,6 @@ const { GuildMember } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class.js')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/timeFormat.js')
-const colors = require('../../dbs/colors.json')
 const path = require('path')
 const fs = require('fs')
 
@@ -51,7 +50,7 @@ module.exports = async (client, newMember) => {
           name: 'Member Joined',
           value: `[${fetchedMember.user.tag}]` +
             `(https://discord.com/users/${fetchedMember.user.id})` + " " +
-            `(ID: \`${fetchedMember.user.id}\`)`
+            `(ID: ${fetchedMember.user.id.inlinecode()})`
         }
       ],
       [
@@ -67,7 +66,7 @@ module.exports = async (client, newMember) => {
           name: 'Guild',
           value: [
             fetchedMember.guild.name,
-            `(ID: \`${fetchedMember.guild.id}\`)`
+            `(ID: ${fetchedMember.guild.id.inlinecode()})`
           ]
         }
       ]
@@ -80,7 +79,7 @@ module.exports = async (client, newMember) => {
         [
           {
             name: "Member Role?",
-            value: "Yes"
+            value: client.profile.emojis.check
           }
         ]
       )
@@ -94,7 +93,7 @@ module.exports = async (client, newMember) => {
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
-      color: colors["good"], // Green for new members joining
+      color: client.profile.colors.good,
       title: {
         text: '[Log] Member Joined',
         emoji: "👋"
@@ -102,11 +101,11 @@ module.exports = async (client, newMember) => {
       players: {
         user: {
           name: fetchedMember.guild.name,
-          avatar: fetchedMember.guild.iconURL( { size: 128 } )
+          avatar: fetchedMember.guild.iconURL( { size: Math.pow(2, 7) } )
         },
         target: {
           name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { size: 128 } )
+          avatar: newMember.user.displayAvatarURL( { size: Math.pow(2, 7) } )
         }
       },
       fields: logFields

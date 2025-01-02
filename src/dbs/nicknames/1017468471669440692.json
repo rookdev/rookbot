@@ -13,7 +13,7 @@
     ]
   },
   "prefixes": {
-    "1297216081110372474": "[Speedrun] ",
-    "1282788953052676177": "[SR Verifier] "
+    "1282788953052676177":  { "name": "DoI Main", "prefix": "[SR Verifier] " },
+    "1297216081110372474":  { "name": "DoI Navy", "prefix": "[Speedrun] " }
   }
 }

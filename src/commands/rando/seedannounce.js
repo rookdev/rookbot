@@ -99,7 +99,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { randomizer: "m3maprando", "seed-url": "https://maprando.com/seed/wPvtmGMpc" },
         { randomizer: "m3maprando", "prep-time": 60 },
       ],
-      "aliases": [
+      aliases: [
         {
           name: "z3r",
           description: "Starts a Z3R Game with all necessary details",
@@ -144,10 +144,11 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
 
     if (!sahaBot) {
-      await interaction.reply({
-        content: `Sahasrala bot not found on this server. <@${userIDs['sahabot']}>`,
-        ephemeral: true,
-      })
+      let intOptions = {
+        content: `SahasrahBot not found on this server. <@${userIDs['sahabot']}>`,
+        flags: MessageFlags.Ephemeral
+      }
+      await interaction.reply(intOptions)
       return
     }*/
 

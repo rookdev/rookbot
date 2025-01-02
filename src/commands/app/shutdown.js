@@ -7,7 +7,6 @@ const UptimeCommand = require('../../commands/app/uptime.js')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const unready = require('../../events/unready/exit')  // unreadyEvent
-const colors = require('../../dbs/colors.json')       // Standardized colors
 
 // Multiple messages
 
@@ -22,8 +21,8 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       }
     }
     let props = {
-      title: { text: "Bot Shutdown", emoji: "⏹️" },
-      color: colors["bad"]
+      title: { text: "Bot Shutdown", emoji: client.profile.emojis.down },
+      color: client.profile.colors.bad
     }
     super(
       client,
@@ -56,7 +55,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       // Connect to pm2
       pm2.connect(function(err) {
         if (err) {
-          console.log("🔴PM2: Error Connecting!")
+          console.log(`${this.profile.emojis.bad}PM2: Error Connecting!`)
           console.log(err)
           process.exit(2)
         }
@@ -64,7 +63,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         // List pm2 daemons
         pm2.list(async (err, list) => {
           if (err) {
-            console.log("🔴PM2: Error Listing Processes!")
+            console.log(`${this.profile.emojis.bad}PM2: Error Listing Processes!`)
           }
 
           // Cycle through daemons
@@ -85,12 +84,12 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       })
     } catch (err) {
       // pm2 not found
-      console.log("🟡PM2: No PM2!")
+      console.log(`${this.profile.emojis.warning}PM2: No PM2!`)
     }
 
     // pm2 didn't work
     if (!processed_pm2) {
-      console.log(`🟡/${this.name}: Skipping PM2!`)
+      console.log(`${this.profile.emojis.warning}/${this.name}: Skipping PM2!`)
       this.props.playerTypes = {
         user: "bot",
         target: "guild"
