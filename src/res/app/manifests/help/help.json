@@ -507,6 +507,10 @@
           "name": "reason",
           "description": "The reason for banning the user.",
           "required": false
+        },
+        {
+          "name": "delete-days",
+          "description": "Number of days of messages to purge from this user."
         }
       ],
       "access": "Mod",
