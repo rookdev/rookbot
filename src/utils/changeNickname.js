@@ -1,27 +1,6 @@
-const path = require('path')  // Easy path management
-const fs = require('fs')      // Filesystem manipulation
-
-function myRand(min=0, max=1) {
-  if (min > max) {
-    let tmp = min
-    min = max
-    max = tmp
-  }
-  return Math.floor(Math.random() * max)
-}
-
-function roll(sides=2,dice=1) {
-  let result = 0
-  for (let i = 0; i < dice; i++) {
-    let thisRoll = myRand(sides)
-    result += thisRoll
-  }
-  return result
-}
-
-function randPick(input) {
-  return input[myRand(0, input.length)]
-}
+const randFuncs = require('../utils/randFuncs') // Random Functions
+const path = require('path')                    // Easy path management
+const fs = require('fs')                        // Filesystem manipulation
 
 // Main function to compare commands
 module.exports = (client, member) => {
@@ -34,7 +13,7 @@ function normalName() {
   let newNickname = ""
 
   if (namesDB.parts?.names) {
-    newNickname = randPick(namesDB.parts.names)
+    newNickname = randFuncs.randPick(namesDB.parts.names)
   }
 
   return newNickname
@@ -53,7 +32,7 @@ function weightedName() {
     newWeights.push([wLabel, totalWeight])
   }
 
-  let weightFlip = myRand(0, totalWeight)
+  let weightFlip = randFuncs.myRand(0, totalWeight)
 
   let chosen = false
   for (let wData of newWeights) {
@@ -61,7 +40,7 @@ function weightedName() {
       break
     }
     if (weightFlip <= wData[1]) {
-      newNickname = randPick(namesDB.parts[wData[0]])
+      newNickname = randFuncs.randPick(namesDB.parts[wData[0]])
       chosen = true
     }
   }
@@ -76,23 +55,23 @@ function buildName() {
   // Add Pre
   if (namesDB.parts?.pre && namesDB.parts.pre.length > 0) {
     // Flip a coin
-    goodFlip = roll(2)
+    goodFlip = randFuncs.roll(2)
     // If success, add Pre
     if (goodFlip) {
-      newNickname += randPick(namesDB.parts.pre) + " "
+      newNickname += randFuncs.randPick(namesDB.parts.pre) + " "
     }
   }
 
   // Add Name
-  newNickname += randPick(namesDB.parts.names) + " "
+  newNickname += randFuncs.randPick(namesDB.parts.names) + " "
 
   // Add Post
   if (namesDB.parts?.post && namesDB.parts.post.length > 0) {
     // Flip a coin
-    goodFlip = roll(2)
+    goodFlip = randFuncs.roll(2)
     // If success, add Post
     if (goodFlip) {
-      newNickname += randPick(namesDB.parts.post) + " "
+      newNickname += randFuncs.randPick(namesDB.parts.post) + " "
     }
   }
 
@@ -100,10 +79,10 @@ function buildName() {
   if (namesDB.parts?.suffix && namesDB.parts.suffix.length > 0) {
     newNickname = newNickname.trim()
     // Flip a coin
-    goodFlip = roll(2)
+    goodFlip = randFuncs.roll(2)
     // If success, add Suffix
     if (goodFlip) {
-      newNickname += ", " + randPick(namesDB.parts.suffix)
+      newNickname += ", " + randFuncs.randPick(namesDB.parts.suffix)
     }
   }
 

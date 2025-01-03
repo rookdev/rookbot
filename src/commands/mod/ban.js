@@ -28,6 +28,11 @@ module.exports = class BanCommand extends ModCommand {
           description: "The reason for banning the user.",
           type: ApplicationCommandOptionType.String,
           required: false
+        },
+        {
+          name: "delete-days",
+          description: "Number of days of messages to purge from this user.",
+          type: ApplicationCommandOptionType.Integer
         }
       ],
       permissions: [ PermissionFlagsBits.BanMembers ]

@@ -1,9 +1,12 @@
 // @ts-nocheck
 
 const manageCommands = require('../../utils/manageCommands.js')
+const emojis = require('../../dbs/emojis.json')
 
 module.exports = async (client) => {
   let GLOBALS = client.profile
+
+  console.log(JSON.stringify(emojis))
 
   // Optional: Delete commands if enabled in the profile
   if (GLOBALS.deleteCommands) {

@@ -9,7 +9,7 @@ const manageCommands = async (
   token
 ) => {
   const rest = new REST({ version: '10' }).setToken(token)
-  let deleteCommands = options.deleteCommands
+  let deleteCommands = options?.delete
 
   try {
     // If deleting

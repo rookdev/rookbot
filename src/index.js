@@ -123,7 +123,7 @@ const client = new RookClient(
       IntentsBitField.Flags.GuildPresences,
       IntentsBitField.Flags.MessageContent
     ],
-    // All bot to mention roles
+    // Allow bot to mention roles
     allowedMentions: { parse: ["roles"] }
   },
   // Profile to load

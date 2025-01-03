@@ -71,7 +71,7 @@ module.exports = class LockCommand extends ModCommand {
       if (logs && !this.DEV) {
         let props = {
           color: this.profile.colors.bad,
-          title: { text: "[Log] Channel Locked", emoji: "🔒" },
+          title: { text: "[Log] Channel Locked", emoji: this.profile.emojis.lock },
           fields: [
             [
               { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${channel.id.inlinecode()})` },

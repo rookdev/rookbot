@@ -82,7 +82,6 @@
     "scripts": [
       "[Stable February 2022 (`alttpo-client-win64-stable-20220213.1`)](https://dev.azure.com/ALttPO/alttpo/_build/results?buildId=693&view=artifacts&pathAsName=false&type=publishedArtifacts)"
     ],
-    "pingable-role-id": "1300904313081565236",
     "permalink": "https://samus.link/seed/<hash>"
   }
 }

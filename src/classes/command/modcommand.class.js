@@ -491,8 +491,18 @@ class ModCommand extends AdminCommand {
 
           // Ban
           case "ban":
+            let banPurgeDays = coptions['delete-days'] || 0
+            let banOptions = { reason: reason }
+            if (banPurgeDays) {
+              SEC = 1000
+              MIN = SEC * 60
+              HR  = MIN * 60
+              DAY = HR  * 24
+              banOptions.deleteMessageSeconds = banPurgeDays * DAY
+            }
             success = await interaction.guild.members.ban(
-              targetUserId, { reason }
+              targetUserId,
+              banOptions
             )
             break
 
