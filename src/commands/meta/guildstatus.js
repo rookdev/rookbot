@@ -30,6 +30,12 @@ module.exports = class GuildStatusCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    if (!interaction?.guild) {
+      this.error = true
+      this.props.description = "Command must be run in guild."
+      return false
+    }
+
     // Set EmbedPlayerTypes to Bot|Guild
     this.props.playerTypes = {
       user: "bot",

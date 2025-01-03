@@ -74,7 +74,7 @@ module.exports = async (client, interaction) => {
 
     if (commandObject.userPermissions?.length) {
       for (const permission of commandObject.userPermissions) {
-        if (!interaction.member.permissions.has(permission)) {
+        if (!interaction.member?.permissions.has(permission)) {
           let intOptions = {
             content: `${client.profile.emojis.user} User is missing permissions.`,
             flags: MessageFlags.Ephemeral

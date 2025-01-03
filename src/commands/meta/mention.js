@@ -135,7 +135,7 @@ module.exports = class MentionCommand extends RookCommand {
     let specs = {}
 
     // Get Guild
-    let guild = await client.guilds.fetch(interaction.guild.id)
+    let guild = await client.guilds.fetch(interaction?.guild?.id)
 
     switch(targetType) {
       // Channel
@@ -265,7 +265,7 @@ module.exports = class MentionCommand extends RookCommand {
         targetMention = `<@!${targetId}>`
         if (guild) {
           // Get Guild Member
-          let targetMember = await guild.members.fetch(targetId)
+          let targetMember = await guild?.members?.fetch(targetId)
           if (targetMember) {
             specs = {
               name: targetMember.user.username
