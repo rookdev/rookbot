@@ -74,7 +74,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     // Cycle through guilds
     for (let [guildID, guildData] of guilds) {
       // Get Guild Owner
-      let owner = await guildData.members.fetch(guildData.ownerId)
+      let owner = await guildData.fetchOwner()
       if (owner?.user) {
         owner = owner.user
       }

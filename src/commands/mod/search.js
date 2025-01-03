@@ -144,15 +144,15 @@ module.exports = class SearchCommand extends ModCommand {
         line = line.trim()
         if(
           (
-            (line.indexOf("Author:") > -1) ||
-            (line.indexOf("User:") > -1)
+            line.includes("Author:") ||
+            line.includes("User:")
           ) &&
-          (line.indexOf(targetUserId) > -1)
+          line.includes(targetUserId)
         ) {
           let beginning = i
           let running = true
           while(running) {
-            if(logLines[beginning].indexOf("[") > -1) {
+            if(logLines[beginning].includes("[")) {
               running = false
             } else {
               beginning = beginning - 1
@@ -162,7 +162,7 @@ module.exports = class SearchCommand extends ModCommand {
           let end = beginning + 1
           while(running) {
             if(
-              (logLines[end].indexOf("[") > -1) ||
+              (logLines[end].includes("[")) ||
               (logLines[end].substring(0,3) == "---") ||
               (logLines[end].trim() == "")
             ) {
@@ -243,11 +243,11 @@ module.exports = class SearchCommand extends ModCommand {
       let this_ids = {}
       for(let logLine of foundLog) {
         logLine = logLine.trim()
-        if(logLine.indexOf(": ") > -1) {
+        if(logLine.includes(": ")) {
           let field_name = logLine.substring(0, logLine.indexOf(": "))
           let field_value = logLine.substring(logLine.indexOf(": ") + ": ".length)
           field_value = field_value.replace(/([\d]{5,})/, "`$1`")
-          if (logLine.indexOf("ID: ") > -1) {
+          if (logLine.includes("ID: ")) {
             let matches = logLine.match(/(?:[\D]+) ([\d]+)/)
             if (matches) {
               this_ids[field_name] = matches[1].trim()
@@ -258,14 +258,14 @@ module.exports = class SearchCommand extends ModCommand {
             "Author",
             "User"
           ]) {
-            if(field_name.indexOf(userType) > -1) {
+            if(field_name.includes(userType)) {
               field_value = `<@${this_ids[userType]}> (ID: ${this_ids[userType].inlinecode()})`
             }
           }
-          if (field_name.indexOf("Channel") > -1) {
+          if (field_name.includes("Channel")) {
             field_value = `<#${this_ids['Channel']}>` + " " +
               `(ID: ${this_ids['Channel'].inlinecode()})`
-          } else if (field_name.indexOf("Message") > -1) {
+          } else if (field_name.includes("Message")) {
             field_name = "Message"
             field_value = "https://discord.com/channels"
             field_value = `${field_value}/${this_ids['Guild']}`
@@ -281,7 +281,7 @@ module.exports = class SearchCommand extends ModCommand {
               }
             ]
           )
-        } else if(logLine.indexOf("Z]") > -1) {
+        } else if(logLine.includes("Z]")) {
           let timestampDateTime = new Date(
             strtotime(
               logLine

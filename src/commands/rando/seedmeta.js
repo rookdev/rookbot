@@ -33,13 +33,18 @@ module.exports = class SeedMetaCommand extends RookCommand {
             {
               name:   "Super Metroid Map Randomizer",
               value:  "m3maprando"
-            }
+            },
+            // {
+            //   name:   "Quad Randomizer",
+            //   value:  "z1m1z3m3"
+            // }
           ]
         }
       ],
       testOptions: [
         { "game-id": "z3r",         "hash-id": "0yAONb6XMV" },
         { "game-id": "z3m3",        "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
+        // { "game-id": "z1m1z3m3",    "hash-id": "MOaOZII0QzS80DG9VTluXw" },
         { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" }
       ]
     }

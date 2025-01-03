@@ -106,6 +106,31 @@
       "access": "Mod",
       "segment": "local"
     },
+    "botactivity": {
+      "name": "botactivity",
+      "category": "bot",
+      "description": "Bot Activity setter",
+      "options": [
+        {
+          "name": "activity-id",
+          "description": "Activity ID"
+        },
+        {
+          "name": "activity-type",
+          "description": "Activity Type"
+        },
+        {
+          "name": "message",
+          "description": "Activity Message"
+        },
+        {
+          "name": "stream-url",
+          "description": "Stream URL"
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
     "botavatar": {
       "name": "botavatar",
       "category": "bot",

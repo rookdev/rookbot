@@ -669,7 +669,7 @@ class RookCommand {
       .addRow(
         "Interaction",
         interaction ? this.profile.emojis.check : this.profile.emojis.nocheck,
-        interaction.id
+        interaction?.id
       )
       // Whodunnit?
       .addRow(

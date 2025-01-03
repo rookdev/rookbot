@@ -83,6 +83,9 @@ program
   .option(
     "--del", "Delete Commands?", false
   )
+  .option(
+    "--purge", "Purge Commands?", false
+  )
   // Parse passed arguments
   .parse(process.argv)
 
@@ -92,12 +95,14 @@ const options = program.opts()
 // console.log(JSON.stringify(options, null, "  "))
 
 let deleteCommands = options.del  // Delete Commands?
+let purgeCommands = options.purge // Purge Commands?
 let profile = options.profile     // Profile to load
 // Pretty-print selections to console
 const Table = new AsciiTable("Selected Options", {})
 Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
 Table.addRow("Delete Commands?", deleteCommands ? emojis.check : emojis.nocheck)
+Table.addRow("Purge Commands?", purgeCommands ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // Create RookClient object
@@ -108,12 +113,14 @@ const client = new RookClient(
      *  Guilds
      *  GuildMembers
      *  GuildMessages
+     *  GuildPresences
      *  MessageContent
      */
     intents: [
       IntentsBitField.Flags.Guilds,
       IntentsBitField.Flags.GuildMembers,
       IntentsBitField.Flags.GuildMessages,
+      IntentsBitField.Flags.GuildPresences,
       IntentsBitField.Flags.MessageContent
     ],
     // All bot to mention roles
@@ -123,6 +130,7 @@ const client = new RookClient(
   process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
   {
     deleteCommands: deleteCommands,
+    purgeCommands: purgeCommands,
     DEV: !process.env.ENV_ACTIVE.startsWith("prod")
   }
 );

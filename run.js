@@ -29,6 +29,10 @@ program
   .option(
     "--del", "Delete?", false
   )
+  // Purge Commands
+  .option(
+    "--purge", "Purge?", false
+  )
   // Parse passed arguments
   .parse(process.argv)
 
@@ -39,6 +43,7 @@ const options = program.opts()
 
 let long = options.long       // Long Mode?
 let del = options.del         // Delete Commands?
+let purge = options.purge         // Purge Commands?
 let profile = options.profile // Profile to load
 
 // Pretty-print selections to console
@@ -47,6 +52,7 @@ Table.setBorder('|','-','•','•')
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? emojis.check : emojis.nocheck)
 Table.addRow("Delete Commands?", del ? emojis.check : emojis.nocheck)
+Table.addRow("Purge Commands?", purge ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // If Long Mode
@@ -79,6 +85,9 @@ let args = [
 ]
 if (del) {
   args.push("--del")
+}
+if (purge) {
+  args.push("--purge")
 }
 
 // Use node to run ./src/index.js with CLI args

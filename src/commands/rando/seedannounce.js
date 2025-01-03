@@ -56,6 +56,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
               name:   "Super Metroid Map Randomizer",
               value:  "m3maprando"
             },
+            // {
+            //   name:   "Quad Randomizer",
+            //   value:  "z1m1z3m3"
+            // },
             {
               name:   "Archipelago",
               value:  "ap"
@@ -94,6 +98,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { randomizer: "z3m3", "ping-multiplayer-role": true },
         { randomizer: "z3m3", "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
         { randomizer: "z3m3", "prep-time": 60 },
+        // { randomizer: "z1m1z3m3" },
+        // { randomizer: "z1m1z3m3", "ping-multiplayer-role": true },
+        // { randomizer: "z1m1z3m3", "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw" },
+        // { randomizer: "z1m1z3m3", "prep-time": 60 },
         { randomizer: "m3maprando" },
         { randomizer: "m3maprando", "ping-multiplayer-role": true },
         { randomizer: "m3maprando", "seed-url": "https://maprando.com/seed/wPvtmGMpc" },

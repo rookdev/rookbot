@@ -1,6 +1,7 @@
 const timeFormat = require('../utils/timeFormat')
 const { decode } = require('slugid')
 const strtotime = require('locutus/php/datetime/strtotime')
+const emojis = require('../dbs/emojis.json')
 
 async function get_url(in_url) {
   try {
@@ -129,11 +130,11 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "🥇Tournament",
-          value: hash_meta?.tournament ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: hash_meta?.tournament ? emojis.check : emojis.nocheck
         },
         {
           name: "👢Pseudoboots",
-          value: hash_meta?.pseudoboots ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: hash_meta?.pseudoboots ? emojis.check : emojis.nocheck
         },
       ],
       [
@@ -212,7 +213,7 @@ module.exports = async (hashID, gameID="z3r") => {
       [
         {
           name: "🗺️Transition Letters?",
-          value: settings?.other_settings.transition_letters ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: settings?.other_settings.transition_letters ? emojis.check : emojis.nocheck
         },
         {
           name: "🔒Door Locks Size",
@@ -230,17 +231,17 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "✨Energy-Free Shinesparks?",
-          value: settings?.other_settings.energy_free_shinesparks ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: settings?.other_settings.energy_free_shinesparks ? emojis.check : emojis.nocheck
         },
         {
           name: "🌡️Ultra-Low QoL?",
-          value: settings?.other_settings.ultra_low_qol ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: settings?.other_settings.ultra_low_qol ? emojis.check : emojis.nocheck
         }
       ],
       [
         {
           name: "🥇Race Mode?",
-          value: settings?.other_settings.race_mode ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: settings?.other_settings.race_mode ? emojis.check : emojis.nocheck
         },
         {
           name: "#️Hash ID",
@@ -265,11 +266,21 @@ module.exports = async (hashID, gameID="z3r") => {
         }
       ]
     ]
-  } else if (gameID == "z3m3") {
+  } else if (["z3m3", "z1m1z3m3"].includes(gameID)) {
     // Z3M3
     let decoded = decode(hashID).replaceAll("-",'')
 
-    hash_meta = await get_url(`http://samus.link/api/seed/${decoded}`)
+    let permalinkURL = `https://samus.link/seed/${hashID}`
+    let apiURL = ""
+
+    if (gameID == "z3m3") {
+      apiURL = `https://samus.link/api/seed/${decoded}`
+    } else if (gameID == "z1m1z3m3") {
+      // FIXME: Doesn't work
+      // apiURL = `https://quad.beta.samus.link/api/seed/${decoded}`
+    }
+    hash_meta = await get_url(apiURL)
+    // console.log(apiURL)
 
     if (!hash_meta?.worlds) {
       // Hash Data not found
@@ -371,7 +382,7 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "🥇Tournament",
-          value: settings?.race == "true" ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: settings?.race == "true" ? emojis.check : emojis.nocheck
         }
       ],
       [
@@ -381,11 +392,11 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "#️Seed ID",
-          value: `[${hashID.inlinecode()}](https://samus.link/seed/${hashID})`
+          value: `[${hashID.inlinecode()}](${permalinkURL})`
         },
         {
           name: "#️Seed Guid",
-          value: `[${decoded.inlinecode()}](https://samus.link/api/seed/${decoded})`
+          value: `[${decoded.inlinecode()}](${apiURL})`
         }
       ]
     ]

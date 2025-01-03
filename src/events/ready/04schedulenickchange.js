@@ -37,7 +37,7 @@ module.exports = async (client) => {
   let users = fs.readdirSync(nicknameDataPath)
     // Filter JSON documents that are numeric
     .filter(
-      (fileName) => fileName.indexOf(".json") > -1 &&
+      (fileName) => fileName.includes(".json") &&
         isNumeric(fileName.substring(0, fileName.indexOf(".") - 1))
     )
     // Strip .json extension

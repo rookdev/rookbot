@@ -52,6 +52,10 @@ program
   .option(
     "--del", "Delete Commands", false
   )
+  // Purge Commands?
+  .option(
+    "--purge", "Purge Commands", false
+  )
   // Load canned options (crun.json)
   .option(
     "--loadoptions", "Load canned options (crun.json)"
@@ -92,7 +96,7 @@ let bin = dotenvx.stdout.trim()
 console.log(bin)
 
 // If Windows, just run bare executable
-if (bin.indexOf("WinGet") > -1 || uname.stdout.trim().indexOf("MINGW") > -1) {
+if (bin.includes("WinGet") || uname.stdout.trim().includes("MINGW")) {
   bin = "dotenvx"
 }
 
@@ -110,6 +114,7 @@ let server = ""
 let env = ""
 let long = ""
 let del = ""
+let purge = ""
 let profile = ""
 
 // CUser
@@ -156,6 +161,12 @@ if (options.del) {
   // @ts-ignore
   del = true
 }
+// Purge Commands?
+if (options.purge) {
+  args.push("--purge")
+  // @ts-ignore
+  purge = true
+}
 // Long Mode?
 if (options.long) {
   args.push("-l")
@@ -173,6 +184,7 @@ Table.addRow("Development/Production", env)
 Table.addRow("Selected Profile", profile)
 Table.addRow("Long Load", long ? emojis.check : emojis.nocheck)
 Table.addRow("Delete Commands?", del ? emojis.check : emojis.nocheck)
+Table.addRow("Purge Commands?", del ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
 // Use dotenvx with env vars to use node to run run.js with CLI args

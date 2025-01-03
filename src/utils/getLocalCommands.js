@@ -19,7 +19,7 @@ module.exports = (client, exceptions = []) => {
         continue
       }
 
-      if (commandObject.name.indexOf("Command") > -1) {
+      if (commandObject.name.includes("Command")) {
         let cmd = new commandObject(client)
         commandObject = cmd
       }

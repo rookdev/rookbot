@@ -8,7 +8,10 @@ module.exports = async (client) => {
   // Optional: Delete commands if enabled in the profile
   if (GLOBALS.deleteCommands) {
     await manageCommands(
-      GLOBALS.deleteCommands,
+      {
+        delete: GLOBALS.deleteCommands,
+        purge: GLOBALS.purgeCommands
+      },
       process.env.GUILD_ID,
       GLOBALS.name,
       process.env.CLIENT_ID,

@@ -79,7 +79,7 @@ class BotDevCommand extends AdminCommand {
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
-          let thisOption = interaction.options.get(option.name)
+          let thisOption = interaction?.options.get(option.name)
           if (thisOption) {
             coptions[option.name] = thisOption.value
           }

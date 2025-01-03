@@ -76,7 +76,7 @@ module.exports = class HolyImageCommand extends RookCommand {
     for(let this_image of holyimages[gameID]) {
       if(
         (this_image.slug == slugID) ||
-        (this_image?.aliases && (this_image.aliases.indexOf(slugID) > -1))
+        (this_image?.aliases && this_image.aliases.includes(slugID))
       ) {
         // If this Image matches the one we want...
 
@@ -135,7 +135,7 @@ module.exports = class HolyImageCommand extends RookCommand {
 
       // Add See Also
       let seeAlsoSearch = "<br /><br />See also:"
-      if(desc.indexOf(seeAlsoSearch) > -1) {
+      if(desc.includes(seeAlsoSearch)) {
         desc = desc.substring(0, desc.indexOf(seeAlsoSearch))
       }
 

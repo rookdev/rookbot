@@ -31,6 +31,10 @@ class RookClient extends Client {
     this.profile.colors = require("../../dbs/colors.json")
     // Global Emojis
     this.profile.emojis = require("../../dbs/emojis.json")
+    // Delete Commands?
+    this.profile.deleteCommands = options?.deleteCommands
+    // Purge Commands?
+    this.profile.purgeCommands = options?.purgeCommands
 
     for (let [optName, optVal] of Object.entries(options)) {
       this.profile[optName] = optVal

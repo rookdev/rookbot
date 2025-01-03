@@ -138,7 +138,7 @@ async function registerCommand(
     }
 
     // Instantiate it if OOP Command
-    if (cmdParts.name.indexOf("Command") > -1) {
+    if (cmdParts.name.includes("Command")) {
       let cmd = await new localCommand()
       cmdParts = extractCommand(cmd)
     }
@@ -175,7 +175,7 @@ async function registerCommand(
 }
 
 module.exports = async (client) => {
-  let purge = false
+  let purge = client.profile?.purgeCommands
 
   if (purge) {
     return
@@ -195,10 +195,10 @@ module.exports = async (client) => {
         console.error(`  ❌ Test guild not found: ${testGuildID}`)
         return
       }
-      console.log(`  ${client.profile.emojis.devText} Running in development mode. Using test server: '${testGuild.name}' [${testGuildID}]`)
+      console.log(`  ${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: '${testGuild.name}' [${testGuildID}]`)
       commandsManager = testGuild.commands
     } else {
-      console.log(`  ${client.profile.emojis.prodText} Running in production mode. Registering global commands.`)
+      console.log(`  ${client.profile.emojis.prodText} Running in production mode. Registering Global Commands.`)
       commandsManager = client.application.commands
     }
 

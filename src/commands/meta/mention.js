@@ -110,12 +110,12 @@ module.exports = class MentionCommand extends RookCommand {
         }
       )
     ) {
-      if(targetInput.indexOf(check) > -1) {
+      if(targetInput.includes(check)) {
         targetType = mentionType
       }
     }
     // If @&, it's a Role Mention
-    if(targetInput.indexOf("@") > -1 && targetInput.indexOf("&") > -1) {
+    if(targetInput.includes("@") && targetInput.includes("&")) {
       targetType = "role"
     }
     if (targetType == "emoji") {
