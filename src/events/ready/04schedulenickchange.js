@@ -68,7 +68,7 @@ module.exports = async (client) => {
 
       try {
         // Get the guild member
-        const member = await guild.members.fetch(userID, { force: true }) || null
+        const member = await guild.members.fetch(userID, { force: true }) ?? null
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
           console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)

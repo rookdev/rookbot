@@ -86,7 +86,7 @@ module.exports = class MentionCommand extends RookCommand {
     // Get Target ID
     let targetId      = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
     // Get Target Type
-    let targetType    = coptions["target-type"] || "channel"
+    let targetType    = coptions["target-type"] ?? "channel"
     let targetMention = ""
 
     // console.log(
@@ -321,7 +321,7 @@ module.exports = class MentionCommand extends RookCommand {
                 id:     targetId,
                 name:   targetMember.displayName,
                 url:    "http://example.com/target",
-                avatar: specs?.roleIcon || targetMember.displayAvatarURL({ size: Math.pow(2, 7) }),
+                avatar: specs?.roleIcon ?? targetMember.displayAvatarURL({ size: Math.pow(2, 7) }),
                 tag:    targetMember.user.tag
               }
             }

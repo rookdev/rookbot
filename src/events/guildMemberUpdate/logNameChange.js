@@ -56,7 +56,7 @@ module.exports = async (client, oldMember, newMember) => {
     }
 
     // If entry exists, grab the user that updated the guild member and display username + tag, if none, display 'Unknown'.
-    let updater = auditEntry?.executor || null
+    let updater = auditEntry?.executor ?? null
     if (updater) {
       let updaterMember = await newMember.guild.members.fetch(updater.id)
       if (updaterMember) {

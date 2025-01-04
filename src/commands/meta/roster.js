@@ -53,7 +53,7 @@ module.exports = class RosterCommand extends RookCommand {
     // Get Section Type
     const sectionType = coptions["section-type"]
     // Get Guild ID
-    const guildID = coptions["guild-id"] || interaction?.guild?.id || process.env.GUILD_ID
+    const guildID = coptions["guild-id"] ?? interaction?.guild?.id ?? process.env.GUILD_ID
 
     // Get Guild IDs path
     const guildIDsPath = path.join(

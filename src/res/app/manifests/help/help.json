@@ -95,12 +95,23 @@
       "options": [
         {
           "name": "message",
-          "description": "Message to send",
-          "required": true
+          "description": "Message to send"
         },
         {
           "name": "channel",
           "description": "Channel to send message to"
+        },
+        {
+          "name": "mode",
+          "description": "Mode for BotSpeak"
+        },
+        {
+          "name": "destination-message",
+          "description": "Destination Message URL"
+        },
+        {
+          "name": "source-message",
+          "description": "Source Message URL"
         }
       ],
       "access": "Mod",

@@ -254,13 +254,13 @@ class ModCommand extends AdminCommand {
     let MUTED_ROLE  = this?.ROLES?.muted  ? this.ROLES.muted[0]   : null
 
     // Member Role ID
-    let MEMBER_ID   = interaction.options.getString("target-id")  || null
+    let MEMBER_ID   = interaction.options.getString("target-id")      ?? null
     // Muted Role ID
-    let MUTED_ID    = interaction.options.getString("muted-role-id")   || null
+    let MUTED_ID    = interaction.options.getString("muted-role-id")  ?? null
 
     if (!this.DEV) {
-      let mainRole = MEMBER_ROLE  || MEMBER_ID  // Member Role
-      let muteRole = MUTED_ROLE   || MUTED_ID   // Muted Role
+      let mainRole = MEMBER_ROLE  ?? MEMBER_ID  // Member Role
+      let muteRole = MUTED_ROLE   ?? MUTED_ID   // Muted Role
 
       // Bail if no Member Role
       if (!mainRole) {
@@ -345,17 +345,17 @@ class ModCommand extends AdminCommand {
     let lastingError
 
     // Get Guild ID
-    const guildID = coptions["guild-id"] || interaction.guild.id
+    const guildID = coptions["guild-id"] ?? interaction?.guild?.id
     // Get Guild Channels
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get User Input
     const targetUserInput = coptions["target-id"]
     // Get Reason
-    const reason = coptions["reason"] || `${this.profile.emojis.fail} No reason provided`
+    const reason = coptions["reason"] ?? `${this.profile.emojis.fail} No reason provided`
     // Get Role
-    const role = interaction.options?.getString("role")?.replace(/[<@&>]/g, "") || ""
+    const role = coptions["role"]?.replace(/[<@&>]/g, "") ?? ""
     // Get Timeout Duration
-    let duration = interaction.options?.getInteger("duration-seconds") || 0
+    let duration = coptions["duration-seconds"] ?? 0
     let durationSeconds = 0
     let durationMilliseconds = 0
     if (duration) {
@@ -460,7 +460,7 @@ class ModCommand extends AdminCommand {
 
     // Get the guild member (to fetch nickname if present)
     const guildMember = await interaction.guild.members.fetch(targetUserId)
-    const user = guildMember?.user || targetUser
+    const user = guildMember?.user ?? targetUser
 
     // Check Editable
     let editable = this.botCanEdit(client, guildMember)
@@ -491,7 +491,7 @@ class ModCommand extends AdminCommand {
 
           // Ban
           case "ban":
-            let banPurgeDays = coptions['delete-days'] || 0
+            let banPurgeDays = coptions['delete-days'] ?? 0
             let banOptions = { reason: reason }
             if (banPurgeDays) {
               SEC = 1000
@@ -559,7 +559,7 @@ class ModCommand extends AdminCommand {
       }
 
       // Determine the name to display (use nickname if available, otherwise default to tag or username)
-      const targetUserName = guildMember?.nickname || targetUser.username
+      const targetUserName = guildMember?.nickname ?? targetUser.username
       // let printResult: boolean | Array<string> = false
       let printResult = false
 

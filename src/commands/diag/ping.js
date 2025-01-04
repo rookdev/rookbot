@@ -37,7 +37,7 @@ module.exports = class PingCommand extends RookCommand {
     // Get Reply object
     const reply = await interaction?.fetchReply()
     // Find difference in time
-    const ping = (reply?.createdTimestamp || 0) - (interaction?.createdTimestamp || 0)
+    const ping = (reply?.createdTimestamp ?? 0) - (interaction?.createdTimestamp ?? 0)
 
     this.props.fields = [
       [

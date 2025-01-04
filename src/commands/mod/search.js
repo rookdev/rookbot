@@ -96,7 +96,7 @@ module.exports = class SearchCommand extends ModCommand {
   async action(client, interaction, coptions) {
     let searchType = coptions["search-type"]
     let targetUserInput = coptions["target-id"]
-    let region = coptions["region"] || (this.DEV ? "DEV" : "")
+    let region = coptions["region"] ?? (this.DEV ? "DEV" : "")
     let targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
     let targetUser
 
@@ -112,7 +112,7 @@ module.exports = class SearchCommand extends ModCommand {
     }
     // Get the guild member (to fetch nickname if present)
     const guildMember = await interaction.guild.members.fetch(targetUserId)
-    const user = guildMember?.user || targetUser
+    const user = guildMember?.user ?? targetUser
 
     let foundLogs = {}
     let i = 0
@@ -194,7 +194,7 @@ module.exports = class SearchCommand extends ModCommand {
           a =>
             a.target.id === ban.user.id
         )
-        let banner = auditEntry?.executor || null
+        let banner = auditEntry?.executor ?? null
         let bannerData = {}
         if (banner) {
           bannerData = {

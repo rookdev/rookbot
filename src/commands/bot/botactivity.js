@@ -87,13 +87,13 @@ module.exports = class BotActivityCommand extends BotDevCommand {
 
     // Default to listening
     let defaultActivity = "listening"
-    let activityType    = coptions["activity-type"] || defaultActivity
-    let activityID      = coptions["activity-id"] || activityNames.indexOf(activityType.toLowerCase())
-    let prefix          = client?.optons?.defaultPrefix ||
-                          client?.options?.prefix ||
-                          client?.prefix ||
+    let activityType    = coptions["activity-type"] ?? defaultActivity
+    let activityID      = coptions["activity-id"] ?? activityNames.indexOf(activityType.toLowerCase())
+    let prefix          = client?.optons?.defaultPrefix ??
+                          client?.options?.prefix ??
+                          client?.prefix ??
                           "/"
-    let msg = coptions["message"] || prefix + "help"
+    let msg = coptions["message"] ?? (prefix + "help")
     let url = ""
 
     let padding = 20

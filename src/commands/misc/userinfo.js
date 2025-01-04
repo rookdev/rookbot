@@ -63,9 +63,9 @@ module.exports = class UserInfoCommand extends RookCommand {
     }
 
     // Access the server nickname, fallback to username
-    const targetUserName = targetMember.displayName ||
-      targetMember.user.tag ||
-      targetMember.user.username
+    const targetUserName = targetMember.displayName ??
+      targetMember.user?.tag ??
+      targetMember.user?.username
 
     // Get the user's avatar URL
     const avatarURL = targetMember.displayAvatarURL({ size: 1024 })
@@ -148,7 +148,7 @@ module.exports = class UserInfoCommand extends RookCommand {
         url: avatarURL,
         avatar: avatarURL
       },
-      color: targetMember?.displayHexColor || targetMember?.user?.accentHexColor,
+      color: targetMember?.displayHexColor ?? targetMember?.user?.accentHexColor,
       fields: fields,
       image: { image: avatarURL }
     }

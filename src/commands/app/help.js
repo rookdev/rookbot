@@ -136,7 +136,7 @@ module.exports = class HelpCommand extends RookCommand {
             // Command Description
             {
               name: "Description",
-              value: cmd?.description || " "
+              value: cmd?.description ?? " "
             }
           ]
         )
@@ -169,7 +169,7 @@ module.exports = class HelpCommand extends RookCommand {
                 [
                   {
                     name: optionName,
-                    value: option.description || " "
+                    value: option.description ?? " "
                   }
                 ]
               )

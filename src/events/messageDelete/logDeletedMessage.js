@@ -25,7 +25,7 @@ module.exports = async (client, deletedMessage) => {
     }
 
     // Fetch the log channel using the deletedMessage's guild ID
-    const guildID = deletedMessage.guild?.id || 0
+    const guildID = deletedMessage.guild?.id ?? 0
     const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     let log_type = "logging"
     let log_check = "logging-messages"
@@ -65,7 +65,7 @@ module.exports = async (client, deletedMessage) => {
     }
 
     // If entry exists, grab the user that deleted the message and display username + tag, if none, display 'Unknown'.
-    let deleter = auditEntry?.executor || null
+    let deleter = auditEntry?.executor ?? null
     if (deleter) {
       let deleterMember = await deletedMessage.guild.members.fetch(deleter.id)
       if (deleterMember) {
@@ -191,7 +191,7 @@ module.exports = async (client, deletedMessage) => {
         // Message Content
         {
           name: 'Content',
-          value: deletedMessage.content.slice(0,1024) || '*No content*'
+          value: deletedMessage.content.slice(0,1024) ?? '*No content*'
         }
       ]
     )

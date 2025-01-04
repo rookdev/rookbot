@@ -196,7 +196,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
   async action(client, interaction, coptions) {
     // Get GameID
-    const randomizer = coptions.randomizer || "z3m3"
+    const randomizer = coptions.randomizer ?? "z3m3"
 
     // Ping role?
     const pingMultiplayerRole = coptions['ping-multiplayer-role'] ?? false // Default to false
@@ -222,7 +222,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     }*/
 
     // Generate random group name
-    const randNum = coptions['group-id'] || randFuncs.myRand(10000000001)
+    const randNum = coptions['group-id'] ?? randFuncs.myRand(10000000001)
     const groupName = `zdoi${randNum}`
 
     // Get the current timestamp and add <prepTimeMinutes> minutes of prep time
@@ -272,16 +272,16 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Get the data
     const randoData = require(randoDataPath)
     // Get the title
-    const randoTitle = randoData?.rando?.player?.name || randomizer
+    const randoTitle = randoData?.rando?.player?.name ?? randomizer
     // Get Major Items
-    const majorItems = randoData?.madlibs?.major      || []
+    const majorItems = randoData?.madlibs?.major      ?? []
     // Get Useless Items
-    const uselessItems = randoData?.madlibs?.useless  || []
+    const uselessItems = randoData?.madlibs?.useless  ?? []
     // Get Footers
-    const footerTexts = randoData?.madlibs?.footers   || []
+    const footerTexts = randoData?.madlibs?.footers   ?? []
 
     // Get Pingable Role ID
-    roleID = randoData?.rando["pingable-role-id"] || roleID
+    roleID = randoData?.rando["pingable-role-id"] ?? roleID
 
     // Set Title
     this.props.title = {
@@ -289,14 +289,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     }
 
     // Select a random footer text
-    var randomFooterText = randFuncs.randPick(footerTexts) || ""
+    var randomFooterText = randFuncs.randPick(footerTexts) ?? ""
 
     // Select a random major item
-    const randomMajorItem = randFuncs.randPick(majorItems) || ""
-    const randomUselessItem = randFuncs.randPick(uselessItems) || ""
+    const randomMajorItem = randFuncs.randPick(majorItems) ?? ""
+    const randomUselessItem = randFuncs.randPick(uselessItems) ?? ""
 
     // Modify the major item if it starts with "A " and if it's not at the beginning of the sentence
-    let formattedMajorItem = randomMajorItem || ""
+    let formattedMajorItem = randomMajorItem ?? ""
     if (formattedMajorItem.startsWith('A ') && randomFooterText.indexOf('[MAJOR_ITEM]') > 0) {
       // Only lowercase the first letter if '[MAJOR_ITEM]' is in the middle
       formattedMajorItem = formattedMajorItem.charAt(0).toLowerCase() + formattedMajorItem.slice(1)

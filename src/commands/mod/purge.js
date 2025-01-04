@@ -54,7 +54,7 @@ module.exports = class PurgeCommand extends ModCommand {
     // Get Amount
     const messagesToDelete = coptions.amount
     // Get Channel
-    const channel = coptions.channel || interaction.channel
+    const channel = coptions.channel ?? interaction.channel
 
     let props = {
       public: {},

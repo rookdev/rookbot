@@ -104,9 +104,9 @@ async function registerCommand(
         // Else
         if (error.code === 429) {
           // Rate Limit, try again soon
-          console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
+          console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
           // Wait
-          await wait(error.retry_after || 1000)
+          await wait(error.retry_after ?? 1000)
           // Try to edit again
           await commandsManager.edit(
             existingCommand.id,
@@ -159,9 +159,9 @@ async function registerCommand(
       // If error
       if (error.code === 429) {
         // Rate Limit, try again soon
-        console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after || 1000}ms.`)
+        console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
         // Wait
-        await wait(error.retry_after || 1000)
+        await wait(error.retry_after ?? 1000)
         // Try to create again
         let newCommand = await commandsManager.create(cmdParts)
         // Save it

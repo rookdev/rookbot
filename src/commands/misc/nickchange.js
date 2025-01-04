@@ -59,7 +59,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     // Get Guild ID
     const guildID = interaction.guild.id
     // Get User Input
-    const targetUserInput = coptions["target-id"] || "0"
+    const targetUserInput = coptions["target-id"] ?? "0"
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
 

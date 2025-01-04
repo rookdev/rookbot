@@ -32,7 +32,7 @@ class SalutationCommand extends RookCommand {
 
   async action(client, interaction, coptions) {
     // Mode, default to "boot"
-    let mode          = coptions?.mode || "boot"
+    let mode          = coptions?.mode ?? "boot"
     // Label for On/Offline
     let onlineness    = mode == "boot" ? "Online" : "Offline"
     // Label for Un/Ready
@@ -198,21 +198,21 @@ class SalutationCommand extends RookCommand {
 
     // Build default server info
     let server = {
-      name: this?.channel?.guild.name ||
-        interaction?.guild?.name ||
-        client.guild.name ||
+      name: this?.channel?.guild.name ??
+        interaction?.guild?.name ??
+        client.guild.name ??
         "?",
-      id: this?.channel?.guild.id ||
-        interaction?.guild?.id ||
-        client.guild.id ||
+      id: this?.channel?.guild.id ??
+        interaction?.guild?.id ??
+        client.guild.id ??
         process.env?.GUILD_ID,
-      avatar: this?.channel?.guild.iconURL({ size: Math.pow(2, 7) }) ||
-        interaction?.guild?.iconURL({ size: Math.pow(2, 7) }) ||
-        client.guild.iconURL({ size: Math.pow(2, 7) }) ||
+      avatar: this?.channel?.guild.iconURL({ size: Math.pow(2, 7) }) ??
+        interaction?.guild?.iconURL({ size: Math.pow(2, 7) }) ??
+        client.guild.iconURL({ size: Math.pow(2, 7) }) ??
         ""
     }
     if (server?.id) {
-      server.name = await client?.guilds.fetch(server.id)?.name || "?"
+      server.name = await client?.guilds.fetch(server.id)?.name ?? "?"
     }
 
     this.props["fields"] = [
@@ -336,11 +336,11 @@ class SalutationCommand extends RookCommand {
         // If we're booting up
         if (mode == "boot" && clientMember) {
           // Get the current nickname
-          let nick = clientMember?.nickname || clientMember.user.username
+          let nick = clientMember?.nickname ?? clientMember.user.username
           // Get the prefix
-          let prefix = client?.options?.defaultPrefix ||
-            client?.options?.prefix ||
-            client?.prefix ||
+          let prefix = client?.options?.defaultPrefix ??
+            client?.options?.prefix ??
+            client?.prefix ??
             "/ "
           // Check if we're missing a prefix in the nickname
           if (!(nick.includes(`[${prefix.trim()}] `))) {
@@ -353,7 +353,7 @@ class SalutationCommand extends RookCommand {
             }
           }
           // If we want to change it, do the thing
-          if (nick != (clientMember?.nickname || clientMember.user.username)) {
+          if (nick != (clientMember?.nickname ?? clientMember.user.username)) {
             clientMember.setNickname(nick)
           }
         }
@@ -385,12 +385,12 @@ class SalutationCommand extends RookCommand {
           server = {
             type:   "guild",
             id:     guild.id,
-            name:   guild?.name || "?",
+            name:   guild?.name ?? "?",
             url:    "http://example.com/guild",
             avatar: guild.iconURL({ size: Math.pow(2, 7) })
           }
 
-          this.props.fields[1][0].value = server?.name || "?"
+          this.props.fields[1][0].value = server?.name ?? "?"
           this.props.fields[1][1].value = server.id.codeblock()
 
           this.props.entities.guild = server

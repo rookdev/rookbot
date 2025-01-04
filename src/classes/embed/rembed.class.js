@@ -27,9 +27,9 @@ class RookEmbed extends EmbedBuilder {
       (this.props?.color && this.props.color.trim() == "") ||
       (this.props.color.trim() == "default")
     ) {
-      let color = client.profile?.stripe || "#000000"
+      let color = client.profile?.stripe ?? "#000000"
       let eggs  = require('../../dbs/eggs.json')
-      color     = eggs[this.props?.players?.user?.username] || color
+      color     = eggs[this.props?.players?.user?.username] ?? color
 
       this.props.color = color
     }

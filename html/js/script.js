@@ -7,7 +7,7 @@ function readTextFile(file) {
     // If we're ready to read
     if (rawFile.readyState === 4) {
       // If it's OK
-      if (rawFile.status === 200 || rawFile.status == 0) {
+      if ([200, 0].includes(rawFile.status)) {
         // Return the thing
         allText = rawFile.responseText
         // If it's not OK

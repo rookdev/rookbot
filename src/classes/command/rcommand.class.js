@@ -191,11 +191,11 @@ class RookCommand {
   }
 
   async getChannel(client, interaction, channelType) {
-    channelType = channelType || this.channelName
+    channelType = channelType ?? this.channelName
 
     let channelIDs = {}
     let channelID = channelType
-    let guild = interaction?.guild || client.guild
+    let guild = interaction?.guild ?? client.guild
     let guildID = guild.id
     let channel = null
 
@@ -531,7 +531,7 @@ class RookCommand {
         msg += '/'
         msg += ((pages.length)+"").padStart(2,'0')
         msg += "..."
-        let title = page?.caption?.text || page?.title?.text || ""
+        let title = page?.caption?.text ?? page?.title?.text ?? ""
         msg += `[${title}]`
         console.log(msg)
         i += 1
