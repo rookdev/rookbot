@@ -9,9 +9,9 @@ const AsciiTable = require('ascii-table')
 // Filesystem management
 const fs = require('fs')
 
-const { isNumeric } = require("../../utils/numFuncs")
 const { setValue } = require("../../utils/globalFuncs")
 const stringFuncs = require("../../utils/stringFuncs")
+const numFuncs = require("../../utils/numFuncs")
 
 class RookCommand {
   constructor(client, comprops={}, props={}) {
@@ -219,7 +219,7 @@ class RookCommand {
     }
 
     // If it's a number
-    if (isNumeric(channelID)) {
+    if (numFuncs.myIsNumeric(channelID)) {
       // Search for Channel object by ChannelID
       channel = await guild?.channels.fetch(channelID)
     } else if (typeof channelID == "string") {

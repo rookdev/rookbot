@@ -2,20 +2,7 @@
 
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
-
-// Does this resemble a number?
-// FIXME: Consolidate
-function isNumeric(n) {
-  let isaN      = !isNaN(n)
-  let isBool    = typeof n === "boolean"
-  let isStr     = typeof n === "string"
-  let isNumStr  = (
-    isStr &&
-    ((n.replace(/\D/g, '') + "") == (n + ""))
-  )
-
-  return (isaN || isNumStr) && !isBool
-}
+const numFuncs = require('../../utils/numFuncs')
 
 class RookEmbed extends EmbedBuilder {
   // props: import('../../types/embed').EmbedProps
@@ -368,7 +355,7 @@ class RookEmbed extends EmbedBuilder {
     // Set timestamp
     if (this.props?.timestamp) {
       let doTimestamp = this.props?.timestamp
-      let isTimestamp = isNumeric(this.props.timestamp)
+      let isTimestamp = numFuncs.myIsNumeric(this.props.timestamp)
 
       if (isTimestamp) {
         // @ts-ignore

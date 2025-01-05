@@ -1,22 +1,9 @@
 // @ts-nocheck
 
 const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
+const numFuncs = require('../../utils/numFuncs')
 const path = require('path')
 const fs = require('fs')
-
-// Does this resemble a number?
-// FIXME: Consolidate
-function isNumeric(n) {
-  let isaN      = !isNaN(n)
-  let isBool    = typeof n === "boolean"
-  let isStr     = typeof n === "string"
-  let isNumStr  = (
-    isStr &&
-    ((n.replace(/\D/g, '') + "") == (n + ""))
-  )
-
-  return (isaN || isNumStr) && !isBool
-}
 
 // natSort
 function natSort(a, b) {
@@ -38,7 +25,7 @@ module.exports = async (client) => {
     // Filter JSON documents that are numeric
     .filter(
       (fileName) => fileName.includes(".json") &&
-        isNumeric(fileName.substring(0, fileName.indexOf(".") - 1))
+      numFuncs.myIsNumeric(fileName.substring(0, fileName.indexOf(".") - 1))
     )
     // Strip .json extension
     .map(
@@ -53,7 +40,7 @@ module.exports = async (client) => {
     let guilds = fs.readdirSync(path.join(nicknameDataPath,".."))
       // Filter folders that are numeric
       .filter(
-        (fileName) => isNumeric(fileName)
+        (fileName) => numFuncs.myIsNumeric(fileName)
       )
       .sort(natSort)
     // Cycle through guilds

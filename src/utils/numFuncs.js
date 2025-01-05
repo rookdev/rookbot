@@ -1,5 +1,5 @@
 // Does this resemble a number?
-function isNumeric(n) {
+function myIsNumeric(n) {
   let isaN      = !isNaN(n)
   let isBool    = typeof n === "boolean"
   let isStr     = typeof n === "string"
@@ -11,4 +11,4 @@ function isNumeric(n) {
   return (isaN || isNumStr) && !isBool
 }
 
-exports.isNumeric = isNumeric
+exports.myIsNumeric = myIsNumeric

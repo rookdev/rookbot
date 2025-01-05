@@ -11,7 +11,6 @@ const strtotime = require('locutus/php/datetime/strtotime')
 const numFuncs = require('../../utils/numFuncs')
 const path = require('path')
 const fs = require('fs')
-const { isNumeric } = require('mathjs')
 
 function article(input="") {
   for (let vowel of "aeiou".split("")) {
@@ -239,7 +238,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // If we received a scheduled time, use that instead
     if (scheduledTime) {
       let scheduledDateTime = null
-      if (numFuncs.isNumeric(scheduledTime)) {
+      if (numFuncs.myIsNumeric(scheduledTime)) {
         console.log(`Numeric: ${scheduledTime}`)
         scheduledDateTime = new Date(parseInt(scheduledTime))
       } else {

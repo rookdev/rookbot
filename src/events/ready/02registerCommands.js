@@ -127,7 +127,7 @@ async function registerCommand(
       }
     } else {
       // No change
-      console.log(`  ${client.profile.emojis.check} Current: "${cmdParts.name}"`)
+      console.log(`  ${client.profile.emojis.current} Current: "${cmdParts.name}"`)
       client.commands[cmdParts.name] = existingCommand
     }
   } else {

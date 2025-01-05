@@ -32,22 +32,9 @@ const { RookEmbed } = require('../embed/rembed.class')
 const timeConversion = require('../../utils/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
+const numFuncs = require('../../utils/numFuncs')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
-
-// Does this resemble a number?
-// FIXME: Consolidate
-function isNumeric(n) {
-  let isaN      = !isNaN(n)
-  let isBool    = typeof n === "boolean"
-  let isStr     = typeof n === "string"
-  let isNumStr  = (
-    isStr &&
-    ((n.replace(/\D/g, '') + "") == (n + ""))
-  )
-
-  return (isaN || isNumStr) && !isBool
-}
 
 // Multiple messages
 
@@ -135,7 +122,7 @@ class ModCommand extends AdminCommand {
           matches ||
           // @ts-ignore
           (parseInt(addRole + "") == addRole) ||
-          isNumeric(addRole)
+          numFuncs.myIsNumeric(addRole)
         ) &&
         // @ts-ignore
         addRole != 0
@@ -175,7 +162,7 @@ class ModCommand extends AdminCommand {
           matches ||
           // @ts-ignore
           (parseInt(remRole + "") == remRole) ||
-          isNumeric(remRole)
+          numFuncs.myIsNumeric(remRole)
         ) &&
         // @ts-ignore
         remRole != 0
@@ -341,9 +328,13 @@ class ModCommand extends AdminCommand {
 
   async action(client, interaction, coptions) {
     // FIXME: Temporary hack to not allow on Live Server
+    //  Except Minnie because she knows what she's doing
     if (interaction) {
       if (interaction?.guild.id) {
-        if (interaction.guild.id === "1282788953052676177") {
+        if (
+          (interaction.guild.id === "1282788953052676177") &&
+          (interaction.user.username != "matrethewey")
+        ) {
           this.error = true
           this.props.description = `${this.profile.emojis.fail} /${this.name} not ready for Live Server yet.`
           return false
