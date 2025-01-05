@@ -18,6 +18,7 @@ const {
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const { isNumeric } = require('../../utils/numFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
 const path = require('path')  // Easy filepath management
@@ -156,6 +157,10 @@ module.exports = class SayCommand extends ModCommand {
       this.error = true
       this.props.description = `Message too long [${message.length}]`
       return false
+    }
+
+    if (isNumeric(channel)) {
+      channel = await interaction.guild.channels.fetch(channel)
     }
 
     // Say Mode
