@@ -114,6 +114,7 @@ const client = new RookClient(
      *  GuildMembers
      *  GuildMessages
      *  GuildPresences
+     *  GuildVoiceStates
      *  MessageContent
      */
     intents: [
@@ -121,6 +122,7 @@ const client = new RookClient(
       IntentsBitField.Flags.GuildMembers,
       IntentsBitField.Flags.GuildMessages,
       IntentsBitField.Flags.GuildPresences,
+      IntentsBitField.Flags.GuildVoiceStates,
       IntentsBitField.Flags.MessageContent
     ],
     // Allow bot to mention roles
