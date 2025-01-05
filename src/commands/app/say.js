@@ -315,7 +315,7 @@ module.exports = class SayCommand extends ModCommand {
       if (notPostedByClientError) {
         this.error = true
         this.props.description = [
-          `Destination Message not editable by ${destGuild.members.me}`,
+          `Destination Message not editable by ${interaction.guild.members.me}`,
           destMessageURL
         ]
         return false

@@ -5,14 +5,14 @@
   },
   "brad": {
     "name": "Brad",
-    "avatar": "./src/res/media/brad.png"
+    "avatar": "https://github.com/mysterypaintwo/rookbot/blob/oop-commands/src/res/media/brad.png?raw=true"
   },
   "link": {
     "name": "Link",
-    "avatar": "./src/res/media/link.png"
+    "avatar": "https://github.com/mysterypaintwo/rookbot/blob/oop-commands/src/res/media/link.png?raw=true"
   },
   "reset": {
     "name": "rookbot impersonator",
-    "avatar": "./src/res/media/rookbotIcon.png"
+    "avatar": "https://github.com/mysterypaintwo/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
   }
 }
