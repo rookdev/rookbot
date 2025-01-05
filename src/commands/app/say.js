@@ -87,6 +87,11 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
+    if (!messageURL || (messageURL == "")) {
+      // No message URL sent
+      return false
+    }
+
     let matches = messageURL.match(/^(?:[\D]+)([\d]+)(?:[/])([\d]+)(?:[/])([\d]+)(?:[/]?)$/)
     // Couldn't identify message
     if (!matches || (matches.length < 4)) {
