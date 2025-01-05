@@ -3,7 +3,7 @@
 // Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
 // ModCommand
-const { ModCommand } = require('../../classes/command/modcommand.class.js')
+const { ModCommand } = require('../../classes/command/modcommand.class')
 
 module.exports = class UnbanCommand extends ModCommand {
   constructor(client) {

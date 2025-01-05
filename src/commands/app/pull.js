@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: inlineCode, hyperlink
+const { ApplicationCommandOptionType, inlineCode, hyperlink } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
 const shell = require('shelljs')  // Run shell commands
@@ -157,6 +157,14 @@ module.exports = class PullCommand extends BotDevCommand {
       ""
     )
 
+    // Git Repository info
+    // FIXME: Extrapolate
+    let git_info = {
+      user: "mysterypaintwo",
+      repo: "rookbot"
+    }
+    git_info.root = `https://github.com/${git_info.user}/${git_info.repo}`
+
     // console.log(console_output)
 
     /*
@@ -179,7 +187,10 @@ module.exports = class PullCommand extends BotDevCommand {
             console_output[2].substring(console_output[2].indexOf(':') + 2)
             .replace(
               `<${BRANCH}>`,
-              `[${BRANCH.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${BRANCH})`
+              hyperlink(
+                inlineCode(BRANCH),
+                `${git_info.root}/tree/${BRANCH}`
+              )
             )
         }
       ]
@@ -190,7 +201,11 @@ module.exports = class PullCommand extends BotDevCommand {
         // Old Commit ID
         {
           name: "Old Commit",
-          value: `[${COMMITS.current.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.current})`
+          value: "" +
+            hyperlink(
+              inlineCode(COMMITS.current),
+              `${git_info.root}/tree/${COMMITS.current}`
+            )
         }
       ]
     )
@@ -202,7 +217,11 @@ module.exports = class PullCommand extends BotDevCommand {
           // New Commit ID
           {
             name: "New Commit",
-            value: `[${COMMITS.fresh.inlinecode()}](https://github.com/mysterypaintwo/rookbot/tree/${COMMITS.fresh})`
+            value: "" +
+              hyperlink(
+                inlineCode(COMMITS.fresh),
+                `${git_info.root}/tree/${COMMITS.fresh}`
+              )
           }
         ]
       )

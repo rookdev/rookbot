@@ -4,13 +4,21 @@
  * Discord
  *  Command Option Types
  *  Permission Flags
+ *  Message Flags
+ *  Formatters
+ *   inlineCode
  */
-const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require('discord.js')
+const {
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+  MessageFlags,
+  inlineCode
+} = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-// Use Discord Hammertime
+// Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
@@ -153,7 +161,7 @@ module.exports = class SayCommand extends ModCommand {
       // No Destination Message
       if (!destMessageURL) {
         this.error = true
-        this.props.description = "Edit Mode: No Destination Message sent"
+        this.props.description = `${mode.ucfirst()} Mode: No Destination Message sent`
         return false
       }
 
@@ -161,7 +169,7 @@ module.exports = class SayCommand extends ModCommand {
       // Destination Message not found
       if (!destMessage) {
         this.error = true
-        this.props.description = `Couldn't load Destination Message ID '${destMessageURL}'`
+        this.props.description = `${mode.ucfirst()} Mode: Couldn't load Destination Message ID '${destMessageURL}'`
         return false
       }
 
@@ -181,13 +189,7 @@ module.exports = class SayCommand extends ModCommand {
       // No Source Message
       if (!sourceMessageURL) {
         this.error = true
-        this.props.description = "Clone Mode: No Source Message sent"
-        return false
-      }
-      // No Destination Message
-      if (!destMessageURL) {
-        this.error = true
-        this.props.description = "Edit Mode: No Destination Message sent"
+        this.props.description = "${mode.ucfirst()} Mode: No Source Message sent"
         return false
       }
 
@@ -195,7 +197,7 @@ module.exports = class SayCommand extends ModCommand {
       // Source Message not found
       if (!srcMessage) {
         this.error = true
-        this.props.description = `Couldn't load Source Message ID '${sourceMessageURL}'`
+        this.props.description = `${mode.ucfirst()} Mode: Couldn't load Source Message ID '${sourceMessageURL}'`
         return false
       }
 
@@ -204,13 +206,14 @@ module.exports = class SayCommand extends ModCommand {
       if (!channel && !destMessage) {
         this.error = true
         if (!channel) {
-          this.props.description = `Channel not found`
+          this.props.description = `${mode.ucfirst()} Mode: Channel not found`
         } else if (!destMessage) {
-          this.props.description = `Destination Message not found`
+          this.props.description = `${mode.ucfirst()} Mode: Destination Message not found`
         }
         return false
       }
 
+      // Destination Message
       if (destMessage) {
         // Message not posted by client user
         if (destMessage.author.id !== client.user.id) {
@@ -225,7 +228,10 @@ module.exports = class SayCommand extends ModCommand {
         }
 
         result = await destMessage.edit(this_package)
-      } else if (channel) {
+      }
+
+      // Clone to Channel
+      if (channel) {
         let content = srcMessage.content ?? null
         let embeds = srcMessage.embeds ?? null
         let this_package = {}
@@ -265,7 +271,7 @@ module.exports = class SayCommand extends ModCommand {
             // Whodunnit?
             {
               name: "User",
-              value: `${interaction.user} (ID: ${interaction.user.id.inlinecode()})`
+              value: `${interaction.user} (ID: ${inlineCode(interaction.user.id)})`
             }
           ],
           [
@@ -282,7 +288,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   interaction?.guild?.name,
-                  `(ID: ${interaction?.guild?.id.inlinecode()})`
+                  `(ID: ${inlineCode(interaction?.guild?.id)})`
                 ]
             },
             // Sent to what Channel?
@@ -291,7 +297,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   `<#${result?.channel?.id}>`,
-                  `(ID: ${channel?.id.inlinecode()})`
+                  `(ID: ${inlineCode(channel?.id)})`
                 ]
             }
           ],
@@ -299,7 +305,7 @@ module.exports = class SayCommand extends ModCommand {
             // Message Link
             {
               name: "Message",
-              value: `${result.url} (ID: ${result?.id.inlinecode()})`
+              value: `${result.url} (ID: ${inlineCode(result?.id)})`
             }
           ],
           [

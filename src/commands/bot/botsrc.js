@@ -1,10 +1,20 @@
 // @ts-nocheck
 
+// Formatters: hyperlink
+const { hyperlink } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class BotSourceCommand extends RookCommand {
   constructor(client) {
+    // Git Repository info
+    // FIXME: Extrapolate
+    let git_info = {
+      user: "mysterypaintwo",
+      repo: "rookbot"
+    }
+    git_info.root = `https://github.com/${git_info.user}/${git_info.repo}`
+
     let comprops = {
       name: "botsrc",
       category: "bot",
@@ -16,13 +26,13 @@ module.exports = class BotSourceCommand extends RookCommand {
     let props = {
       title: {
         text: "rookbot GitHub Repository",
-        url: "https://github.com/mysterypaintwo/rookbot"
+        url: git_info.root
       },
-      description: "Want to see how rookbot works? Check out its [source code](https://github.com/mysterypaintwo/rookbot) on GitHub!",
+      description: `Want to see how rookbot works? Check out its ${hyperlink('source code', git_info.root)} on GitHub!`,
       fields: [
         {
           name: 'rookbot on GitHub',
-          value: 'Explore the [source code](https://github.com/mysterypaintwo/rookbot), contribute, or learn more about how rookbot operates. Feel free to fork, report issues, or submit pull requests!'
+          value: `Explore the ${hyperlink('source code', git_info.root)}, contribute, or learn more about how rookbot operates. Feel free to fork, report issues, or submit pull requests!`
         }
       ],
       image: { image: "https://github.com/fluidicon.png" }

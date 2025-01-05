@@ -1,11 +1,15 @@
 // @ts-nocheck
 
-const { AuditLogEvent, Message } = require('discord.js')
+// Audit Log Event, Message, Formatters: inlineCode, italic
+const { AuditLogEvent, Message, inlineCode, italic } = require('discord.js')
+// Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
+// Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+// Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
-const path = require('path')
-const fs = require('fs')
+const path = require('path')  // Easier filepath management
+const fs = require('fs')      // Filesystem manipulation
 
 /**
  * Logs deleted messages from the server.
@@ -122,7 +126,7 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Author',
           value: `<@${deletedMessage.author.id}>` + " " +
-            `(ID: ${deletedMessage.author.id.inlinecode()})`
+            `(ID: ${inlineCode(deletedMessage.author.id)})`
         }
       ]
     )
@@ -137,7 +141,7 @@ module.exports = async (client, deletedMessage) => {
           {
             name: 'Deleter',
             value: `<@${deleter.id}>` + " " +
-              `(ID: ${deleter.id.inlinecode()})`
+              `(ID: ${inlineCode(deleter.id)})`
           }
         ]
       )
@@ -167,7 +171,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Guild',
           value: [
             deletedMessage.guild.name,
-            `(ID: ${deletedMessage.guild.id.inlinecode()})`
+            `(ID: ${inlineCode(deletedMessage.guild.id)})`
           ]
         },
         // Channel Link
@@ -175,7 +179,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Channel',
           value: [
             `<#${deletedMessage.channel.id}>`,
-            `(ID: ${deletedMessage.channel.id.inlinecode()})`
+            `(ID: ${inlineCode(deletedMessage.channel.id)})`
           ]
         }
       ],
@@ -184,14 +188,14 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Message',
           value: deletedMessage.url +
-            `(ID: ${deletedMessage.id.inlinecode()})`
+            `(ID: ${inlineCode(deletedMessage.id)})`
         }
       ],
       [
         // Message Content
         {
           name: 'Content',
-          value: deletedMessage.content.slice(0,1024) ?? '*No content*'
+          value: deletedMessage.content.slice(0,1024) ?? italic('No content')
         }
       ]
     )

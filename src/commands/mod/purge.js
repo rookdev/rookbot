@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Permission Flags
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// Command Option Types, Permission Flags, Formatters: inlineCode
+const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -125,7 +125,7 @@ module.exports = class PurgeCommand extends ModCommand {
           fields: [
             [
               { name: "Channel",    value: channel },
-              { name: "Purged By",  value: `${interaction.user} (ID: ${interaction.user.id.inlinecode()})` },
+              { name: "Purged By",  value: `${interaction.user} (ID: ${inlineCode(interaction.user.id)}`},
               { name: "Amount",     value: deletedMessages.size }
             ]
           ]

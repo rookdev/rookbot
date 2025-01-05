@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js')
-const emojis = require ("../dbs/emojis.json")
+const emojis = require("../dbs/emojis.json")
 
 const manageCommands = async (
   options,

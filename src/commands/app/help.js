@@ -2,10 +2,19 @@
 
 // Canned metadata
 const { serverGameName_base64encoded } = require('../../../config.json')
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+/**
+ * Discord Stuff
+ *  Command Option Types
+ *  inlineCode
+ *  italic
+ */
+const {
+  ApplicationCommandOptionType,
+  inlineCode,
+  italic
+} = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
 /**
  * @class
@@ -111,12 +120,12 @@ module.exports = class HelpCommand extends RookCommand {
             // Command Name
             {
               name: "Name",
-              value: cmd.name.inlinecode()
+              value: inlineCode(cmd.name)
             },
             // Command Category
             {
               name: "Category",
-              value: cmd.category.inlinecode()
+              value: inlineCode(cmd.category)
             }
           ]
         )
@@ -126,7 +135,7 @@ module.exports = class HelpCommand extends RookCommand {
           fields[0].push(
             {
               name: "Parent",
-              value: cmd.parent.inlinecode()
+              value: inlineCode(cmd.parent)
             }
           )
         }
@@ -160,9 +169,9 @@ module.exports = class HelpCommand extends RookCommand {
             // If we've got an option and it's got a name
             if (option && option?.name) {
               // Set the name
-              let optionName = `Option: ${option.name.inlinecode()}`
+              let optionName = "Option: " + inlineCode(option.name)
               if (option?.required && option.required) {
-                optionName += " - *required*"
+                optionName += ` - ` + italic("required")
               }
               // Add the name & description
               fields.push(

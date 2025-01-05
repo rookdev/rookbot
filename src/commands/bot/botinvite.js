@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class BotInviteCommand extends RookCommand {
   constructor(client) {

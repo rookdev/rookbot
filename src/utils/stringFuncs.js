@@ -1,22 +1,21 @@
+// Formatters: bold, italic, underlineString
+const {
+  bold,
+  italic,
+  underline
+} = require('discord.js')
+
 // Add ucfirst() to String
 String.prototype.ucfirst = function() {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
-// Add codeblock() to String
-String.prototype.codeblock = function() {
-  return `\`\`\`${this}\`\`\``
-}
-// Add codeblock() to Number
-Number.prototype.codeblock = function() {
-  return (this + "").codeblock()
+// Add boldItalic() to String
+String.prototype.boldItalic = function() {
+  return bold(italic(this))
 }
 
-// Add inlinecode() to String
-String.prototype.inlinecode = function() {
-  return `\`${this}\``
-}
-// Add inlinecode() to Number
-Number.prototype.inlinecode = function() {
-  return (this + "").inlinecode()
+// Add boldUnderline() to String
+String.prototype.boldUnderline = function() {
+  return bold(underline(this))
 }

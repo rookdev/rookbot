@@ -2,7 +2,7 @@
 
 import { RookCommand } from '../../classes/command/rcommand.class'
 
-const { ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, bold } = require('discord.js')
 const weather = require('weather-js')
 
 module.exports = class WeatherCommand extends RookCommand {
@@ -73,14 +73,14 @@ module.exports = class WeatherCommand extends RookCommand {
           } else if(!search) {
             props.description = "Please specify a location"
           } else if(result === undefined || result.length === 0) {
-            props.description = "**Invalid** Location"
+            props.description = bold("Invalid") + " Location"
           } else {
             props.description = ""
           }
         } else {
           let current = result[0].current
           let location = result[0].location
-          props.description = `**${current.skytext}**`
+          props.description = bold(current.skytext)
           // @ts-ignore
           props.title.text = `Weather forecast for ${current.observationpoint}`
           props.players.bot.url = `https://www.accuweather.com/en/search-locations?query=` + encodeURI(`${current.observationpoint}`)

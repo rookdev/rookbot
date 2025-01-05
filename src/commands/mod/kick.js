@@ -3,7 +3,7 @@
 // Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
 // ModCommand
-const { ModCommand } = require('../../classes/command/modcommand.class.js')
+const { ModCommand } = require('../../classes/command/modcommand.class')
 
 module.exports = class KickCommand extends ModCommand {
   constructor(client) {

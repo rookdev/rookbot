@@ -1,9 +1,11 @@
 // @ts-nocheck
 
+// Formatters: codeBlock, inlineCode, bold
+const { codeBlock, inlineCode, bold } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
-// Use Discord Hammertime
-const timeFormat = require('../../utils/timeFormat.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
 
 module.exports = class GuildStatusCommand extends RookCommand {
   constructor(client) {
@@ -56,14 +58,14 @@ module.exports = class GuildStatusCommand extends RookCommand {
     // List Guild Features
     if (interaction.guild.features.length > 0) {
       this.props.description = ""
-      this.props.description += "**Features**" + "\n"
-      this.props.description += interaction.guild.features.sort().join(", ").codeblock()
+      this.props.description += bold("Features") + "\n"
+      this.props.description += codeBlock(interaction.guild.features.sort().join(", "))
     }
 
     // Creation DateTime
     let createdDateTime = new Date(interaction.guild.createdTimestamp)
     this.props.description += "\n\n"
-    this.props.description += "**Created**" + "\n"
+    this.props.description += bold("Created") + "\n"
     this.props.description += timeFormat(createdDateTime.getTime(), { with: "relative" })
 
     this.props.fields = []
@@ -77,7 +79,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
             name: "Owner",
             value: [
               `<@${interaction.guild.ownerId}>`,
-              `(ID: ${interaction.guild.ownerId.inlinecode()})`
+              `(ID: ${inlineCode(interaction.guild.ownerId)})`
             ]
           }
         ]

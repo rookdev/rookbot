@@ -1,11 +1,15 @@
 // @ts-nocheck
 
-const { AuditLogEvent, GuildMember } = require('discord.js')
+// Audit Log Events, Guild Member, Formatters: inlineCode
+const { AuditLogEvent, GuildMember, inlineCode } = require('discord.js')
+// Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
+// Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+// Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
-const path = require('path')
-const fs = require('fs')
+const path = require('path')  // Easier filepath management
+const fs = require('fs')      // Filesystem manipulation
 
 /**
  * Logs changes to a user's nickname in the server.
@@ -94,7 +98,7 @@ module.exports = async (client, oldMember, newMember) => {
         {
           name: 'User',
           value: `<@${newMember.user.id}>` + " " +
-            `(ID: ${newMember.user.id.inlinecode()})`
+            `(ID: ${inlineCode(newMember.user.id)})`
         }
       ]
     )
@@ -109,7 +113,7 @@ module.exports = async (client, oldMember, newMember) => {
           {
             name: 'Updater',
             value: `<@${updater.id}>` + " " +
-              `(ID: ${updater.id.inlinecode()})`
+              `(ID: ${inlineCode(updater.id)})`
           }
         ]
       )
@@ -139,7 +143,7 @@ module.exports = async (client, oldMember, newMember) => {
           name: 'Guild',
           value: [
             newMember.guild.name,
-            `(ID: ${newMember.guild.id.inlinecode()})`
+            `(ID: ${inlineCode(newMember.guild.id)})`
           ]
         }
       ],

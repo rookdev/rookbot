@@ -1,7 +1,7 @@
 // @ts-nocheck
-const { GuildMember } = require('discord.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
+const { GuildMember, bold } = require('discord.js')
+const { RookClient } = require('../../classes/objects/rclient.class')
+const { RookEmbed } = require('../../classes/embed/rembed.class')
 const path = require('path')
 const fs = require('fs')
 
@@ -71,7 +71,7 @@ module.exports = async (client, oldMember, newMember) => {
       }
     }
     msg.msg = [
-      `**${msg.guild.name}** currently has **${msg.guild.boosts}** boosts!`,
+      `${bold(msg.guild.name)} currently has ${bold(msg.guild.boosts)} boosts!`,
       "",
       `Thank you for boosting! ${heartContainerEmoji}`
     ]

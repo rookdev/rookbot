@@ -1,11 +1,11 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: inlineCode, bold
+const { ApplicationCommandOptionType, inlineCode, bold } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
-// Use Discord Hammertime
-const timeFormat = require('../../utils/timeFormat.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
 
 // Sort by keys
@@ -58,7 +58,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
 
     this.props.description = []
     this.props.description.push(
-      `***Guilds that ${client.user} is in:***`,
+      `Guilds that ${client.user} is in:`.boldItalic(),
       ""
     )
 
@@ -121,10 +121,10 @@ module.exports = class BotGuildsCommand extends RookCommand {
           .addRow("Tier",tier)
           .addRow("")
         this.props.description.push(
-          `**Guild:** ${guildData.guild.name} (ID:${guildData.guild.id.inlinecode()})`,
-          `**Owner:** ${guildData.owner.username.inlinecode()} (ID:${guildData.owner.id.inlinecode()}, <@${guildData.owner.id}>)`,
-          `**Added:** ${guildData.addedHammertime}`,
-          `**Tier:** ${tier}`,
+          bold(`Guild:`) + ` ${guildData.guild.name} (ID:${inlineCode(guildData.guild.id)})`,
+          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} (ID:${inlineCode(guildData.owner.id)}, <@${guildData.owner.id}>)`,
+          bold(`Added:`) + ` ${guildData.addedHammertime}`,
+          bold(`Tier:`) + ` ${tier}`,
           ""
         )
       }

@@ -1,6 +1,6 @@
 // @ts-nocheck
-// Command Option Types, Permission Flags
-const { PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Permission Flags, Formatters: inlineCode, italic
+const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode, italic  } = require('discord.js')
 // Change User Nickname
 const { changeNickname } = require('../../utils/changeNickname')
 // Base Rook Command
@@ -120,7 +120,7 @@ module.exports = class NickChangeCommand extends RookCommand {
         user: "bot",
         target: "guild"
       }
-      this.props.description = `Member not found [${targetUserId.inlinecode()}] in *${guild.name}*.`
+      this.props.description = `Member not found [${inlineCode(targetUserId)}] in ${italic(guild.name)}.`
       return false
     }
 

@@ -21,12 +21,12 @@ module.exports = class NLCommand extends RookCommand {
 
   async execute(client, interaction) {
     // Defer reply
-    interaction.deferReply()
+    await interaction.deferReply()
     // Delete interaction
-    interaction.deleteReply()
+    await interaction.deleteReply()
 
     // Create the embed with the rainbow divider line image
-    interaction.channel.send(
+    await interaction.channel.send(
       {
         content: "https://cdn.discordapp.com/attachments/565312923271168000/985473102702071838/divider-line.gif"
       }

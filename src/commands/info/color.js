@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: codeBlock
+const { ApplicationCommandOptionType, codeBlock } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
@@ -64,12 +64,12 @@ module.exports = class ColorCommand extends RookCommand {
       image: { image: `https://png-pixel.com/${dims}-${hexInput.toLowerCase()}ff.png` },
       fields: [
         [
-          { name: 'Hex', value: `#${hexInput}`.codeblock() },
-          { name: 'RGB', value: `(${r}, ${g}, ${b})`.codeblock() }
+          { name: 'Hex', value: codeBlock(`#${hexInput}`) },
+          { name: 'RGB', value: codeBlock(`(${r}, ${g}, ${b})`) }
         // ],
         // [
-        //   { name: 'HSL', value: ("(" + rgbToHsl(r, g, b).join(", ") + ")").codeblock() },
-        //   { name: 'HSV', value: ("(" + rgbToHsv(r, g, b).join(", ") + ")").codeblock() }
+        //   { name: 'HSL', value: codeBlock("(" + rgbToHsl(r, g, b).join(", ") + ")") },
+        //   { name: 'HSV', value: codeBlock("(" + rgbToHsv(r, g, b).join(", ") + ")") }
         ]
       ]
     }

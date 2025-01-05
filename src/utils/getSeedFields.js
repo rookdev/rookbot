@@ -1,6 +1,12 @@
+// Formatters
+const { inlineCode, hyperlink } = require('discord.js')
+// Use Discord HammerTime
 const timeFormat = require('../utils/timeFormat')
+// Decode slugIDs
 const { decode } = require('slugid')
+// php strtotime
 const strtotime = require('locutus/php/datetime/strtotime')
+// Canned Emojis
 const emojis = require('../dbs/emojis.json')
 
 async function get_url(in_url) {
@@ -144,7 +150,11 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "#️Hash ID",
-          value: `[${hash_meta?.hash.inlinecode()}](http://alttpr.com/h/${hash_meta?.hash})`
+          value: "" +
+            hyperlink(
+              inlineCode(hash_meta?.hash),
+              `http://alttpr.com/h/${hash_meta?.hash}`
+            )
         },
         {
           name: "Generation Date",
@@ -245,24 +255,45 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "#️Hash ID",
-          value: `[${hashID.inlinecode()}](https://maprando.com/seed/${hashID})`
+          value: "" +
+            hyperlink(
+              inlineCode(hashID),
+              `https://maprando.com/seed/${hashID}`
+            )
         },
         {
           name: "📝Metadata",
-          value: `[Settings](https://maprando.com/seed/${hashID}/data/settings.json)` + ", " +
-            `[Spoiler](https://maprando.com/seed/${hashID}/data/spoiler.json)`
+          value: "" +
+            hyperlink(
+              "Settings",
+              `https://maprando.com/seed/${hashID}/data/settings.json`
+            ) + ", " +
+            hyperlink(
+              "Spoiler",
+              `https://maprando.com/seed/${hashID}/data/spoiler.json`
+            )
         }
       ],
       [
         {
           name: "🗺️Compiled Maps",
           value: `By ` +
-            `[Area](https://maprando.com/seed/${hashID}/data/map-assigned.png)` + ", " +
-            `[Origin](https://maprando.com/seed/${hashID}/data/map-vanilla.png)`
+            hyperlink(
+              "Area",
+              `https://maprando.com/seed/${hashID}/data/map-assigned.png`
+            ) + ", " +
+            hyperlink(
+              "Origin",
+              `https://maprnado.com/seed/${hashID}/data/map-vanilla.png`
+            )
         },
         {
           name: "👀Visualizer",
-          value: `[${hashID.inlinecode()}](https://maprando.com/seed/${hashID}/data/visualizer/index.html)`
+          value: "" +
+            hyperlink(
+              inlineCode(hashID),
+              `https://maprando.com/seed/${hashID}/data/visualizer/index.html`
+            )
         }
       ]
     ]
@@ -388,15 +419,23 @@ module.exports = async (hashID, gameID="z3r") => {
       [
         {
           name: "#️Race Hash",
-          value: hash_meta?.hash.inlinecode()
+          value: inlineCode(hash_meta?.hash)
         },
         {
           name: "#️Seed ID",
-          value: `[${hashID.inlinecode()}](${permalinkURL})`
+          value: "" +
+            hyperlink(
+              inlineCode(hashID),
+              permalinkURL
+            )
         },
         {
           name: "#️Seed Guid",
-          value: `[${decoded.inlinecode()}](${apiURL})`
+          value: "" +
+            hyperlink(
+              inlineCode(decoded),
+              apiURL
+            )
         }
       ]
     ]

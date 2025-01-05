@@ -3,10 +3,17 @@
 // Command Option Types
 // Activity Types
 // Presence Status Types
+//  Formatters
+//  codeBlock
+//  inlineCode
+//  bold
 const {
   ApplicationCommandOptionType,
   ActivityType,
-  PresenceUpdateStatus
+  PresenceUpdateStatus,
+  codeBlock,
+  inlineCode,
+  bold
 } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
@@ -182,25 +189,27 @@ module.exports = class BotActivityCommand extends BotDevCommand {
         console.log(Table.toString())
       }
       desc += " "
-      desc += "**"
-      desc += activityOptions?.url ? `[${activityOptions.name}](${activityOptions.url})` : activityOptions.name
-      desc += "**"
+
+      let activityMsg = activityOptions?.url ? `[${activityOptions.name}](${activityOptions.url})` : activityOptions.name
+      activityMsg = bold(activityMsg)
+
+      desc += activityMsg
       this.props.description = desc
       this.props.fields = [
         [
           {
             name: "Activity Name",
-            value: ActivityType[activityID].codeblock()
+            value: codeBlock(ActivityType[activityID])
           },
           {
             name: "Activity ID",
-            value: activityID.codeblock()
+            value: codeBlock(activityID)
           }
         ],
         [
           {
             name: "Message",
-            value: activityOptions?.url ? `[${activityOptions.name.inlinecode()}](${activityOptions.url})` : activityOptions.name.codeblock()
+            value: activityOptions?.url ? `[${inlineCode(activityOptions.name)}](${activityOptions.url})` : codeBlock(activityOptions.name)
           }
         ]
       ]

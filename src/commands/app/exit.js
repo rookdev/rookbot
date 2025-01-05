@@ -3,7 +3,7 @@
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
-const UptimeCommand = require('../../commands/app/uptime.js')
+const UptimeCommand = require('../../commands/app/uptime')
 const unready = require('../../events/unready/exit')  // unreadyEvent
 
 // Multiple messages

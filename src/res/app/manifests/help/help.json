@@ -238,7 +238,7 @@
     "doigame": {
       "name": "doigame",
       "category": "doi",
-      "description": "Sends a message with download info for *The Legend of Zelda - Dungeons of Infinity*.",
+      "description": "Sends a message with download info for The Legend of Zelda - Dungeons of Infinity.",
       "options": [],
       "access": "unset",
       "segment": "local"

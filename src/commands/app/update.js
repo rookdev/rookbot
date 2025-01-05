@@ -1,7 +1,9 @@
 // @ts-nocheck
 
+// Formatters
+const { codeBlock } = require('discord.js')
 // BotDevCommand
-const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const shell = require('shelljs')  // Run shell commands
 
 module.exports = class UpdateCommand extends BotDevCommand {
@@ -65,7 +67,7 @@ module.exports = class UpdateCommand extends BotDevCommand {
     */
 
     console_output.push(
-      ("\n" + node_update).codeblock()
+      ("\n" + codeBlock(node_update))
     )
     this.props.description = console_output
 

@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Instance Greeting
-const { SalutationCommand } = require('../../classes/command/salutation.class.js')
+const { SalutationCommand } = require('../../classes/command/salutation.class')
 
 /**
  * @class

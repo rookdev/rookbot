@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: inlineCode, bold, italic
+const { ApplicationCommandOptionType, inlineCode, bold, italic } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 
@@ -84,7 +84,7 @@ module.exports = class RosterCommand extends RookCommand {
     )
     if (!guild) {
       this.error = true
-      this.props.description = `${this.profile.emojis.fail} Couldn't load Guild ID ${guildID.inlinecode()}`
+      this.props.description = `${this.profile.emojis.fail} Couldn't load Guild ID ${inlineCode(guildID)}`
       return false
     }
 
@@ -92,7 +92,7 @@ module.exports = class RosterCommand extends RookCommand {
     const guildSet = guildIDs[guildID]?.set
     if (!guildSet) {
       this.error = true
-      this.props.description = `Couldn't load Guild Set for *${guild.name}* (ID: ${guild.id.inlinecode()})`
+      this.props.description = `Couldn't load Guild Set for ${italic(guild.name)} (ID: ${inlineCode(guild.id)})`
       return false
     }
 
@@ -147,7 +147,7 @@ module.exports = class RosterCommand extends RookCommand {
         // Cycle through sections
         for (let [section, sData] of Object.entries(roster.members)) {
           // Add the section title
-          this.props.description.push(`**${sData.title}**`)
+          this.props.description.push(bold(sData.title))
           // Cycle through users
           for (let username of sData.users) {
             // Try to get the Guild Member
@@ -168,7 +168,7 @@ module.exports = class RosterCommand extends RookCommand {
             // If we succeeded in getting the Guild Member
             //  Print the link tag
             //  Else, just print the username
-            username = member ? `${member}` : `*${username}*`
+            username = member ? `${member}` : italic(username)
             this.props.description.push(username)
           }
           this.props.description.push("")

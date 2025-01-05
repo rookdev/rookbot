@@ -1,13 +1,14 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType } = require('discord.js')
-const SeedMetaCommand = require('./seedmeta.js')
+// Command Option Types, Formatters: bold, italic
+const { ApplicationCommandOptionType, bold, italic } = require('discord.js')
+const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const getSeedFields = require('../../utils/getSeedFields.js')
-const timeFormat = require('../../utils/timeFormat.js')
-const randFuncs = require('../../utils/randFuncs.js')
+const getSeedFields = require('../../utils/getSeedFields')
+const timeFormat = require('../../utils/timeFormat')
+const randFuncs = require('../../utils/randFuncs')
 const strtotime = require('locutus/php/datetime/strtotime')
-const numFuncs = require('../../utils/numFuncs.js')
+const numFuncs = require('../../utils/numFuncs')
 const path = require('path')
 const fs = require('fs')
 const { isNumeric } = require('mathjs')
@@ -352,7 +353,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         roleObject = await interaction?.guild?.roles.fetch(roleID)
         if (!roleObject) {
           this.error = true
-          this.props.description = `Role doesn't exist in *${interaction?.guild?.name}* with ID of '${roleID}'.`
+          this.props.description = `Role doesn't exist in ${italic(interaction?.guild?.name)} with ID of '${roleID}'.`
           return false
         }
       }
@@ -397,7 +398,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Group Name
     this.props.description.push(
-      '**Group Name**',
+      bold('Group Name'),
       groupName,
       ""  // A blank space, baby
     )
@@ -405,7 +406,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Scripts
     if (randoData?.rando?.scripts && randoData?.rando?.scripts?.length > 0) {
       this.props.description.push(
-        `**Scripts**`,
+        bold(`Scripts`),
         randoData?.rando?.scripts,
         ""  // A blank space, baby
       )
@@ -413,14 +414,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Start Game Reminder
     this.props.description.push(
-      '__**Start Game Reminder**__',
+      'Start Game Reminder'.boldUnderline(),
       'Please wait on the Start Game with everyone until the game begins.',
       ""  // A blank space, baby
     )
 
     // Game Start Time
     this.props.description.push(
-      '**Game Start Time**',
+      bold('Game Start Time'),
       `The game will begin at ${timeFormat(adjustedDateTime.getTime())} which is ${timeFormat(adjustedDateTime.getTime(), { relative: true })}.`
       // No blank space, baby
     )

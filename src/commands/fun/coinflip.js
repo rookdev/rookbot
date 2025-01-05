@@ -2,6 +2,8 @@
 
 // Base Rook Command
 const { RookCommand } = require("../../classes/command/rcommand.class")
+// Formatters: bold
+const { bold } = require('discord.js')
 
 module.exports = class CoinFlipCommand extends RookCommand {
   constructor(client) {
@@ -32,7 +34,7 @@ module.exports = class CoinFlipCommand extends RookCommand {
     // Randomly choose between "Heads" and "Tails"
     const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails'
 
-    this.props.description = `The coin landed on **${outcome}**!`
+    this.props.description = `The coin landed on ${bold(outcome)}!`
 
     return !this.error
   }

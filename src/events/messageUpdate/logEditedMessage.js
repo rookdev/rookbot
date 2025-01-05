@@ -1,11 +1,15 @@
 // @ts-nocheck
 
+// Formatters: inlineCode, italic
+const { inlineCode, italic } = require('discord.js')
+// Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
+// Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const { Message } = require('discord.js')
+// Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
-const path = require('path')
-const fs = require('fs')
+const path = require('path')  // Easier filepath management
+const fs = require('fs')      // Filesystem manipulation
 
 /**
  * Logs edited messages from the server.
@@ -51,8 +55,8 @@ module.exports = async (client, oldMessage, newMessage) => {
     }
 
     // Handle cases where the old or new content is unavailable
-    const oldContent = oldMessage.content ?? '*(Content unavailable)*'
-    const newContent = newMessage.content ?? '*(Content unavailable)*'
+    const oldContent = oldMessage.content ?? italic('(Content unavailable)')
+    const newContent = newMessage.content ?? italic('(Content unavailable)')
 
     // Skip if the content hasn't changed
     if (oldContent === newContent) {
@@ -104,7 +108,7 @@ module.exports = async (client, oldMessage, newMessage) => {
           {
             name: 'Author',
             value: `<@${newMessage.author.id}>` + " " +
-              `(ID: ${newMessage.author.id.inlinecode()})`
+              `(ID: ${inlineCode(newMessage.author.id)})`
           }
         ],
         [
@@ -113,7 +117,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Guild',
             value: [
               newMessage.guild.name,
-              `(ID: ${newMessage.guild.id.inlinecode()})`
+              `(ID: ${inlineCode(newMessage.guild.id)})`
             ]
           },
           // Channel Link
@@ -121,7 +125,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Channel',
             value: [
               `<#${newMessage.channel.id}>`,
-              `(ID: ${newMessage.channel.id.inlinecode()})`
+              `(ID: ${inlineCode(newMessage.channel.id)})`
             ]
           }
         ],
@@ -130,21 +134,21 @@ module.exports = async (client, oldMessage, newMessage) => {
           {
             name: 'Message',
             value: newMessage.url +
-              `(ID: ${newMessage.id.inlinecode()})`
+              `(ID: ${inlineCode(newMessage.id)})`
           }
         ],
         [
           // Old Content
           {
             name: 'Old Content',
-            value: oldContent.slice(0,1024) ?? '*No old content*' // Ensure there's always a default value
+            value: oldContent.slice(0,1024) ?? italic('No old content') // Ensure there's always a default value
           }
         ],
         [
           // New Content
           {
             name: 'New Content',
-            value: newContent.slice(0,1024) ?? '*No new content*' // Ensure there's always a default value
+            value: newContent.slice(0,1024) ?? italic('No new content') // Ensure there's always a default value
           }
         ]
       ]

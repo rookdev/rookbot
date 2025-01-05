@@ -1,11 +1,15 @@
 // @ts-nocheck
 
-const { GuildMember } = require('discord.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
+// Guild Member, Formatters: inlineCode
+const { GuildMember, inlineCode } = require('discord.js')
+// Rook-branded Client
+const { RookClient } = require('../../classes/objects/rclient.class')
+// Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const timeFormat = require('../../utils/timeFormat.js')
-const path = require('path')
-const fs = require('fs')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
+const path = require('path')  // Easier filepath management
+const fs = require('fs')      // Filesystem manipulation
 
 /**
  * Logs when a new member joins the server and saves it to a log file.
@@ -50,7 +54,7 @@ module.exports = async (client, newMember) => {
           name: 'Member Joined',
           value: `[${fetchedMember.user.tag}]` +
             `(https://discord.com/users/${fetchedMember.user.id})` + " " +
-            `(ID: ${fetchedMember.user.id.inlinecode()})`
+            `(ID: ${inlineCode(fetchedMember.user.id)})`
         }
       ],
       [
@@ -66,7 +70,7 @@ module.exports = async (client, newMember) => {
           name: 'Guild',
           value: [
             fetchedMember.guild.name,
-            `(ID: ${fetchedMember.guild.id.inlinecode()})`
+            `(ID: ${inlineCode(fetchedMember.guild.id)})`
           ]
         }
       ]

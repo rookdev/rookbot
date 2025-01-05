@@ -12,7 +12,7 @@ module.exports = class DOIGameCommand extends RookCommand {
     let comprops = {
       name: "doigame",
       category: "doi",
-      description: `Sends a message with download info for *${serverGameName}*.`,
+      description: `Sends a message with download info for ${serverGameName}.`,
       flags: {
         test: "basic"
       }

@@ -1,11 +1,11 @@
 // @ts-check
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: inlineCode
+const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
-// Use Discord Hammertime
-const timeFormat = require('../../utils/timeFormat.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
 
 module.exports = class UserInfoCommand extends RookCommand {
   constructor(client) {
@@ -57,7 +57,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       this.error = true
       this.props = {
         title: { text: "Error" },
-        description: `<@${targetUserId}> (ID: ${targetUserId.inlinecode()}) not found in '${interaction.guild.name}'!`
+        description: `<@${targetUserId}> (ID: ${inlineCode(targetUserId)}) not found in '${interaction.guild.name}'!`
       }
       return !this.error
     }
@@ -79,8 +79,8 @@ module.exports = class UserInfoCommand extends RookCommand {
         {
           name: "Username",
           value: [
-            targetMember.user.tag.inlinecode() + " " +
-            "(ID: " + targetMember.id.inlinecode() + ")"
+            inlineCode(targetMember.user.tag) + " " +
+            `(ID: ${inlineCode(targetMember.id)})`
           ]
         }
       ],

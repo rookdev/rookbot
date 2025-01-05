@@ -1,3 +1,4 @@
+const { italic } = require('discord.js')
 const randFuncs = require('../utils/randFuncs') // Random Functions
 const path = require('path')                    // Easy path management
 const fs = require('fs')                        // Filesystem manipulation
@@ -159,7 +160,7 @@ async function changeNickname(client, member) {
 
   if (member.guild.ownerId === member.id) {
     success = false
-    message.push(`Can't adjust nickname. ${member} is Guild Owner of *${member.guild.name}*.`)
+    message.push(`Can't adjust nickname. ${member} is Guild Owner of ${italic(member.guild.name)}.`)
 
     return {
       success: success,
@@ -178,7 +179,7 @@ async function changeNickname(client, member) {
   const clientPos = await clientMember.roles.highest.position
   if (memberPos >= clientPos) {
     success = false
-    message.push(`Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in *${guildData.name}*.`)
+    message.push(`Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${italic(guildData.name)}.`)
 
     return {
       success: success,
@@ -186,7 +187,7 @@ async function changeNickname(client, member) {
     }
   }
 
-  message.push(`${clientMember} changing nickname of '${member.user.tag}' in *${guildData.name}*.`)
+  message.push(`${clientMember} changing nickname of '${member.user.tag}' in ${italic(guildData.name)}.`)
 
   let oldNickname = member.displayName
   let newNickname = ""
@@ -222,14 +223,14 @@ async function changeNickname(client, member) {
     await guildMember.setNickname(newNickname)
     success = true
     message.push(
-      // `🟩*${guildData.name}*: ` +
-      `${clientMember} changed target nickname to *${newNickname}*.`
+      // `🟩${italic(guildData.name)}: ` +
+      `${clientMember} changed target nickname to ${italic(newNickname)}.`
     )
   } catch(error) {
     success = false
     message.push(
-      // `🟥*${guildData.name}*: ` +
-      `${clientMember} failed to change target nickname. Error: *${error.message}*`
+      // `🟥${italic(guildData.name)}: ` +
+      `${clientMember} failed to change target nickname. Error: ${italic(error.message)}`
     )
     // console.log(
     //   {

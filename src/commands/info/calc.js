@@ -1,9 +1,15 @@
 // @ts-nocheck
 
 // Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+/**
+ * Discord Stuff
+ *  Command Option Types
+ *  Formatters
+ *   codeBlock
+ */
+const { ApplicationCommandOptionType, codeBlock } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 const { evaluate } = require('mathjs')  // Evaluate math expression
 
 module.exports = class CalcCommand extends RookCommand {
@@ -52,10 +58,10 @@ module.exports = class CalcCommand extends RookCommand {
       // Create and send the embed
       this.props.fields = [
         [
-          { name: "Expression", value: expression.codeblock() }
+          { name: "Expression", value: codeBlock(expression) }
         ],
         [
-          { name: "Result",     value: result.codeblock() }
+          { name: "Result",     value: codeBlock(result) }
         ]
       ]
     } catch (error) {

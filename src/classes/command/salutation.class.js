@@ -1,13 +1,15 @@
 // @ts-nocheck
 
+// Formatters: codeBlock, inlineCode, hyperlink
+const { codeBlock, inlineCode, hyperlink } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('./rcommand.class.js')
+const { RookCommand } = require('./rcommand.class')
 // Base Rook Embed
-const { RookEmbed } = require('../embed/rembed.class.js')
+const { RookEmbed } = require('../embed/rembed.class')
 // Pretty-print time durations
-const timeConversion = require('../../utils/timeConversion.js')
-// Use Discord Hammertime
-const timeFormat = require('../../utils/timeFormat.js')
+const timeConversion = require('../../utils/timeConversion')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
 const shell = require('shelljs')                // Run shell commands
 const path = require('path')                    // Easy filepath management
 const fs = require('fs')                        // Filesystem manipulation
@@ -237,7 +239,7 @@ class SalutationCommand extends RookCommand {
             console_output[4].substring(console_output[4].indexOf(':') + 2)
               .replace(
                 `'${this.profile.profileName}'`,
-                this.profile.profileName.codeblock()
+                codeBlock(this.profile.profileName)
               )
         }
       ],
@@ -260,7 +262,10 @@ class SalutationCommand extends RookCommand {
             console_output[5].substring(console_output[5].indexOf(':') + 2)
               .replace(
                 `<${BRANCH}>`,
-                `[${BRANCH.inlinecode()}](${git_info.root}/tree/${BRANCH})`
+                hyperlink(
+                  inlineCode(BRANCH),
+                  `${git_info.root}/tree/${BRANCH}`
+                )
               )
         },
         {
@@ -269,9 +274,12 @@ class SalutationCommand extends RookCommand {
             console_output[6].substring(console_output[6].indexOf(':') + 2)
               .replace(
                 `[${COMMIT}]`,
-                `[${COMMIT.inlinecode()}](${git_info.root}/tree/${COMMIT})`
+                hyperlink(
+                  inlineCode(COMMIT),
+                  `${git_info.root}/tree/${COMMIT}`
+                )
               )
-            + ": " + COMMIT_TITLE.inlinecode()
+            + ": " + inlineCode(COMMIT_TITLE)
         }
       ],
       [
@@ -391,7 +399,7 @@ class SalutationCommand extends RookCommand {
           }
 
           this.props.fields[1][0].value = server?.name ?? "?"
-          this.props.fields[1][1].value = server.id.codeblock()
+          this.props.fields[1][1].value = codeBlock(server.id)
 
           this.props.entities.guild = server
 

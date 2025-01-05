@@ -24,11 +24,14 @@ class SlimEmbed extends RookEmbed {
       if(Array.isArray(props.description)) {
         props.description = props.description.join("\n")
       }
-      props.description = `***${props.title.text}***\n${props.description}`
+      props.description = [
+        props.title.text.boldItalic(),
+        props.description
+      ]
     }
-    props.title     = { text: "<NONE>" }
-    props.thumbnail = { image: "<NONE>" }
-    props.footer    = { text: "<NONE>" }
+    props.title     = { text:   "<NONE>" }
+    props.thumbnail = { image:  "<NONE>" }
+    props.footer    = { text:   "<NONE>" }
     props.timestamp = false
 
     super(client, props)

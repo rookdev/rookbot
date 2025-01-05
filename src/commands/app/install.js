@@ -1,7 +1,9 @@
 // @ts-nocheck
 
+// Formatters
+const { codeBlock } = require('discord.js')
 // BotDevCommand
-const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const shell = require('shelljs')  // Run shell commands
 
 /**
@@ -75,7 +77,7 @@ module.exports = class InstallCommand extends BotDevCommand {
     */
 
     console_output.push(
-      ("\n" + node_install).codeblock()
+      ("\n" + codeBlock(node_install))
     )
     this.props.description = console_output
 

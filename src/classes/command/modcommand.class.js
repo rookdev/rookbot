@@ -7,13 +7,22 @@
  *  Message Flags
  *  Permission Flags
  *  Role Object
+ *  Formatters
+ *   codeBlock
+ *   inlineCode
+ *   bold
+ *   italic
  */
 const {
   ChatInputCommandInteraction,
   GuildMember,
   MessageFlags,
   PermissionFlagsBits,
-  Role
+  Role,
+  codeBlock,
+  inlineCode,
+  bold,
+  italic
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('./admincommand.class')
@@ -21,7 +30,7 @@ const { AdminCommand } = require('./admincommand.class')
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/timeConversion')
-// Use Discord Hammertime
+// Use Discord HammerTime
 const timeFormat = require('../../utils/timeFormat')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
@@ -304,7 +313,7 @@ class ModCommand extends AdminCommand {
       ) || false
       this.props.description = `${this.profile.emojis.prod} <@${user.id}> has been ${voice}d`
     } else {
-      this.props.description = `${this.profile.emojis.dev} <@${user.id}> *would be* **${voice}d** if this wasn't in DEV Mode`
+      this.props.description = `${this.profile.emojis.dev} <@${user.id}> ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
     }
 
     return success
@@ -439,8 +448,8 @@ class ModCommand extends AdminCommand {
         props.mod.error = true
         props.mod.ephemeral = true
         props.mod.description = [
-          `${this.profile.emojis.fail} Can't **${this.name}** a mention! Must use user ID!`,
-          `ID: ${targetUserId}`.codeblock()
+          `${this.profile.emojis.fail} Can't ${bold(this.name)} a mention! Must use user ID!`,
+          codeBlock(`ID: ${targetUserId}`)
         ]
         this.props = props.mod
         return false
@@ -576,9 +585,9 @@ class ModCommand extends AdminCommand {
         }
         props.public.description = [
           (this.DEV ? "DEV: " : "") +
-          `User **${targetUserName}** has been **${tenses.past}**`,
+          `User ${bold(targetUserName)} has been ${bold(tenses.past)}`,
           "(" +
-          // `ID: ${targetUserId.inlinecode()}; ` +  // Don't add userID to ModPost
+          // `ID: ${inlineCode(targetUserId)}; ` +  // Don't add userID to ModPost
           (role != "" ? `Role: ${role}; Reason: ` : "") +
           reason +
           ")"
@@ -661,7 +670,7 @@ class ModCommand extends AdminCommand {
           }
           // Do link user
           props.mod.description = [
-            `${this.profile.emojis.check} User <@${targetUserId}> successfully **${tenses.past}** via DMs!`,
+            `${this.profile.emojis.check} User <@${targetUserId}> successfully ${bold(tenses.past)} via DMs!`,
           ]
           props.mod.description.push(
             "",
@@ -740,7 +749,7 @@ class ModCommand extends AdminCommand {
                 name: 'User ' + tenses.past.ucfirst(),
                 value: [
                   targetUser,
-                  `(ID: ${targetUserId.inlinecode()})`
+                  `(ID: ${inlineCode(targetUserId)})`
                 ]
               },
               // Whodunnit?
@@ -748,7 +757,7 @@ class ModCommand extends AdminCommand {
                 name: tenses.past.ucfirst() + ' By',
                 value: [
                   interaction.user,
-                  `(ID: ${interaction.user.id.inlinecode()})`
+                  `(ID: ${inlineCode(interaction.user.id)})`
                 ]
               }
             ],
@@ -757,7 +766,7 @@ class ModCommand extends AdminCommand {
               {
                 name: 'Guild',
                 value: interaction.guild.name + "\n" +
-                  `(ID: ${interaction.guild.id.inlinecode()})`
+                  `(ID: ${inlineCode(interaction.guild.id)})`
               }
             ]
           )
@@ -903,7 +912,7 @@ class ModCommand extends AdminCommand {
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true
-      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} (ID: ${targetUserId.inlinecode()}).`
+      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} (ID: ${inlineCode(targetUserId)}).`
       embeds.mod = await new RookEmbed(client, props.mod)
       await this.send(
         client,

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { MessageFlags } = require('discord.js')            // Message Flags
+const { MessageFlags, italic } = require('discord.js')            // Message Flags
 const { Pagination } = require('pagination.djs')          // Pagination
 const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
@@ -117,7 +117,7 @@ class RookCommand {
         }
         msg = [
           `${this.profile.emojis.fail} Bot can't manage user.`,
-          `${member} is Owner of *${member.guild.name}*.`
+          `${member} is Owner of ${italic(member.guild.name)}.`
         ]
         this.props.description = msg
       }
@@ -132,7 +132,7 @@ class RookCommand {
           user: "bot",
           target: "bot"
         }
-        msg = `${this.profile.emojis.fail} Bot not found in *${member.guild.name}*.`
+        msg = `${this.profile.emojis.fail} Bot not found in ${italic(member.guild.name)}.`
         this.props.description = msg
       }
       return false

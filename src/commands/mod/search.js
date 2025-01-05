@@ -1,6 +1,19 @@
 // @ts-nocheck
 
-const { ApplicationCommandOptionType, AuditLogEvent, PermissionFlagsBits } = require('discord.js')
+/**
+ * Discord Stuff
+ *  Command Option Types
+ *  Audit Log Events
+ *  Permission Flags Bits
+ *  Formatters
+ *   bold
+ */
+const {
+  ApplicationCommandOptionType,
+  AuditLogEvent,
+  PermissionFlagsBits,
+  bold
+} = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const timeFormat = require('../../utils/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
@@ -237,7 +250,10 @@ module.exports = class SearchCommand extends ModCommand {
       // let this_props: import('../../types/embed').EmbedProps = {
       let this_props = {
         title: { text: `Searching ${searchType}s` },
-        description: `**Target**\n${user}`,
+        description: [
+          bold(`Target`),
+          `${user}`
+        ],
         fields: []
       }
       let this_ids = {}
@@ -259,19 +275,19 @@ module.exports = class SearchCommand extends ModCommand {
             "User"
           ]) {
             if(field_name.includes(userType)) {
-              field_value = `<@${this_ids[userType]}> (ID: ${this_ids[userType].inlinecode()})`
+              field_value = `<@${this_ids[userType]}> (ID: ${inlineCode(this_ids[userType])})`
             }
           }
           if (field_name.includes("Channel")) {
             field_value = `<#${this_ids['Channel']}>` + " " +
-              `(ID: ${this_ids['Channel'].inlinecode()})`
+              `(ID: ${inlineCode(this_ids['Channel'])})`
           } else if (field_name.includes("Message")) {
             field_name = "Message"
             field_value = "https://discord.com/channels"
             field_value = `${field_value}/${this_ids['Guild']}`
             field_value = `${field_value}/${this_ids['Channel']}`
             field_value = `${field_value}/${this_ids['Message ID']}`
-            field_value = `${field_value} (ID: ${this_ids['Message ID'].inlinecode()})`
+            field_value = `${field_value} (ID: ${inlineCode(this_ids['Message ID'])})`
           }
           this_props.fields?.push(
             [

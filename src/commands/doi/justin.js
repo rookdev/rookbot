@@ -1,9 +1,11 @@
 // @ts-nocheck
 
+// Formattesr: hyperlink
+const { hyperlink } = require('discord.js')
 // Game Data
 const { serverGameName_base64encoded } = require('../../../config.json')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
 module.exports = class JustinCommand extends RookCommand {
   constructor(client) {
@@ -66,7 +68,7 @@ module.exports = class JustinCommand extends RookCommand {
         [
           {
             name: 'Learn More',
-            value: 'Visit the [portfolio website](https://justinbohemier.wixsite.com/portfolio/game-design) to discover more about the games and the developer\'s journey.',
+            value: `Visit the ${hyperlink('portfolio', 'https://justinbohemier.wixsite.com/portfolio/game-design')} to discover more about the games and the developer\'s journey.`,
             inline: false,
           }
         ]

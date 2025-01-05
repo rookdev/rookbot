@@ -1,5 +1,5 @@
-const { time, TimestampStyles } = require('discord.js')
-const stringFuncs = require("../utils/stringFuncs")
+// Time, Timestamp Styles, Formatters: inlineCode
+const { time, TimestampStyles, inlineCode } = require('discord.js')
 
 module.exports = (timestamp, options) => {
   let platoError = (timestamp + "").length - 10
@@ -29,7 +29,7 @@ module.exports = (timestamp, options) => {
   if (showSeconds) {
     returnTime = longDate + " " + longTime
   }
-  returnTime += " " + `(${timestamp.inlinecode()})`
+  returnTime += " " + `(${inlineCode(timestamp)})`
 
   if (withRelative) {
     returnTime += ` (${relativeTime})`

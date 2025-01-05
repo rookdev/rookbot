@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+// Command Option Types, Formatters: italic
+const { ApplicationCommandOptionType, italic } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
@@ -163,7 +163,7 @@ module.exports = class HolyImageCommand extends RookCommand {
             // Credit
             {
               name: "Credit",
-              value: `*${image.credit}*`
+              value: italic(image.credit)
             }
           ]
         )

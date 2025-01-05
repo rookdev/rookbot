@@ -1,9 +1,11 @@
 // @ts-nocheck
 
+// Formatters
+const { codeBlock } = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
-// Use Discord Hammertime
-const timeFormat = require('../../utils/timeFormat.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
 const tz = require('timezone')  // Timezone management
 
 module.exports = class TimeCommand extends RookCommand {
@@ -61,7 +63,7 @@ module.exports = class TimeCommand extends RookCommand {
       console.log(tmp)
       this.props.description += tmp + "\n"
     }
-    this.props.description = this.props.description.codeblock()
+    this.props.description = codeBlock(this.props.description)
 
     this.props.description += "\n"
     let tmp = `Local: ` + timeFormat(now)

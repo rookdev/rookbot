@@ -1,10 +1,26 @@
 // @ts-nocheck
 
-// Command Option Types
-const { ApplicationCommandOptionType, ChannelType, GuildEmoji } = require('discord.js')
+/**
+ * Discord Stuff
+ *  Command Option Types
+ *  Channel Types
+ *  Guild Emoji
+ *  Formatters
+ *   codeBlock
+ *   inlineCode
+ *   italic
+ */
+const {
+  ApplicationCommandOptionType,
+  ChannelType,
+  GuildEmoji,
+  codeBlock,
+  inlineCode,
+  italic
+} = require('discord.js')
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
-const timeFormat = require('../../utils/timeFormat.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
+const timeFormat = require('../../utils/timeFormat')
 
 module.exports = class MentionCommand extends RookCommand {
   constructor(client) {
@@ -147,7 +163,7 @@ module.exports = class MentionCommand extends RookCommand {
             channel = await guild.channels.fetch(targetId)
           } catch (error) {
             this.error = true
-            this.props.description = `Channel ` + targetId.inlinecode() + ` not found in *${guild.name}*`
+            this.props.description = `Channel ${inlineCode(targetId)} not found in ${italic(guild.name)}`
             return false
           }
           if (channel) {
@@ -159,7 +175,7 @@ module.exports = class MentionCommand extends RookCommand {
               extra: channel?.flags?.toArray().join(", ")
             }
             if (specs.extra) {
-              specs.extra = specs.extra.codeblock()
+              specs.extra = codeBlock(specs.extra)
             }
             if (channel?.createdTimestamp) {
               specs.creationStr = timeFormat(channel?.createdTimestamp, { with: "relative" })
@@ -197,16 +213,22 @@ module.exports = class MentionCommand extends RookCommand {
             emoji = await guild.emojis.fetch(targetId)
           } catch (error) {
             this.error = true
-            this.props.description = `Emoji ` + targetId.inlinecode() + ` not found in *${guild.name}*`
+            this.props.description = `Emoji ${inlineCode(targetId)} not found in ${italic(guild.name)}`
             return false
           }
           if (emoji) {
-            targetMention = `<:${specs.name}:${targetId}>`
             specs = {
               name: emoji?.name,
               url: emoji?.imageURL({ size: Math.pow(2, 7) }),
-              animated: emoji?.animated ? this.profile.emojis.check : this.profile.emojis.nocheck
+              animated: emoji?.animated ?
+                (
+                  emoji.animated ?
+                  this.profile.emojis.check :
+                  this.profile.emojis.nocheck
+                )
+                : this.profile.emojis.nocheck
             }
+            targetMention = `<:${specs.name}:${targetId}>`
             if (emoji?.createdTimestamp) {
               specs.creationStr = timeFormat(emoji?.createdTimestamp, { with: "relative" })
             }
@@ -236,7 +258,13 @@ module.exports = class MentionCommand extends RookCommand {
             specs = {
               name: role?.name,
               url: role?.iconURL({ size: Math.pow(2, 7) }),
-              hoisted: role?.hoist ? this.profile.emojis.check : this.profile.emojis.nocheck,
+              hoisted: role?.hoist ?
+                (
+                  role.hoist ?
+                  this.profile.emojis.check :
+                  this.profile.emojis.nocheck
+                ) :
+                this.profile.emojis.nocheck,
               position: role?.position
             }
 
@@ -340,7 +368,7 @@ module.exports = class MentionCommand extends RookCommand {
 
     if (!specs?.name || !specs.name || specs.name == "") {
       this.error = true
-      this.props.description = targetType.ucfirst() + ` ` + targetId.inlinecode() + ` not found in *${guild.name}*`
+      this.props.description = `${targetType.ucfirst()} ${inlineCode(targetId)} not found in ${italic(guild.name)}`
       return false
     }
 
@@ -369,17 +397,17 @@ module.exports = class MentionCommand extends RookCommand {
           // Name
           {
             name: "Name",
-            value: specs?.url ? `[${specs?.name?.inlinecode()}](${specs?.url})` : specs?.name?.codeblock()
+            value: specs?.url ? `[${inlineCode(specs?.name)}](${specs?.url})` : codeBlock(specs?.name)
           },
           // Mention ID
           {
             name: "ID",
-            value: targetId.codeblock()
+            value: codeBlock(targetId)
           },
           // Animated Emoji
           {
             name: "Animated?",
-            value: specs?.animated
+            value: specs?.animated ? specs.animated : ""
           }
         ]
       )
@@ -389,12 +417,12 @@ module.exports = class MentionCommand extends RookCommand {
           // Topic
           {
             name: "Topic",
-            value: specs?.topic?.codeblock()
+            value: specs?.topic ? codeBlock(specs?.topic) : ""
           },
           // Roles
           {
             name: `Roles [${specs?.roles?.length}${specs?.highest}]`,
-            value: specs?.roles?.join(", ").codeblock()
+            value: specs?.roles?.length && (specs.roles.length > 0) ? codeBlock(specs?.roles?.join(", ")) : ""
           }
         ]
       )
@@ -404,12 +432,12 @@ module.exports = class MentionCommand extends RookCommand {
           // Subtype
           {
             name: "Subtype",
-            value: specs?.subtype?.codeblock()
+            value: specs?.subtype ? codeBlock(specs?.subtype) : ""
           },
           // Position
           {
             name: "Position",
-            value: specs?.position?.codeblock()
+            value: specs?.position ? codeBlock(specs?.position) : ""
           },
           // Hoisted
           {
@@ -417,8 +445,12 @@ module.exports = class MentionCommand extends RookCommand {
             value: (targetType == "role") ?
               (
                 specs?.hoisted ?
-                this.profile.emojis.check :
-                this.profile.emojis.nocheck
+                (
+                  specs.hoisted ?
+                  this.profile.emojis.check :
+                  this.profile.emojis.nocheck
+                )
+                : ""
               )
               : ""
           }
@@ -455,7 +487,7 @@ module.exports = class MentionCommand extends RookCommand {
           // Mention Raw Code
           {
             name: "Code",
-            value: targetMention.codeblock()
+            value: codeBlock(targetMention)
           }
         ]
       )

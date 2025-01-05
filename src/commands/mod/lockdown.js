@@ -1,7 +1,19 @@
 // @ts-nocheck
 
-// Command Option Types, Message Flags, Permission Flags
-const { ApplicationCommandOptionType, MessageFlags, PermissionFlagsBits } = require('discord.js')
+/**
+ * Discord Stuff
+ *  Command Option Types,
+ *  Message Flags
+ *  Permission Flags
+ *  Formatters
+ *   bold
+ */
+const {
+  ApplicationCommandOptionType,
+  MessageFlags,
+  PermissionFlagsBits,
+  bold
+} = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -143,7 +155,7 @@ module.exports = class LockdownCommand extends ModCommand {
       console.log("Logs channel not found.")
     }
 
-    this.props.description = (this.DEV ? "DEV: " : "") + `All channels have been **${action}ed** successfully! (${processedCount}/${channels.size} processed)`
+    this.props.description = (this.DEV ? "DEV: " : "") + `All channels have been ${bold(action + 'ed')} successfully! (${processedCount}/${channels.size} processed)`
     this.ephemeral = true
 
     return true

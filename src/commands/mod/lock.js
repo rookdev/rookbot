@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Permission Flags
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// Command Option Types, Permission Flags, Formatters: inlineCode
+const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -60,7 +60,7 @@ module.exports = class LockCommand extends ModCommand {
       const embedProps = {
         color: this.profile.colors.bad,
         title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
-        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **locked**.`,
+        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold(locked)}.`,
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
@@ -74,8 +74,8 @@ module.exports = class LockCommand extends ModCommand {
           title: { text: "[Log] Channel Locked", emoji: this.profile.emojis.lock },
           fields: [
             [
-              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${channel.id.inlinecode()})` },
-              { name: 'Locked By',      value: `${interaction.user}\n(ID: ${interaction.user.id.inlinecode()})` }
+              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${inlineCode(channel.id)})` },
+              { name: 'Locked By',      value: `${interaction.user}\n(ID: ${inlineCode(interaction.user.id)})` }
             ]
           ]
         }
@@ -87,7 +87,7 @@ module.exports = class LockCommand extends ModCommand {
       }
 
       // Complete the interaction with a private success message
-      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **locked**!`
+      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold(locked)}!`
     } catch (error) {
       console.log(`There was an error when locking the channel: ${error.stack}`)
       this.error = true

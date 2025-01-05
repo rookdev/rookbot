@@ -1,9 +1,9 @@
 // @ts-nocheck
 
 // Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class.js')
+const { RookCommand } = require('../../classes/command/rcommand.class')
 // Pretty-print time durations
-const timeConversion = require('../../utils/timeConversion.js')
+const timeConversion = require('../../utils/timeConversion')
 
 module.exports = class UptimeCommand extends RookCommand {
   constructor(client) {

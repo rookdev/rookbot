@@ -1,11 +1,15 @@
 // @ts-nocheck
 
-const { GuildMember } = require('discord.js')
-const { RookClient } = require('../../classes/objects/rclient.class.js')
+// Guild Member, Formatters: inlineCode
+const { GuildMember, inlineCode } = require('discord.js')
+// Rook-branded Client
+const { RookClient } = require('../../classes/objects/rclient.class')
+// Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const timeFormat = require('../../utils/timeFormat.js')
-const path = require('path')
-const fs = require('fs')
+// Use Discord HammerTime
+const timeFormat = require('../../utils/timeFormat')
+const path = require('path')  // Easier filepath management
+const fs = require('fs')      // Filesystem manipulation
 
 /**
  * Logs when a member leaves the server and saves it to a log file.
@@ -65,7 +69,7 @@ module.exports = async (client, oldMember) => {
             name: 'Member Left',
             value: `[${oldMember.user.tag}]` +
               `(https://discord.com/users/${oldMember.user.id})` + " " +
-              `(ID: ${oldMember.user.id.inlinecode()})`
+              `(ID: ${inlineCode(oldMember.user.id)})`
           }
         ],
         [
@@ -81,7 +85,7 @@ module.exports = async (client, oldMember) => {
             name: 'Guild',
             value: [
               oldMember.guild.name,
-              `(ID: ${oldMember.guild.id.inlinecode()})`
+              `(ID: ${inlineCode(oldMember.guild.id)})`
             ]
           }
         ]

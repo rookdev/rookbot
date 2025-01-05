@@ -1,7 +1,18 @@
 // @ts-nocheck
 
+/**
+ * Discord Stuff
+ *  Command Option Type
+ *  Permission Flags
+ *  Formatters
+ *   bold
+ */
 // Command Option Types, Permission Flags
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+const {
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+  bold
+} = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -58,7 +69,7 @@ module.exports = class UnlockCommand extends ModCommand {
       const embedProps = {
         color: this.profile.colors.success,
         title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.warning },
-        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **unlocked**.`,
+        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold('unlocked')}.`,
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
@@ -85,7 +96,7 @@ module.exports = class UnlockCommand extends ModCommand {
       }
 
       // Complete the interaction with a private success message
-      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **unlocked**!`
+      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold('unlocked')}!`
     } catch (error) {
       console.log(`There was an error when unlocking the channel: ${error.stack}`)
       this.error = true
