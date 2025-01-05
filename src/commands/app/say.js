@@ -5,14 +5,18 @@
  *  Command Option Types
  *  Permission Flags
  *  Message Flags
+ *  Webhook
  *  Formatters
  *   inlineCode
+ *   italic
  */
 const {
   ApplicationCommandOptionType,
   PermissionFlagsBits,
   MessageFlags,
-  inlineCode
+  Webhook,
+  inlineCode,
+  italic
 } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
@@ -22,6 +26,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/timeFormat')
 const numFuncs = require('../../utils/numFuncs')
 const path = require('path')  // Easy filepath management
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -66,6 +71,11 @@ module.exports = class SayCommand extends ModCommand {
         {
           name: "source-message",
           description: "Source Message URL",
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "visage-name",
+          description: "Visage to post as",
           type: ApplicationCommandOptionType.String
         }
       ],
@@ -142,6 +152,119 @@ module.exports = class SayCommand extends ModCommand {
     let destMessageURL = coptions["destination-message"] ?? null
     // Get Src Message
     let sourceMessageURL = coptions["source-message"] ?? null
+    // Get Visage
+    let visage = coptions["visage-name"] ?? null
+    let visages = null
+
+    let rookhook = null // Bucket for rookhook webhook
+
+    // Calculate channel
+    if (numFuncs.myIsNumeric(channel)) {
+      if (["number", "string"].includes(typeof channel)) {
+        if (typeof channel === "string") {
+          channel = channel.replace(/[<#@&!>]/g, '')
+        }
+        channel = await interaction.guild.channels.fetch(channel)
+      }
+    }
+
+    // If we're using a visage
+    if (visage) {
+      // Get Guild Metadata
+      let guildMetadataPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        interaction?.guild?.id,
+        "meta.json"
+      )
+      let guildMetadata = null  // Guild Metadata DB
+      let rookhookID = 0        // Bucket for rookhook ID
+      let webhooks = null       // Bucket for Guild Webhooks
+
+      if (!interaction?.guild) {
+        this.error = true
+        this.props.description = "Needs to be run in a Guild"
+        return false
+      }
+
+      // Get Guild Webhooks
+      webhooks = await interaction.guild.fetchWebhooks()
+      if (!webhooks) {
+        this.error = true
+        this.props.description = `Couldn't load webhooks for ${italic(interaction.guild.name)} (ID: ${inlineCode(interaction.guild.id)})`
+        return false
+      }
+
+      if (fs.existsSync(guildMetadataPath)) {
+        // Get rookhookID if defined
+        guildMetadata = require(guildMetadataPath)
+        if (guildMetadata?.rookhook) {
+          rookhookID = guildMetadata.rookhook
+        }
+      }
+
+      // If we didn't receive the ID, try to search for it by name
+      if (rookhookID == 0) {
+        rookhook = webhooks.find(
+          w => w.name == "rookbot impersonator"
+        )
+      } else {
+        // Otherwise, we've got the ID, grab it
+        rookhook = webhooks.find(
+          w => w.id === rookhookID
+        )
+      }
+
+      if (!rookhook) {
+        this.error = true
+        this.props.description = `rookhook not found for ${italic(interaction.guild.name)} (ID: ${inlineCode(interaction.guild.id)})`
+        return false
+      }
+
+      let visagesPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        interaction.guild.id,
+        "visages.json"
+      )
+
+      if (!fs.existsSync(visagesPath)) {
+        this.error = true
+        this.props.description = "Visages not found"
+        return false
+      }
+
+      visages = require(visagesPath)
+
+      if (!visages[visage]) {
+        this.error = true
+        this.props.description = `Selected visage (${inlineCode(visage)}) not found`
+        return false
+      }
+
+      if (rookhook.name !== visages[visage].name) {
+        let rookhookEdit = await rookhook.edit(
+          {
+            name: visages[visage].name,
+            avatar: visages[visage].avatar,
+            channel: channel
+          }
+        )
+
+        if (!rookhookEdit) {
+          this.error = true
+          this.props.description = `Couldn't edit rookhook (ID: ${inlineCode(webhookID)})`
+          return false
+        }
+
+        // Wait a second after editing the webhook
+        await wait(1 * 1000)
+      }
+    }
 
     // Result
     let result = null
@@ -159,13 +282,15 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    if (numFuncs.myIsNumeric(channel)) {
-      channel = await interaction.guild.channels.fetch(channel)
-    }
-
     // Say Mode
     if (mode == "say") {
-      result = await channel.send(message)
+      // If rookhook, use hook
+      if (rookhook) {
+        result = await rookhook.send(message)
+      } else {
+        // Else, use bot
+        result = await channel.send(message)
+      }
     } else if (mode == "edit") {
       // Edit Mode
       // No Destination Message
@@ -183,8 +308,11 @@ module.exports = class SayCommand extends ModCommand {
         return false
       }
 
+      let notPostedByClientError = (!rookhook) && (destMessage.author.id !== client.user.id)
+      let notPostedByHookError = (rookhook) && (false)
+
       // Message not posted by client user
-      if (destMessage.author.id !== client.user.id) {
+      if (notPostedByClientError) {
         this.error = true
         this.props.description = [
           `Destination Message not editable by ${destGuild.members.me}`,
@@ -193,13 +321,26 @@ module.exports = class SayCommand extends ModCommand {
         return false
       }
 
-      result = await destMessage.edit(message)
+      // Message not posted by rookhook
+      if (notPostedByHookError) {
+        this.error = true
+        this.props.description = `Destination Message not editable by rookhook`
+        return false
+      }
+
+      // If rookhook, use hook
+      if (rookhook) {
+        result = await rookhook.editMessage(destMessage, message)
+      } else {
+        // Else, use bot
+        result = await destMessage.edit(message)
+      }
     } else if (mode == "clone") {
       // Clone Mode
       // No Source Message
       if (!sourceMessageURL) {
         this.error = true
-        this.props.description = "${mode.ucfirst()} Mode: No Source Message sent"
+        this.props.description = `${mode.ucfirst()} Mode: No Source Message sent`
         return false
       }
 
@@ -225,10 +366,23 @@ module.exports = class SayCommand extends ModCommand {
 
       // Destination Message
       if (destMessage) {
+        let notPostedByClientError = (!rookhook) && (destMessage.author.id !== client.user.id)
+        let notPostedByHookError = (rookhook) && (false)
+
         // Message not posted by client user
-        if (destMessage.author.id !== client.user.id) {
+        if (notPostedByClientError) {
           this.error = true
-          this.props.description = `${destMessage.url} not editable by ${destGuild.members.me}`
+          this.props.description = [
+            `Destination Message not editable by ${destGuild.members.me}`,
+            destMessageURL
+          ]
+          return false
+        }
+
+        // Message not posted by rookhook
+        if (notPostedByHookError) {
+          this.error = true
+          this.props.description = `Destination Message not editable by rookhook`
           return false
         }
 
@@ -237,7 +391,13 @@ module.exports = class SayCommand extends ModCommand {
           embeds: srcMessage.embeds ?? null
         }
 
-        result = await destMessage.edit(this_package)
+        // If rookhook, use hook
+        if (rookhook) {
+          result = await rookhook.editMessage(destMessage, this_package)
+        } else {
+          // Else, use bot
+          result = await destMessage.edit(this_package)
+        }
       }
 
       // Clone to Channel
@@ -251,7 +411,29 @@ module.exports = class SayCommand extends ModCommand {
         if (embeds) {
           this_package.embeds = embeds
         }
-        channel.send(this_package)
+
+        // If rookhook, use hook
+        if (rookhook) {
+          result = await rookhook.send(this_package)
+        } else {
+          // Else, use bot
+          await channel.send(this_package)
+        }
+      }
+    }
+
+    if (visages) {
+      if (rookhook) {
+        let rookhookEdit = await rookhook.edit(
+          {
+            name: visages.reset.name,
+            avatar: visages.reset.avatar
+          }
+        )
+
+        if (!rookhookEdit) {
+          console.log("Couldn't reset rookhook!")
+        }
       }
     }
 
@@ -287,8 +469,15 @@ module.exports = class SayCommand extends ModCommand {
           [
             // Mode
             {
-              user: "Mode",
+              name: "Mode",
               value: mode.ucfirst()
+            }
+          ],
+          [
+            // Visage
+            {
+              name: "Visage",
+              value: visage
             }
           ],
           [
@@ -334,6 +523,22 @@ module.exports = class SayCommand extends ModCommand {
           ]
         ]
       }
+      if (visage && visages && visages[visage]) {
+        props.mod.playerTypes = {
+          user: "user",
+          target: "target"
+        }
+        props.mod.players = {
+          user: {
+            name: interaction.user.displayName,
+            avatar: interaction.user.displayAvatarURL({ size: 128 })
+          },
+          target: {
+            name: visages[visage].name,
+            avatar: visages[visage].avatar
+          }
+        }
+      }
 
       // Edit reply to Mod
       embeds.mod = new RookEmbed(client, props.mod)
@@ -350,6 +555,8 @@ module.exports = class SayCommand extends ModCommand {
       let logEntry = [
         `[${new Date().toISOString()}]`,
         `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
+        `Mode:        ${mode.ucfirst()}`,
+        `Visage:      ${visage}`,
         `Guild:       ${result.guild.name} (ID: ${result.guild.id})`,
         `Channel:     #${result.channel.name} (ID: ${result.channel.id})`,
         `Message ID:  ${result.id}`,

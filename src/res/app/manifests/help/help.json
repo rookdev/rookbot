@@ -112,6 +112,10 @@
         {
           "name": "source-message",
           "description": "Source Message URL"
+        },
+        {
+          "name": "visage-name",
+          "description": "Visage to post as"
         }
       ],
       "access": "Mod",

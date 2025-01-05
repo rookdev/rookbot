@@ -1,0 +1,18 @@
+{
+  "agahnim": {
+    "name": "Agahnim",
+    "avatar": "https://cdn.discordapp.com/avatars/1287183074345357397/73352af994a31a6ef83b2c1147615be3.webp?size=512"
+  },
+  "brad": {
+    "name": "Brad",
+    "avatar": "./src/res/media/brad.png"
+  },
+  "link": {
+    "name": "Link",
+    "avatar": "./src/res/media/link.png"
+  },
+  "reset": {
+    "name": "rookbot impersonator",
+    "avatar": "./src/res/media/rookbotIcon.png"
+  }
+}

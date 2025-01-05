@@ -3,7 +3,7 @@
 // Command Option Types, Formatters: inlineCode, hyperlink
 const { ApplicationCommandOptionType, inlineCode, hyperlink } = require('discord.js')
 // BotDevCommand
-const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const shell = require('shelljs')  // Run shell commands
 const fs = require('fs')          // Filesystem management
 
