@@ -62,6 +62,9 @@ async function registerCommand(
   applicationCommands,
   cmdParts
 ) {
+  let result = false
+  let messages = []
+
   // Find existing command if present
   const existingCommand = applicationCommands.find(
     cmd => cmd.name === cmdParts.name
@@ -78,20 +81,20 @@ async function registerCommand(
     // If we're deleting it
     //  Delete it and return
     if (cmdParts.deleted) {
-      console.log(`  ${client.profile.emojis.delete} Deleting: "${cmdParts.name}"`)
+      messages.push(`${client.profile.emojis.delete} Deleting: "${cmdParts.name}"`)
       try {
         await commandsManager.delete(existingCommand.id)
         delete client.commands[cmdParts.name]
         delete help[cmdParts.category][cmdParts.name]
       } catch (error) {
-        console.error(`  ${client.profile.emojis.fail} Failed to delete: "${cmdParts.name}":`, error.message)
+        messages.push(`${client.profile.emojis.fail} Failed to delete: "${cmdParts.name}":`, error.message)
       }
-      return
+      return [result, messages]
     }
 
     // If they're different
     if (areCommandsDifferent(existingCommand, cmdParts)) {
-      console.log(`  ${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
+      messages.push(`${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
       try {
         // Edit it
         await commandsManager.edit(
@@ -104,7 +107,7 @@ async function registerCommand(
         // Else
         if (error.code === 429) {
           // Rate Limit, try again soon
-          console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
+          messages.push(`${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
           // Wait
           await wait(error.retry_after ?? 1000)
           // Try to edit again
@@ -122,19 +125,19 @@ async function registerCommand(
           help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "edited")
         } else {
           // Failed to edit
-          console.error(`  ${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message)
+          messages.push(`${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message)
         }
       }
     } else {
       // No change
-      console.log(`  ${client.profile.emojis.current} Current: "${cmdParts.name}"`)
+      messages.push(`${client.profile.emojis.current} Current: "${cmdParts.name}"`)
       client.commands[cmdParts.name] = existingCommand
     }
   } else {
     // Doesn't exist yet or we deleted it
     if (cmdParts.deleted) {
-      console.log(`  ${client.profile.emojis.skip} Skipping deleted: "${cmdParts.name}"`)
-      return
+      messages.push(`${client.profile.emojis.skip} Skipping deleted: "${cmdParts.name}"`)
+      return [result, messages]
     }
 
     // Instantiate it if OOP Command
@@ -144,7 +147,7 @@ async function registerCommand(
     }
 
     // Register New Command
-    console.log(`  ${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
+    messages.push(`${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
     try {
       // Create New
       let newCommand = await commandsManager.create(cmdParts)
@@ -159,7 +162,7 @@ async function registerCommand(
       // If error
       if (error.code === 429) {
         // Rate Limit, try again soon
-        console.warn(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
+        messages.push(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
         // Wait
         await wait(error.retry_after ?? 1000)
         // Try to create again
@@ -168,17 +171,22 @@ async function registerCommand(
         client.commands[cmdParts.name] = newCommand
       } else {
         // Failed to register
-        console.error(`  ${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
+        messages.push(`  ${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
       }
     }
   }
+
+  return [result, messages]
 }
 
 module.exports = async (client) => {
+  let result = false
+  let messages = []
+
   let purge = client.profile?.purgeCommands
 
   if (purge) {
-    return
+    return [result, messages]
   }
 
   try {
@@ -192,13 +200,13 @@ module.exports = async (client) => {
     if (isDevelopment) {
       const testGuild = client.guilds.cache.get(testGuildID)
       if (!testGuild) {
-        console.error(`  ❌ Test guild not found: ${testGuildID}`)
-        return
+        messages.push(`❌ Test guild not found: ${testGuildID}`)
+        return [result, messages]
       }
-      console.log(`  ${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: '${testGuild.name}' [${testGuildID}]`)
+      messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: '${testGuild.name}' [${testGuildID}]`)
       commandsManager = testGuild.commands
     } else {
-      console.log(`  ${client.profile.emojis.prodText} Running in production mode. Registering Global Commands.`)
+      messages.push(`${client.profile.emojis.prodText} Running in production mode. Registering Global Commands.`)
       commandsManager = client.application.commands
     }
 
@@ -210,12 +218,14 @@ module.exports = async (client) => {
       let cmdParts = await extractCommand(localCommand)
 
       // Attempt to register command
-      await registerCommand(
+      let [thisResult, thisMessages] = await registerCommand(
         client,
         commandsManager,
         applicationCommands,
         cmdParts
       )
+      result = thisResult
+      messages = messages.concat(thisMessages)
 
       // Print aliases if present
       if (cmdParts.aliases && cmdParts.aliases.length > 0) {
@@ -246,17 +256,19 @@ module.exports = async (client) => {
           delete cmdParts.aliases
 
           // Attempt to register command alias
-          await registerCommand(
+          let [thisResult, thisMessages] = await registerCommand(
             client,
             commandsManager,
             applicationCommands,
             cmdParts
           )
+          result = thisResult
+          messages = messages.concat(thisMessages)
         }
       }
     }
 
-    console.log(`  ${client.profile.emojis.success} Registration completed`)
+    messages.push(`${client.profile.emojis.success} Registration completed`)
     await fs.writeFile(
       "./src/res/app/manifests/help/help.json",
       (
@@ -268,7 +280,11 @@ module.exports = async (client) => {
         "\n"
       ).replace(/\n/g, "\r\n")
     )
+    result = true
   } catch (error) {
-    console.error(`  ${client.profile.emojis.fail} Registration error: ${error.stack}`)
+    messages.push(`  ${client.profile.emojis.fail} Registration error: ${error.stack}`)
+    result = true
   }
+
+  return [result, messages]
 }

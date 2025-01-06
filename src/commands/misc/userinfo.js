@@ -1,7 +1,7 @@
 // @ts-check
 
-// Command Option Types, Formatters: inlineCode
-const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
+// Command Option Types, Formatters: inlineCode, userMention
+const { ApplicationCommandOptionType, inlineCode, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
@@ -57,7 +57,7 @@ module.exports = class UserInfoCommand extends RookCommand {
       this.error = true
       this.props = {
         title: { text: "Error" },
-        description: `<@${targetUserId}> (ID: ${inlineCode(targetUserId)}) not found in '${interaction.guild.name}'!`
+        description: `${userMention(targetUserId)} [${inlineCode(targetUserId)}] not found in '${interaction.guild.name}'!`
       }
       return !this.error
     }
@@ -80,7 +80,7 @@ module.exports = class UserInfoCommand extends RookCommand {
           name: "Username",
           value: [
             inlineCode(targetMember.user.tag) + " " +
-            `(ID: ${inlineCode(targetMember.id)})`
+            `[${inlineCode(targetMember.id)}]`
           ]
         }
       ],

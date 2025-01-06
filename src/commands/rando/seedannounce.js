@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Formatters: bold, italic
-const { ApplicationCommandOptionType, bold, italic } = require('discord.js')
+// Command Option Types, Formatters: bold, italic, userMention, roleMention
+const { ApplicationCommandOptionType, bold, italic, userMention, roleMention } = require('discord.js')
 const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const getSeedFields = require('../../utils/getSeedFields')
@@ -214,7 +214,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     if (!sahaBot) {
       let intOptions = {
-        content: `SahasrahBot not found on this server. <@${userIDs['sahabot']}>`,
+        content: `SahasrahBot not found on this server. ${userMention(userIDs['sahabot'])}`,
         flags: MessageFlags.Ephemeral
       }
       await interaction.reply(intOptions)
@@ -360,7 +360,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Build the Pinger
     if (pingMultiplayerRole && roleObject && (roleID != 0)) {
-      this.content = `<@&${roleID}>`
+      this.content = roleMention(roleID)
       this.props.description.push("🔔")
     }
 

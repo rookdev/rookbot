@@ -92,7 +92,7 @@ module.exports = class RosterCommand extends RookCommand {
     const guildSet = guildIDs[guildID]?.set
     if (!guildSet) {
       this.error = true
-      this.props.description = `Couldn't load Guild Set for ${italic(guild.name)} (ID: ${inlineCode(guild.id)})`
+      this.props.description = `Couldn't load Guild Set for ${italic(guild.name)} [${inlineCode(guild.id)}]`
       return false
     }
 

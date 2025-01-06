@@ -19,45 +19,52 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {GuildMember} newMember
  */
 module.exports = async (client, oldMember, newMember) => {
+  let result = false
+  let messages = []
+
   if (!client) {
-    console.log("No Client")
-    return false
+    messages.push("No Client")
+    return [result, messages]
   }
   if (!oldMember) {
-    console.log("No Old Member")
-    return false
+    messages.push("No Old Member")
+    return [result, messages]
   }
   if (!newMember) {
-    console.log("No New Member")
-    return false
+    messages.push("No New Member")
+    return [result, messages]
   }
 
   if (
     newMember?.presence &&
     newMember.presence.activities.length > 0
   ) {
-    let stream_url = ""
+    let stream_url = null
     let newActivities = newMember.presence.activities
+    if (newActivities.length <= 0) {
+      // messages.push(`No Activities for '${newMember.user.username}' [${newMember.id}]`)
+      return [result, messages]
+    }
     for (let activity in newActivities) {
-      if (activity?.url) {
+      if (activity?.url && activity.url != "") {
         stream_url = activity.url
       }
     }
-    if (stream_url == "") {
-      console.log(`   No Stream URL for '${newMember.user.username}' (ID: ${newMember.id})`)
-      return false
+    if (!stream_url) {
+      // messages.push(`No Stream URL for '${newMember.user.username}' [${newMember.id}]`)
+      return [result, messages]
     }
 
     const guild = await newMember.guild
     if (!guild) {
-      console.log(`   No Guild for '${newMember.user.username}' (ID: ${newMember.id})`)
-      return false
+      messages.push(`No Guild for '${newMember.user.username}' [${newMember.id}]`)
+      return [result, messages]
     }
 
     const channels = await newMember.guild.channels
     if (!channels) {
-      console.log(`   No Channels for '${newMember.guild.name}' (ID: ${newMember.guild.id}) for '${newMember.user.username}' (ID: ${newMember.id})`)
-      return false
+      messages.push(`No Channels for '${newMember.guild.name}' [${newMember.guild.id}] for '${newMember.user.username}' [${newMember.id}]`)
+      return [result, messages]
     }
 
     let props = {
@@ -97,19 +104,31 @@ module.exports = async (client, oldMember, newMember) => {
     if (fs.existsSync(channelsJSONPath)) {
       // Find the Guild Channel to send the embed to
       let channelIDs = require(channelsJSONPath)
-      if (!channelIDs) { this.error = true; return }
+      if (!channelIDs) { return [false, []] }
 
       let channelID = channelIDs["stream-alerts"]
-      if (!channelID) { this.error = true; return }
+      if (!channelID) { return [false, []] }
 
       let guild = await client.guilds.fetch(guildID)
-      if (!guild) { this.error = true; return }
+      if (!guild) { return [false, []] }
 
       let channel = await guild?.channels.fetch(channelID)
-      if (!channel) { this.error = true; return }
+      if (!channel) { return [false, []] }
 
       let this_package = { embeds: [ embed ] }
-      await channel.send(this_package)
+      result = await channel.send(this_package)
+
+      messages.push(
+        JSON.stringify(
+          {
+            guild: newMember.guild.name,
+            member: newMember.user.username,
+            stream: stream_url
+          }
+        )
+      )
     }
   }
+
+  return [result, messages]
 }

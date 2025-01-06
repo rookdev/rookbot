@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Audit Log Event, Message, Formatters: inlineCode, italic
-const { AuditLogEvent, Message, inlineCode, italic } = require('discord.js')
+// Audit Log Event, Message, Formatters: inlineCode, italic, userMention
+const { AuditLogEvent, Message, inlineCode, italic, userMention } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
@@ -17,6 +17,9 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {Message} deletedMessage
  */
 module.exports = async (client, deletedMessage) => {
+  let result = false
+  let messages = []
+
   try {
     // If the message is partial, fetch the full message (if possible)
     if (deletedMessage.partial) {
@@ -25,7 +28,7 @@ module.exports = async (client, deletedMessage) => {
 
     // Skip logging system messages or messages with no content
     if (deletedMessage.system || !deletedMessage.content) {
-      return
+      return [result, messages]
     }
 
     // Fetch the log channel using the deletedMessage's guild ID
@@ -39,8 +42,8 @@ module.exports = async (client, deletedMessage) => {
     const logChannel = await client.channels.fetch(guildChannels[log_type])
 
     if (!logChannel) {
-      console.warn('Log channel not found.')
-      return
+      messages.push('Log channel not found.')
+      return [result, messages]
     }
 
     // Fetch a couple audit logs than just one as new entries could've been added right after this event was emitted.
@@ -125,8 +128,8 @@ module.exports = async (client, deletedMessage) => {
         // Who wrote this?
         {
           name: 'Author',
-          value: `<@${deletedMessage.author.id}>` + " " +
-            `(ID: ${inlineCode(deletedMessage.author.id)})`
+          value: userMention(deletedMessage.author.id) + " " +
+            `[${inlineCode(deletedMessage.author.id)}]`
         }
       ]
     )
@@ -140,8 +143,8 @@ module.exports = async (client, deletedMessage) => {
         [
           {
             name: 'Deleter',
-            value: `<@${deleter.id}>` + " " +
-              `(ID: ${inlineCode(deleter.id)})`
+            value: userMention(deleter.id) + " " +
+              `[${inlineCode(deleter.id)}]`
           }
         ]
       )
@@ -171,7 +174,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Guild',
           value: [
             deletedMessage.guild.name,
-            `(ID: ${inlineCode(deletedMessage.guild.id)})`
+            `[${inlineCode(deletedMessage.guild.id)}]`
           ]
         },
         // Channel Link
@@ -179,7 +182,7 @@ module.exports = async (client, deletedMessage) => {
           name: 'Channel',
           value: [
             `<#${deletedMessage.channel.id}>`,
-            `(ID: ${inlineCode(deletedMessage.channel.id)})`
+            `[${inlineCode(deletedMessage.channel.id)}]`
           ]
         }
       ],
@@ -187,8 +190,8 @@ module.exports = async (client, deletedMessage) => {
         // Message Link
         {
           name: 'Message',
-          value: deletedMessage.url +
-            `(ID: ${inlineCode(deletedMessage.id)})`
+          value: deletedMessage.url + " " +
+            `[${inlineCode(deletedMessage.id)}]`
         }
       ],
       [
@@ -218,11 +221,11 @@ module.exports = async (client, deletedMessage) => {
       channel: deletedMessage.channel.name,
       message: deletedMessage.id
     }
-    console.log("   " + JSON.stringify(console_log))
+    messages.push(JSON.stringify(console_log))
 
     // Send the log embed to the log channel
     // @ts-ignore
-    await logChannel.send({ embeds: [logEmbed] })
+    result = await logChannel.send({ embeds: [logEmbed] })
 
     // Optional: Save the deleted message to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
@@ -258,6 +261,9 @@ module.exports = async (client, deletedMessage) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", 'utf8')
   } catch (error) {
-    console.error('Error logging deleted message:', error)
+    messages.push('Error logging deleted message:', error)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

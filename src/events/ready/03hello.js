@@ -4,6 +4,9 @@ const BotActivityCommand = require('../../commands/bot/botactivity')
 const salutation = require('../maybeReady/salutation')
 
 module.exports = async (client, interaction) => {
+  let result = false
+  let messages = []
+
   // Execute Salutation Command
   await salutation(client, interaction, "hello")
 
@@ -11,5 +14,7 @@ module.exports = async (client, interaction) => {
   let activityCmd = new BotActivityCommand(client)
 
   // Execute BotActivity Command Object
-  await activityCmd.execute(client)
+  result = await activityCmd.execute(client)
+
+  return [result, messages]
 }

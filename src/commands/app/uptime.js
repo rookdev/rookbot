@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// Formatters: userMention
+const { userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Pretty-print time durations
@@ -34,7 +36,7 @@ module.exports = class UptimeCommand extends RookCommand {
 
     // Print uptime
     this.props.description = [
-      `<@${client.user.id}> has been online for:`,
+      `${userMention(client.user.id)} has been online for:`,
       await timeConversion(uptime)
     ]
 

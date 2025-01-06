@@ -12,6 +12,7 @@
  *   inlineCode
  *   bold
  *   italic
+ *   userMention
  */
 const {
   ChatInputCommandInteraction,
@@ -22,7 +23,8 @@ const {
   codeBlock,
   inlineCode,
   bold,
-  italic
+  italic,
+  userMention
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('./admincommand.class')
@@ -298,9 +300,9 @@ class ModCommand extends AdminCommand {
         roles,
         reason
       ) || false
-      this.props.description = `${this.profile.emojis.prod} <@${user.id}> has been ${voice}d`
+      this.props.description = `${this.profile.emojis.prod} ${userMention(user.id)} has been ${voice}d`
     } else {
-      this.props.description = `${this.profile.emojis.dev} <@${user.id}> ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
+      this.props.description = `${this.profile.emojis.dev} ${userMention(user.id)} ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
     }
 
     return success
@@ -661,7 +663,7 @@ class ModCommand extends AdminCommand {
           }
           // Do link user
           props.mod.description = [
-            `${this.profile.emojis.check} User <@${targetUserId}> successfully ${bold(tenses.past)} via DMs!`,
+            `${this.profile.emojis.check} User ${userMention(targetUserId)} successfully ${bold(tenses.past)} via DMs!`,
           ]
           props.mod.description.push(
             "",
@@ -685,7 +687,7 @@ class ModCommand extends AdminCommand {
             color: this.profile.colors.error,
             title: { text: "[YouPost] Error" },
             description: [
-              `${this.profile.emojis.fail} I couldn't send the DM to the user (ID: ${targetUserId}).`,
+              `${this.profile.emojis.fail} I couldn't send the DM to the user [${targetUserId}].`,
               `They might have DMs disabled.`
             ],
             ephemeral: true
@@ -740,7 +742,7 @@ class ModCommand extends AdminCommand {
                 name: 'User ' + tenses.past.ucfirst(),
                 value: [
                   targetUser,
-                  `(ID: ${inlineCode(targetUserId)})`
+                  `[${inlineCode(targetUserId)}]`
                 ]
               },
               // Whodunnit?
@@ -748,7 +750,7 @@ class ModCommand extends AdminCommand {
                 name: tenses.past.ucfirst() + ' By',
                 value: [
                   interaction.user,
-                  `(ID: ${inlineCode(interaction.user.id)})`
+                  `[${inlineCode(interaction.user.id)}]`
                 ]
               }
             ],
@@ -757,7 +759,7 @@ class ModCommand extends AdminCommand {
               {
                 name: 'Guild',
                 value: interaction.guild.name + "\n" +
-                  `(ID: ${inlineCode(interaction.guild.id)})`
+                  `[${inlineCode(interaction.guild.id)}]`
               }
             ]
           )
@@ -903,7 +905,7 @@ class ModCommand extends AdminCommand {
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true
-      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} (ID: ${inlineCode(targetUserId)}).`
+      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} [${inlineCode(targetUserId)}].`
       embeds.mod = await new RookEmbed(client, props.mod)
       await this.send(
         client,

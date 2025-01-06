@@ -3,5 +3,10 @@
 const salutation = require('../maybeReady/salutation')
 
 module.exports = async (client, interaction) => {
-  await salutation(client, interaction, "goodbye")
+  let result = false
+  let messages = []
+
+  result = await salutation(client, interaction, "goodbye")
+
+  return [result, messages]
 }

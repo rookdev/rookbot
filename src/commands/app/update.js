@@ -45,6 +45,22 @@ module.exports = class UpdateCommand extends BotDevCommand {
       "---"
     ]
 
+    let ci_data = require(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "resources",
+        "app",
+        "meta",
+        "manifests",
+        "ci"
+      )
+    )
+    let git_info = ci_data.common.common.repo
+    git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
+
     // Print Name & Version number
     console_output.push(
       "Updating " +
@@ -53,7 +69,7 @@ module.exports = class UpdateCommand extends BotDevCommand {
     )
     this.props.title = {
       text: "💿 " + console_output[1],
-      url: "https://github.com/mysterypaintwo/rookbot"
+      url: git_info.root
     }
 
     // console.log(console_output)

@@ -74,8 +74,8 @@ module.exports = class LockCommand extends ModCommand {
           title: { text: "[Log] Channel Locked", emoji: this.profile.emojis.lock },
           fields: [
             [
-              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${inlineCode(channel.id)})` },
-              { name: 'Locked By',      value: `${interaction.user}\n(ID: ${inlineCode(interaction.user.id)})` }
+              { name: 'Channel Locked', value: [`<#${channel.id}>`,`[${inlineCode(channel.id)}]`] },
+              { name: 'Locked By',      value: [`${interaction.user}`,`[${inlineCode(interaction.user.id)}]`] }
             ]
           ]
         }

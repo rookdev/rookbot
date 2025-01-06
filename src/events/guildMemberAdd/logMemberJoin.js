@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Guild Member, Formatters: inlineCode
-const { GuildMember, inlineCode } = require('discord.js')
+// Guild Member, Formatters: inlineCode, userMention
+const { GuildMember, inlineCode, userMention } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
@@ -17,9 +17,16 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {GuildMember} newMember
  */
 module.exports = async (client, newMember) => {
+  let result = false
+  let messages = []
+
   try {
     // Ensure the member's data is fully fetched
-    const fetchedMember = await newMember.guild.members.fetch(newMember.user.id)
+    const fetchedMember = await newMember.guild.members.fetch(newMember.user.id) ?? null
+    if (!fetchedMember) {
+      messages.push(`Failed to fetch '${newMember.user.username}' [${newMember.id}] from '${newMember.guild.name}' [${newMember.guild.id}]`)
+      return [result, messages]
+    }
 
     // Fetch the log channel using the fetchedMember's guild ID
     const guildID = fetchedMember.guild.id
@@ -32,8 +39,8 @@ module.exports = async (client, newMember) => {
     const logChannel = await client.channels.fetch(guildChannels[log_type])
 
     if (!logChannel) {
-      console.warn('Log channel not found or is not text-based.')
-      return
+      messages.push('Log channel not found or is not text-based.')
+      return [result, messages]
     }
 
     let joinedDateTime = new Date(fetchedMember.joinedTimestamp)
@@ -54,14 +61,14 @@ module.exports = async (client, newMember) => {
           name: 'Member Joined',
           value: `[${fetchedMember.user.tag}]` +
             `(https://discord.com/users/${fetchedMember.user.id})` + " " +
-            `(ID: ${inlineCode(fetchedMember.user.id)})`
+            `[${inlineCode(fetchedMember.user.id)}]`
         }
       ],
       [
         // Who Joined?
         {
           name: "Member Link",
-          value: `<@${fetchedMember.user.id}>`
+          value: userMention(fetchedMember.user.id)
         }
       ],
       [
@@ -70,7 +77,7 @@ module.exports = async (client, newMember) => {
           name: 'Guild',
           value: [
             fetchedMember.guild.name,
-            `(ID: ${inlineCode(fetchedMember.guild.id)})`
+            `[${inlineCode(fetchedMember.guild.id)}]`
           ]
         }
       ]
@@ -91,9 +98,10 @@ module.exports = async (client, newMember) => {
 
     let console_log = {
       guild: fetchedMember.guild.name,
-      member: fetchedMember.user.tag
+      member: fetchedMember.user.tag,
+      action: "join"
     }
-    console.log("   " + JSON.stringify(console_log))
+    messages.push(JSON.stringify(console_log))
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -117,7 +125,7 @@ module.exports = async (client, newMember) => {
 
     // Send the log embed to the log channel
     // @ts-ignore
-    await logChannel.send({ embeds: [logEmbed] })
+    result = await logChannel.send({ embeds: [logEmbed] })
 
     // Save the joining member to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
@@ -139,6 +147,9 @@ module.exports = async (client, newMember) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    console.error('Error logging new member:', error)
+    messages.push('Error logging new member:', error)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

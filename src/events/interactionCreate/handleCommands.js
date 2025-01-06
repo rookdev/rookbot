@@ -4,7 +4,13 @@ const { MessageFlags } = require('discord.js')
 const getLocalCommands = require('../../utils/getLocalCommands')
 
 module.exports = async (client, interaction) => {
-  if (!interaction.isChatInputCommand()) return
+  let result = false
+  let messages = []
+
+  if (!interaction.isChatInputCommand()) {
+    messages.push(`Not a chat input command`)
+    return [result, messages]
+  }
 
   const roles = require('../../dbs/roles.json')
   const userIDs = require('../../dbs/userids.json')
@@ -25,13 +31,14 @@ module.exports = async (client, interaction) => {
             if (alias.name === interaction.commandName) {
               commandObject = cmd
               coptions = alias.options
-              console.log(`/${alias.name} is an alias of /${cmd.name} with`, coptions)
+              messages.push(`/${alias.name} is an alias of /${cmd.name} with`, coptions)
             }
           }
         }
       }
       if (!commandObject) {
-        return
+        messages.push(`No command object found`)
+        return [result, messages]
       }
     }
 
@@ -46,12 +53,14 @@ module.exports = async (client, interaction) => {
       }
       console.log(roleName,roleUserNames,roleUserIDs)
       if (!roleUserIDs.includes(interaction.member.id)) {
+        let content = `${client.profile.emojis.fail} Only BotDevs are allowed to run this command.`
         let intOptions = {
-          content: `${client.profile.emojis.fail} Only BotDevs are allowed to run this command.`,
+          content: content,
           flags: MessageFlags.Ephemeral
         }
         interaction.reply(intOptions)
-        return
+        messages.push(content)
+        return [result, messages]
       }
     }
 
@@ -63,24 +72,28 @@ module.exports = async (client, interaction) => {
         }
       }
       if (!(testGuilds.includes(interaction.guild.id))) {
+        let content = `${client.profile.emojis.fail} This command cannot be ran here.`
         let intOptions = {
-          content: `${client.profile.emojis.fail} This command cannot be ran here.`,
+          content: content,
           flags: MessageFlags.Ephemeral
         }
         interaction.reply(intOptions)
-        return
+        messages.push(content)
+        return [result, messages]
       }
     }
 
     if (commandObject.userPermissions?.length) {
       for (const permission of commandObject.userPermissions) {
         if (!interaction.member?.permissions.has(permission)) {
+          let content = `${client.profile.emojis.user} User is missing permissions.`
           let intOptions = {
-            content: `${client.profile.emojis.user} User is missing permissions.`,
+            content: content,
             flags: MessageFlags.Ephemeral
           }
           interaction.reply(intOptions)
-          return
+          messages.push(content)
+          return [result, messages]
         }
       }
     }
@@ -90,22 +103,27 @@ module.exports = async (client, interaction) => {
         const bot = interaction.guild.members.me
 
         if (!bot.permissions.has(permission)) {
+          let content = `${client.profile.emojis.bot} Bot is missing permissions.`
           let intOptions = {
-            content: `${client.profile.emojis.bot} Bot is missing permissions.`,
+            content: content,
             flags: MessageFlags.Ephemeral
           }
           interaction.reply(intOptions)
-          return
+          messages.push(content)
+          return [result, messages]
         }
       }
     }
 
-    await commandObject.execute(
+    result = await commandObject.execute(
       client,
       interaction,
       coptions
     )
   } catch (error) {
-    console.log(`There was an error running this command: ${error.stack}`)
+    messages.push(`There was an error running this command: ${error.stack}`)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

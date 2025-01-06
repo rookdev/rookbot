@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Formatters: inlineCode, italic
-const { inlineCode, italic } = require('discord.js')
+// Formatters: inlineCode, italic, userMention
+const { inlineCode, italic, userMention } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
@@ -18,21 +18,24 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {Message} newMessage
  */
 module.exports = async (client, oldMessage, newMessage) => {
+  let result = false
+  let messages = []
+
   try {
     // Check for invalid or undefined data
     if (!newMessage) {
-      console.warn('  MessageUpdate event received invalid data:', { oldMessage, newMessage })
-      return
+      messages.push('MessageUpdate event received invalid data:', { oldMessage, newMessage })
+      return [result, messages]
     }
 
     // Ensure the message is in a guild and not from a bot
     if (!newMessage.guild) {
-      console.warn('  MessageUpdate occurred outside of a guild:', newMessage)
-      return
+      messages.push('MessageUpdate occurred outside of a guild:', newMessage)
+      return [result, messages]
     }
     if (newMessage.author?.bot) {
-      // console.warn(`Message update from bot:`, newMessage)
-      return
+      // messages.push(`Message update from bot:`, newMessage)
+      return [result, messages]
     }
 
     // Fetch full messages if necessary
@@ -40,8 +43,8 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         oldMessage = await oldMessage.fetch()
       } catch (err) {
-        console.error('  Failed to fetch old message:', err)
-        return
+        messages.push('Failed to fetch old message:', err)
+        return [result, messages]
       }
     }
 
@@ -49,8 +52,8 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         newMessage = await newMessage.fetch()
       } catch (err) {
-        console.error('  Failed to fetch new message:', err)
-        return
+        console.error('Failed to fetch new message:', err)
+        return [result, messages]
       }
     }
 
@@ -61,7 +64,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     // Skip if the content hasn't changed
     if (oldContent === newContent) {
       // console.warn('  No content change detected.')
-      return
+      return [result, messages]
     }
 
     // Fetch the log channel using its ID
@@ -107,8 +110,8 @@ module.exports = async (client, oldMessage, newMessage) => {
           // Who wrote it?
           {
             name: 'Author',
-            value: `<@${newMessage.author.id}>` + " " +
-              `(ID: ${inlineCode(newMessage.author.id)})`
+            value: userMention(newMessage.author.id) + " " +
+              `[${inlineCode(newMessage.author.id)}]`
           }
         ],
         [
@@ -117,7 +120,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Guild',
             value: [
               newMessage.guild.name,
-              `(ID: ${inlineCode(newMessage.guild.id)})`
+              `[${inlineCode(newMessage.guild.id)}]`
             ]
           },
           // Channel Link
@@ -125,7 +128,7 @@ module.exports = async (client, oldMessage, newMessage) => {
             name: 'Channel',
             value: [
               `<#${newMessage.channel.id}>`,
-              `(ID: ${inlineCode(newMessage.channel.id)})`
+              `[${inlineCode(newMessage.channel.id)}]`
             ]
           }
         ],
@@ -133,8 +136,8 @@ module.exports = async (client, oldMessage, newMessage) => {
           // Message Link
           {
             name: 'Message',
-            value: newMessage.url +
-              `(ID: ${inlineCode(newMessage.id)})`
+            value: newMessage.url + " " +
+              `[${inlineCode(newMessage.id)}]`
           }
         ],
         [
@@ -161,14 +164,15 @@ module.exports = async (client, oldMessage, newMessage) => {
       channel: newMessage.channel.name,
       message: newMessage.id
     }
-    console.log("   " + JSON.stringify(console_log))
+    messages.push(JSON.stringify(console_log))
 
     // Send the embed to the log channel, if found and valid
     if (logChannel) {
       // @ts-ignore
-      await logChannel.send({ embeds: [embed] })
+      result = await logChannel.send({ embeds: [embed] })
     } else {
-      console.warn('Log channel not found.')
+      messages.push('Log channel not found.')
+      return [result, messages]
     }
 
     // Save the edited message to a log file
@@ -196,6 +200,9 @@ module.exports = async (client, oldMessage, newMessage) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    console.error('Error in logEditedMessage handler:', error)
+    messages.push('Error in logEditedMessage handler:', error)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

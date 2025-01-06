@@ -7,12 +7,14 @@
  *  Permission Flags Bits
  *  Formatters
  *   bold
+ *   userMention
  */
 const {
   ApplicationCommandOptionType,
   AuditLogEvent,
   PermissionFlagsBits,
-  bold
+  bold,
+  userMention
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const timeFormat = require('../../utils/timeFormat')
@@ -275,19 +277,19 @@ module.exports = class SearchCommand extends ModCommand {
             "User"
           ]) {
             if(field_name.includes(userType)) {
-              field_value = `<@${this_ids[userType]}> (ID: ${inlineCode(this_ids[userType])})`
+              field_value = `${userMention(this_ids[userType])} [${inlineCode(this_ids[userType])}]`
             }
           }
           if (field_name.includes("Channel")) {
             field_value = `<#${this_ids['Channel']}>` + " " +
-              `(ID: ${inlineCode(this_ids['Channel'])})`
+              `[${inlineCode(this_ids['Channel'])}]`
           } else if (field_name.includes("Message")) {
             field_name = "Message"
             field_value = "https://discord.com/channels"
-            field_value = `${field_value}/${this_ids['Guild']}`
-            field_value = `${field_value}/${this_ids['Channel']}`
-            field_value = `${field_value}/${this_ids['Message ID']}`
-            field_value = `${field_value} (ID: ${inlineCode(this_ids['Message ID'])})`
+            field_value += `/${this_ids['Guild']}`
+            field_value += `/${this_ids['Channel']}`
+            field_value += `/${this_ids['Message ID']}`
+            field_value += ` [${inlineCode(this_ids['Message ID'])}]`
           }
           this_props.fields?.push(
             [

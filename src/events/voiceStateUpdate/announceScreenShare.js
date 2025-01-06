@@ -19,6 +19,9 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {VoiceState} newState
  */
 module.exports = async (client, oldState, newState) => {
+  let result = false
+  let messages = []
+
   if (
     !oldState.streaming &&
     newState.streaming &&
@@ -27,32 +30,32 @@ module.exports = async (client, oldState, newState) => {
   ) {
     const channelID = await newState.channelId
     if (!channelID) {
-      console.log("No Channel ID")
-      return false
+      messages.push("No Channel ID")
+      return [result, messages]
     }
 
     const guild = await newState.guild
     if (!guild) {
-      console.log("No Guild")
-      return false
+      messages.push("No Guild")
+      return [result, messages]
     }
 
     const member = await newState.member
     if (!member) {
-      console.log("No Member")
-      return false
+      messages.push("No Member")
+      return [result, messages]
     }
 
     const channels = await newState.guild.channels
     if (!channels) {
-      console.log("No Channels")
-      return false
+      messages.push("No Channels")
+      return [result, messages]
     }
 
     const channel = await channels.fetch(channelID)
     if (!channel) {
-      console.log("No Channel")
-      return false
+      messages.push("No Channel")
+      return [result, messages]
     }
 
     let props = {
@@ -92,19 +95,31 @@ module.exports = async (client, oldState, newState) => {
     if (fs.existsSync(channelsJSONPath)) {
       // Find the Guild Channel to send the embed to
       let channelIDs = require(channelsJSONPath)
-      if (!channelIDs) { this.error = true; return }
+      if (!channelIDs) { return [false, []] }
 
       let channelID = channelIDs["stream-alerts"]
-      if (!channelID) { this.error = true; return }
+      if (!channelID) { return [false, []] }
 
       let guild = await client.guilds.fetch(guildID)
-      if (!guild) { this.error = true; return }
+      if (!guild) { return [false, []] }
 
-      let channel = await guild?.channels.fetch(channelID)
-      if (!channel) { this.error = true; return }
+      let destChannel = await guild?.channels.fetch(channelID)
+      if (!destChannel) { return [false, []] }
 
       let this_package = { embeds: [ embed ] }
-      await channel.send(this_package)
+      result = await destChannel.send(this_package)
+
+      messages.push(
+        JSON.stringify(
+          {
+            guild: member.guild.name,
+            member: member.user.username,
+            channel: channel.name
+          }
+        )
+      )
     }
   }
+
+  return [result, messages]
 }

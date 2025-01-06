@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Guild Member, Formatters: inlineCode
-const { GuildMember, inlineCode } = require('discord.js')
+// Guild Member, Formatters: inlineCode, userMention
+const { GuildMember, inlineCode, userMention } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
@@ -17,6 +17,9 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {GuildMember} oldMember
  */
 module.exports = async (client, oldMember) => {
+  let result = false
+  let messages = []
+
   try {
     // Fetch the log channel using the oldMember's guild ID
     const guildID = oldMember.guild.id
@@ -29,8 +32,8 @@ module.exports = async (client, oldMember) => {
     const logChannel = await client.channels.fetch(guildChannels[log_type])
 
     if (!logChannel) {
-      console.warn('Log channel not found or is not text-based.')
-      return
+      messages.push('Log channel not found or is not text-based.')
+      return [result, messages]
     }
 
     const leftDateTime = new Date()
@@ -69,14 +72,14 @@ module.exports = async (client, oldMember) => {
             name: 'Member Left',
             value: `[${oldMember.user.tag}]` +
               `(https://discord.com/users/${oldMember.user.id})` + " " +
-              `(ID: ${inlineCode(oldMember.user.id)})`
+              `[${inlineCode(oldMember.user.id)}]`
           }
         ],
         [
           // Who Left?
           {
             name: "Member Link",
-            value: `<@${oldMember.user.id}>`
+            value: userMention(oldMember.user.id)
           }
         ],
         [
@@ -85,7 +88,7 @@ module.exports = async (client, oldMember) => {
             name: 'Guild',
             value: [
               oldMember.guild.name,
-              `(ID: ${inlineCode(oldMember.guild.id)})`
+              `[${inlineCode(oldMember.guild.id)}]`
             ]
           }
         ]
@@ -94,13 +97,14 @@ module.exports = async (client, oldMember) => {
 
     let console_log = {
       guild: oldMember.guild.name,
-      member: oldMember.user.tag
+      member: oldMember.user.tag,
+      action: "leave"
     }
-    console.log("   " + JSON.stringify(console_log))
+    messages.push(JSON.stringify(console_log))
 
     // Send the log embed to the log channel
     // @ts-ignore
-    await logChannel.send({ embeds: [logEmbed] })
+    result = await logChannel.send({ embeds: [logEmbed] })
 
     // Save the leaving member to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
@@ -122,6 +126,9 @@ module.exports = async (client, oldMember) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    console.error('Error logging member leave:', error)
+    messages.push('Error logging member leave:', error)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

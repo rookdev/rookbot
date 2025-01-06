@@ -144,7 +144,7 @@ module.exports = class LockdownCommand extends ModCommand {
             [
               {
                 name: `Action Performed By`,
-                value: `${interaction.user}\n(ID: ${interaction.user.id})`,
+                value: [interaction.user, `[${interaction.user.id}]`],
               }
             ]
           ]

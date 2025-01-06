@@ -141,11 +141,27 @@ module.exports = class PullCommand extends BotDevCommand {
       (user ? user.username : "") +
       ` v${this.profile.PACKAGE.version}!`
     )
+    let ci_data = require(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "resources",
+        "app",
+        "meta",
+        "manifests",
+        "ci"
+      )
+    )
+    let git_info = ci_data.common.common.repo
+    git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
+
     this.props = {
       title: {
         text: console_output[1],
         emoji: "⏫",
-        url: "https://github.com/mysterypaintwo/rookbot"
+        url: git_info.root
       }
     }
 
@@ -156,14 +172,6 @@ module.exports = class PullCommand extends BotDevCommand {
       `Previous Commit: [${COMMITS.prev}]`,
       ""
     )
-
-    // Git Repository info
-    // FIXME: Extrapolate
-    let git_info = {
-      user: "mysterypaintwo",
-      repo: "rookbot"
-    }
-    git_info.root = `https://github.com/${git_info.user}/${git_info.repo}`
 
     // console.log(console_output)
 

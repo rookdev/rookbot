@@ -9,6 +9,8 @@
  *   codeBlock
  *   inlineCode
  *   italic
+ *   roleMention
+ *   userMention
  */
 const {
   ApplicationCommandOptionType,
@@ -16,7 +18,9 @@ const {
   GuildEmoji,
   codeBlock,
   inlineCode,
-  italic
+  italic,
+  roleMention,
+  userMention
 } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
@@ -251,7 +255,7 @@ module.exports = class MentionCommand extends RookCommand {
         break
       // Role
       case "role":
-        targetMention = `<@&${targetId}>`
+        targetMention = roleMention(targetId)
         if (guild) {
           let role = await guild.roles.fetch(targetId)
           if (role) {
@@ -290,7 +294,7 @@ module.exports = class MentionCommand extends RookCommand {
         break
       // User
       case "user":
-        targetMention = `<@!${targetId}>`
+        targetMention = userMention(targetId)
         if (guild) {
           // Get Guild Member
           let targetMember = await guild?.members?.fetch(targetId)

@@ -58,7 +58,7 @@ module.exports = async (hashID, gameID="z3r") => {
   if (gameID == "z3r") {
     hash_meta = await get_url(`http://alttp.mymm1.com/seeds/meta.php?hash=${hashID}`)
 
-    if (!hash_meta?.hash) {
+    if (!hash_meta?.generated) {
       // Hash Data not found
       return [
         [

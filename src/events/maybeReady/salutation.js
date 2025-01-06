@@ -1,6 +1,9 @@
 // @ts-nocheck
 
 module.exports = async (client, interaction, mode) => {
+  let result = false
+  let messages = []
+
   // Get Salutation Command
   let cmd_defn = require(`../../commands/app/${mode}`)
 
@@ -8,5 +11,7 @@ module.exports = async (client, interaction, mode) => {
   let cmd_obj = new cmd_defn(client)
 
   // Execute Salutation Command
-  await cmd_obj.execute(client, interaction)
+  result = await cmd_obj.execute(client, interaction)
+
+  return [result, messages]
 }

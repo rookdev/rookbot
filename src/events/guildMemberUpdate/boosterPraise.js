@@ -11,6 +11,9 @@ const fs = require('fs')
  * @param {GuildMember} newMember
  */
 module.exports = async (client, oldMember, newMember) => {
+  let result = false
+  let messages = []
+
   let boostRoleID = newMember.guild.roles.premiumSubscriberRole?.id
   if (!boostRoleID) {
     let rolesPath = path.join(
@@ -25,22 +28,22 @@ module.exports = async (client, oldMember, newMember) => {
     if (fs.existsSync(rolesPath)) {
       let roleNames = require(rolesPath)
       if (!roleNames) {
-        return
+        return [false, []]
       }
 
       let boostRoleNames = roleNames?.booster
       if (!boostRoleNames) {
-        return
+        return [false, []]
       }
       if (boostRoleNames.length < 1) {
-        return
+        return [false, []]
       }
 
       let boostRole = await newMember.guild.roles.cache.find(
         r => r.name === roleNames.booster[0]
       )
       if (!boostRole) {
-        return
+        return [false, []]
       }
 
       boostRoleID = boostRole?.id
@@ -48,8 +51,8 @@ module.exports = async (client, oldMember, newMember) => {
   }
 
   if (!boostRoleID) {
-    console.log(`Failed to get Boost Role ID for '${newMember.guild.name}'!`)
-    return
+    messages.push(`Failed to get Boost Role ID for '${newMember.guild.name}'!`)
+    return [result, messages]
   }
 
   let hadBoost = await oldMember.roles.cache.has(boostRoleID)
@@ -116,9 +119,12 @@ module.exports = async (client, oldMember, newMember) => {
     // Send the embed to the log channel, if found and valid
     if (logChannel) {
       // @ts-ignore
-      await logChannel.send({ embeds: [ embed.toJSON() ] })
+      result = await logChannel.send({ embeds: [ embed.toJSON() ] })
     } else {
-      console.warn('Log channel not found.')
+      messages.push('Log channel not found.')
+      return [result, messages]
     }
   }
+
+  return [result, messages]
 }

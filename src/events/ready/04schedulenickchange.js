@@ -11,6 +11,9 @@ function natSort(a, b) {
 }
 
 module.exports = async (client) => {
+  let result = false
+  let messages = []
+
   // Get nickname data
   let nicknameDataPath = path.join(
     __dirname,
@@ -34,7 +37,8 @@ module.exports = async (client) => {
     // Skip first document
     .slice(1)
     .sort(natSort)
-  // Cycle through users
+
+    // Cycle through users
   for(let userID of users) {
     // Guilds to search in
     let guilds = fs.readdirSync(path.join(nicknameDataPath,".."))
@@ -43,7 +47,8 @@ module.exports = async (client) => {
         (fileName) => numFuncs.myIsNumeric(fileName)
       )
       .sort(natSort)
-    // Cycle through guilds
+
+      // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
       let guild = await client.guilds.cache.find(
@@ -58,7 +63,7 @@ module.exports = async (client) => {
         const member = await guild.members.fetch(userID, { force: true }) ?? null
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
-          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          messages.push(`Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
           continue
         }
 
@@ -69,17 +74,21 @@ module.exports = async (client) => {
 
         // If member is at or over bot, bail
         if (memberPos >= clientPos) {
-          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
+          messages.push(`Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
           continue
         }
 
         if (member) {
           // If we got here, schedule the nickname change
-          await scheduleNicknameChange(client, member)
+          let [thisResult, thisMessages] = await scheduleNicknameChange(client, member)
+          result = thisResult
+          messages = messages.concat(thisMessages)
         }
       } catch (error) {
         const member = null
       }
     }
   }
+
+  return [result, messages]
 }

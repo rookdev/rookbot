@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Audit Log Events, Guild Member, Formatters: inlineCode
-const { AuditLogEvent, GuildMember, inlineCode } = require('discord.js')
+// Audit Log Events, Guild Member, Formatters: inlineCode, userMention
+const { AuditLogEvent, GuildMember, inlineCode, userMention } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
@@ -18,17 +18,20 @@ const fs = require('fs')      // Filesystem manipulation
  * @param {GuildMember} newMember
  */
 module.exports = async (client, oldMember, newMember) => {
+  let result = false
+  let messages = []
+
   try {
     // Check if the nickname has changed
     if (oldMember.nickname === newMember.nickname) {
-      console.warn('   No nickname change detected.')
-      return false
+      // messages.push('No nickname change detected.')
+      return [result, messages]
     }
 
     // Ensure the member is in a guild
     if (!newMember.guild) {
-      console.warn('   GuildMemberUpdate occurred outside of a guild:', newMember)
-      return false
+      messages.push('GuildMemberUpdate occurred outside of a guild:', newMember)
+      return [result, messages]
     }
 
     // Fetch a couple audit logs than just one as new entries could've been added right after this event was emitted.
@@ -97,8 +100,8 @@ module.exports = async (client, oldMember, newMember) => {
         // User being Edited
         {
           name: 'User',
-          value: `<@${newMember.user.id}>` + " " +
-            `(ID: ${inlineCode(newMember.user.id)})`
+          value: userMention(newMember.user.id) + " " +
+            `[${inlineCode(newMember.user.id)}]`
         }
       ]
     )
@@ -112,8 +115,8 @@ module.exports = async (client, oldMember, newMember) => {
         [
           {
             name: 'Updater',
-            value: `<@${updater.id}>` + " " +
-              `(ID: ${inlineCode(updater.id)})`
+            value: userMention(updater.id) + " " +
+              `[${inlineCode(updater.id)}]`
           }
         ]
       )
@@ -143,7 +146,7 @@ module.exports = async (client, oldMember, newMember) => {
           name: 'Guild',
           value: [
             newMember.guild.name,
-            `(ID: ${inlineCode(newMember.guild.id)})`
+            `[${inlineCode(newMember.guild.id)}]`
           ]
         }
       ],
@@ -176,10 +179,11 @@ module.exports = async (client, oldMember, newMember) => {
     let console_log = {
       guild: newMember.guild.name,
       member: newMember.user.tag,
+      action: "edit",
       oldName: oldNick,
       newName: newNick
     }
-    console.log("   " + JSON.stringify(console_log))
+    messages.push(JSON.stringify(console_log))
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
@@ -194,9 +198,9 @@ module.exports = async (client, oldMember, newMember) => {
     // Send the embed to the log channel, if found and valid
     if (logChannel) {
       // @ts-ignore
-      await logChannel.send({ embeds: [ embed.toJSON() ] })
+      result = await logChannel.send({ embeds: [ embed.toJSON() ] })
     } else {
-      console.warn('Log channel not found.')
+      messages.push('Log channel not found.')
     }
 
     // Optional: Save the nickname change to a log file
@@ -221,6 +225,9 @@ module.exports = async (client, oldMember, newMember) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    console.error('Error in logNameChange handler:', error)
+    messages.push('Error in logNameChange handler:', error)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

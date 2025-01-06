@@ -4,16 +4,26 @@
 const { hyperlink } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const path = require('path')  // Easier path management
+const fs = require('fs')      // Filesystem manipulation
 
 module.exports = class BotSourceCommand extends RookCommand {
   constructor(client) {
-    // Git Repository info
-    // FIXME: Extrapolate
-    let git_info = {
-      user: "mysterypaintwo",
-      repo: "rookbot"
-    }
-    git_info.root = `https://github.com/${git_info.user}/${git_info.repo}`
+    let ci_data = require(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "resources",
+        "app",
+        "meta",
+        "manifests",
+        "ci"
+      )
+    )
+    let git_info = ci_data.common.common.repo
+    git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 
     let comprops = {
       name: "botsrc",

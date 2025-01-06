@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Formatters: codeBlock, inlineCode, bold
-const { codeBlock, inlineCode, bold } = require('discord.js')
+// Formatters: codeBlock, inlineCode, bold, userMention
+const { codeBlock, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
@@ -78,8 +78,8 @@ module.exports = class GuildStatusCommand extends RookCommand {
           {
             name: "Owner",
             value: [
-              `<@${interaction.guild.ownerId}>`,
-              `(ID: ${inlineCode(interaction.guild.ownerId)})`
+              userMention(interaction.guild.ownerId),
+              `[${inlineCode(interaction.guild.ownerId)}]`
             ]
           }
         ]

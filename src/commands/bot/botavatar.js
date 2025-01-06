@@ -51,9 +51,25 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
     }
 
     try {
+      let ci_data = require(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "resources",
+          "app",
+          "meta",
+          "manifests",
+          "ci"
+        )
+      )
+      let git_info = ci_data.common.common.repo
+      git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
+
       // Default or Reset sets it back to White rookbot
       if (["default","reset"].includes(new_avatar)) {
-        new_avatar = "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true"
+        new_avatar = `${git_info.root}/blob/main/src/res/media/rookbotIcon.png?raw=true`
       }
 
       // Set the new Avatar

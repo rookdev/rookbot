@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Formatters: inlineCode, bold
-const { ApplicationCommandOptionType, inlineCode, bold } = require('discord.js')
+// Command Option Types, Formatters: inlineCode, bold, userMention
+const { ApplicationCommandOptionType, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
@@ -121,8 +121,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
           .addRow("Tier",tier)
           .addRow("")
         this.props.description.push(
-          bold(`Guild:`) + ` ${guildData.guild.name} (ID:${inlineCode(guildData.guild.id)})`,
-          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} (ID:${inlineCode(guildData.owner.id)}, <@${guildData.owner.id}>)`,
+          bold(`Guild:`) + ` ${guildData.guild.name} [${inlineCode(guildData.guild.id)}]`,
+          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${userMention(guildData.owner.id)}]`,
           bold(`Added:`) + ` ${guildData.addedHammertime}`,
           bold(`Tier:`) + ` ${tier}`,
           ""

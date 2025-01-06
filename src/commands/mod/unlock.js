@@ -83,8 +83,8 @@ module.exports = class UnlockCommand extends ModCommand {
           title: { text: "[Log] Channel Unlocked", emoji: this.profile.emojis.unlock },
           fields: [
             [
-              { name: 'Channel Unlocked', value: `<#${channel.id}>\n(ID: ${channel.id})` },
-              { name: 'Unlocked By',      value: `${interaction.user}\n(ID: ${interaction.user.id})` }
+              { name: 'Channel Unlocked', value: [`<#${channel.id}>`, `[${channel.id}]`] },
+              { name: 'Unlocked By',      value: [interaction.user, `[${interaction.user.id}]`] }
             ]
           ]
         }

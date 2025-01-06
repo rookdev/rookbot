@@ -18,6 +18,9 @@ Array.prototype.remove = function(from, to) {
 }
 
 module.exports = async (client, interaction) => {
+  let result = false
+  let messages = []
+
   if(interaction && interaction.isAutocomplete()) {
     let focused = await interaction.options.getFocused(true)
 
@@ -63,4 +66,6 @@ module.exports = async (client, interaction) => {
       interaction.respond(newoptions)
     }
   }
+
+  return [result, messages]
 }

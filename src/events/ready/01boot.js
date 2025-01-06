@@ -4,13 +4,16 @@ const manageCommands = require('../../utils/manageCommands')
 const emojis = require('../../dbs/emojis.json')
 
 module.exports = async (client) => {
+  let result = false
+  let messages = []
+
   let GLOBALS = client.profile
 
   console.log(JSON.stringify(emojis))
 
   // Optional: Delete commands if enabled in the profile
   if (GLOBALS.deleteCommands) {
-    await manageCommands(
+    result = await manageCommands(
       {
         delete: GLOBALS.deleteCommands,
         purge: GLOBALS.purgeCommands
@@ -21,6 +24,9 @@ module.exports = async (client) => {
       process.env.TOKEN
     )
   } else {
-    console.log(`  ${client.profile.emojis.good} Command deletion is disabled.`)
+    messages.push(`${client.profile.emojis.good} Command deletion is disabled.`)
+    return [result, messages]
   }
+
+  return [result, messages]
 }

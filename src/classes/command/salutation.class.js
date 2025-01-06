@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Formatters: codeBlock, inlineCode, hyperlink
-const { codeBlock, inlineCode, hyperlink } = require('discord.js')
+// Formatters: codeBlock, inlineCode, hyperlink, userMention
+const { codeBlock, inlineCode, hyperlink, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('./rcommand.class')
 // Base Rook Embed
@@ -85,13 +85,21 @@ class SalutationCommand extends RookCommand {
     }
     mode_msg = `${mode_tag} ${mode_msg} ${mode_tag}`
 
-    // Git Repository info
-    // FIXME: Extrapolate
-    let git_info = {
-      user: "mysterypaintwo",
-      repo: "rookbot"
-    }
-    git_info.root = `https://github.com/${git_info.user}/${git_info.repo}`
+    let ci_data = require(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "resources",
+        "app",
+        "meta",
+        "manifests",
+        "ci"
+      )
+    )
+    let git_info = ci_data.common.common.repo
+    git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 
     // Get Branch
     try {
@@ -148,13 +156,13 @@ class SalutationCommand extends RookCommand {
       // Development Mode
       console_output.push(
         mode_msg,
-        `Footer Tag:  "${this.profile.name}"`
+        `Footer Tag:    "${this.profile.name}"`
       )
     } else {
       // Production Mode
       console_output.push(
         mode_msg,
-        'Footer Tag:  "' + (user ? user.username : "") + '"'
+        'Footer Tag:    "' + (user ? user.username : "") + '"'
       )
     }
 
@@ -227,7 +235,7 @@ class SalutationCommand extends RookCommand {
               .replace(
                 this.profile.name,
                 this.profile?.discord?.user?.id ?
-                `<@${this.profile.discord.user.id}>` :
+                userMention(this.profile.discord.user.id) :
                 this.profile.name
               )
         },
@@ -321,7 +329,7 @@ class SalutationCommand extends RookCommand {
               console_output[8]
                 .replace(
                   "Bot",
-                  `<@${user.id}>`
+                  userMention(user.id)
                 ) :
                 console_output[8]
         }

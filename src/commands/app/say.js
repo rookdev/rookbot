@@ -94,12 +94,12 @@ module.exports = class SayCommand extends ModCommand {
     let message = null
 
     if (!client) {
-      console.log("No client sent")
+      // console.log("No client sent")
       return false
     }
 
     if (!messageURL || (messageURL == "")) {
-      // No message URL sent
+      // console.log("No message URL sent")
       return false
     }
 
@@ -193,7 +193,7 @@ module.exports = class SayCommand extends ModCommand {
       webhooks = await interaction.guild.fetchWebhooks()
       if (!webhooks) {
         this.error = true
-        this.props.description = `Couldn't load webhooks for ${italic(interaction.guild.name)} (ID: ${inlineCode(interaction.guild.id)})`
+        this.props.description = `Couldn't load webhooks for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
         return false
       }
 
@@ -219,7 +219,7 @@ module.exports = class SayCommand extends ModCommand {
 
       if (!rookhook) {
         this.error = true
-        this.props.description = `rookhook not found for ${italic(interaction.guild.name)} (ID: ${inlineCode(interaction.guild.id)})`
+        this.props.description = `rookhook not found for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
         return false
       }
 
@@ -257,7 +257,7 @@ module.exports = class SayCommand extends ModCommand {
 
         if (!rookhookEdit) {
           this.error = true
-          this.props.description = `Couldn't edit rookhook (ID: ${inlineCode(webhookID)})`
+          this.props.description = `Couldn't edit rookhook [${inlineCode(webhookID)}]`
           return false
         }
 
@@ -432,7 +432,7 @@ module.exports = class SayCommand extends ModCommand {
         )
 
         if (!rookhookEdit) {
-          console.log("Couldn't reset rookhook!")
+          // console.log("Couldn't reset rookhook!")
         }
       }
     }
@@ -463,7 +463,7 @@ module.exports = class SayCommand extends ModCommand {
             // Whodunnit?
             {
               name: "User",
-              value: `${interaction.user} (ID: ${inlineCode(interaction.user.id)})`
+              value: `${interaction.user} [${inlineCode(interaction.user.id)}]`
             }
           ],
           [
@@ -487,7 +487,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   interaction?.guild?.name,
-                  `(ID: ${inlineCode(interaction?.guild?.id)})`
+                  `[${inlineCode(interaction?.guild?.id)}]`
                 ]
             },
             // Sent to what Channel?
@@ -496,7 +496,7 @@ module.exports = class SayCommand extends ModCommand {
               value:
                 [
                   `<#${result?.channel?.id}>`,
-                  `(ID: ${inlineCode(channel?.id)})`
+                  `[${inlineCode(channel?.id)}]`
                 ]
             }
           ],
@@ -504,7 +504,7 @@ module.exports = class SayCommand extends ModCommand {
             // Message Link
             {
               name: "Message",
-              value: `${result.url} (ID: ${inlineCode(result?.id)})`
+              value: `${result.url} [${inlineCode(result?.id)}]`
             }
           ],
           [

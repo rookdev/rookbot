@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// Formatters: userMention
+const { userMention } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
@@ -95,7 +97,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         target: "guild"
       }
 
-      this.props.description = `${action} <@${client.user?.id}>`
+      this.props.description = `${action} ${userMention(client.user?.id)}`
 
       // Post action taking place
       let this_embed = await new RookEmbed(client, this.props)
