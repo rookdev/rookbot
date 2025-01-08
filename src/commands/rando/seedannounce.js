@@ -203,7 +203,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Role to ping
     let roleID = coptions['pingable-role-id'] ?? 0
     // Seed URL
-    const seedURL = coptions['seed-url'] ?? null
+    let seedURL = coptions['seed-url'] ?? null
     // Prep time length
     const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
     // Scheduled Time
@@ -239,10 +239,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (scheduledTime) {
       let scheduledDateTime = null
       if (numFuncs.myIsNumeric(scheduledTime)) {
-        console.log(`Numeric: ${scheduledTime}`)
+        // console.log(`Numeric: ${scheduledTime}`)
         scheduledDateTime = new Date(parseInt(scheduledTime))
       } else {
-        console.log(`Not Numeric: ${scheduledTime}`)
+        // console.log(`Not Numeric: ${scheduledTime}`)
         scheduledDateTime = strtotime(scheduledTime)
       }
       if (!scheduledDateTime) {
@@ -250,7 +250,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         this.props.description = `Couldn't figure out a DateTime from '${scheduledTime}'.`
         return false
       }
-      adjustedDateTime = scheduledDateTime
+      adjustedDateTime = new Date(parseInt(scheduledDateTime))
     }
 
     // Get Rando Database file

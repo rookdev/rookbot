@@ -31,7 +31,7 @@ module.exports = async (client, interaction) => {
             if (alias.name === interaction.commandName) {
               commandObject = cmd
               coptions = alias.options
-              messages.push(`/${alias.name} is an alias of /${cmd.name} with`, coptions)
+              messages.push(`/${alias.name} is an alias of /${cmd.name} with ` + JSON.stringify(coptions))
             }
           }
         }
@@ -115,6 +115,14 @@ module.exports = async (client, interaction) => {
       }
     }
 
+    if (messages.length) {
+      console.log(
+        messages.map(
+          m => "   " + m
+        ).join("\n")
+      )
+      messages = []
+    }
     result = await commandObject.execute(
       client,
       interaction,
