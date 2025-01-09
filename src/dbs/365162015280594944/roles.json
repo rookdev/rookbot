@@ -1,0 +1,23 @@
+{
+  "admin":  [
+    "Management"
+  ],
+  "botdev": [
+    "Discord Manager"
+  ],
+  "mod": [
+    "Management"
+  ],
+  "booster": [
+    "Server Booster"
+  ],
+  "access": [
+    "Accepted Values"
+  ],
+  "member": [
+    "Fishy"
+  ],
+  "muted": [
+    "Flounder"
+  ]
+}
