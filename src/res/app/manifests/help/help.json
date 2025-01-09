@@ -665,6 +665,29 @@
       "access": "Mod",
       "segment": "local"
     },
+    "role_profile": {
+      "name": "role_profile",
+      "category": "mod",
+      "description": "Apply a Role Profile to a member",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to apply the role profile to.",
+          "required": true
+        },
+        {
+          "name": "profile",
+          "description": "The name of the profile to apply",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "Reason for applying the profile"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
     "role_remove": {
       "name": "role_remove",
       "category": "mod",

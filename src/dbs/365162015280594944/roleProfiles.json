@@ -1,0 +1,28 @@
+{
+  "CS2": {
+    "add": [
+      "TRDT | CS2",
+      "Team Member"
+    ],
+    "prefix": "CS2 | "
+  },
+  "Trackmania": {
+    "add": [
+      "TRDT | Trackmania",
+      "Team Member"
+    ],
+    "prefix": "TM | "
+  },
+  "VALORANT": {
+    "add": [
+      "TRDT | VALORANT"
+    ],
+    "prefix": "VAL | "
+  },
+  "Disband": {
+    "only": [
+      "Trident Friend"
+    ],
+    "prefix": "<NONE>"
+  }
+}

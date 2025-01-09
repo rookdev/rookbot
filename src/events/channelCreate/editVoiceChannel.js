@@ -26,7 +26,7 @@ async function selectName(newChannel) {
   if (fs.existsSync(namesPath + ".json")) {
     namesDB = require(namesPath)
   } else {
-    console.log(`   No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
+    console.log(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
     return newName
   }
 
@@ -41,7 +41,7 @@ async function selectName(newChannel) {
   }
 
   if (!changeName) {
-    console.log(`   '${newChannel.name}' of '${newChannel.guild.name}' not in a specified category`)
+    console.log(`'${newChannel.name}' of '${newChannel.guild.name}' not in a specified category`)
     return newName
   }
 
@@ -95,7 +95,7 @@ module.exports = async (client, newChannel) => {
   }
 
   if (!newChannel.isVoiceBased()) {
-    messages.push(`   '${newChannel.name}' of '${newChannel.guild.name}' is not a Voice-based channel`)
+    messages.push(`'${newChannel.name}' of '${newChannel.guild.name}' is not a Voice-based channel`)
     return [result, messages]
   }
 

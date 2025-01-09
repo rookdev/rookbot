@@ -1,0 +1,17 @@
+{
+  "Cheese Wagon Brigade": {
+    "add": [ "Cheese Wagon Brigade", "Pub Trivia" ],
+    "prefix": "🚌 | "
+  },
+  "Pub Trivia": {
+    "add": [ "Pub Trivia" ],
+    "prefix": "🍺 | "
+  },
+  "Member": {
+    "add": [ "Member" ],
+    "prefix": "🖥️ | "
+  },
+  "Reset Member": {
+    "only": [ "Member" ]
+  }
+}

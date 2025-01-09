@@ -133,10 +133,10 @@ class ModCommand extends AdminCommand {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await interaction.guild?.roles.fetch(addRole)
+        addRole = await interaction.guild.roles.fetch(addRole)
       } else {
         // Search for the Role object by Role Name
-        addRole = await interaction.guild?.roles.cache.find(
+        addRole = await interaction.guild.roles.cache.find(
           role => role.name === addRole
         )
       }
@@ -173,10 +173,10 @@ class ModCommand extends AdminCommand {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await interaction.guild?.roles.fetch(remRole)
+        remRole = await interaction.guild.roles.fetch(remRole)
       } else {
         // Search for the Role object by Role Name
-        remRole = await interaction.guild?.roles.cache.find(
+        remRole = await interaction.guild.roles.cache.find(
           role => role.name === remRole
         )
       }
@@ -334,7 +334,10 @@ class ModCommand extends AdminCommand {
     if (interaction) {
       if (interaction?.guild.id) {
         if (
-          (interaction.guild.id === "1282788953052676177") &&
+          ([
+            "1282788953052676177", // DoI Main
+            "365162015280594944", // Trident Esports Main
+          ].includes(interaction.guild.id)) &&
           (interaction.user.username != "matrethewey")
         ) {
           this.error = true
