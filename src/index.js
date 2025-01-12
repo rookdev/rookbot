@@ -1,8 +1,8 @@
 // @ts-nocheck
 // Set up env vars
 require('@dotenvx/dotenvx').config()
-// Get Intents bitfields
-const { IntentsBitField } = require('discord.js')
+// Get Intents bitfields, Partials
+const { IntentsBitField, Partials } = require('discord.js')
 // Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
 // Event Handler
@@ -120,10 +120,15 @@ const client = new RookClient(
     intents: [
       IntentsBitField.Flags.Guilds,
       IntentsBitField.Flags.GuildMembers,
+      IntentsBitField.Flags.GuildMessageReactions,
       IntentsBitField.Flags.GuildMessages,
       IntentsBitField.Flags.GuildPresences,
       IntentsBitField.Flags.GuildVoiceStates,
       IntentsBitField.Flags.MessageContent
+    ],
+    partials: [
+      Partials.Message,
+      Partials.Reaction
     ],
     // Allow bot to mention roles
     allowedMentions: { parse: ["roles"] }

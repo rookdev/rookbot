@@ -84,41 +84,42 @@ module.exports = async (client, oldState, newState) => {
     let embed = new RookEmbed(client, props)
 
     let guildID = member.guild.id
-    let channelsJSONPath = path.join(
+    const guildChannelsPath = path.join(
       __dirname,
       "..",
       "..",
       "dbs",
       guildID,
-      "channels.json"
+      "channels"
     )
-    if (fs.existsSync(channelsJSONPath)) {
-      // Find the Guild Channel to send the embed to
-      let channelIDs = require(channelsJSONPath)
-      if (!channelIDs) { return [false, []] }
-
-      let channelID = channelIDs["stream-alerts"]
-      if (!channelID) { return [false, []] }
-
-      let guild = await client.guilds.fetch(guildID)
-      if (!guild) { return [false, []] }
-
-      let destChannel = await guild?.channels.fetch(channelID)
-      if (!destChannel) { return [false, []] }
-
-      let this_package = { embeds: [ embed ] }
-      result = await destChannel.send(this_package)
-
-      messages.push(
-        JSON.stringify(
-          {
-            guild: member.guild.name,
-            member: member.user.username,
-            channel: channel.name
-          }
-        )
-      )
+    if (!fs.existsSync(guildChannelsPath + ".json")) {
+      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      return [result, messages]
     }
+
+    const guildChannels = require(guildChannelsPath)
+    let destChannelID = guildChannels["stream-alerts"]
+
+    if (!destChannelID) {
+      messages.push(`Stream Alerts channel not found for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      return [result, messages]
+    }
+
+    let destChannel = await guild?.channels.fetch(destChannelID)
+    if (!destChannel) { return [false, []] }
+
+    let this_package = { embeds: [ embed ] }
+    result = await destChannel.send(this_package)
+
+    messages.push(
+      JSON.stringify(
+        {
+          guild: member.guild.name,
+          member: member.user.username,
+          channel: channel.name
+        }
+      )
+    )
   }
 
   return [result, messages]

@@ -382,63 +382,87 @@ class SalutationCommand extends RookCommand {
           guildID,
           "channels.json"
         )
+        let channelIDs = {}
+        let guild = await client.guilds.fetch(guildID)
+        let channel = null
+
         if (fs.existsSync(channelsJSONPath)) {
           // Find the Guild Channel to send the embed to
-          let channelIDs = require(channelsJSONPath)
+          channelIDs = require(channelsJSONPath)
           if (!channelIDs) { this.error = true; continue }
 
-          let channelID = channelIDs["bot-salutations"]
-          if (!channelID) { this.error = true; continue }
+        }
 
-          let guild = await client.guilds.fetch(guildID)
-          if (!guild) { this.error = true; continue }
-
-          let channel = await guild?.channels.fetch(channelID)
-          if (!channel) { this.error = true; continue }
-
-          // If we found the channel
-          //  update the server info in the embed to reflect this one
-          server = {
-            type:   "guild",
-            id:     guild.id,
-            name:   guild?.name ?? "?",
-            url:    "http://example.com/guild",
-            avatar: guild.iconURL({ size: Math.pow(2, 7) })
-          }
-
-          this.props.fields[1][0].value = server?.name ?? "?"
-          this.props.fields[1][1].value = codeBlock(server.id)
-
-          this.props.entities.guild = server
-
-          // Print this page
-          let printResult = await this.print_it(client, interaction, [ this.props ])
-
-          if (printResult) {
-            // Set up package
-            let this_package = { embeds: this.pages }
-
-            // Send package
-            await channel.send(this_package)
-            this.null = true
-
-            // Edit the interaction reply to
-            //  Link to the channel we sent it to
-            if (
-              interaction &&
-              interaction?.guild &&
-              interaction?.guild?.id &&
-              channel?.guild &&
-              channel?.guild?.id &&
-              interaction.guild.id === channel.guild.id &&
-              typeof interaction.editReply === "function"
-            ) {
-              await interaction.editReply(
-                {
-                  content: `See ${channel}!`
-                }
+        for (let channelName of [
+          "bot-salutations",
+          "bot-console",
+          "console",
+          "testing",
+          "test"
+        ]) {
+          if (!channel) {
+            let channelID = channelIDs[channelName]
+            if (channelID) {
+              // console.log(`Loading '${channelID}' of '${guild?.name}' [${guild?.id}]`)
+              channel = await guild?.channels.fetch(channelID)
+            } else {
+              // console.log(`Loading '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              channel = guild?.channels?.cache?.find(
+                c => c.name === channelName
               )
             }
+          }
+        }
+
+        if (!guild) {
+          guild = await interaction.guild
+        }
+        if (!channel) {
+          channel = await interaction.channel
+        }
+
+        // If we found the channel
+        //  update the server info in the embed to reflect this one
+        server = {
+          type:   "guild",
+          id:     guild.id,
+          name:   guild?.name ?? "?",
+          url:    "http://example.com/guild",
+          avatar: guild.iconURL({ size: Math.pow(2, 7) })
+        }
+
+        this.props.fields[1][0].value = server?.name ?? "?"
+        this.props.fields[1][1].value = codeBlock(server.id)
+
+        this.props.entities.guild = server
+
+        // Print this page
+        let printResult = await this.print_it(client, interaction, [ this.props ])
+
+        if (printResult) {
+          // Set up package
+          let this_package = { embeds: this.pages }
+
+          // Send package
+          await channel.send(this_package)
+          this.null = true
+
+          // Edit the interaction reply to
+          //  Link to the channel we sent it to
+          if (
+            interaction &&
+            interaction?.guild &&
+            interaction?.guild?.id &&
+            channel?.guild &&
+            channel?.guild?.id &&
+            interaction.guild.id === channel.guild.id &&
+            typeof interaction.editReply === "function"
+          ) {
+            await interaction.editReply(
+              {
+                content: `See ${channel}!`
+              }
+            )
           }
         }
       }

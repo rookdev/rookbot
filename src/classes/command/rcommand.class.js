@@ -6,7 +6,9 @@ const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
 // Pretty-print to console
 const AsciiTable = require('ascii-table')
-// Filesystem management
+// Easy path management
+const path = require('path')
+// Filesystem manipulation
 const fs = require('fs')
 
 const { setValue } = require("../../utils/globalFuncs")
@@ -190,43 +192,59 @@ class RookCommand {
     return canMod
   }
 
-  async getChannel(client, interaction, channelType) {
-    channelType = channelType ?? this.channelName
+  async getChannel(client, interaction, channelTypes) {
+    channelTypes = channelTypes ?? [ this.channelName ]
+
+    if (typeof channelTypes != "object") {
+      channelTypes = [ channelTypes ]
+    }
 
     let channelIDs = {}
-    let channelID = channelType
     let guild = interaction?.guild ?? client.guild
     let guildID = guild.id
     let channel = null
 
     try {
-      // Get Channel IDs for Guild
-      channelIDs = JSON.parse(
-        fs.readFileSync(
-          `./src/dbs/${guildID}/channels.json`,
-          { encoding: "utf8" }
-        )
+      let guildChannelsPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        guildID,
+        "channels"
       )
+      if (!fs.existsSync(guildChannelsPath + ".json")) {
+        console.log(`Guild Channels not found for '${guild.name}' [${guild.id}]`)
+      } else {
+        // Get Channel IDs for Guild
+        channelIDs = require(guildChannelsPath)
+      }
     } catch(err) {
       console.log(err.stack)
     }
 
-    if (channelIDs) {
-      // If requested Channel ID is present, set it
-      if (Object.keys(channelIDs).includes(channelID)) {
-        channelID = channelIDs[channelID]
+    for (let channelID of channelTypes) {
+      if (channel) {
+        continue
       }
-    }
 
-    // If it's a number
-    if (numFuncs.myIsNumeric(channelID)) {
-      // Search for Channel object by ChannelID
-      channel = await guild?.channels.fetch(channelID)
-    } else if (typeof channelID == "string") {
-      // Search for Channel object ny Channel Name
-      channel = await guild?.channels.cache.find(
-        c => c.name === channelID
-      )
+      if (channelIDs) {
+        // If requested Channel ID is present, set it
+        if (Object.keys(channelIDs).includes(channelID)) {
+          channelID = channelIDs[channelID]
+        }
+      }
+
+      // If it's a number
+      if (numFuncs.myIsNumeric(channelID)) {
+        // Search for Channel object by ChannelID
+        channel = await guild?.channels.fetch(channelID)
+      } else if (typeof channelID == "string") {
+        // Search for Channel object ny Channel Name
+        channel = await guild?.channels.cache.find(
+          c => c.name === channelID
+        )
+      }
     }
 
     return channel

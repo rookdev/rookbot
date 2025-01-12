@@ -114,6 +114,10 @@
           "description": "Source Message URL"
         },
         {
+          "name": "attachment-message",
+          "description": "Upload a JSON file with an embed"
+        },
+        {
           "name": "visage-name",
           "description": "Visage to post as"
         }
@@ -708,6 +712,14 @@
           "description": "Reason for adding role"
         }
       ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "rr": {
+      "name": "rr",
+      "category": "mod",
+      "description": "Create Reaction Role posts for cloning.",
+      "options": [],
       "access": "Mod",
       "segment": "local"
     },

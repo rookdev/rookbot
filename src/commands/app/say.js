@@ -16,7 +16,8 @@ const {
   MessageFlags,
   Webhook,
   inlineCode,
-  italic
+  italic,
+  MessagePayload
 } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
@@ -74,6 +75,11 @@ module.exports = class SayCommand extends ModCommand {
           type: ApplicationCommandOptionType.String
         },
         {
+          name: "attachment-message",
+          description: "Upload a JSON file with an embed",
+          type: ApplicationCommandOptionType.Attachment
+        },
+        {
           name: "visage-name",
           description: "Visage to post as",
           type: ApplicationCommandOptionType.String
@@ -88,6 +94,25 @@ module.exports = class SayCommand extends ModCommand {
       {...comprops},
       {...props}
     )
+  }
+
+  async buildPayload(destChannel, message, attachment) {
+    let payload = null
+
+    if (message) {
+      payload = message
+    }
+
+    if (!payload) {
+      let attachmentRes = await fetch(attachment.attachment)
+      let attachmentJSON = await attachmentRes.json()
+      payload = await new MessagePayload(
+        destChannel,
+        attachmentJSON
+      )
+    }
+
+    return payload
   }
 
   async getMessage(client=null, messageURL="") {
@@ -137,6 +162,7 @@ module.exports = class SayCommand extends ModCommand {
       this.props.description = `Couldn't load Message ID '${messageID}'`
       return false
     }
+    message = message.fetch()
 
     return message
   }
@@ -152,6 +178,8 @@ module.exports = class SayCommand extends ModCommand {
     let destMessageURL = coptions["destination-message"] ?? null
     // Get Src Message
     let sourceMessageURL = coptions["source-message"] ?? null
+    // Get Attachment Data
+    let attachment = interaction.options.getAttachment("attachment-message") ?? null
     // Get Visage
     let visage = coptions["visage-name"] ?? null
     let visages = null
@@ -270,7 +298,7 @@ module.exports = class SayCommand extends ModCommand {
     let result = null
 
     // No Message
-    if ((message == "") && !sourceMessageURL) {
+    if ((message == "") && !sourceMessageURL && !attachment) {
       this.error = true
       this.props.description = "No message content sent"
       return false
@@ -286,9 +314,21 @@ module.exports = class SayCommand extends ModCommand {
     if (mode == "say") {
       // If rookhook, use hook
       if (rookhook) {
+        // console.log(`${mode.ucfirst()}: rookhook`)
+        message = await this.buildPayload(
+          rookhook.channel,
+          message,
+          attachment
+        )
         result = await rookhook.send(message)
       } else {
         // Else, use bot
+        // console.log(`${mode.ucfirst()}: Message`)
+        message = await this.buildPayload(
+          channel,
+          message,
+          attachment
+        )
         result = await channel.send(message)
       }
     } else if (mode == "edit") {
@@ -330,9 +370,21 @@ module.exports = class SayCommand extends ModCommand {
 
       // If rookhook, use hook
       if (rookhook) {
+        // console.log(`${mode.ucfirst()}: rookhook`)
+        message = await this.buildPayload(
+          rookhook.channel,
+          message,
+          attachment
+        )
         result = await rookhook.editMessage(destMessage, message)
       } else {
         // Else, use bot
+        // console.log(`${mode.ucfirst()}: Message`)
+        message = await this.buildPayload(
+          destMessage.channel,
+          message,
+          attachment
+        )
         result = await destMessage.edit(message)
       }
     } else if (mode == "clone") {
@@ -394,9 +446,19 @@ module.exports = class SayCommand extends ModCommand {
         // If rookhook, use hook
         if (rookhook) {
           result = await rookhook.editMessage(destMessage, this_package)
+          if (srcMessage.reactions) {
+            for (let reaction in srcMessage.reactions.cache) {
+              console.log(reaction)
+            }
+          }
         } else {
           // Else, use bot
           result = await destMessage.edit(this_package)
+          if (srcMessage.reactions) {
+            for (let reaction in srcMessage.reactions.cache) {
+              console.log(reaction)
+            }
+          }
         }
       }
 
@@ -414,10 +476,19 @@ module.exports = class SayCommand extends ModCommand {
 
         // If rookhook, use hook
         if (rookhook) {
+          // console.log(`${mode.ucfirst()}: rookhook`)
           result = await rookhook.send(this_package)
         } else {
           // Else, use bot
-          await channel.send(this_package)
+          // console.log(`${mode.ucfirst()}: Message`)
+          result = await channel.send(this_package)
+
+          let reactions = await srcMessage.reactions.cache
+          if (reactions) {
+            for (let [emojiName, rData] of reactions) {
+              result.react(emojiName)
+            }
+          }
         }
       }
     }
@@ -511,7 +582,7 @@ module.exports = class SayCommand extends ModCommand {
             // Message Content
             {
               name: "Content",
-              value: message.slice(0,1024)
+              value: typeof message == "string" ? message.slice(0,1024) : ""
             }
           ],
           [
@@ -569,8 +640,10 @@ module.exports = class SayCommand extends ModCommand {
       fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
 
       let logsChannel = await this.getChannel(client, interaction, "logging-say")
-      logsChannel.send({ embeds: [ embeds.mod ] })
-      this.null = true
+      if (logsChannel) {
+        logsChannel.send({ embeds: [ embeds.mod ] })
+        this.null = true
+      }
     }
 
     return true

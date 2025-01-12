@@ -187,7 +187,20 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    const guildChannelsPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "dbs",
+      guildID,
+      "channels"
+    )
+    if (!fs.existsSync(guildChannelsPath + ".json")) {
+      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      return [result, messages]
+    }
+
+    const guildChannels = require(guildChannelsPath)
     let log_type = "logging"
     let log_check = "logging-names"
     if (log_check in guildChannels) {

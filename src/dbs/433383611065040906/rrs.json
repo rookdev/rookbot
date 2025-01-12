@@ -1,0 +1,9 @@
+{
+  "1327920817065033729": {
+    "#title": "Starcraft Roles",
+    "#description": "Select the faction(s) that you prefer to play to better assist with finding proper opponents!",
+    "sc_protoss": "Protoss",
+    "sc_terran":  "Terran",
+    "sc_zerg":    "Zerg"
+  }
+}

@@ -50,8 +50,6 @@ module.exports = class UnlockCommand extends ModCommand {
   async action(client, interaction, coptions) {
     // Get Guild ID
     const guildID = interaction.guild.id
-    // Get BotDev-defined list of channels
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get requested Channel ID
     const channelID = coptions['channel']
     // Get requested Channel
@@ -76,7 +74,7 @@ module.exports = class UnlockCommand extends ModCommand {
       console.log(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
-      const logs = await client.channels.fetch(guildChannels["logging"])
+      const logs = await this.getChannel([ "logging-unlock", "logging" ])
       if (logs && !this.DEV) {
         let props = {
           color: this.profile.colors.success,

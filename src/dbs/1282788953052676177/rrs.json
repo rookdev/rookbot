@@ -1,0 +1,17 @@
+{
+  "1290049876192661596": {
+    "#note": "#verify: Verify",
+    "✅": "Member"
+  },
+  "1287212275089936447": {
+    "#note": "#reaction-roles: Reaction Roles",
+    "🎮":         "Game Updates",
+    "dev":        "Development Updates",
+    "community":  "Community Updates",
+    "server":     "Server Updates",
+    "🏃":         "Speedrun Updates",
+    "👥":         "Multiplayer Ping",
+    "🏁":         "Competitive Races Ping",
+    "coollink":   "Casual Races Ping"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "704940193173733390": {
+    "#title": "Announcement Roles",
+    "#description": "These are roles that the Admins and Moderators of this server may use for announcements.",
+    "📣": {
+      "name": "announcements",
+      "desc": "Server Announcements"
+    }
+  },
+  "704943384455938088": {
+    "#title": "Streaming Roles",
+    "#description": "These are roles that facilitate communication regarding when certain accounts Go Live.",
+    "bruh": {
+      "name": "SomeguyLive",
+      "desc": "When SomeguyRB Goes Live"
+    }
+  },
+  "757829352019984485": {
+    "#title": "Gaming Roles",
+    "#description": "These are roles that facilitate communication regarding when players of certain games are trying to put together a pre-made match.",
+    "👥": {
+      "name": "Game: Among Us",
+      "desc": "When someone's trying to start up an Among Us match."
+    }
+  },
+  "pronouns": {
+    "#title": "Pronouns",
+    "#description": "Pronouns",
+    "pronoun_he":       { "name": "He/Him" },
+    "pronoun_she":      { "name": "She/Her" },
+    "pronoun_they":     { "name": "They/Them" },
+    "pronoun_neo":      { "name": "Neopronouns" },
+    "pronoun_hethem":   { "name": "He/They" },
+    "pronoun_shethem":  { "name": "She/They" },
+    "pronoun_heher":    { "name": "He/Her" },
+    "pronoun_shehim":   { "name": "She/Him" },
+    "pronoun_theyhim":  { "name": "They/Him" },
+    "pronoun_theyher":  { "name": "They/Her" },
+    "pronoun_any":      { "name": "Any/All" }
+  }
+}

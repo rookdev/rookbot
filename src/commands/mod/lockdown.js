@@ -63,8 +63,6 @@ module.exports = class LockdownCommand extends ModCommand {
   async action(client, interaction, coptions) {
     // Get Guild ID
     const guildID = interaction.guild.id
-    // Get BotDev-defined list of channels
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
 
     const action = coptions['action']   // Un/Lock
     const confirm = coptions['confirm'] // Confirm
@@ -122,7 +120,7 @@ module.exports = class LockdownCommand extends ModCommand {
       await Promise.allSettled(channelPromises)
 
       // Log the action in the logs channel (private)
-      const logs = await client.channels.fetch(guildChannels["logging"])
+      const logs = await this.getChannel(client, interaction, [ "logging-lockdown", "logging" ])
       if (logs) {
         const capitalizedAction = action.charAt(0).toUpperCase() + action.slice(1)
         const embed = new RookEmbed(client, {

@@ -351,8 +351,6 @@ class ModCommand extends AdminCommand {
 
     // Get Guild ID
     const guildID = coptions["guild-id"] ?? interaction?.guild?.id
-    // Get Guild Channels
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
     // Get User Input
     const targetUserInput = coptions["target-id"]
     // Get Reason
@@ -709,11 +707,6 @@ class ModCommand extends AdminCommand {
 
       if (success && (!this.DEV || true)) {
         // LogPost for ACTION
-        let log_type = "logging"
-        let log_check = `logging-${this.name}`
-        if (guildChannels[log_check]) {
-          log_type = log_check
-        }
 
         /**
          * Region that this is being sent to
@@ -722,7 +715,7 @@ class ModCommand extends AdminCommand {
          */
         let region = ((!this.DEV) ? "Production" : "Development")
 
-        const logsChannel = await this.getChannel(client, interaction, log_type)
+        const logsChannel = await this.getChannel(client, interaction, [ `logging-${this.name}`, "logging" ])
         if (logsChannel) {
           if(this.DEV) {
             emoji = "[DEV]" + emoji
@@ -925,7 +918,21 @@ class ModCommand extends AdminCommand {
     console.log(`/${this.name}: Mod Build`)
 
     // Get list of roles
-    this.ROLES = JSON.parse(fs.readFileSync(`./src/dbs/${interaction.guild.id}/roles.json`, "utf8"))
+    let guildRolesPath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "dbs",
+      interaction.guild.id,
+      "roles"
+    )
+    if (!fs.existsSync(guildRolesPath + ".json")) {
+      this.error = true
+      this.props.description = `Failed to get roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
+      return false
+    }
+    this.ROLES = require(guildRolesPath)
+
     // Get Mod roles
     let APPROVED_ROLES = this.ROLES["admin"].concat(this.ROLES["mod"])
     // Bail if we don't have intended Approved Roles data

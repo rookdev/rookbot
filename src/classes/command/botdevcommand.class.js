@@ -54,7 +54,21 @@ class BotDevCommand extends AdminCommand {
     console.log(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
-      this.ROLES = JSON.parse(fs.readFileSync(`./src/dbs/${interaction.guild.id}/roles.json`, "utf8"))
+      let guildRolesPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        interaction.guild.id,
+        "roles"
+      )
+      if (!fs.existsSync(guildRolesPath + ".json")) {
+        this.error = true
+        this.props.description = `Failed to get roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
+        return false
+      }
+      this.ROLES = require(guildRolesPath)
+
       // Get BotDev roles
       let APPROVED_ROLES = this.ROLES["admin"].concat(this.ROLES["botdev"])
       // Bail if we don't have intended Approved Roles data

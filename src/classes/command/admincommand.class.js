@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Discord Permission Flags
-const { PermissionFlagsBits } = require('discord.js')
+// Discord Permission Flags, Formatters: inlineCode
+const { PermissionFlagsBits, inlineCode } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../command/rcommand.class')
 // Filesystem manipulation
@@ -54,7 +54,21 @@ class AdminCommand extends RookCommand {
     console.log(`/${this.name}: Admin Build`)
     if (interaction) {
       // Get list of roles
-      this.ROLES = JSON.parse(fs.readFileSync(`./src/dbs/${interaction.guild.id}/roles.json`, "utf8"))
+      let guildRolesPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        interaction.guild.id,
+        "roles"
+      )
+      if (!fs.existsSync(guildRolesPath + ".json")) {
+        this.error = true
+        this.props.description = `Failed to get roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
+        return false
+      }
+      this.ROLES = require(guildRolesPath)
+
       // Get Admin roles
       let APPROVED_ROLES = this.ROLES["admin"]
       // Bail if we don't have intended Approved Roles data
