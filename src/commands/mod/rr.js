@@ -1,5 +1,7 @@
 // @ts-nocheck
 
+// Formatters: inlineCode
+const { inlineCode } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
@@ -39,7 +41,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     )
 
     if (!fs.existsSync(rrPath + ".json")) {
-      messages.push(`Reaction Roles not found for '${guild.name}' [${guild.id}]`)
+      messages.push(`${this.profile.emojis.warning} Reaction Roles not found for '${guild.name}' [${inlineCode(guild.id)}]`)
       this.error = true
       this.props.description = messages
       return false

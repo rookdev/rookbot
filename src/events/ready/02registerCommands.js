@@ -162,7 +162,7 @@ async function registerCommand(
       // If error
       if (error.code === 429) {
         // Rate Limit, try again soon
-        messages.push(`  ${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
+        messages.push(`${client.profile.emojis.wait} Rate limit hit. Retrying for "${cmdParts.name}" after ${error.retry_after ?? 1000}ms.`)
         // Wait
         await wait(error.retry_after ?? 1000)
         // Try to create again
@@ -171,7 +171,7 @@ async function registerCommand(
         client.commands[cmdParts.name] = newCommand
       } else {
         // Failed to register
-        messages.push(`  ${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
+        messages.push(`${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
       }
     }
   }
@@ -200,7 +200,7 @@ module.exports = async (client) => {
     if (isDevelopment) {
       const testGuild = client.guilds.cache.get(testGuildID)
       if (!testGuild) {
-        messages.push(`❌ Test guild not found: ${testGuildID}`)
+        messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
         return [result, messages]
       }
       messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: '${testGuild.name}' [${testGuildID}]`)
@@ -282,7 +282,7 @@ module.exports = async (client) => {
     )
     result = true
   } catch (error) {
-    messages.push(`  ${client.profile.emojis.fail} Registration error: ${error.stack}`)
+    messages.push(`${client.profile.emojis.fail} Registration error: ${error.stack}`)
     result = true
   }
 

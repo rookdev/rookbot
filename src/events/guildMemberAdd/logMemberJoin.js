@@ -24,7 +24,7 @@ module.exports = async (client, newMember) => {
     // Ensure the member's data is fully fetched
     const fetchedMember = await newMember.guild.members.fetch(newMember.user.id) ?? null
     if (!fetchedMember) {
-      messages.push(`Failed to fetch '${newMember.user.username}' [${newMember.id}] from '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch '${newMember.user.tag}' [${newMember.id}] from '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -39,7 +39,7 @@ module.exports = async (client, newMember) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -52,7 +52,7 @@ module.exports = async (client, newMember) => {
     const logChannel = await client.channels.fetch(guildChannels[log_type])
 
     if (!logChannel) {
-      messages.push('Log channel not found or is not text-based.')
+      messages.push(`${client.profile.emojis.fail} Log channel not found or is not text-based.`)
       return [result, messages]
     }
 
@@ -160,7 +160,7 @@ module.exports = async (client, newMember) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    messages.push('Error logging new member:', error)
+    messages.push(`${client.profile.emojis.fail} Error logging new member:`, error)
     return [result, messages]
   }
 

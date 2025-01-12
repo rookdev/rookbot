@@ -24,13 +24,13 @@ module.exports = async (client, oldMember, newMember) => {
   try {
     // Check if the nickname has changed
     if (oldMember.nickname === newMember.nickname) {
-      // messages.push('No nickname change detected.')
+      // messages.push(`${client.profile.emojis.warning} No nickname change detected.`)
       return [result, messages]
     }
 
     // Ensure the member is in a guild
     if (!newMember.guild) {
-      messages.push('GuildMemberUpdate occurred outside of a guild:', newMember)
+      messages.push(`${client.profile.emojis.fail} GuildMemberUpdate occurred outside of a guild:`, newMember)
       return [result, messages]
     }
 
@@ -196,7 +196,7 @@ module.exports = async (client, oldMember, newMember) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -213,7 +213,7 @@ module.exports = async (client, oldMember, newMember) => {
       // @ts-ignore
       result = await logChannel.send({ embeds: [ embed.toJSON() ] })
     } else {
-      messages.push('Log channel not found.')
+      messages.push(`${client.profile.emojis.fail} Log channel not found.`)
     }
 
     // Optional: Save the nickname change to a log file
@@ -238,7 +238,7 @@ module.exports = async (client, oldMember, newMember) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    messages.push('Error in logNameChange handler:', error)
+    messages.push(`${client.profile.emojis.fail} Error in logNameChange handler:`, error)
     return [result, messages]
   }
 

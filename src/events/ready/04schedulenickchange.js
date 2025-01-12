@@ -63,7 +63,7 @@ module.exports = async (client) => {
         const member = await guild.members.fetch(userID, { force: true }) ?? null
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
-          messages.push(`Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          messages.push(`${client.profile.emojis.fail} Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
           continue
         }
 
@@ -74,7 +74,7 @@ module.exports = async (client) => {
 
         // If member is at or over bot, bail
         if (memberPos >= clientPos) {
-          messages.push(`Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
+          messages.push(`${client.profile.emojis.fail} Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
           continue
         }
 

@@ -300,7 +300,7 @@ module.exports = class MentionCommand extends RookCommand {
           let targetMember = await guild?.members?.fetch(targetId)
           if (targetMember) {
             specs = {
-              name: targetMember.user.username
+              name: targetMember.user.tag
             }
             const roles = await targetMember
               .roles

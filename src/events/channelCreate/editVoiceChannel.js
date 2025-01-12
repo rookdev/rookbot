@@ -14,6 +14,8 @@ async function selectName(newChannel) {
   let oldName = newChannel.name
   let newName = newChannel.name
 
+  let messages = []
+
   let namesPath = path.join(
     __dirname,
     "..",
@@ -23,12 +25,12 @@ async function selectName(newChannel) {
     "voiceChannelNames"
   )
 
-  if (fs.existsSync(namesPath + ".json")) {
-    namesDB = require(namesPath)
-  } else {
-    console.log(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
-    return newName
+  if (!fs.existsSync(namesPath + ".json")) {
+    messages.push(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
+    return [newName, messages]
   }
+
+  namesDB = require(namesPath)
 
   let changeName = true
   if (namesDB?.categories) {
@@ -73,12 +75,14 @@ async function selectName(newChannel) {
     }
 
     if ((oldName == newName) || (newName.length > 32)) {
-      console.log(`Attempted to change '${member.user.username}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
-      newName = await selectName(newChannel)
+      console.log(`${client.profile.emojis.warning} Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
+      let newMessages = []
+      [newName, newMessages] = await selectName(newChannel)
+      messages = messages.concat(newMessages)
     }
   }
 
-  return newName
+  return [newName, messages]
 }
 
 /**
@@ -90,17 +94,18 @@ module.exports = async (client, newChannel) => {
   let messages = []
 
   if (!newChannel) {
-    messages.push(`   No new channel in '${newChannel.guild.name}'`)
+    messages.push(`${client.profile.emojis.warning} No new channel in '${newChannel.guild.name}'`)
     return [result, messages]
   }
 
   if (!newChannel.isVoiceBased()) {
-    messages.push(`'${newChannel.name}' of '${newChannel.guild.name}' is not a Voice-based channel`)
+    messages.push(`${client.profile.emojis.warning} '${newChannel.name}' of '${newChannel.guild.name}' is not a Voice-based channel`)
     return [result, messages]
   }
 
   let oldName = newChannel.name
-  let newName = await selectName(newChannel)
+  let [newName, newMessages] = await selectName(newChannel)
+  messages = messages.concat(newMessages)
 
   if ((newName != "") && (newName != newChannel.name)) {
     result = await newChannel.edit(

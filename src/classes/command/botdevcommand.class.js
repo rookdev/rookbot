@@ -64,7 +64,7 @@ class BotDevCommand extends AdminCommand {
       )
       if (!fs.existsSync(guildRolesPath + ".json")) {
         this.error = true
-        this.props.description = `Failed to get roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
+        this.props.description = `${client.profile.emojis.warning} Failed to get BotDev roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
         return false
       }
       this.ROLES = require(guildRolesPath)
@@ -74,7 +74,7 @@ class BotDevCommand extends AdminCommand {
       // Bail if we don't have intended Approved Roles data
       if (!APPROVED_ROLES) {
         this.error = true
-        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles.`
+        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
         return !this.error
       }
 

@@ -29,17 +29,17 @@ function scheduleNicknameChange(client, member) {
 
       // Check the result and log accordingly
       if (nickResult.success) {
-        // messages.push(`Changed nickname of '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
+        // messages.push(`${client.profile.emojis.check} Changed nickname of '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
       } else {
-        // messages.push(`Error changing nickname for '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
+        // messages.push(`${client.profile.emojis.fail} Error changing nickname for '${member.user.tag}' in '${member.guild.name}': ${result.message}`)
       }
       messages = messages.concat(nickResult.message)
     } catch (err) {
-      // messages.push("Error changing nickname:", err)
+      // messages.push(`${client.profile.emojis.fail} Error changing nickname:`, err)
     }
   })
 
-  messages.push(`Scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
+  messages.push(`${client.profile.emojis.check} Scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
 
   return [result, messages]
 }

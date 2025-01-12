@@ -352,7 +352,7 @@ class SalutationCommand extends RookCommand {
         // If we're booting up
         if (mode == "boot" && clientMember) {
           // Get the current nickname
-          let nick = clientMember?.nickname ?? clientMember.user.username
+          let nick = clientMember?.nickname ?? clientMember.user.tag
           // Get the prefix
           let prefix = client?.options?.defaultPrefix ??
             client?.options?.prefix ??
@@ -369,7 +369,7 @@ class SalutationCommand extends RookCommand {
             }
           }
           // If we want to change it, do the thing
-          if (nick != (clientMember?.nickname ?? clientMember.user.username)) {
+          if (nick != (clientMember?.nickname ?? clientMember.user.tag)) {
             clientMember.setNickname(nick)
           }
         }

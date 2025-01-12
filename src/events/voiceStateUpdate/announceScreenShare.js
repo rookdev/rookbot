@@ -30,31 +30,31 @@ module.exports = async (client, oldState, newState) => {
   ) {
     const channelID = await newState.channelId
     if (!channelID) {
-      messages.push("No Channel ID")
+      messages.push(`${client.profile.emojis.fail} No Channel ID`)
       return [result, messages]
     }
 
     const guild = await newState.guild
     if (!guild) {
-      messages.push("No Guild")
+      messages.push(`${client.profile.emojis.fail} No Guild`)
       return [result, messages]
     }
 
     const member = await newState.member
     if (!member) {
-      messages.push("No Member")
+      messages.push(`${client.profile.emojis.fail} No Member`)
       return [result, messages]
     }
 
     const channels = await newState.guild.channels
     if (!channels) {
-      messages.push("No Channels")
+      messages.push(`${client.profile.emojis.fail} No Channels`)
       return [result, messages]
     }
 
     const channel = await channels.fetch(channelID)
     if (!channel) {
-      messages.push("No Channel")
+      messages.push(`${client.profile.emojis.fail} No Channel`)
       return [result, messages]
     }
 
@@ -93,7 +93,7 @@ module.exports = async (client, oldState, newState) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
       return [result, messages]
     }
 
@@ -101,7 +101,7 @@ module.exports = async (client, oldState, newState) => {
     let destChannelID = guildChannels["stream-alerts"]
 
     if (!destChannelID) {
-      messages.push(`Stream Alerts channel not found for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${member.guild.name}' [${member.guild.id}]`)
       return [result, messages]
     }
 
@@ -115,7 +115,7 @@ module.exports = async (client, oldState, newState) => {
       JSON.stringify(
         {
           guild: member.guild.name,
-          member: member.user.username,
+          member: member.user.tag,
           channel: channel.name
         }
       )

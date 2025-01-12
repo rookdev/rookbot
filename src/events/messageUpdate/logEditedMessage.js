@@ -24,17 +24,17 @@ module.exports = async (client, oldMessage, newMessage) => {
   try {
     // Check for invalid or undefined data
     if (!newMessage) {
-      messages.push('MessageUpdate event received invalid data:', { oldMessage, newMessage })
+      messages.push(`${client.profile.emojis.fail} MessageUpdate event received invalid data:`, { oldMessage, newMessage })
       return [result, messages]
     }
 
     // Ensure the message is in a guild and not from a bot
     if (!newMessage.guild) {
-      messages.push('MessageUpdate occurred outside of a guild:', newMessage)
+      messages.push(`${client.profile.emojis.fail} MessageUpdate occurred outside of a guild:`, newMessage)
       return [result, messages]
     }
     if (newMessage.author?.bot) {
-      // messages.push(`Message update from bot:`, newMessage)
+      // messages.push(`${client.profile.emojis.warning} Message update from bot:`, newMessage)
       return [result, messages]
     }
 
@@ -43,7 +43,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         oldMessage = await oldMessage.fetch()
       } catch (err) {
-        messages.push('Failed to fetch old message:', err)
+        messages.push(`${client.profile.emojis.fail} Failed to fetch old message:`, err)
         return [result, messages]
       }
     }
@@ -52,7 +52,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       try {
         newMessage = await newMessage.fetch()
       } catch (err) {
-        console.error('Failed to fetch new message:', err)
+        console.error(`${client.profile.emojis.fail} Failed to fetch new message:`, err)
         return [result, messages]
       }
     }
@@ -78,7 +78,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${newMessage.guild.name}' [${newMessage.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMessage.guild.name}' [${newMessage.guild.id}]`)
       return [result, messages]
     }
 
@@ -88,7 +88,13 @@ module.exports = async (client, oldMessage, newMessage) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = await client.channels.fetch(guildChannels[log_type])
+    let logChannel = null
+    try {
+      logChannel = await client.channels.fetch(guildChannels[log_type])
+    } catch (error) {
+      messages.push(`${client.profile.emojis.fail} Log channel not found.`)
+      return [result, messages]
+    }
 
     let editor = newMessage.author
     let editMember = await newMessage.guild.members.fetch(editor.id)
@@ -184,7 +190,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       // @ts-ignore
       result = await logChannel.send({ embeds: [embed] })
     } else {
-      messages.push('Log channel not found.')
+      messages.push(`${client.profile.emojis.fail} Log channel not found.`)
       return [result, messages]
     }
 
@@ -213,7 +219,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     // Append the log entry to the file
     fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    messages.push('Error in logEditedMessage handler:', error)
+    messages.push(`${client.profile.emojis.fail} Error in logEditedMessage handler:`, error)
     return [result, messages]
   }
 

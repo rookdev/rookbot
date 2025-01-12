@@ -8,7 +8,7 @@ module.exports = async (client, interaction) => {
   let messages = []
 
   if (!interaction.isChatInputCommand()) {
-    messages.push(`Not a chat input command`)
+    messages.push(`${client.profile.emojis.fail} Not a chat input command`)
     return [result, messages]
   }
 
@@ -37,7 +37,7 @@ module.exports = async (client, interaction) => {
         }
       }
       if (!commandObject) {
-        messages.push(`No command object found`)
+        messages.push(`${client.profile.emojis.fail} No command object found`)
         return [result, messages]
       }
     }
@@ -129,7 +129,7 @@ module.exports = async (client, interaction) => {
       coptions
     )
   } catch (error) {
-    messages.push(`There was an error running this command: ${error.stack}`)
+    messages.push(`${client.profile.emojis.fail} There was an error running this command: ${error.stack}`)
     return [result, messages]
   }
 

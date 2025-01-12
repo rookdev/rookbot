@@ -1,4 +1,4 @@
-const { italic } = require('discord.js')
+const { inlineCode, italic } = require('discord.js')
 const randFuncs = require('../utils/randFuncs') // Random Functions
 const path = require('path')                    // Easy path management
 const fs = require('fs')                        // Filesystem manipulation
@@ -93,6 +93,7 @@ function buildName() {
 async function selectMember(member) {
   let oldNickname = member.displayName
   let newNickname = member.displayName
+  let messages = []
   let namesPath = path.join(
     __dirname,
     "..",
@@ -100,11 +101,15 @@ async function selectMember(member) {
     "nicknames",
     member.id
   )
-  if (fs.existsSync(namesPath + ".json")) {
-    namesDB = require(namesPath)
-  } else {
-    return newNickname
+  if (!fs.existsSync(namesPath + ".json")) {
+    messages.push(
+      `No name options found for '${member.user.tag}'`
+      // + `[${inlineCode(member.id)}]`
+    )
+    return [newNickname, messages]
   }
+
+  namesDB = require(namesPath)
 
   switch(namesDB.mode) {
     case "weighted":
@@ -125,46 +130,48 @@ async function selectMember(member) {
   }
 
   if ((oldNickname == newNickname) || (newNickname.length > 32)) {
-    console.log(`Attempted to change '${member.user.username}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
-    newNickname = await selectMember(member)
+    messages.push(`Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
+    let newMessages = []
+    [newNickname, newMessages] = await selectMember(member)
+    messages = messages.concat(newMessages)
   }
 
-  return newNickname
+  return [newNickname, messages]
 }
 
 // Function to change a member's nickname
 async function changeNickname(client, member) {
   let clientMember = null
   let success = false
-  let message = []
+  let messages = []
 
   if (!member) {
     success = false
-    message.push(`No Member sent.`)
+    messages.push(`No Member sent.`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
   if (!client?.guilds) {
     success = false
-    message.push(`Couldn't load Client Guilds.`)
+    messages.push(`Couldn't load Client Guilds.`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
   if (member.guild.ownerId === member.id) {
     success = false
-    message.push(`Can't adjust nickname. ${member} is Guild Owner of ${italic(member.guild.name)}.`)
+    messages.push(`Can't adjust nickname. ${member} is Guild Owner of ${italic(member.guild.name)} [${inlineCode(member.guild.id)}].`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
@@ -179,39 +186,40 @@ async function changeNickname(client, member) {
   const clientPos = await clientMember.roles.highest.position
   if (memberPos >= clientPos) {
     success = false
-    message.push(`Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${italic(guildData.name)}.`)
+    messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
-  message.push(`${clientMember} changing nickname of '${member.user.tag}' in ${italic(guildData.name)}.`)
+  messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
 
   let oldNickname = member.displayName
-  let newNickname = ""
 
-  newNickname = await selectMember(member)
+  let [newNickname, newMessages] = await selectMember(member)
   newNickname = newNickname.trim()
+
+  messages = messages.concat(newMessages)
 
   if (newNickname == "") {
     success = false
-    message.push(`Failed to adjust nickname. No nickname choices for '${member.user.tag}'.`)
+    messages.push(`${client.profile.emojis.fail} Failed to adjust nickname. No nickname choices for '${member.user.tag}'.`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
   if (oldNickname == newNickname) {
     success = false
-    message.push(`Failed to adjust nickname. No new nickname generated for '${member.user.tag}'.`)
+    messages.push(`${client.profile.emojis.fail} Failed to adjust nickname. No new nickname generated for '${member.user.tag}'.`)
 
     return {
       success: success,
-      message: message
+      message: messages
     }
   }
 
@@ -222,15 +230,15 @@ async function changeNickname(client, member) {
     // Set new nickname
     await guildMember.setNickname(newNickname)
     success = true
-    message.push(
+    messages.push(
       // `🟩${italic(guildData.name)}: ` +
-      `${clientMember} changed target nickname to ${italic(newNickname)}.`
+      `${client.profile.emojis.check} ${clientMember} changed target nickname to ${italic(newNickname)}.`
     )
   } catch(error) {
     success = false
-    message.push(
+    messages.push(
       // `🟥${italic(guildData.name)}: ` +
-      `${clientMember} failed to change target nickname. Error: ${italic(error.message)}`
+      `${client.profile.emojis.fail} ${clientMember} failed to change target nickname. Error: ${italic(error.message)}`
     )
     // console.log(
     //   {
@@ -244,7 +252,7 @@ async function changeNickname(client, member) {
   }
   return {
     success: success,
-    message: message
+    message: messages
   }
 }
 

@@ -45,7 +45,7 @@ module.exports = async (client, deletedMessage) => {
     "channels"
   )
   if (!fs.existsSync(guildChannelsPath + ".json")) {
-    messages.push(`Failed to fetch Guild Channels for '${deletedMessage.guild.name}' [${deletedMessage.guild.id}]`)
+    messages.push(`${client.profile.emojis.warning} Failed to fetch Guild Channels for '${deletedMessage.guild.name}' [${deletedMessage.guild.id}]`)
     return [result, messages]
   }
 
@@ -55,10 +55,16 @@ module.exports = async (client, deletedMessage) => {
   if (log_check in guildChannels) {
     log_type = log_check
   }
-  const logChannel = await client.channels.fetch(guildChannels[log_type])
+  let logChannel = null
+  try {
+    logChannel = await client.channels.fetch(guildChannels[log_type])
+  } catch (error) {
+    messages.push(`${client.profile.emojis.fail} Log channel not found.`)
+    return [result, messages]
+  }
 
   if (!logChannel) {
-    messages.push('Log channel not found.')
+    messages.push(`${client.profile.emojis.fail} Log channel not found.`)
     return [result, messages]
   }
 

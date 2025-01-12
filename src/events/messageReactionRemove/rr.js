@@ -14,7 +14,7 @@ const manageRoles = require('../../utils/manageRoles')
  * @param {User} user
  */
 module.exports = async (client, reaction, user) => {
-  let [result, messages] = await manageRoles(reaction, user, "remove")
+  let [result, messages] = await manageRoles(client, reaction, user, "remove")
 
   return [result, messages]
 }

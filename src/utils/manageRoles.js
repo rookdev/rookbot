@@ -10,7 +10,7 @@ const fs = require('fs')
  * @param {MessageReaction} reaction
  * @param {User} user
  */
-const manageRoles = async (reaction, user, mode="add") => {
+const manageRoles = async (client, reaction, user, mode="add") => {
   let result = false
   let messages = []
 
@@ -33,18 +33,18 @@ const manageRoles = async (reaction, user, mode="add") => {
   )
 
   if (!fs.existsSync(rrPath + ".json")) {
-    messages.push(`Reaction Roles not found for '${guild.name}' [${guild.id}]`)
+    messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
     return [result, messages]
   }
 
   let rrs = require(rrPath)
 
   if (!rrs[reaction.message.id]) {
-    // messages.push(`Not a watched message: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+    // messages.push(`${client.profile.emojis.warning} Not a watched message: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
   if (!rrs[reaction.message.id][reaction.emoji.name]) {
-    messages.push(`Not a watched emoji: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+    messages.push(`${client.profile.emojis.warning} Not a watched emoji: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
   messages.push(`${mode.toUpperCase()}: Watched Message & Emoji: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)

@@ -23,15 +23,15 @@ module.exports = async (client, oldMember, newMember) => {
   let messages = []
 
   if (!client) {
-    messages.push("No Client")
+    messages.push(`${client.profile.emojis.fail} No Client`)
     return [result, messages]
   }
   if (!oldMember) {
-    messages.push("No Old Member")
+    messages.push(`${client.profile.emojis.fail} No Old Member`)
     return [result, messages]
   }
   if (!newMember) {
-    messages.push("No New Member")
+    messages.push(`${client.profile.emojis.fail} No New Member`)
     return [result, messages]
   }
 
@@ -42,7 +42,7 @@ module.exports = async (client, oldMember, newMember) => {
     let stream_url = null
     let newActivities = newMember.presence.activities
     if (newActivities.length <= 0) {
-      // messages.push(`No Activities for '${newMember.user.username}' [${newMember.id}]`)
+      // messages.push(`${client.profile.emojis.warning} No Activities for '${newMember.user.tag}' [${newMember.id}]`)
       return [result, messages]
     }
     for (let activity in newActivities) {
@@ -51,19 +51,19 @@ module.exports = async (client, oldMember, newMember) => {
       }
     }
     if (!stream_url) {
-      // messages.push(`No Stream URL for '${newMember.user.username}' [${newMember.id}]`)
+      // messages.push(`${client.profile.emojis.warning} No Stream URL for '${newMember.user.tag}' [${newMember.id}]`)
       return [result, messages]
     }
 
     const guild = await newMember.guild
     if (!guild) {
-      messages.push(`No Guild for '${newMember.user.username}' [${newMember.id}]`)
+      messages.push(`${client.profile.emojis.fail} No Guild for '${newMember.user.tag}' [${newMember.id}]`)
       return [result, messages]
     }
 
     const channels = await newMember.guild.channels
     if (!channels) {
-      messages.push(`No Channels for '${newMember.guild.name}' [${newMember.guild.id}] for '${newMember.user.username}' [${newMember.id}]`)
+      messages.push(`${client.profile.emojis.fail} No Channels for '${newMember.guild.name}' [${newMember.guild.id}] for '${newMember.user.tag}' [${newMember.id}]`)
       return [result, messages]
     }
 
@@ -102,7 +102,7 @@ module.exports = async (client, oldMember, newMember) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -110,7 +110,7 @@ module.exports = async (client, oldMember, newMember) => {
     let destChannelID = guildChannels["stream-alerts"]
 
     if (!destChannelID) {
-      messages.push(`Stream Alerts channel not found for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -124,7 +124,7 @@ module.exports = async (client, oldMember, newMember) => {
       JSON.stringify(
         {
           guild: newMember.guild.name,
-          member: newMember.user.username,
+          member: newMember.user.tag,
           stream: stream_url
         }
       )

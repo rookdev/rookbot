@@ -119,7 +119,7 @@ class RookCommand {
         }
         msg = [
           `${this.profile.emojis.fail} Bot can't manage user.`,
-          `${member} is Owner of ${italic(member.guild.name)}.`
+          `${this.profile.emojis.fail} ${member} is Owner of ${italic(member.guild.name)}.`
         ]
         this.props.description = msg
       }
@@ -151,7 +151,7 @@ class RookCommand {
         }
         msg = [
           `${this.profile.emojis.fail} Bot can't manage user.`,
-          `${member}'s highest role is greater than or equal to ${clientMember}.`
+          `${this.profile.emojis.fail} ${member}'s highest role is greater than or equal to ${clientMember}.`
         ]
         this.props.description = msg
       }

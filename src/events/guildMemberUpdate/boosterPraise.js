@@ -51,7 +51,7 @@ module.exports = async (client, oldMember, newMember) => {
   }
 
   if (!boostRoleID) {
-    messages.push(`Failed to get Boost Role ID for '${newMember.guild.name}'!`)
+    messages.push(`${client.profile.emojis.fail} Failed to get Boost Role ID for '${newMember.guild.name}'!`)
     return [result, messages]
   }
 
@@ -117,7 +117,7 @@ module.exports = async (client, oldMember, newMember) => {
       "channels"
     )
     if (!fs.existsSync(guildChannelsPath + ".json")) {
-      messages.push(`Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -134,7 +134,7 @@ module.exports = async (client, oldMember, newMember) => {
       // @ts-ignore
       result = await logChannel.send({ embeds: [ embed.toJSON() ] })
     } else {
-      messages.push('Log channel not found.')
+      messages.push(`${client.profile.emojis.warning} Log channel not found.`)
       return [result, messages]
     }
   }
