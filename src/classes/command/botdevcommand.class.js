@@ -4,6 +4,8 @@
 const { PermissionFlagsBits } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('../command/admincommand.class')
+// Easier path management
+const path = require('path')
 // Filesystem manipulation
 const fs = require('fs')
 

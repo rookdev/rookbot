@@ -4,6 +4,8 @@
 const { PermissionFlagsBits, inlineCode } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../command/rcommand.class')
+// Easier filepath management
+const path = require('path')
 // Filesystem manipulation
 const fs = require('fs')
 

@@ -113,7 +113,7 @@ module.exports = async (client, oldMember) => {
       member: oldMember.user.tag,
       action: "leave"
     }
-    messages.push(JSON.stringify(console_log))
+    messages.push("🚪 " + JSON.stringify(console_log))
 
     // Send the log embed to the log channel
     // @ts-ignore

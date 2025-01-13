@@ -243,7 +243,7 @@ module.exports = async (client, deletedMessage) => {
     channel: deletedMessage.channel.name,
     message: deletedMessage.id
   }
-  messages.push(JSON.stringify(console_log))
+  messages.push("🚮 " + JSON.stringify(console_log))
 
   // Send the log embed to the log channel
   // @ts-ignore

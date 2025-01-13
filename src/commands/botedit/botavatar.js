@@ -4,12 +4,13 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const path = require('path')  // Easier filepath management
 
 module.exports = class BotAvatarCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "botavatar",
-      category: "bot",
+      category: "botedit",
       description: "Set rookbot's Avatar",
       flags: {
         user: "unapplicable"

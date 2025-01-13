@@ -114,7 +114,7 @@ module.exports = async (client, newMember) => {
       member: fetchedMember.user.tag,
       action: "join"
     }
-    messages.push(JSON.stringify(console_log))
+    messages.push("👋 " + JSON.stringify(console_log))
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {

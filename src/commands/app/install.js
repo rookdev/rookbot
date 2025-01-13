@@ -5,6 +5,7 @@ const { codeBlock } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const shell = require('shelljs')  // Run shell commands
+const path = require('path')      // Easier path management
 
 /**
  * @class

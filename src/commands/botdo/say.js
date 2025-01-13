@@ -24,8 +24,8 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
-const numFuncs = require('../../utils/numFuncs')
+const timeFormat = require('../../utils/formatters/timeFormat')
+const numFuncs = require('../../utils/primitives/numFuncs')
 const path = require('path')  // Easy filepath management
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
@@ -42,7 +42,7 @@ module.exports = class SayCommand extends ModCommand {
     let comprops = {
       name: "say",
       description: "Say as Bot",
-      category: "bot",
+      category: "botdo",
       options: [
         {
           name: "message",
@@ -84,6 +84,11 @@ module.exports = class SayCommand extends ModCommand {
           description: "Visage to post as",
           type: ApplicationCommandOptionType.String
         }
+      ],
+      testOptions: [
+        { message: "Send to current channel" },
+        { message: "Send to #bot-console", channel: "#bot-console" },
+        { message: "Say as Brad", "visage-name": "brad" }
       ],
       userPermissions: [ PermissionFlagsBits.ManageMessages ],
       botPermissions: [ PermissionFlagsBits.SendMessages ]
@@ -186,14 +191,19 @@ module.exports = class SayCommand extends ModCommand {
 
     let rookhook = null // Bucket for rookhook webhook
 
+    if (typeof channel === "string") {
+      channel = channel.replace(/[<#@&!>]/g, '')
+    }
+
     // Calculate channel
     if (numFuncs.myIsNumeric(channel)) {
       if (["number", "string"].includes(typeof channel)) {
-        if (typeof channel === "string") {
-          channel = channel.replace(/[<#@&!>]/g, '')
-        }
         channel = await interaction.guild.channels.fetch(channel)
       }
+    } else {
+      channel = await interaction.guild.channels.cache.find(
+        c => c.name === channel
+      )
     }
 
     // If we're using a visage

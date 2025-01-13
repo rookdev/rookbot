@@ -2,7 +2,7 @@
 // Command Option Types, Permission Flags, Formatters: inlineCode, italic
 const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode, italic  } = require('discord.js')
 // Change User Nickname
-const { changeNickname } = require('../../utils/changeNickname')
+const { changeNickname } = require('../../utils/guild/changeNickname')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 
@@ -10,7 +10,7 @@ module.exports = class NickChangeCommand extends RookCommand {
   constructor(client, comprops, props) {
     comprops = comprops || {
       name: "nickchange",
-      category: "doi",
+      category: "botdo",
       description: "Immediately triggers a nickname change for specified user",
       options: [
         {

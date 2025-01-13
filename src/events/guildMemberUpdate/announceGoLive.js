@@ -121,6 +121,7 @@ module.exports = async (client, oldMember, newMember) => {
     result = await channel.send(this_package)
 
     messages.push(
+      "🔴 " +
       JSON.stringify(
         {
           guild: newMember.guild.name,

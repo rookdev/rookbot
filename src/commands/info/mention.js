@@ -30,7 +30,7 @@ module.exports = class MentionCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "mention",
-      category: "meta",
+      category: "info",
       description: "Give code to post a mention in chat",
       flags: { target: "required" },
       options: [
@@ -71,6 +71,11 @@ module.exports = class MentionCommand extends RookCommand {
           options: { "target-type": "role" }
         },
         {
+          name: "userinfo",
+          description: "Get info about a User",
+          options: { "target-type": "user" }
+        },
+        {
           name: "vcinfo",
           description: "Get info about a Voice Channel",
           options: { "target-type": "channel" }
@@ -82,6 +87,7 @@ module.exports = class MentionCommand extends RookCommand {
         { "target-id": "<@&833812507012366366>" },                // @Admin
         { "target-id": "<@!263968998645956608>" },                // @Minnie
         { "target-id": "<@!1111517386588307536>" },               // @castIe
+        { "target-id": "<@!1307416505171968011>" },               // @minrook
         { "target-id": "<#!1097065219014021130>" }                // Voice:General
       ]
     }
@@ -107,6 +113,7 @@ module.exports = class MentionCommand extends RookCommand {
     let targetId      = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
     // Get Target Type
     let targetType    = coptions["target-type"] ?? "channel"
+    let targetMember  = null
     let targetMention = ""
 
     // console.log(
@@ -297,7 +304,7 @@ module.exports = class MentionCommand extends RookCommand {
         targetMention = userMention(targetId)
         if (guild) {
           // Get Guild Member
-          let targetMember = await guild?.members?.fetch(targetId)
+          targetMember = await guild?.members?.fetch(targetId)
           if (targetMember) {
             specs = {
               name: targetMember.user.tag
@@ -480,6 +487,26 @@ module.exports = class MentionCommand extends RookCommand {
           }
         ]
       )
+
+      if (targetType == "user" && targetMember) {
+        this.props.fields.push(
+          [
+            // Bot Actions
+            {
+              name: "Bot User?",
+              value: targetMember.user.bot ? "🤖" : "🟥"
+            },
+            {
+              name: "Can Bot Edit?",
+              value: await this.botCanEdit(client, targetMember, true) ? "🛠" : "🟥"
+            },
+            {
+              name: "Can Bot Moderate?",
+              value: await this.botCanMod(client, targetMember, true) ? "🔨" : "🟥"
+            }
+          ]
+        )
+      }
 
       this.props.fields.push(
         [

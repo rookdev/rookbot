@@ -5,13 +5,13 @@ const { ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // Get Local Commands
-const getLocalCommands = require('../../utils/getLocalCommands')
+const getLocalCommands = require('../../utils/client/getLocalCommands')
 
 module.exports = class TestSuiteCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "testsuite",
-      category: "botdev",
+      category: "app",
       description: "Runs a test suite for a command",
       flags: {
         user: "unapplicable",

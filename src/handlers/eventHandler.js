@@ -1,5 +1,5 @@
 // @ts-nocheck
-const getAllFiles = require('../utils/getAllFiles') // Get All Files
+const getAllFiles = require('../utils/fs/getAllFiles') // Get All Files
 const path = require('path')                        // Easy filepath management
 
 module.exports = (client) => {

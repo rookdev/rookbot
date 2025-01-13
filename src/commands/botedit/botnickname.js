@@ -9,7 +9,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "botnickname",
-      category: "bot",
+      category: "botedit",
       description: "Set rookbot's Nickname",
       flags: {
         user: "unapplicable"

@@ -11,7 +11,7 @@ module.exports = class RosterCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "roster",
-      category: "meta",
+      category: "guild",
       description: "Display a Roster",
       flags: { target: "required" },
       options: [

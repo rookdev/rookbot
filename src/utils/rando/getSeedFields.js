@@ -1,13 +1,13 @@
 // Formatters
 const { inlineCode, hyperlink } = require('discord.js')
 // Use Discord HammerTime
-const timeFormat = require('../utils/timeFormat')
+const timeFormat = require('../formatters/timeFormat')
 // Decode slugIDs
 const { decode } = require('slugid')
 // php strtotime
 const strtotime = require('locutus/php/datetime/strtotime')
 // Canned Emojis
-const emojis = require('../dbs/emojis.json')
+const emojis = require('../../dbs/emojis.json')
 
 async function get_url(in_url) {
   try {
@@ -297,7 +297,7 @@ module.exports = async (hashID, gameID="z3r") => {
         }
       ]
     ]
-  } else if (["z3m3", "z1m1z3m3"].includes(gameID)) {
+  } else if (["z3m3", "z1m1z3m3", "sm-total"].includes(gameID)) {
     // Z3M3
     let decoded = decode(hashID).replaceAll("-",'')
 
@@ -309,9 +309,11 @@ module.exports = async (hashID, gameID="z3r") => {
     } else if (gameID == "z1m1z3m3") {
       // FIXME: Doesn't work
       // apiURL = `https://quad.beta.samus.link/api/seed/${decoded}`
+    } else if (gameID == "sm-total") {
+      apiURL = `https://sm.samus.link/api/seed/${decoded}`
     }
     hash_meta = await get_url(apiURL)
-    // console.log(apiURL)
+    console.log(apiURL)
 
     if (!hash_meta?.worlds) {
       // Hash Data not found
@@ -349,14 +351,17 @@ module.exports = async (hashID, gameID="z3r") => {
       "Six",
       "Seven"
     ]
-    settings.opentower = nums.indexOf(settings.opentower.replace("crystals","").ucfirst())
-    settings.ganonvulnerable = nums.indexOf(settings.ganonvulnerable.replace("crystals","").ucfirst())
-    settings.opentourian = nums.indexOf(settings.opentourian.replace("bosses","").ucfirst())
+    settings.opentower = nums.indexOf(settings?.opentower?.replace("crystals","").ucfirst())
+    settings.ganonvulnerable = nums.indexOf(settings?.ganonvulnerable?.replace("crystals","").ucfirst())
+    settings.opentourian = nums.indexOf(settings?.opentourian?.replace("bosses","").ucfirst())
     let goal = settings?.goal
     if (goal) {
       switch(goal) {
         case "defeatboth":
           goal = "🐗Defeat Ganon &" + "\n" + "🧠Mother Brain"
+          break
+        case "defeatmb":
+          goal = "🧠Defeat Mother Brain"
           break
         case "fastganondefeatmotherbrain":
           goal = "🐗Fast Ganon &" + "\n" + "🧠Defeat Mother Brain"
@@ -370,12 +375,16 @@ module.exports = async (hashID, gameID="z3r") => {
     fields = [
       [
         {
+          name: "📝Logic",
+          value: settings?.logic?.ucfirst()
+        },
+        {
           name: "📝SMLogic",
-          value: settings?.smlogic.ucfirst()
+          value: settings?.smlogic?.ucfirst()
         },
         {
           name: "🗝️Dungeon Items",
-          value: settings?.keyshuffle.ucfirst()
+          value: settings?.keyshuffle?.ucfirst()
         },
       ],
       [
@@ -385,25 +394,25 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "♖Tower/🐗Ganon",
-          value: `${settings?.opentower} Crystals/${settings?.ganonvulnerable} Crystals`
+          value: gameID != "sm-total" ? `${settings?.opentower} Crystals/${settings?.ganonvulnerable} Crystals` : ""
         },
         {
           name: "🧠Tourian Open",
-          value: `${settings?.opentourian} G4 Bosses`
+          value: gameID != "sm-total" ? `${settings?.opentourian} G4 Bosses` : ""
         }
       ],
       [
         {
           name: "🌐World State",
-          value: settings?.gamemode.ucfirst()
+          value: settings?.gamemode?.ucfirst()
         },
         {
           name: "⚔️Sword Location",
-          value: settings?.swordlocation.ucfirst()
+          value: settings?.swordlocation?.ucfirst()
         },
         {
           name: "⚪Morph Location",
-          value: settings?.morphlocation.ucfirst()
+          value: settings?.morphlocation?.ucfirst()
         },
       ],
       [

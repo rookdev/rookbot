@@ -5,13 +5,13 @@ const { userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Pretty-print time durations
-const timeConversion = require('../../utils/timeConversion')
+const timeConversion = require('../../utils/formatters/timeConversion')
 
 module.exports = class UptimeCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "uptime",
-      category: "app",
+      category: "botmeta",
       description: "Uptime",
       flags: {
         user: "unapplicable",

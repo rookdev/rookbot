@@ -1,4 +1,4 @@
-const { changeNickname } = require('../utils/changeNickname')  // Import the changeNickname function
+const { changeNickname } = require('../guild/changeNickname')  // Import the changeNickname function
 const schedule = require('node-schedule')
 
 // Schedule nickname change

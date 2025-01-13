@@ -5,7 +5,8 @@ const { ApplicationCommandOptionType, inlineCode, hyperlink } = require('discord
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const shell = require('shelljs')  // Run shell commands
-const fs = require('fs')          // Filesystem management
+const path = require('path')      // Easier path management
+const fs = require('fs')          // Filesystem manipulation
 
 /**
  * @class

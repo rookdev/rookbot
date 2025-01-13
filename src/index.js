@@ -18,7 +18,7 @@ async function callCommands(commandNames) {
   }
 
   // Get local commands
-  const getLocalCommands = require('./utils/getLocalCommands')
+  const getLocalCommands = require('./utils/client/getLocalCommands')
   const localCommands = getLocalCommands(client)
 
   for(let commandName of commandNames) {

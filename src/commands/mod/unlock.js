@@ -74,7 +74,7 @@ module.exports = class UnlockCommand extends ModCommand {
       console.log(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
-      const logs = await this.getChannel([ "logging-unlock", "logging" ])
+      const logs = await this.getChannel(client, interaction, [ "logging-unlock", "logging" ])
       if (logs && !this.DEV) {
         let props = {
           color: this.profile.colors.success,

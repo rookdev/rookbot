@@ -5,7 +5,7 @@ const { codeBlock } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const tz = require('timezone')  // Timezone management
 
 module.exports = class TimeCommand extends RookCommand {

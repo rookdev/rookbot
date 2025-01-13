@@ -8,7 +8,7 @@ module.exports = async (client, interaction) => {
   let messages = []
 
   if (!interaction.isChatInputCommand()) {
-    messages.push(`${client.profile.emojis.fail} Not a chat input command`)
+    // messages.push(`${client.profile.emojis.fail} Not a chat input command`)
     return [result, messages]
   }
 

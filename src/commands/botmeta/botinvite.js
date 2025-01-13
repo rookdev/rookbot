@@ -7,7 +7,7 @@ module.exports = class BotInviteCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "botinvite",
-      category: "bot",
+      category: "botmeta",
       description: "Invite rookbot",
       flags: {
         test: "basic"

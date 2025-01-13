@@ -183,7 +183,7 @@ module.exports = async (client, oldMember, newMember) => {
       oldName: oldNick,
       newName: newNick
     }
-    messages.push(JSON.stringify(console_log))
+    messages.push("✏️ " + JSON.stringify(console_log))
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id

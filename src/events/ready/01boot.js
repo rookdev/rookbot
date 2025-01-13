@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const manageCommands = require('../../utils/manageCommands')
+const manageCommands = require('../../utils/client/manageCommands')
 const emojis = require('../../dbs/emojis.json')
 
 module.exports = async (client) => {

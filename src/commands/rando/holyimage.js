@@ -99,7 +99,7 @@ module.exports = class HolyImageCommand extends RookCommand {
       let page_url = `http://alttp.mymm1.com/holyimage/${gameID}-${slugID}.html`
       // Set Title
       this.props.title = {
-        text: image.title,
+        text: `${gameName} - ${image.title}`,
         url: page_url
       }
 

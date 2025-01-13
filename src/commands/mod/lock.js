@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-// Command Option Types, Permission Flags, Formatters: inlineCode
-const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode } = require('discord.js')
+// Command Option Types, Permission Flags, Formatters: bold, inlineCode
+const { ApplicationCommandOptionType, PermissionFlagsBits, bold, inlineCode } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -58,7 +58,7 @@ module.exports = class LockCommand extends ModCommand {
       const embedProps = {
         color: this.profile.colors.bad,
         title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
-        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold(locked)}.`,
+        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold('locked')}.`,
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
@@ -85,7 +85,7 @@ module.exports = class LockCommand extends ModCommand {
       }
 
       // Complete the interaction with a private success message
-      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold(locked)}!`
+      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold('locked')}!`
     } catch (error) {
       console.log(`There was an error when locking the channel: ${error.stack}`)
       this.error = true

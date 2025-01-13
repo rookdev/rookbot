@@ -5,7 +5,7 @@ const { ApplicationCommandOptionType, inlineCode, bold, userMention } = require(
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
 
 // Sort by keys
@@ -23,7 +23,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "botguilds",
-      category: "bot",
+      category: "botmeta",
       description: "Bot Guilds",
       flags: {
         user: "unapplicable",

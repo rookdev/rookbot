@@ -5,13 +5,13 @@ const { codeBlock, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 
 module.exports = class GuildStatusCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "guildstatus",
-      category: "meta",
+      category: "guild",
       description: "Guild Status",
       flags: {
         test: "basic"

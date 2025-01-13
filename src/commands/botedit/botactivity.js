@@ -23,7 +23,7 @@ module.exports = class BotActivityCommand extends BotDevCommand {
   constructor(client, comprops, props={}) {
     comprops = {
       name: "botactivity",
-      category: "bot",
+      category: "botedit",
       description: "Bot Activity setter",
       options: [
         {

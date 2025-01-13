@@ -27,7 +27,7 @@ module.exports = class BotSourceCommand extends RookCommand {
 
     let comprops = {
       name: "botsrc",
-      category: "bot",
+      category: "botmeta",
       description: "Links to the GitHub repository of rookbot",
       flags: {
         test: "basic"

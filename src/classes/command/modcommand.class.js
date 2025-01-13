@@ -335,8 +335,8 @@ class ModCommand extends AdminCommand {
       if (interaction?.guild.id) {
         if (
           ([
-            "1282788953052676177", // DoI Main
-            "365162015280594944", // Trident Esports Main
+            "1282788953052676177",  // DoI Main
+            "365162015280594944",   // Trident Esports Main
           ].includes(interaction.guild.id)) &&
           (interaction.user.username != "matrethewey")
         ) {
@@ -361,9 +361,11 @@ class ModCommand extends AdminCommand {
     let duration = coptions["duration-seconds"] ?? 0
     let durationSeconds = 0
     let durationMilliseconds = 0
+    let durationStr = ""
     if (duration) {
       durationSeconds = Math.abs(duration)
       durationMilliseconds = durationSeconds * 1000
+      durationStr = timeConversion(durationMilliseconds)
     }
     let now = new Date()
     let timeoutUntil = new Date(now.getTime() + durationMilliseconds)
@@ -389,12 +391,12 @@ class ModCommand extends AdminCommand {
     }
     switch(pretty_name) {
       case "Unban":
-        tenses.past = "unbanned"
+        tenses.past = "Unbanned"
         tenses.active = tenses.past.replace("ed","ing")
         emoji = "🪃"
         break
       case "Ban":
-        tenses.past = "banned"
+        tenses.past = "Banned"
         tenses.active = tenses.past.replace("ed","ing")
         emoji = "🔨"
         break
@@ -414,8 +416,8 @@ class ModCommand extends AdminCommand {
         emoji = "➖"
         break
       case "Timeout":
-        tenses.past = "timed out"
-        tenses.active = "timing out"
+        tenses.past = "Timed Out"
+        tenses.active = "Timing Out"
         emoji = "⏰"
         break
       case "Warn":
@@ -443,7 +445,7 @@ class ModCommand extends AdminCommand {
         props.mod.ephemeral = true
         props.mod.description = [
           `${this.profile.emojis.fail} Can't ${bold(this.name)} a mention! Must use user ID!`,
-          codeBlock(`ID: ${targetUserId}`)
+          inlineCode(`ID: ${targetUserId}`)
         ]
         this.props = props.mod
         return false
@@ -583,6 +585,7 @@ class ModCommand extends AdminCommand {
           "(" +
           // `ID: ${inlineCode(targetUserId)}; ` +  // Don't add userID to ModPost
           (role != "" ? `Role: ${role}; Reason: ` : "") +
+          // (durationStr != "" ? `Duration: ${durationStr}; Reason: ` : "") +
           reason +
           ")"
         ]

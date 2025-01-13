@@ -7,6 +7,7 @@
  *  Permission Flags Bits
  *  Formatters
  *   bold
+ *   inlineCode
  *   userMention
  */
 const {
@@ -14,10 +15,11 @@ const {
   AuditLogEvent,
   PermissionFlagsBits,
   bold,
+  inlineCode,
   userMention
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
 const path = require('path')
 const fs = require('fs')
@@ -112,10 +114,12 @@ module.exports = class SearchCommand extends ModCommand {
     let searchType = coptions["search-type"]
     let targetUserInput = coptions["target-id"]
     let region = coptions["region"] ?? (this.DEV ? "DEV" : "")
-    let targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
-    let targetUser
+    let targetUserId = targetUserInput?.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
+    let targetUser = null
 
-    let props = {}
+    let props = {
+      mod: {}
+    }
 
     try {
       targetUser = await client.users.fetch(targetUserId)

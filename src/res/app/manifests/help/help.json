@@ -8,20 +8,19 @@
       "access": "BotDev",
       "segment": "local"
     },
-    "help": {
-      "name": "help",
+    "goodbye": {
+      "name": "goodbye",
       "category": "app",
-      "description": "Help",
-      "options": [
-        {
-          "name": "section-name",
-          "description": "Section Name"
-        },
-        {
-          "name": "command-name",
-          "description": "Command Name"
-        }
-      ],
+      "description": "Goodbye",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "hello": {
+      "name": "hello",
+      "category": "app",
+      "description": "Hello",
+      "options": [],
       "access": "unset",
       "segment": "local"
     },
@@ -54,6 +53,20 @@
       "access": "BotDev",
       "segment": "local"
     },
+    "testsuite": {
+      "name": "testsuite",
+      "category": "app",
+      "description": "Runs a test suite for a command",
+      "options": [
+        {
+          "name": "command-name",
+          "description": "The name of the command to test.",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
     "update": {
       "name": "update",
       "category": "app",
@@ -61,36 +74,44 @@
       "options": [],
       "access": "BotDev",
       "segment": "local"
-    },
-    "uptime": {
-      "name": "uptime",
-      "category": "app",
-      "description": "Uptime",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
     }
   },
-  "bot": {
-    "goodbye": {
-      "name": "goodbye",
-      "category": "bot",
-      "description": "Goodbye",
-      "options": [],
+  "botdo": {
+    "nickchange": {
+      "name": "nickchange",
+      "category": "botdo",
+      "description": "Immediately triggers a nickname change for specified user",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "Target User ID",
+          "required": true
+        }
+      ],
       "access": "unset",
       "segment": "local"
     },
-    "hello": {
-      "name": "hello",
-      "category": "bot",
-      "description": "Hello",
+    "castiename": {
+      "name": "castiename",
+      "category": "botdo",
+      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
       "options": [],
+      "parent": "nickchange",
+      "access": "unset",
+      "segment": "local"
+    },
+    "castlename": {
+      "name": "castlename",
+      "category": "botdo",
+      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
+      "options": [],
+      "parent": "nickchange",
       "access": "unset",
       "segment": "local"
     },
     "say": {
       "name": "say",
-      "category": "bot",
+      "category": "botdo",
       "description": "Say as Bot",
       "options": [
         {
@@ -124,10 +145,12 @@
       ],
       "access": "Mod",
       "segment": "local"
-    },
+    }
+  },
+  "botedit": {
     "botactivity": {
       "name": "botactivity",
-      "category": "bot",
+      "category": "botedit",
       "description": "Bot Activity setter",
       "options": [
         {
@@ -152,7 +175,7 @@
     },
     "botavatar": {
       "name": "botavatar",
-      "category": "bot",
+      "category": "botedit",
       "description": "Set rookbot's Avatar",
       "options": [
         {
@@ -164,9 +187,25 @@
       "access": "BotDev",
       "segment": "local"
     },
+    "botnickname": {
+      "name": "botnickname",
+      "category": "botedit",
+      "description": "Set rookbot's Nickname",
+      "options": [
+        {
+          "name": "bot-nickname",
+          "description": "Bot Nickname",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    }
+  },
+  "botmeta": {
     "botguilds": {
       "name": "botguilds",
-      "category": "bot",
+      "category": "botmeta",
       "description": "Bot Guilds",
       "options": [
         {
@@ -179,48 +218,43 @@
     },
     "botinvite": {
       "name": "botinvite",
-      "category": "bot",
+      "category": "botmeta",
       "description": "Invite rookbot",
       "options": [],
       "access": "unset",
       "segment": "local"
     },
-    "botnickname": {
-      "name": "botnickname",
-      "category": "bot",
-      "description": "Set rookbot's Nickname",
-      "options": [
-        {
-          "name": "bot-nickname",
-          "description": "Bot Nickname",
-          "required": true
-        }
-      ],
-      "access": "BotDev",
-      "segment": "local"
-    },
     "botsrc": {
       "name": "botsrc",
-      "category": "bot",
+      "category": "botmeta",
       "description": "Links to the GitHub repository of rookbot",
       "options": [],
       "access": "unset",
       "segment": "local"
-    }
-  },
-  "botdev": {
-    "testsuite": {
-      "name": "testsuite",
-      "category": "botdev",
-      "description": "Runs a test suite for a command",
+    },
+    "help": {
+      "name": "help",
+      "category": "botmeta",
+      "description": "Help",
       "options": [
         {
+          "name": "section-name",
+          "description": "Section Name"
+        },
+        {
           "name": "command-name",
-          "description": "The name of the command to test.",
-          "required": true
+          "description": "Command Name"
         }
       ],
-      "access": "BotDev",
+      "access": "unset",
+      "segment": "local"
+    },
+    "uptime": {
+      "name": "uptime",
+      "category": "botmeta",
+      "description": "Uptime",
+      "options": [],
+      "access": "unset",
       "segment": "local"
     }
   },
@@ -274,38 +308,6 @@
       "options": [],
       "access": "unset",
       "segment": "local"
-    },
-    "nickchange": {
-      "name": "nickchange",
-      "category": "doi",
-      "description": "Immediately triggers a nickname change for specified user",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "Target User ID",
-          "required": true
-        }
-      ],
-      "access": "unset",
-      "segment": "local"
-    },
-    "castiename": {
-      "name": "castiename",
-      "category": "doi",
-      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
-      "options": [],
-      "parent": "nickchange",
-      "access": "unset",
-      "segment": "local"
-    },
-    "castlename": {
-      "name": "castlename",
-      "category": "doi",
-      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
-      "options": [],
-      "parent": "nickchange",
-      "access": "unset",
-      "segment": "local"
     }
   },
   "fun": {
@@ -330,6 +332,33 @@
         {
           "name": "sides",
           "description": "Number of sides on each die (2-9999)"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "guild": {
+    "guildstatus": {
+      "name": "guildstatus",
+      "category": "guild",
+      "description": "Guild Status",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "roster": {
+      "name": "roster",
+      "category": "guild",
+      "description": "Display a Roster",
+      "options": [
+        {
+          "name": "section-type",
+          "description": "Roster Section"
+        },
+        {
+          "name": "guild-id",
+          "description": "Target Guild"
         }
       ],
       "access": "unset",
@@ -365,27 +394,9 @@
       "access": "unset",
       "segment": "local"
     },
-    "time": {
-      "name": "time",
-      "category": "info",
-      "description": "Time",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
-    }
-  },
-  "meta": {
-    "guildstatus": {
-      "name": "guildstatus",
-      "category": "meta",
-      "description": "Guild Status",
-      "options": [],
-      "access": "unset",
-      "segment": "local"
-    },
     "mention": {
       "name": "mention",
-      "category": "meta",
+      "category": "info",
       "description": "Give code to post a mention in chat",
       "options": [
         {
@@ -403,7 +414,7 @@
     },
     "channelinfo": {
       "name": "channelinfo",
-      "category": "meta",
+      "category": "info",
       "description": "Get info about a Channel",
       "options": [
         {
@@ -418,7 +429,7 @@
     },
     "emojiinfo": {
       "name": "emojiinfo",
-      "category": "meta",
+      "category": "info",
       "description": "Get info about an Emoji",
       "options": [
         {
@@ -433,8 +444,23 @@
     },
     "roleinfo": {
       "name": "roleinfo",
-      "category": "meta",
+      "category": "info",
       "description": "Get info about a Role",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "mention",
+      "access": "unset",
+      "segment": "local"
+    },
+    "userinfo": {
+      "name": "userinfo",
+      "category": "info",
+      "description": "Get info about a User",
       "options": [
         {
           "name": "target-id",
@@ -448,7 +474,7 @@
     },
     "vcinfo": {
       "name": "vcinfo",
-      "category": "meta",
+      "category": "info",
       "description": "Get info about a Voice Channel",
       "options": [
         {
@@ -461,20 +487,11 @@
       "access": "unset",
       "segment": "local"
     },
-    "roster": {
-      "name": "roster",
-      "category": "meta",
-      "description": "Display a Roster",
-      "options": [
-        {
-          "name": "section-type",
-          "description": "Roster Section"
-        },
-        {
-          "name": "guild-id",
-          "description": "Target Guild"
-        }
-      ],
+    "time": {
+      "name": "time",
+      "category": "info",
+      "description": "Time",
+      "options": [],
       "access": "unset",
       "segment": "local"
     }
@@ -493,20 +510,6 @@
       "category": "misc",
       "description": "Posts a rainbow divider line",
       "options": [],
-      "access": "unset",
-      "segment": "local"
-    },
-    "userinfo": {
-      "name": "userinfo",
-      "category": "misc",
-      "description": "Displays data of the mentioned user",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "The user you want to see",
-          "required": true
-        }
-      ],
       "access": "unset",
       "segment": "local"
     }

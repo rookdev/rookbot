@@ -112,6 +112,7 @@ module.exports = async (client, oldState, newState) => {
     result = await destChannel.send(this_package)
 
     messages.push(
+      "🔴 " +
       JSON.stringify(
         {
           guild: member.guild.name,

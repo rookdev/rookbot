@@ -201,7 +201,7 @@ class RookCommand {
 
     let channelIDs = {}
     let guild = interaction?.guild ?? client.guild
-    let guildID = guild.id
+    let guildID = guild?.id
     let channel = null
 
     try {
@@ -277,7 +277,7 @@ class RookCommand {
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
-          let thisOption = interaction.options.get(option.name)
+          let thisOption = interaction?.options?.get(option.name)
           if (thisOption) {
             coptions[option.name] = thisOption.value
           }
@@ -473,16 +473,18 @@ class RookCommand {
             }
           }
 
-          // Caller Entity
-          page.entities.caller = {
-            type:   "caller",
-            id:     interaction.user.id,
-            name:   interaction.user.displayName,
-            url:    "http://example.com/caller",
-            tag:    interaction.user.tag
-          }
-          if (typeof interaction.user?.displayAvatarURL === "function") {
-            page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
+          if (interaction?.user) {
+            // Caller Entity
+            page.entities.caller = {
+              type:   "caller",
+              id:     interaction.user.id,
+              name:   interaction.user.displayName,
+              url:    "http://example.com/caller",
+              tag:    interaction.user.tag
+            }
+            if (typeof interaction.user?.displayAvatarURL === "function") {
+              page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
+            }
           }
 
           // Guild Caller Entity

@@ -27,6 +27,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   let rrPath = path.join(
     __dirname,
     "..",
+    "..",
     "dbs",
     guild.id,
     "rrs"

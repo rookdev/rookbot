@@ -114,6 +114,7 @@ module.exports = async (client, newChannel) => {
       }
     )
     messages.push(
+      "✏️ " +
       JSON.stringify(
         {
           guild: newChannel.guild.name,

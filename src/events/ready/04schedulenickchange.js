@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
+const scheduleNicknameChange = require('../../utils/guild/scheduleNicknameChange')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const path = require('path')
 const fs = require('fs')

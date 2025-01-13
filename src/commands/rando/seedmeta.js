@@ -2,7 +2,9 @@
 
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const getSeedFields = require('../../utils/getSeedFields')
+const getSeedFields = require('../../utils/rando/getSeedFields')
+const getAllFiles = require('../../utils/fs/getAllFiles')
+const path = require('path')
 
 module.exports = class SeedMetaCommand extends RookCommand {
   constructor(client) {
@@ -34,6 +36,10 @@ module.exports = class SeedMetaCommand extends RookCommand {
               name:   "Super Metroid Map Randomizer",
               value:  "m3maprando"
             },
+            {
+              name:   "Super Metroid Item Randomizer",
+              value:  "sm-total"
+            }
             // {
             //   name:   "Quad Randomizer",
             //   value:  "z1m1z3m3"
@@ -45,7 +51,8 @@ module.exports = class SeedMetaCommand extends RookCommand {
         { "game-id": "z3r",         "hash-id": "0yAONb6XMV" },
         { "game-id": "z3m3",        "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
         // { "game-id": "z1m1z3m3",    "hash-id": "MOaOZII0QzS80DG9VTluXw" },
-        { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" }
+        { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" },
+        { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" }
       ]
     }
     let props = {
@@ -66,6 +73,37 @@ module.exports = class SeedMetaCommand extends RookCommand {
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"
     let hashID = coptions['hash-id'] ?? ""
+
+    if (gameID == "z3r" && hashID != "") {
+      let randoDataPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "dbs",
+        "randos"
+      )
+      for (let filename of getAllFiles(randoDataPath)) {
+        let randoData = require(filename)
+        if (randoData?.rando?.permalink) {
+          if (hashID.includes(randoData.rando.permalink.replace("<hash>",""))) {
+            let filenameParts = filename.split("\\")
+            if (filenameParts.length < 2) {
+              filenameParts = filename.split("/")
+            }
+            gameID = filenameParts[filenameParts.length - 1]
+            gameID = gameID.substring(0, gameID.indexOf("."))
+          }
+        }
+      }
+    }
+
+    if (hashID.includes("http://") || hashID.includes("https://")) {
+      if (hashID.endsWith("/")) {
+        hashID = hashID.substring(0, hashID.length - 1)
+      }
+      hashID = hashID.split("/")
+      hashID = hashID[hashID.length - 1]
+    }
 
     let fields = await getSeedFields(hashID, gameID)
 
@@ -96,6 +134,11 @@ module.exports = class SeedMetaCommand extends RookCommand {
       }
     } else if (gameID == "z3m3") {
       // Z3M3
+      this.props.image = {
+        image: ""
+      }
+    } else if (gameID == "sm-total") {
+      // SM
       this.props.image = {
         image: ""
       }

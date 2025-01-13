@@ -1,5 +1,5 @@
 const { inlineCode, italic } = require('discord.js')
-const randFuncs = require('./primitives/randFuncs') // Random Functions
+const randFuncs = require('../primitives/randFuncs') // Random Functions
 const path = require('path')                    // Easy path management
 const fs = require('fs')                        // Filesystem manipulation
 
@@ -96,6 +96,7 @@ async function selectMember(member) {
   let messages = []
   let namesPath = path.join(
     __dirname,
+    "..",
     "..",
     "dbs",
     "nicknames",
@@ -197,10 +198,7 @@ async function changeNickname(client, member) {
   messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
 
   let oldNickname = member.displayName
-  let newNickname = member.displayName
-  let newMessages = []
-
-  [newNickname, newMessages] = await selectMember(member)
+  let [newNickname, newMessages] = await selectMember(member)
   newNickname = newNickname.trim()
 
   messages = messages.concat(newMessages)
