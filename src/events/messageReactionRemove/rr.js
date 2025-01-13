@@ -5,7 +5,7 @@ const { MessageReaction, User } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 
-const manageRoles = require('../../utils/manageRoles')
+const manageRoles = require('../../utils/guild/manageRoles')
 
 /**
  * Logs edited messages from the server.

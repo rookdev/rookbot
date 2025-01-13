@@ -1,6 +1,6 @@
 const { MessageReaction, User } = require('discord.js')
 // Rook-branded Client
-const { RookClient } = require('../classes/objects/rclient.class')
+const { RookClient } = require('../../classes/objects/rclient.class')
 const path = require('path')
 const fs = require('fs')
 

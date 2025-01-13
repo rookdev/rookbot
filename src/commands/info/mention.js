@@ -24,7 +24,7 @@ const {
 } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 
 module.exports = class MentionCommand extends RookCommand {
   constructor(client) {

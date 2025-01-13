@@ -2,7 +2,7 @@
 
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
-const numFuncs = require('../../utils/numFuncs')
+const numFuncs = require('../../utils/primitives/numFuncs')
 
 class RookEmbed extends EmbedBuilder {
   // props: import('../../types/embed').EmbedProps

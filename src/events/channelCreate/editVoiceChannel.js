@@ -5,7 +5,7 @@ const { ChannelType } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const randFuncs = require('../../utils/randFuncs') // Random Functions
+const randFuncs = require('../../utils/primitives/randFuncs') // Random Functions
 const path = require('path')  // Easier path management
 const fs = require('fs')      // Filesystem manipulation
 

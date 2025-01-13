@@ -7,7 +7,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const path = require('path')  // Easier filepath management
 const fs = require('fs')      // Filesystem manipulation
 

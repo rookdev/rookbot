@@ -7,9 +7,9 @@ const { RookCommand } = require('./rcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
 // Pretty-print time durations
-const timeConversion = require('../../utils/timeConversion')
+const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const shell = require('shelljs')                // Run shell commands
 const path = require('path')                    // Easy filepath management
 const fs = require('fs')                        // Filesystem manipulation

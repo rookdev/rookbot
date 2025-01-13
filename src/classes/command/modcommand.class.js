@@ -31,10 +31,10 @@ const { AdminCommand } = require('./admincommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
-const timeConversion = require('../../utils/timeConversion')
+const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
-const timeFormat = require('../../utils/timeFormat')
-const numFuncs = require('../../utils/numFuncs')
+const timeFormat = require('../../utils/formatters/timeFormat')
+const numFuncs = require('../../utils/primitives/numFuncs')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 

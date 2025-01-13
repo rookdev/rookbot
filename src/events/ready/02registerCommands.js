@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 const { ApplicationCommandOptionType } = require('discord.js')
-const areCommandsDifferent = require('../../utils/areCommandsDifferent')
-const getLocalCommands = require('../../utils/getLocalCommands')
+const areCommandsDifferent = require('../../utils/client/areCommandsDifferent')
+const getLocalCommands = require('../../utils/client/getLocalCommands')
 const fs = require('fs/promises')
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))

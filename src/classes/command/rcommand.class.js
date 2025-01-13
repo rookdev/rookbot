@@ -11,9 +11,9 @@ const path = require('path')
 // Filesystem manipulation
 const fs = require('fs')
 
-const { setValue } = require("../../utils/globalFuncs")
-const stringFuncs = require("../../utils/stringFuncs")
-const numFuncs = require("../../utils/numFuncs")
+const { setValue } = require("../../utils/primitives/globalFuncs")
+const stringFuncs = require("../../utils/primitives/stringFuncs")
+const numFuncs = require("../../utils/primitives/numFuncs")
 
 class RookCommand {
   constructor(client, comprops={}, props={}) {

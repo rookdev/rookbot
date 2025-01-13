@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 const { MessageFlags } = require('discord.js')
-const getLocalCommands = require('../../utils/getLocalCommands')
+const getLocalCommands = require('../../utils/client/getLocalCommands')
 
 module.exports = async (client, interaction) => {
   let result = false

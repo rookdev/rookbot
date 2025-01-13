@@ -1,4 +1,4 @@
-const getAllFiles = require('./getAllFiles')
+const getAllFiles = require('../fs/getAllFiles')
 const path = require('path')
 
 module.exports = (client, exceptions = []) => {
