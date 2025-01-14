@@ -3,8 +3,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const getSeedFields = require('../../utils/rando/getSeedFields')
-const getAllFiles = require('../../utils/fs/getAllFiles')
-const path = require('path')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class SeedMetaCommand extends RookCommand {
   constructor(client) {
@@ -75,15 +74,21 @@ module.exports = class SeedMetaCommand extends RookCommand {
     let hashID = coptions['hash-id'] ?? ""
 
     if (gameID == "z3r" && hashID != "") {
-      let randoDataPath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "dbs",
-        "randos"
-      )
-      for (let filename of getAllFiles(randoDataPath)) {
-        let randoData = require(filename)
+      for (let filename of fileFuncs.getAllFiles(
+        [
+          "src",
+          "dbs",
+          "randos"
+        ]
+      )) {
+        let randoData = fileFuncs.getAFile(
+          [
+            "src",
+            "dbs",
+            "randos"
+          ],
+          filename
+        )
         if (randoData?.rando?.permalink) {
           if (hashID.includes(randoData.rando.permalink.replace("<hash>",""))) {
             let filenameParts = filename.split("\\")

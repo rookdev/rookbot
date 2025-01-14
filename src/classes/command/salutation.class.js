@@ -10,8 +10,8 @@ const { RookEmbed } = require('../embed/rembed.class')
 const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const shell = require('shelljs')                // Run shell commands
-const path = require('path')                    // Easy filepath management
 const fs = require('fs')                        // Filesystem manipulation
 
 /**
@@ -85,19 +85,21 @@ class SalutationCommand extends RookCommand {
     }
     mode_msg = `${mode_tag} ${mode_msg} ${mode_tag}`
 
-    let ci_data = require(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
+    let ci_data = fileFuncs.getAFile(
+      [
         "resources",
         "app",
         "meta",
-        "manifests",
-        "ci"
-      )
+        "manifests"
+      ],
+      "ci.json"
     )
+    if (!ci_data) {
+      this.error = true
+      this.props.description = `CI Data not found!`
+      return false
+    }
+
     let git_info = ci_data.common.common.repo
     git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 
@@ -374,24 +376,19 @@ class SalutationCommand extends RookCommand {
           }
         }
 
-        let channelsJSONPath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "dbs",
-          guildID,
-          "channels.json"
-        )
-        let channelIDs = {}
         let guild = await client.guilds.fetch(guildID)
         let channel = null
 
-        if (fs.existsSync(channelsJSONPath)) {
-          // Find the Guild Channel to send the embed to
-          channelIDs = require(channelsJSONPath)
-          if (!channelIDs) { this.error = true; continue }
-
-        }
+        let channelIDs = fileFuncs.getAFile(
+          [
+            "src",
+            "dbs",
+            guildID
+          ],
+          "channels.json"
+        )
+        // Find the Guild Channel to send the embed to
+        if (!channelIDs) { this.error = true; continue }
 
         for (let channelName of [
           "bot-salutations",

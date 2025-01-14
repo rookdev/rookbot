@@ -2,7 +2,7 @@
 
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const path = require('path')  // Easy filepath management
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class MothCommand extends RookCommand {
   constructor(client) {
@@ -27,7 +27,14 @@ module.exports = class MothCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // Path to the local video file
-    const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'mothula.mp4')
+    const videoPath = fileFuncs.getAPath(
+      [
+        "src",
+        "res",
+        "media"
+      ],
+      "mothula.mp4"
+    )
 
     try {
       // Send the video to the channel the command was sent in

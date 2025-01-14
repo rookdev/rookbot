@@ -31,9 +31,21 @@
     ]
   },
   "prefixes": {
-    "1282788953052676177":  { "name": "DoI Main", "prefix": "[Admin] " },
-    "1297216081110372474":  { "name": "DoI Navy", "prefix": "[Server/Bot] " },
-    "365162015280594944":   { "name": "Trident Esports", "prefix": "DEV | " },
-    "745409743593406634":   { "name": "TridentBot", "prefix": "DEV | " }
+    "1282788953052676177": {
+      "name": "DoI Main",
+      "prefix": "[Admin] "
+    },
+    "1297216081110372474": {
+      "name": "DoI Navy",
+      "prefix": "[Server/Bot] "
+    },
+    "365162015280594944": {
+      "name": "Trident Esports",
+      "prefix": "DEV | "
+    },
+    "745409743593406634": {
+      "name": "TridentBot",
+      "prefix": "DEV | "
+    }
   }
 }

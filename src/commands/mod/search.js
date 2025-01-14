@@ -21,8 +21,7 @@ const {
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
-const path = require('path')
-const fs = require('fs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class SearchCommand extends ModCommand {
   constructor(client) {
@@ -137,27 +136,23 @@ module.exports = class SearchCommand extends ModCommand {
     let i = 0
 
     if (["DEV",""].includes(region)) {
-      let logFileName = "" +
-      region +
-      (searchType != "ghostMessage" ? "member" : "") +
-      searchType +
-      "s.log"
-
-      let logFilePath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "botlogs",
-        logFileName
+      let logFile = fileFuncs.getAFile(
+        [
+          "src",
+          "botlogs"
+        ],
+        region +
+        (searchType != "ghostMessage" ? "member": "") +
+        searchType +
+        "s.log"
       )
 
-      if (!fs.existsSync(logFilePath)) {
+      if (!logFile) {
         this.error = true
         this.props.description = `Logs for '${region}${searchType.ucfirst()}' not found!`
         return
       }
 
-      let logFile = fs.readFileSync(logFilePath, "utf8")
       let logLines = logFile.split("\n")
       for(let line of logLines) {
         line = line.trim()

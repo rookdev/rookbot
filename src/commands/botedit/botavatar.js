@@ -4,7 +4,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
-const path = require('path')  // Easier filepath management
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class BotAvatarCommand extends BotDevCommand {
   constructor(client) {
@@ -52,19 +52,20 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
     }
 
     try {
-      let ci_data = require(
-        path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
+      let ci_data = fileFuncs.getAFile(
+        [
           "resources",
           "app",
           "meta",
-          "manifests",
-          "ci"
-        )
+          "manifests"
+        ],
+        "ci.json"
       )
+      if (!ci_data) {
+        this.error = true
+        this.props.description = `CI Data not found!`
+        return false
+      }
       let git_info = ci_data.common.common.repo
       git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 

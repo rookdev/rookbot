@@ -4,8 +4,8 @@
 const { codeBlock } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const shell = require('shelljs')  // Run shell commands
-const path = require('path')      // Easier path management
 
 module.exports = class UpdateCommand extends BotDevCommand {
   constructor(client) {
@@ -46,19 +46,21 @@ module.exports = class UpdateCommand extends BotDevCommand {
       "---"
     ]
 
-    let ci_data = require(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
+    let ci_data = fileFuncs.getAFile(
+      [
         "resources",
         "app",
         "meta",
-        "manifests",
-        "ci"
-      )
+        "manifests"
+      ],
+      "ci.json"
     )
+    if (!ci_data) {
+      this.error = true
+      this.props.description = `CI Data not found!`
+      return false
+    }
+
     let git_info = ci_data.common.common.repo
     git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 

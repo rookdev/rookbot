@@ -4,6 +4,7 @@
 const { ApplicationCommandOptionType, inlineCode, bold, italic } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 
@@ -55,23 +56,14 @@ module.exports = class RosterCommand extends RookCommand {
     // Get Guild ID
     const guildID = coptions["guild-id"] ?? interaction?.guild?.id ?? process.env.GUILD_ID
 
-    // Get Guild IDs path
-    const guildIDsPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      "rosters",
+    // Get Guild IDs list
+    const guildIDs = fileFuncs.getAFile(
+      [
+        "dbs",
+        "rosters"
+      ],
       "guilds.json"
     )
-    if (!guildIDsPath) {
-      this.error = true
-      this.props.description = "Bad Roster Guild IDs Path"
-      return false
-    }
-
-    // Get Guild IDs list
-    const guildIDs = require(guildIDsPath)
     if (!guildIDs) {
       this.error = true
       this.props.description = "Couldn't load Roster Guild IDs"
@@ -97,12 +89,12 @@ module.exports = class RosterCommand extends RookCommand {
     }
 
     // Get roster root
-    let rostersRoot = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      "rosters"
+    let rostersRoot = fileFuncs.getAPath(
+      [
+        "src",
+        "dbs",
+        "rosters"
+      ]
     )
     // Cycle through teams for this set
     for (let teamDir of fs.readdirSync(path.join(

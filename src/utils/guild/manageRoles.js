@@ -1,8 +1,7 @@
 const { MessageReaction, User } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
-const path = require('path')
-const fs = require('fs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -24,21 +23,18 @@ const manageRoles = async (client, reaction, user, mode="add") => {
 
   let guild = reaction.message.guild
 
-  let rrPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "dbs",
-    guild.id,
-    "rrs"
+  let rrs = fileFuncs.getAFile(
+    [
+      "src",
+      "dbs",
+      guild.id
+    ],
+    "rrs.json"
   )
-
-  if (!fs.existsSync(rrPath + ".json")) {
+  if (!rrs) {
     messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
     return [result, messages]
   }
-
-  let rrs = require(rrPath)
 
   if (!rrs[reaction.message.id]) {
     // messages.push(`${client.profile.emojis.warning} Not a watched message: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)

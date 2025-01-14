@@ -1,22 +1,21 @@
 // @ts-nocheck
-const getAllFiles = require('../utils/fs/getAllFiles') // Get All Files
-const path = require('path')                        // Easy filepath management
+const fileFuncs = require('../utils/fs/fileFuncs') // Get All Files
+const path = require('path')                       // Easy filepath management
 
 module.exports = (client) => {
   // Get all folders in ./events
-  const eventFolders = getAllFiles(
-    path.join(
-      __dirname,
-      '..',
-      'events'
-    ),
+  const eventFolders = fileFuncs.getAllFiles(
+    [
+      "src",
+      "events"
+    ],
     true
   )
 
   // Cycle through folders
   for (const eventFolder of eventFolders) {
     // Get event scripts
-    let eventFiles = getAllFiles(eventFolder)
+    let eventFiles = fileFuncs.getAllFiles(eventFolder)
     // Sort event scripts
     eventFiles = eventFiles.sort()
 

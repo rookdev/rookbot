@@ -5,32 +5,27 @@ const { ChannelType } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs') // Random Functions
-const path = require('path')  // Easier path management
-const fs = require('fs')      // Filesystem manipulation
 
 async function selectName(newChannel) {
-  let namesDB = null
   let oldName = newChannel.name
   let newName = newChannel.name
 
   let messages = []
 
-  let namesPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "dbs",
-    newChannel.guild.id,
-    "voiceChannelNames"
+  let namesDB = fileFuncs.getAFile(
+    [
+      "src",
+      "dbs",
+      newChannel.guild.id
+    ],
+    "voiceChannelNames.json"
   )
-
-  if (!fs.existsSync(namesPath + ".json")) {
+  if (namesDB) {
     messages.push(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
     return [newName, messages]
   }
-
-  namesDB = require(namesPath)
 
   let changeName = true
   if (namesDB?.categories) {
@@ -54,13 +49,13 @@ async function selectName(newChannel) {
     if (mode == "normal") {
       newName += randFuncs.randPick(namesDB.parts.names)
     } else if (mode == "build") {
-      let sahaNames = require(path.join(
-        __dirname,
-        "..",
-        "..",
-        "dbs",
-        "sahasrahlaNames"
-      ))
+      let sahaNames = fileFuncs.getAFile(
+        [
+          "src",
+          "dbs"
+        ],
+        "sahasrahlaNames.json"
+      )
 
       let preParts = namesDB.parts.pre
       if (randFuncs.randPick(preParts).includes("Sahasrahla")) {

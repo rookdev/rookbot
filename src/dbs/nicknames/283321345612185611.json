@@ -21,6 +21,9 @@
     ]
   },
   "prefixes": {
-    "1282788953052676177":  { "name": "DoI Main", "prefix": "[Head Admin] " }
+    "1282788953052676177": {
+      "name": "DoI Main",
+      "prefix": "[Head Admin] "
+    }
   }
 }

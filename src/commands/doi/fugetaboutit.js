@@ -2,7 +2,7 @@
 
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const path = require('path')  // Easy filepath management
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * @class
@@ -30,12 +30,12 @@ module.exports = class FugetaboutitCommand extends RookCommand {
 
   async execute(client, interaction, coptions={}, independent=false) {
     // Set path to video file
-    const videoPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "res",
-      "media",
+    const videoPath = fileFuncs.getAPath(
+      [
+        "src",
+        "res",
+        "media"
+      ],
       "fugetaboutit.mp4"
     )
 

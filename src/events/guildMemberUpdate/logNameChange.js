@@ -8,7 +8,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
-const path = require('path')  // Easier filepath management
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -187,20 +187,19 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
-    const guildChannelsPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      guildID,
-      "channels"
+    const guildChannels = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        guildID
+      ],
+      "channels.json"
     )
-    if (!fs.existsSync(guildChannelsPath + ".json")) {
+    if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
-    const guildChannels = require(guildChannelsPath)
     let log_type = "logging"
     let log_check = "logging-names"
     if (log_check in guildChannels) {
@@ -218,12 +217,12 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Optional: Save the nickname change to a log file
     const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
-    const logFilePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'botlogs',
-      `${DEV ? 'DEV' : ''}nicknameChanges.log`
+    const logFilePath = fileFuncs.getAPath(
+      [
+        "src",
+        "botlogs"
+      ],
+      `${this.DEV ? 'DEV' : ''}nicknameChanges.log`
     )
     const logEntry = [
       `[${new Date().toISOString()}]`,

@@ -2,8 +2,7 @@
 const { GuildMember, bold } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const path = require('path')
-const fs = require('fs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * @param {RookClient} client
@@ -16,38 +15,35 @@ module.exports = async (client, oldMember, newMember) => {
 
   let boostRoleID = newMember.guild.roles.premiumSubscriberRole?.id
   if (!boostRoleID) {
-    let rolesPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      newMember.guild.id,
+    let roleNames = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        newMember.guild.id
+      ],
       "roles.json"
     )
 
-    if (fs.existsSync(rolesPath)) {
-      let roleNames = require(rolesPath)
-      if (!roleNames) {
-        return [false, []]
-      }
-
-      let boostRoleNames = roleNames?.booster
-      if (!boostRoleNames) {
-        return [false, []]
-      }
-      if (boostRoleNames.length < 1) {
-        return [false, []]
-      }
-
-      let boostRole = await newMember.guild.roles.cache.find(
-        r => r.name === roleNames.booster[0]
-      )
-      if (!boostRole) {
-        return [false, []]
-      }
-
-      boostRoleID = boostRole?.id
+    if (!roleNames) {
+      return [false, []]
     }
+
+    let boostRoleNames = roleNames?.booster
+    if (!boostRoleNames) {
+      return [false, []]
+    }
+    if (boostRoleNames.length < 1) {
+      return [false, []]
+    }
+
+    let boostRole = await newMember.guild.roles.cache.find(
+      r => r.name === roleNames.booster[0]
+    )
+    if (!boostRole) {
+      return [false, []]
+    }
+
+    boostRoleID = boostRole?.id
   }
 
   if (!boostRoleID) {
@@ -108,20 +104,19 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
-    const guildChannelsPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      guildID,
-      "channels"
+    const guildChannels = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        guildID
+      ],
+      "channels.json"
     )
-    if (!fs.existsSync(guildChannelsPath + ".json")) {
+    if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
-    const guildChannels = require(guildChannelsPath)
     let log_type = "logging"
     let log_check = "logging-boosts"
     if (log_check in guildChannels) {

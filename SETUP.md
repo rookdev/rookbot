@@ -67,7 +67,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 1. **Clone the rookbot Repository**:
    - Clone your GitHub repository:
      ```bash
-     git clone https://github.com/mysterypaintwo/rookbot.git
+     git clone https://github.com/rookdev/rookbot.git
      ```
 
 1. **Navigate to rookbot's Folder**:
@@ -235,7 +235,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 1. **Clone Using SSH**:
    - Use the SSH URL for the repository. For example:
      ```bash
-     git clone git@github.com:mysterypaintwo/rookbot.git
+     git clone git@github.com:rookdev/rookbot.git
      ```
 
 1. **Navigate to the Repository**:

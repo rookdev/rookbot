@@ -6,11 +6,10 @@ const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const getSeedFields = require('../../utils/rando/getSeedFields')
 const timeFormat = require('../../utils/formatters/timeFormat')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs')
 const strtotime = require('locutus/php/datetime/strtotime')
 const numFuncs = require('../../utils/primitives/numFuncs')
-const path = require('path')
-const fs = require('fs')
 
 function article(input="") {
   for (let vowel of "aeiou".split("")) {
@@ -253,24 +252,22 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       adjustedDateTime = new Date(parseInt(scheduledDateTime))
     }
 
-    // Get Rando Database file
-    let randoDataPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      "randos",
+    // Get the data
+    const randoData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
       `${randomizer}.json`
     )
     // If it doesn't exist, bail
-    if (!fs.existsSync(randoDataPath)) {
+    if (!randoData) {
       this.error = true
       this.props.description = `Randomizer Database file for '${randomizer}' not found!`
       return false
     }
 
-    // Get the data
-    const randoData = require(randoDataPath)
     // Get the title
     const randoTitle = randoData?.rando?.player?.name ?? randomizer
     // Get Major Items
@@ -330,17 +327,15 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Get the Pinger role
     let roleObject = null
     if (pingMultiplayerRole) {
-      let roleIDs = {}
-      let roleIDsPath = path.join(
-        __dirname,
-        '..',
-        '..',
-        'dbs',
-        interaction?.guild?.id,
-        'roleIDs.json'
+      let roleIDs = fileFuncs.getAFile(
+        [
+          "src",
+          "dbs",
+          interaction?.guild?.id
+        ],
+        "roleIDs.json"
       )
-      if (fs.existsSync(roleIDsPath)) {
-        roleIDs = require(roleIDsPath)
+      if (!roleIDs) {
         // If no role, try the one listed in the guild DB
         if ((roleID == 0) && (roleIDs["pingable-multiplayer-role"])) {
           roleID = roleIDs["pingable-multiplayer-role"]

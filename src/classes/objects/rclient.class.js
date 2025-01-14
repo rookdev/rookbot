@@ -2,6 +2,7 @@
 
 const { Client } = require('discord.js')              // Get Discord Client
 const getProfile = require('../../utils/client/getProfile')  // Get loaded Profile
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * @class
@@ -28,9 +29,9 @@ class RookClient extends Client {
     // Loaded Profile
     this.profile      = getProfile(this.profileName)
     // Global Colors
-    this.profile.colors = require("../../dbs/colors.json")
+    this.profile.colors = fileFuncs.getAFile(["src","dbs"], "colors.json")
     // Global Emojis
-    this.profile.emojis = require("../../dbs/emojis.json")
+    this.profile.emojis = fileFuncs.getAFile(["src","dbs"], "emojis.json")
     // Delete Commands?
     this.profile.deleteCommands = options?.deleteCommands
     // Purge Commands?

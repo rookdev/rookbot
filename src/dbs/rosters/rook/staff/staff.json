@@ -1,7 +1,7 @@
 {
   "stripe": "#ffffff",
   "title": "Staff",
-  "avatar": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
+  "avatar": "https://github.com/rookdev/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
   "members": {
     "developer": {
       "title": "Developer",

@@ -2,7 +2,7 @@
   "stripe": "#FFFFFF",
   "deleteCommands": false,
   "footer": {
-    "image": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
+    "image": "https://github.com/rookdev/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
     "text": "rookbot"
   }
 }

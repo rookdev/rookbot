@@ -25,8 +25,8 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
-const path = require('path')  // Easy filepath management
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
 
@@ -209,15 +209,14 @@ module.exports = class SayCommand extends ModCommand {
     // If we're using a visage
     if (visage) {
       // Get Guild Metadata
-      let guildMetadataPath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "dbs",
-        interaction?.guild?.id,
+      let guildMetadata = fileFuncs.getAFile(
+        [
+          "src",
+          "dbs",
+          interaction?.guild?.id
+        ],
         "meta.json"
       )
-      let guildMetadata = null  // Guild Metadata DB
       let rookhookID = 0        // Bucket for rookhook ID
       let webhooks = null       // Bucket for Guild Webhooks
 
@@ -235,9 +234,8 @@ module.exports = class SayCommand extends ModCommand {
         return false
       }
 
-      if (fs.existsSync(guildMetadataPath)) {
+      if (guildMetadata) {
         // Get rookhookID if defined
-        guildMetadata = require(guildMetadataPath)
         if (guildMetadata?.rookhook) {
           rookhookID = guildMetadata.rookhook
         }
@@ -261,22 +259,20 @@ module.exports = class SayCommand extends ModCommand {
         return false
       }
 
-      let visagesPath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "dbs",
-        interaction.guild.id,
+      visages = fileFuncs.getAFile(
+        [
+          "src",
+          "dbs",
+          interaction.guild.id
+        ],
         "visages.json"
       )
 
-      if (!fs.existsSync(visagesPath)) {
+      if (!visages) {
         this.error = true
         this.props.description = "Visages not found"
         return false
       }
-
-      visages = require(visagesPath)
 
       if (!visages[visage]) {
         this.error = true
@@ -626,11 +622,11 @@ module.exports = class SayCommand extends ModCommand {
       await interaction.editReply({ embeds: [ embeds.mod ] })
 
       // Save the ghost message to a log file
-      const logFilePath = path.join(
-        __dirname,
-        '..',
-        '..',
-        'botlogs',
+      const logFilePath = fileFuncs.getAPath(
+        [
+          "src",
+          "botlogs"
+        ],
         `${this.DEV ? 'DEV' : ''}ghostMessages.log`
       )
       let logEntry = [

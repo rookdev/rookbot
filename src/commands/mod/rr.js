@@ -6,8 +6,7 @@ const { inlineCode } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const path = require('path')  // Easier filepath management
-const fs = require('fs')      // Filesystem manipulation
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class ReactionRolesCommand extends ModCommand {
   constructor(client) {
@@ -31,23 +30,20 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     let messages = []
     let guild = interaction.guild
 
-    let rrPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      guild.id,
-      "rrs"
+    let rrs = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        guild.id
+      ],
+      "rrs.json"
     )
-
-    if (!fs.existsSync(rrPath + ".json")) {
+    if (!rrs) {
       messages.push(`${this.profile.emojis.warning} Reaction Roles not found for '${guild.name}' [${inlineCode(guild.id)}]`)
       this.error = true
       this.props.description = messages
       return false
     }
-
-    let rrs = require(rrPath)
 
     for (let [msgID, msgData] of Object.entries(rrs)) {
       this.props = {}

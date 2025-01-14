@@ -5,8 +5,7 @@ const {
   inlineCode
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const path = require('path')
-const fs = require('fs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class RoleProfileCommand extends ModCommand {
   constructor(client) {
@@ -81,22 +80,18 @@ module.exports = class RoleProfileCommand extends ModCommand {
     // Get Role Profile
     const profileName = coptions["profile"] ?? ""
 
-    const roleProfilesPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      guildID,
-      "roleProfiles"
+    let roleProfiles = fileFuncs.getAFile(
+      [
+        "dbs",
+        guildID
+      ],
+      "roleProfiles.json"
     )
-    let roleProfiles = {}
 
-    if (!fs.existsSync(path.join(roleProfilesPath + ".json"))) {
+    if (!roleProfiles) {
       this.error = true
       this.props.description = `Role Profiles not found for '${guild.name}' [${inlineCode(guild.id)}]`
       return false
-    } else {
-      roleProfiles = require(roleProfilesPath)
     }
 
     if (roleProfiles.length <= 0) {

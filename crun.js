@@ -1,6 +1,7 @@
 // @ts-check
 const { program } = require('commander')  // Commander for CLI management
 const AsciiTable = require('ascii-table') // Pretty-print in console
+const fileFuncs = require('./src/utils/fs/fileFuncs')
 const PACKAGE = require('./package.json') // Node Package data
 const emojis = require('./src/dbs/emojis.json') // Global Emojis
 const shell = require('shelljs')          // Run shell commands
@@ -68,21 +69,14 @@ let options = program.opts()
 
 // If we're loading canned options, get them
 if (options.loadoptions && options.loadoptions != "") {
-  options = require(
-    path.join(
-      __dirname,
-      "crun.json"
-    )
-  )
+  options = fileFuncs.getAFile([], "crun.json")
 } else {
   // Else, write what we used this time to canned options
-  fs.writeFileSync(
-    path.join(
-      __dirname,
-      "crun.json"
-    ),
-    JSON.stringify(options, null, "  ")
-  )
+  let optionsPath = fileFuncs.getAPath([], "crun.json")
+  console.log(optionsPath)
+  if (optionsPath) {
+    fs.writeFileSync(optionsPath, JSON.stringify(options, null, "  "))
+  }
 }
 
 // console.log("Options")

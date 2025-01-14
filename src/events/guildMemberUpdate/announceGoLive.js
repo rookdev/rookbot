@@ -9,8 +9,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
-const path = require('path')  // Easier filepath management
-const fs = require('fs')      // Filesystem manipulation
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -93,20 +92,19 @@ module.exports = async (client, oldMember, newMember) => {
     let embed = new RookEmbed(client, props)
 
     let guildID = newMember.guild.id
-    const guildChannelsPath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "dbs",
-      guildID,
-      "channels"
+    const guildChannels = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        guildID
+      ],
+      "channels.json"
     )
-    if (!fs.existsSync(guildChannelsPath + ".json")) {
+    if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
     }
 
-    const guildChannels = require(guildChannelsPath)
     let destChannelID = guildChannels["stream-alerts"]
 
     if (!destChannelID) {

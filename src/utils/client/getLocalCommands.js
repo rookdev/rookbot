@@ -1,21 +1,18 @@
-const getAllFiles = require('../fs/getAllFiles')
-const path = require('path')
+const fileFuncs = require('../fs/fileFuncs')
 
 module.exports = (client, exceptions = []) => {
   let localCommands = []
 
-  const commandCategories = getAllFiles(
-    path.join(
-      __dirname,
-      "..",
-      "..",
+  const commandCategories = fileFuncs.getAllFiles(
+    [
+      "src",
       "commands"
-    ),
+    ],
     true
   )
 
   for (const commandCategory of commandCategories) {
-    const commandFiles = getAllFiles(commandCategory)
+    const commandFiles = fileFuncs.getAllFiles(commandCategory)
 
     for (const commandFile of commandFiles) {
       let commandObject = require(commandFile)

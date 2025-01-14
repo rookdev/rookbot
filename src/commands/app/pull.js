@@ -4,8 +4,8 @@
 const { ApplicationCommandOptionType, inlineCode, hyperlink } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const shell = require('shelljs')  // Run shell commands
-const path = require('path')      // Easier path management
 const fs = require('fs')          // Filesystem manipulation
 
 /**
@@ -142,19 +142,22 @@ module.exports = class PullCommand extends BotDevCommand {
       (user ? user.username : "") +
       ` v${this.profile.PACKAGE.version}!`
     )
-    let ci_data = require(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
+
+    let ci_data = fileFuncs.getAFile(
+      [
         "resources",
         "app",
         "meta",
-        "manifests",
-        "ci"
-      )
+        "manifests"
+      ],
+      "ci.json"
     )
+    if (!ci_data) {
+      this.error = true
+      this.props.description = `CI Data not found!`
+      return false
+    }
+
     let git_info = ci_data.common.common.repo
     git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 

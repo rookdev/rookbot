@@ -47,7 +47,7 @@ function init(mode = "index") {
     let version_a = $("<a>")
       .attr({
         id: "version",
-        href: "https://github.com/mysterypaintwo/rookbot/releases/tag/v" + VERSION
+        href: "https://github.com/rookdev/rookbot/releases/tag/v" + VERSION
       })
       .text("Current Version: v" + VERSION)
     subtitle.append(version_a)
@@ -80,7 +80,7 @@ function init(mode = "index") {
         let left = badge["left"]
         let logo = badge.hasOwnProperty("logo") ? badge["logo"] : ""
         let logo_color = badge.hasOwnProperty("logo-color") ? badge["logo-color"] : ""
-        let repo = "mysterypaintwo/rookbot/"
+        let repo = "rookdev/rookbot/"
         let url = "https://img.shields.io/"
         url += badge["keyword"]
         url += "/"

@@ -1,0 +1,136 @@
+// @ts-nocheck
+
+const scheduleNicknameChange = require('../../utils/guild/scheduleNicknameChange')
+const fileFuncs = require('../../utils/fs/fileFuncs')
+const numFuncs = require('../../utils/primitives/numFuncs')
+const path = require('path')
+
+// natSort
+function natSort(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true });
+}
+
+module.exports = async (client) => {
+  let result = false
+  let messages = []
+
+  // Users to search for
+  let nicknameDataPath = fileFuncs.getAPath(
+    [
+      "src",
+      "dbs",
+      "nicknames"
+    ]
+  )
+  let userFiles = fileFuncs.getAllFiles(nicknameDataPath)
+    // Filter JSON documents that are numeric
+    .filter(
+      (fileName) => fileName.endsWith(".json") &&
+        numFuncs.myIsNumeric(
+          fileName
+            .split(path.sep)
+            .slice(-1)[0]
+            .substring(
+              0,
+              fileName
+                .split(path.sep)
+                .slice(-1)[0]
+                .indexOf(".") - 1
+            )
+        )
+    )
+    // Strip .json extension
+    .map(
+      (fileName) => fileName.replace(".json","").trim()
+    )
+    // Skip first document
+    .slice(1)
+    .sort(natSort)
+
+  // Cycle through users
+  for(let userFile of userFiles) {
+    let userID = userFile.split(path.sep).slice(-1)
+
+    // Guilds to search in
+    let guildFiles = fileFuncs.getAllFiles(
+      [
+        "src",
+        "dbs"
+      ],
+      true
+    )
+      // Filter folders that are numeric
+      .filter(
+        (fileName) => numFuncs.myIsNumeric(
+          fileName
+            .split(path.sep)
+            .slice(-1)[0]
+        )
+      )
+      .sort(natSort)
+
+    // Cycle through guilds
+    for(let guildFile of guildFiles) {
+      let guildID = guildFile.split(path.sep).slice(-1)
+      // Find the guild
+      let guild = await client.guilds.cache.get(guildID)
+      if (!guild) {
+        guild = await client.guilds.cache.find(
+          g => g.id === guildID
+        )
+      }
+      if (!guild) {
+        guild = await client.guilds.fetch(guildID)
+      }
+      if (!guild) {
+        messages.push(`${client.profile.emojis.fail} Failed to load guild [${guildID}]`)
+        continue
+      }
+
+      console.log("Finding User Member!")
+      // Get the guild member
+      let member = await guild.members.cache.get(userID)
+      if (!member) {
+        member = await guild.members.cache.find(
+          u => u.id === userID
+        )
+      }
+      if (!member) {
+        member = await guild.members.cache.fetch(userID)
+      }
+      if (!member) {
+        messages.push(`${client.profile.emojis.fail} Failed to load guild members [${guildID}]`)
+        continue
+      }
+      console.log("Found User Member!")
+
+      // If guild owner, bail
+      if (member.guild.ownerId === member.id) {
+        messages.push(`${client.profile.emojis.fail} Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+        continue
+      }
+
+      console.log("Finding Client Member!")
+      // Get the client member
+      const clientMember  = guild.members.me
+      const clientPos     = await clientMember.roles.highest.position
+      const memberPos     = await member.roles.highest.position
+      console.log("Found Client Member!")
+
+      // If member is at or over bot, bail
+      if (memberPos >= clientPos) {
+        messages.push(`${client.profile.emojis.fail} Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
+        continue
+      }
+
+      if (member) {
+        // If we got here, schedule the nickname change
+        let [thisResult, thisMessages] = await scheduleNicknameChange(client, member)
+        result = thisResult
+        messages = messages.concat(thisMessages)
+      }
+    }
+  }
+
+  return [result, messages]
+}

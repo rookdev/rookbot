@@ -6,7 +6,7 @@ const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode } = requir
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-const path = require('path')                    // Easy filepath management
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const fs = require('fs')                        // Filesystem manipulation
 
 module.exports = class PurgeCommand extends ModCommand {
@@ -142,12 +142,12 @@ module.exports = class PurgeCommand extends ModCommand {
 
     // Log to file
     let now = new Date()
-    let logFilePath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "botlogs",
-      ((this.DEV ? "DEV" : "") + "purgedMessages.log")
+    const logFilePath = fileFuncs.getAPath(
+      [
+        "src",
+        "botlogs"
+      ],
+      `${this.DEV ? 'DEV' : ''}purgedMessages.log`
     )
     let logEntry = [
       `[${now.toISOString()}]`,

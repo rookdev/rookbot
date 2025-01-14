@@ -1,7 +1,6 @@
 const { inlineCode, italic } = require('discord.js')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../primitives/randFuncs') // Random Functions
-const path = require('path')                    // Easy path management
-const fs = require('fs')                        // Filesystem manipulation
 
 // Main function to compare commands
 module.exports = (client, member) => {
@@ -94,23 +93,21 @@ async function selectMember(member) {
   let oldNickname = member.displayName
   let newNickname = member.displayName
   let messages = []
-  let namesPath = path.join(
-    __dirname,
-    "..",
-    "..",
-    "dbs",
-    "nicknames",
-    member.id
+  namesDB = fileFuncs.getAFile(
+    [
+      "src",
+      "dbs",
+      "nicknames"
+    ],
+    `${member.id}.json`
   )
-  if (!fs.existsSync(namesPath + ".json")) {
+  if (!namesDB) {
     messages.push(
       `No name options found for '${member.user.tag}'`
       // + `[${inlineCode(member.id)}]`
     )
     return [newNickname, messages]
   }
-
-  namesDB = require(namesPath)
 
   switch(namesDB.mode) {
     case "weighted":
@@ -132,8 +129,8 @@ async function selectMember(member) {
 
   if ((oldNickname == newNickname) || (newNickname.length > 32)) {
     messages.push(`Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
-    let newMessages = []
-    [newNickname, newMessages] = await selectMember(member)
+    let [newNick, newMessages] = await selectMember(member)
+    newNickname = newNick
     messages = messages.concat(newMessages)
   }
 

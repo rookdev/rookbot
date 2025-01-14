@@ -6,10 +6,7 @@ const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
 // Pretty-print to console
 const AsciiTable = require('ascii-table')
-// Easy path management
-const path = require('path')
-// Filesystem manipulation
-const fs = require('fs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const stringFuncs = require("../../utils/primitives/stringFuncs")
@@ -199,28 +196,21 @@ class RookCommand {
       channelTypes = [ channelTypes ]
     }
 
-    let channelIDs = {}
     let guild = interaction?.guild ?? client.guild
     let guildID = guild?.id
     let channel = null
 
-    try {
-      let guildChannelsPath = path.join(
-        __dirname,
-        "..",
-        "..",
+    let channelIDs = fileFuncs.getAFile(
+      [
+        "src",
         "dbs",
-        guildID,
-        "channels"
-      )
-      if (!fs.existsSync(guildChannelsPath + ".json")) {
-        console.log(`Guild Channels not found for '${guild.name}' [${guild.id}]`)
-      } else {
-        // Get Channel IDs for Guild
-        channelIDs = require(guildChannelsPath)
-      }
-    } catch(err) {
-      console.log(err.stack)
+        guildID
+      ],
+      "channels.json"
+    )
+
+    if (!channelIDs) {
+      console.log(`Channel IDs not found for '${guild.name}' [${guild.id}]`)
     }
 
     for (let channelID of channelTypes) {

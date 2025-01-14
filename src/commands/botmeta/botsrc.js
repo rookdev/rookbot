@@ -4,24 +4,25 @@
 const { hyperlink } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const path = require('path')  // Easier path management
-const fs = require('fs')      // Filesystem manipulation
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class BotSourceCommand extends RookCommand {
   constructor(client) {
-    let ci_data = require(
-      path.join(
-        __dirname,
-        "..",
-        "..",
-        "..",
+    let ci_data = fileFuncs.getAFile(
+      [
         "resources",
         "app",
         "meta",
-        "manifests",
-        "ci"
-      )
+        "manifests"
+      ],
+      "ci.json"
     )
+    if (!ci_data) {
+      this.error = true
+      this.props.description = `CI Data not found!`
+      return false
+    }
+
     let git_info = ci_data.common.common.repo
     git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
 
