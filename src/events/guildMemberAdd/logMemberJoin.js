@@ -56,6 +56,7 @@ module.exports = async (client, newMember) => {
     }
 
     let joinedDateTime = new Date(fetchedMember.joinedTimestamp)
+    let createdDateTime = new Date(fetchedMember.user.createdTimestamp)
     let logFields = [
       [
         // Joined DateTime
@@ -64,6 +65,15 @@ module.exports = async (client, newMember) => {
           value: joinedDateTime
             ? timeFormat(joinedDateTime.getTime())
             : 'Unknown' // Handle cases where joinedAt is null
+        }
+      ],
+      [
+        // Creation DateTime
+        {
+          name: 'Created At',
+          value: createdDateTime
+            ? `${timeFormat(createdDateTime.getTime())} (${timeFormat(createdDateTime.getTime(), { relative: true })})`
+            : 'Unknown' // Handle cases where createdAt is null
         }
       ],
       [

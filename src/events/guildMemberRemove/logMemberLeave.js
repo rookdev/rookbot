@@ -6,9 +6,11 @@ const { GuildMember, inlineCode, userMention } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -48,7 +50,21 @@ module.exports = async (client, oldMember) => {
       return [result, messages]
     }
 
-    const leftDateTime = new Date()
+    const joinedMoment  = moment(oldMember.joinedTimestamp)
+    const leftDateTime  = new Date()
+    const leftMoment    = moment(leftDateTime)
+    console.log(
+      JSON.stringify(
+        {
+          join: joinedMoment,
+          left: leftMoment,
+          diff: moment.duration(joinedMoment.diff(leftMoment))
+        },
+        null,
+        "  "
+      )
+    )
+    const durationStr = timeConversion(moment.duration(joinedMoment.diff(leftMoment)))
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -75,6 +91,15 @@ module.exports = async (client, oldMember) => {
             value: leftDateTime
               ? timeFormat(leftDateTime.getTime())
               : 'Unknown' // Handle cases where leftAt is null
+          }
+        ],
+        [
+          // Duration DateTime
+          {
+            name: 'Lasted For',
+            value: durationStr != ""
+              ? durationStr
+              : 'Unknown' // Handle cases where Duration is null
           }
         ],
         [
