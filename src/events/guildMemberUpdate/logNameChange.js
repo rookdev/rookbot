@@ -9,6 +9,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -52,11 +53,11 @@ module.exports = async (client, oldMember, newMember) => {
         Date.now() - a.createdTimestamp < (20 * 1000)
     )
 
-    let auditDateTime = new Date()
+    let auditMoment = moment()
     if (auditEntry) {
       // console.log("Log Entry Found!")
       if (auditEntry?.createdTimestamp) {
-        auditDateTime = new Date(auditEntry.createdTimestamp)
+        auditMoment = moment(auditEntry.createdTimestamp)
       }
     } else {
       // console.log(fetchedLogs)
@@ -82,14 +83,14 @@ module.exports = async (client, oldMember, newMember) => {
         avatar: newMember.displayAvatarURL({ size: Math.pow(2, 7) })
       }
     }
-    if (auditDateTime) {
+    if (auditMoment) {
       fields.push(
         [
           // Edited DateTime
           {
             name: 'Edited At',
-            value: auditDateTime
-              ? timeFormat(auditDateTime.getTime())
+            value: auditMoment
+              ? timeFormat(auditMoment.format("X"))
               : 'Unknown'
           }
         ]
@@ -225,7 +226,7 @@ module.exports = async (client, oldMember, newMember) => {
       `${this.DEV ? 'DEV' : ''}nicknameChanges.log`
     )
     const logEntry = [
-      `[${new Date().toISOString()}]`,
+      `[${moment().toISOString()}]`,
       `User:         ${newMember.user.tag} (ID: ${newMember.user.id})`,
       `Guild:        ${newMember.guild.name} (ID: ${newMember.guild.id})`,
       `Event:        Nickname Changed`,

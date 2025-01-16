@@ -7,6 +7,7 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')                        // Filesystem manipulation
 
 module.exports = class PurgeCommand extends ModCommand {
@@ -141,7 +142,7 @@ module.exports = class PurgeCommand extends ModCommand {
     }
 
     // Log to file
-    let now = new Date()
+    let now = new moment()
     const logFilePath = fileFuncs.getAPath(
       [
         "src",

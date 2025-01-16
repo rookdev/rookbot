@@ -21,10 +21,17 @@ function getAPath(directory=[], filename="") {
 function getAFile(directory=[], filename="") {
   let filepath = getAPath(directory, filename)
   if (fs.existsSync(filepath)) {
-    if (filepath.includes(".json")) {
-      return require(filepath.replace(".json",""))
+    if (
+      filepath.endsWith(".json") ||
+      filepath.endsWith(".js")
+    ) {
+      return require(
+        filepath
+          .replace(".json","")
+          .replace(".js","")
+      )
     } else {
-      return fs.readFileSync(filepath)
+      return fs.readFileSync(filepath, { encoding: "utf-8" })
     }
   }
 

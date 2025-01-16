@@ -36,6 +36,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 // Multiple messages
@@ -367,8 +368,11 @@ class ModCommand extends AdminCommand {
       durationMilliseconds = durationSeconds * 1000
       durationStr = timeConversion(durationMilliseconds)
     }
-    let now = new Date()
-    let timeoutUntil = new Date(now.getTime() + durationMilliseconds)
+    let now = moment()
+    let timeoutUntil = moment(
+      parseInt(now.format("x")) +
+      parseInt(durationMilliseconds)
+    )
 
     let props = {
       public: {},
@@ -608,7 +612,7 @@ class ModCommand extends AdminCommand {
           let dm_desc = `You have been ${tenses.past} from the ${interaction.guild.name} server. ` +
           `(` +
           (role != "" ? `Role: ${role}; Reason: ` : "") +
-          (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.getTime())}; Reason: ` : "") +
+          (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.format("X"))}; Reason: ` : "") +
           reason +
           `)`
           if (
@@ -726,13 +730,13 @@ class ModCommand extends AdminCommand {
 
 
           let logFields = []
-          let now = new Date()
+          let now = moment()
           logFields.push(
             [
               // Logged DateTime
               {
                 name: 'Time',
-                value: timeFormat(now.getTime(), { with: "relative" })
+                value: timeFormat(now.format("X"), { with: "relative" })
               }
             ],
             [
@@ -765,7 +769,7 @@ class ModCommand extends AdminCommand {
 
           // Timeout
           if (durationSeconds != 0) {
-            let untilDateTime = new Date(now.getTime() + durationMilliseconds)
+            let untilDateTime = moment(now.format("X") + durationMilliseconds)
             logFields.push(
               [
                 // Seconds
@@ -783,7 +787,7 @@ class ModCommand extends AdminCommand {
                 // Until
                 {
                   name: 'Timeout Until',
-                  value: timeFormat(untilDateTime.getTime())
+                  value: timeFormat(untilDateTime.format("X"))
                 }
               ]
             )

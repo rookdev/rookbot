@@ -51,20 +51,16 @@ module.exports = async (client, oldMember) => {
     }
 
     const joinedMoment  = moment(oldMember.joinedTimestamp)
-    const leftDateTime  = new Date()
-    const leftMoment    = moment(leftDateTime)
-    console.log(
-      JSON.stringify(
-        {
-          join: joinedMoment,
-          left: leftMoment,
-          diff: moment.duration(joinedMoment.diff(leftMoment))
-        },
-        null,
-        "  "
+    const leftMoment    = moment()
+    const durationStr   = timeConversion(
+      moment.duration(
+        Math.abs(
+          joinedMoment.diff(
+            leftMoment
+          )
+        )
       )
     )
-    const durationStr = timeConversion(moment.duration(joinedMoment.diff(leftMoment)))
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -88,9 +84,18 @@ module.exports = async (client, oldMember) => {
           // Left DateTime
           {
             name: 'Left At',
-            value: leftDateTime
-              ? timeFormat(leftDateTime.getTime())
+            value: leftMoment
+              ? timeFormat(leftMoment.format("X"))
               : 'Unknown' // Handle cases where leftAt is null
+          }
+        ],
+        [
+          // Joined DateTime
+          {
+            name: 'Joined At',
+            value: joinedMoment
+              ? timeFormat(joinedMoment.format("X"))
+              : 'Unknown' // Handle cases where joinedAt is null
           }
         ],
         [
@@ -153,7 +158,7 @@ module.exports = async (client, oldMember) => {
       `${this.DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
-      `[${new Date().toISOString()}]`,
+      `[${moment().toISOString()}]`,
       `User:    ${oldMember.user.tag} (ID: ${oldMember.user.id})`,
       `Guild:   ${oldMember.guild.name} (ID: ${oldMember.guild.id})`,
       `Event:   Member Left`,

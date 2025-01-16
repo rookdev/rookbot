@@ -6,6 +6,7 @@ const { codeBlock, inlineCode, bold, userMention } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
+const moment = require('moment')
 
 module.exports = class GuildStatusCommand extends RookCommand {
   constructor(client) {
@@ -63,10 +64,10 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     // Creation DateTime
-    let createdDateTime = new Date(interaction.guild.createdTimestamp)
+    let createdDateTime = moment(interaction.guild.createdTimestamp)
     this.props.description += "\n\n"
     this.props.description += bold("Created") + "\n"
-    this.props.description += timeFormat(createdDateTime.getTime(), { with: "relative" })
+    this.props.description += timeFormat(createdDateTime.format("X"), { with: "relative" })
 
     this.props.fields = []
 

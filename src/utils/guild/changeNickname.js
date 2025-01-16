@@ -182,7 +182,7 @@ async function changeNickname(client, member) {
   clientMember = guildData.members.me
   const memberPos = await member.roles.highest.position
   const clientPos = await clientMember.roles.highest.position
-  if (memberPos >= clientPos) {
+  if ((clientMember.id !== member.id) && (memberPos >= clientPos)) {
     success = false
     messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
 

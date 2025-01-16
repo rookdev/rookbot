@@ -1,5 +1,6 @@
 // @ts-nocheck
 const fileFuncs = require('../utils/fs/fileFuncs') // Get All Files
+const moment = require('moment')
 const path = require('path')                       // Easy filepath management
 
 module.exports = (client) => {
@@ -66,7 +67,14 @@ module.exports = (client) => {
         if (messages.length) {
           if (showDateTime && showScript && firstScript) {
             // Print DateTime
-            console.log(new Date().toISOString())
+            let now = moment()
+            let dateStamp = ""
+            now.utc()
+            dateStamp += now.format()
+            dateStamp += " | "
+            now.local()
+            dateStamp += now.format()
+            console.log(dateStamp)
             showDateTime = false
           }
           if (showEvent && showScript && firstScript) {

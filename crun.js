@@ -73,7 +73,6 @@ if (options.loadoptions && options.loadoptions != "") {
 } else {
   // Else, write what we used this time to canned options
   let optionsPath = fileFuncs.getAPath([], "crun.json")
-  console.log(optionsPath)
   if (optionsPath) {
     fs.writeFileSync(optionsPath, JSON.stringify(options, null, "  "))
   }

@@ -7,6 +7,7 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
+const moment = require('moment')
 
 // Sort by keys
 function ksort(obj){
@@ -80,7 +81,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
       }
       // Get Guild Bot
       let bot = await guildData.members.fetch(client.user.id)
-      let botJoinedDateTime = new Date(bot.joinedTimestamp)
+      let botJoinedDateTime = moment(bot.joinedTimestamp)
       // Get Guild Data
       let thisGuild = {}
       thisGuild.guild = {
@@ -95,7 +96,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
       }
       thisGuild.added = botJoinedDateTime.toLocaleString()
       thisGuild.addedTimestamp = Math.floor(bot.joinedTimestamp / 1000)
-      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.getTime())
+      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.format("X"))
       sorted[bot.joinedTimestamp] = thisGuild
     }
 

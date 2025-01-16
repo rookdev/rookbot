@@ -4,10 +4,9 @@ const { inlineCode, hyperlink } = require('discord.js')
 const timeFormat = require('../formatters/timeFormat')
 // Decode slugIDs
 const { decode } = require('slugid')
-// php strtotime
-const strtotime = require('locutus/php/datetime/strtotime')
 // Canned Emojis
 const emojis = require('../../dbs/emojis.json')
+const moment = require('moment')
 
 async function get_url(in_url) {
   try {
@@ -70,7 +69,7 @@ module.exports = async (hashID, gameID="z3r") => {
       ]
     }
 
-    let generatedDateTime = new Date(strtotime(hash_meta?.generated))
+    let generatedDateTime = moment(hash_meta?.generated)
 
     fields = [
       [
@@ -158,7 +157,7 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "Generation Date",
-          value: timeFormat(generatedDateTime.getTime())
+          value: timeFormat(generatedDateTime.format("X"))
         }
       ]
     ]

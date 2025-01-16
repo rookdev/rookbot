@@ -2,6 +2,7 @@
 const { GuildMember } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const logMemberJoin = require('../guildMemberAdd/logMemberJoin')
+const moment = require('moment')
 
 /**
  * Logs when a new member joins the server and saves it to a log file.
@@ -14,7 +15,7 @@ module.exports = async (client, oldMember, newMember) => {
   let messages = []
 
   if (oldMember.roles !== newMember.roles) {
-    let eventTime = new Date()
+    let eventTime = moment()
     oldRoles = await oldMember.roles.cache.map(r => r.name).join(", ")
     newRoles = await newMember.roles.cache.map(r => r.name).join(", ")
     if (!oldRoles.includes("Member") && newRoles.includes("Member")) {

@@ -11,12 +11,14 @@ module.exports = (timestamp, options) => {
   if (platoError > 0) {
     adjustedStamp = Math.floor(timestamp / Math.pow(10, platoError))
   }
+  timestamp = parseInt(timestamp)
 
   let debug = {
     prestamp: timestamp,
     offstamp: platoError,
     outstamp: adjustedStamp
   }
+  // console.log(debug)
 
   if (adjustedStamp > 0) {
     timestamp = adjustedStamp

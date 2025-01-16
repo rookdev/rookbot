@@ -22,6 +22,7 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 
 module.exports = class SearchCommand extends ModCommand {
   constructor(client) {
@@ -153,6 +154,8 @@ module.exports = class SearchCommand extends ModCommand {
         return
       }
 
+      console.log(logFile)
+
       let logLines = logFile.split("\n")
       for(let line of logLines) {
         line = line.trim()
@@ -193,7 +196,7 @@ module.exports = class SearchCommand extends ModCommand {
     }
 
     if (searchType == "Ban") {
-      let now = new Date()
+      let now = moment()
       const fetchedLogs = await interaction.guild.fetchAuditLogs({
         type: AuditLogEvent.MemberBanAdd
       })
@@ -217,7 +220,7 @@ module.exports = class SearchCommand extends ModCommand {
             avatar: banner.displayAvatarURL({ size: Math.pow(2, 7) })
           }
         }
-        let thisNow = now.getTime() + (banNum * 1000)
+        let thisNow = now.format("X") + (banNum * 1000)
         let logEntry = [
           `[${now.toISOString()}]`,
           `User:     ${ban.user.username} (ID: ${ban.user.id})`
@@ -299,18 +302,16 @@ module.exports = class SearchCommand extends ModCommand {
             ]
           )
         } else if(logLine.includes("Z]")) {
-          let timestampDateTime = new Date(
-            strtotime(
-              logLine
-                .replace("[","")
-                .replace("]","")
-            )
+          let timestampDateTime = moment(
+            logLine
+              .replace("[","")
+              .replace("]","")
           )
           this_props.fields?.push(
             [
               {
                 name: "Time",
-                value: timeFormat(timestampDateTime.getTime())
+                value: timeFormat(timestampDateTime.format("X"))
               }
             ]
           )

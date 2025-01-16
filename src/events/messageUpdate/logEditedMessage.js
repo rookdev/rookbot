@@ -10,6 +10,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -138,7 +139,7 @@ module.exports = async (client, oldMessage, newMessage) => {
         // Edited DateTime
         {
           name: 'Edited At',
-          value: timeFormat(new Date().getTime())
+          value: timeFormat(moment().format("X"))
         }
       ],
       [
@@ -220,7 +221,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     `${this.DEV ? 'DEV' : ''}editedMessages.log`
   )
   const logEntry = [
-    `[${new Date().toISOString()}]`,
+    `[${moment().toISOString()}]`,
     `Author:      ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
     `Guild:       ${newMessage.guild?.name} (ID: ${newMessage.guild?.id})`,
     // @ts-ignore

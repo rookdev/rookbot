@@ -59,6 +59,7 @@ module.exports = class RosterCommand extends RookCommand {
     // Get Guild IDs list
     const guildIDs = fileFuncs.getAFile(
       [
+        "src",
         "dbs",
         "rosters"
       ],

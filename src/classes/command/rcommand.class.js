@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { MessageFlags, italic } = require('discord.js')            // Message Flags
+const { MessageFlags, codeBlock, italic } = require('discord.js')            // Message Flags
 const { Pagination } = require('pagination.djs')          // Pagination
 const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
@@ -11,6 +11,7 @@ const fileFuncs = require('../../utils/fs/fileFuncs')
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const stringFuncs = require("../../utils/primitives/stringFuncs")
 const numFuncs = require("../../utils/primitives/numFuncs")
+const moment = require('moment')
 
 class RookCommand {
   constructor(client, comprops={}, props={}) {
@@ -105,6 +106,10 @@ class RookCommand {
         console.log(msg)
       }
       return false
+    }
+
+    if (client.user.id === member.id) {
+      return true
     }
 
     if (member.id === member.guild.ownerId) {
@@ -302,6 +307,11 @@ class RookCommand {
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)
+
+    // if (this.name == "testsuite") {
+    //   this.props.description += "\n\n"
+    //   this.props.description += codeBlock(Table.toString())
+    // }
 
     // If there's an error
     //  Set it for this set of props
@@ -652,10 +662,20 @@ class RookCommand {
 
   async execute(client, interaction, coptions, independent=false) {
     // Print data about the calling of this command
-    let Table = new AsciiTable(
-      `/${this.name}` + " : " + new Date().toISOString(),
+    let now = moment()
+    let dateTable = new AsciiTable(
+      `/${this.name}`,
       {}
     )
+    // UTC
+    now.utc()
+    dateTable.addRow(now.format())
+    // Local
+    now.local()
+    dateTable.addRow(now.format())
+    console.log(dateTable.toString())
+
+    let Table = new AsciiTable("", {})
       .setHeading(
         "",
         "Name",

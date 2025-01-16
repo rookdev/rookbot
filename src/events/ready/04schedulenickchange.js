@@ -73,7 +73,7 @@ module.exports = async (client) => {
         const memberPos     = await member.roles.highest.position
 
         // If member is at or over bot, bail
-        if (memberPos >= clientPos) {
+        if ((member.id !== clientMember.id) && (memberPos >= clientPos)) {
           messages.push(`${client.profile.emojis.fail} Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
           continue
         }

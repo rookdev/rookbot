@@ -11,6 +11,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const shell = require('shelljs')                // Run shell commands
 const fs = require('fs')                        // Filesystem manipulation
 
@@ -204,9 +205,9 @@ class SalutationCommand extends RookCommand {
         )
 
     // When did we launch?
-    let launchedDateTime  = new Date(client.readyTimestamp)
+    let launchedMoment  = moment(client.readyTimestamp)
     // If we're exiting, we're doing it now
-    let offlineDateTime   = new Date()
+    let offlineMoment   = moment()
 
     // Build default server info
     let server = {
@@ -296,7 +297,7 @@ class SalutationCommand extends RookCommand {
         // Launch Time
         {
           name: "Launched",
-          value: timeFormat(launchedDateTime.getTime(), { showSeconds: true })
+          value: timeFormat(launchedMoment.format("X"), { showSeconds: true })
         }
       ]
     ]
@@ -308,14 +309,19 @@ class SalutationCommand extends RookCommand {
           // Elapsed Time
           {
             name: "Elasped",
-            value: timeConversion(offlineDateTime.getTime() - launchedDateTime.getTime())
+            value: timeConversion(
+              offlineMoment.format("X") - launchedMoment.format("X")
+            )
           }
         ],
         [
           // Current Time
           {
             name: "Exited",
-            value: timeFormat(offlineDateTime.getTime(), { showSeconds: true })
+            value: timeFormat(
+              offlineMoment.format("X"),
+              { showSeconds: true }
+            )
           }
         ]
       )

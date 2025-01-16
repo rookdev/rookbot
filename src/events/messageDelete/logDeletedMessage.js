@@ -9,6 +9,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -126,9 +127,9 @@ module.exports = async (client, deletedMessage) => {
     }
   }
 
-  let auditDateTime = new Date()
+  let auditDateTime = moment()
   if (auditEntry?.createdTimestamp) {
-    auditDateTime = new Date(auditEntry.createdTimestamp)
+    auditDateTime = moment(auditEntry.createdTimestamp)
   }
   if (auditDateTime) {
     fields.push(
@@ -137,7 +138,7 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Deleted At',
           value: auditDateTime
-            ? timeFormat(auditDateTime.getTime())
+            ? timeFormat(auditDateTime.format("X"))
             : 'Unknown'
         }
       ]
@@ -258,7 +259,7 @@ module.exports = async (client, deletedMessage) => {
     `${this.DEV ? 'DEV' : ''}deletedMessages.log`
   )
   let logEntry = [
-    `[${new Date().toISOString()}]`,
+    `[${moment().toISOString()}]`,
     `Author:     ${deletedMessage.author.tag} (ID: ${deletedMessage.author.id})`
   ]
   if (deleter) {

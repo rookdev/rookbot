@@ -9,6 +9,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
 /**
@@ -55,15 +56,15 @@ module.exports = async (client, newMember) => {
       return [result, messages]
     }
 
-    let joinedDateTime = new Date(fetchedMember.joinedTimestamp)
-    let createdDateTime = new Date(fetchedMember.user.createdTimestamp)
+    let joinedDateTime = moment(fetchedMember.joinedTimestamp)
+    let createdDateTime = moment(fetchedMember.user.createdTimestamp)
     let logFields = [
       [
         // Joined DateTime
         {
           name: 'Joined At',
           value: joinedDateTime
-            ? timeFormat(joinedDateTime.getTime())
+            ? timeFormat(joinedDateTime.format("X"))
             : 'Unknown' // Handle cases where joinedAt is null
         }
       ],
@@ -72,7 +73,7 @@ module.exports = async (client, newMember) => {
         {
           name: 'Created At',
           value: createdDateTime
-            ? `${timeFormat(createdDateTime.getTime())} (${timeFormat(createdDateTime.getTime(), { relative: true })})`
+            ? `${timeFormat(createdDateTime.format("X"))} (${timeFormat(createdDateTime.format("X"), { relative: true })})`
             : 'Unknown' // Handle cases where createdAt is null
         }
       ],
@@ -159,7 +160,7 @@ module.exports = async (client, newMember) => {
       `${this.DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
-      `[${new Date().toISOString()}]`,
+      `[${moment().toISOString()}]`,
       `User:    ${fetchedMember.user.tag} (ID: ${fetchedMember.user.id})`,
       `Guild:   ${fetchedMember.guild.name} (ID: ${fetchedMember.guild.id})`,
       `Event:   Member Joined`,

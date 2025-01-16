@@ -8,8 +8,8 @@ const getSeedFields = require('../../utils/rando/getSeedFields')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs')
-const strtotime = require('locutus/php/datetime/strtotime')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const moment = require('moment')
 
 function article(input="") {
   for (let vowel of "aeiou".split("")) {
@@ -225,21 +225,21 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     const groupName = `zdoi${randNum}`
 
     // Get the current timestamp and add <prepTimeMinutes> minutes of prep time
-    const now = new Date()
+    const now = moment()
 
     // Clear message content
     this.content = ""
 
     // Get calculated start time
     const prepTime = prepTimeMinutes * 60 * 1000 // Convert minutes to milliseconds
-    let adjustedDateTime = new Date(now.getTime() + prepTime)
+    let adjustedDateTime = moment(parseInt(now.format("X")) + prepTime)
 
     // If we received a scheduled time, use that instead
     if (scheduledTime) {
       let scheduledDateTime = null
       if (numFuncs.myIsNumeric(scheduledTime)) {
         // console.log(`Numeric: ${scheduledTime}`)
-        scheduledDateTime = new Date(parseInt(scheduledTime))
+        scheduledDateTime = moment(parseInt(scheduledTime))
       } else {
         // console.log(`Not Numeric: ${scheduledTime}`)
         scheduledDateTime = strtotime(scheduledTime)
@@ -249,7 +249,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         this.props.description = `Couldn't figure out a DateTime from '${scheduledTime}'.`
         return false
       }
-      adjustedDateTime = new Date(parseInt(scheduledDateTime))
+      adjustedDateTime = moment(scheduledDateTime)
     }
 
     // Get the data
@@ -344,6 +344,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
       if (roleID != 0) {
         // If we've got a role, try to find it
+        roleID = roleID.replace(/[<#@&!>]/g, '')
         roleObject = await interaction?.guild?.roles.fetch(roleID)
         if (!roleObject) {
           this.error = true
@@ -416,7 +417,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Game Start Time
     this.props.description.push(
       bold('Game Start Time'),
-      `The game will begin at ${timeFormat(adjustedDateTime.getTime())} which is ${timeFormat(adjustedDateTime.getTime(), { relative: true })}.`
+      `The game will begin at ${timeFormat(adjustedDateTime.format("X"))} which is ${timeFormat(adjustedDateTime.format("X"), { relative: true })}.`
       // No blank space, baby
     )
 

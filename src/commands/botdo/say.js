@@ -27,6 +27,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const moment = require('moment')
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
 
@@ -526,14 +527,14 @@ module.exports = class SayCommand extends ModCommand {
       let region = ((!this.DEV) ? "Production" : "Development")
 
       // Get the posted time
-      let resultDateTime = new Date(result.createdTimestamp)
+      let resultDateTime = moment(result.createdTimestamp)
       props.mod = {
         fields: [
           [
             // Posted Time
             {
               name: "Time",
-              value: timeFormat(resultDateTime.getTime())
+              value: timeFormat(resultDateTime.format("X"))
             }
           ],
           [
@@ -630,7 +631,7 @@ module.exports = class SayCommand extends ModCommand {
         `${this.DEV ? 'DEV' : ''}ghostMessages.log`
       )
       let logEntry = [
-        `[${new Date().toISOString()}]`,
+        `[${moment().toISOString()}]`,
         `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
         `Mode:        ${mode.ucfirst()}`,
         `Visage:      ${visage}`,
