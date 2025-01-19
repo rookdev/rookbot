@@ -157,7 +157,7 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "Generation Date",
-          value: timeFormat(generatedDateTime.format("X"))
+          value: timeFormat(generatedDateTime.format("x"), { with: "relative" })
         }
       ]
     ]

@@ -1,31 +1,32 @@
+const numFuncs = require('../primitives/numFuncs')
+
 module.exports = (ms = 0) => {
   const portions = []
-  const msInSec = 1000
-  const msInMin = msInSec * 60
-  const msInHour = msInMin * 60
-  const msInDay = msInHour * 24
 
-  const days = Math.trunc(ms / msInDay)
-  if (days > 0) {
-    portions.push(days + 'd')
-    ms -= (days * msInDay)
+  if (numFuncs.myIsNumeric(ms)) {
+    let durations = {}
+    durations.ms  = 1
+    durations.s   = durations.ms * 1000
+    durations.m   = durations.s  *   60
+    durations.h   = durations.m  *   60
+    durations.d   = durations.h  *   24
+    durations.wk  = durations.d  *    7
+    durations.mo  = durations.d  *   30
+    durations.yr  = durations.mo *   12
+
+    let keys = Object.keys(durations);
+    keys = keys.sort(function(a,b){return durations[b]-durations[a]});
+
+    for (let key of keys) {
+      const units = Math.trunc(ms / durations[key])
+      if (units > 0) {
+        portions.push(units + key)
+        ms -= (units * durations[key])
+      }
+    }
+  } else {
+    portions.push(`Invalid input: ${ms}`)
   }
 
-  const hours = Math.trunc(ms / msInHour)
-  if (hours > 0) {
-    portions.push(hours + 'h')
-    ms -= (hours * msInHour)
-  }
-
-  const minutes = Math.trunc(ms / msInMin)
-  if (minutes > 0) {
-    portions.push(minutes + 'm')
-    ms -= (minutes * msInMin)
-  }
-
-  const seconds = Math.trunc(ms / msInSec)
-  if (seconds > 0) {
-    portions.push(seconds + 's')
-  }
   return portions.join(' ')
 }

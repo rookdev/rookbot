@@ -139,7 +139,7 @@ module.exports = async (client, oldMessage, newMessage) => {
         // Edited DateTime
         {
           name: 'Edited At',
-          value: timeFormat(moment().format("X"))
+          value: timeFormat(moment().format("x"), { with: "relative" })
         }
       ],
       [

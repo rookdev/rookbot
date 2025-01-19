@@ -297,21 +297,22 @@ class SalutationCommand extends RookCommand {
         // Launch Time
         {
           name: "Launched",
-          value: timeFormat(launchedMoment.format("X"), { showSeconds: true })
+          value: timeFormat(launchedMoment.format("x"), { with: "relative" })
         }
       ]
     ]
 
     // If we're exiting
     if (mode == "exit") {
+      let elapsedTime = (offlineMoment && launchedMoment) ?
+        offlineMoment.format("x") - launchedMoment.format("x") :
+        "Unknown"
       this.props["fields"].push(
         [
           // Elapsed Time
           {
             name: "Elasped",
-            value: timeConversion(
-              offlineMoment.format("X") - launchedMoment.format("X")
-            )
+            value: timeConversion(elapsedTime)
           }
         ],
         [
@@ -319,7 +320,7 @@ class SalutationCommand extends RookCommand {
           {
             name: "Exited",
             value: timeFormat(
-              offlineMoment.format("X"),
+              offlineMoment.format("x"),
               { showSeconds: true }
             )
           }

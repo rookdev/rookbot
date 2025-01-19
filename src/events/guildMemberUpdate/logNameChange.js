@@ -90,7 +90,7 @@ module.exports = async (client, oldMember, newMember) => {
           {
             name: 'Edited At',
             value: auditMoment
-              ? timeFormat(auditMoment.format("X"))
+              ? timeFormat(auditMoment.format("x"), { with: "relative" })
               : 'Unknown'
           }
         ]

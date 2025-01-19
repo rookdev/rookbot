@@ -64,7 +64,7 @@ module.exports = async (client, newMember) => {
         {
           name: 'Joined At',
           value: joinedDateTime
-            ? timeFormat(joinedDateTime.format("X"))
+            ? timeFormat(joinedDateTime.format("x")) + " (" + timeFormat(joinedDateTime.format("x"), { relative: true }) + ")"
             : 'Unknown' // Handle cases where joinedAt is null
         }
       ],
@@ -73,7 +73,7 @@ module.exports = async (client, newMember) => {
         {
           name: 'Created At',
           value: createdDateTime
-            ? `${timeFormat(createdDateTime.format("X"))} (${timeFormat(createdDateTime.format("X"), { relative: true })})`
+            ? `${timeFormat(createdDateTime.format("x"), { with: "relative" })}`
             : 'Unknown' // Handle cases where createdAt is null
         }
       ],

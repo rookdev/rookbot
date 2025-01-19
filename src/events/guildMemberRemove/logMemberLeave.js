@@ -34,7 +34,7 @@ module.exports = async (client, oldMember) => {
       "channels.json"
     )
     if (!guildChannels) {
-      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${oldMember.guild.name}' [${oldMember.guild.id}]`)
       return [result, messages]
     }
 
@@ -51,7 +51,7 @@ module.exports = async (client, oldMember) => {
     }
 
     const joinedMoment  = moment(oldMember.joinedTimestamp)
-    const leftMoment    = moment()
+    const leftMoment    = moment.utc()
     const durationStr   = timeConversion(
       moment.duration(
         Math.abs(
@@ -85,7 +85,7 @@ module.exports = async (client, oldMember) => {
           {
             name: 'Left At',
             value: leftMoment
-              ? timeFormat(leftMoment.format("X"))
+              ? timeFormat(leftMoment.format("x"), { with: "relative" })
               : 'Unknown' // Handle cases where leftAt is null
           }
         ],
@@ -94,7 +94,7 @@ module.exports = async (client, oldMember) => {
           {
             name: 'Joined At',
             value: joinedMoment
-              ? timeFormat(joinedMoment.format("X"))
+              ? (timeFormat(joinedMoment.format("x"), { with: "relative" }))
               : 'Unknown' // Handle cases where joinedAt is null
           }
         ],

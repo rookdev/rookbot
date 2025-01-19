@@ -96,7 +96,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
       }
       thisGuild.added = botJoinedDateTime.toLocaleString()
       thisGuild.addedTimestamp = Math.floor(bot.joinedTimestamp / 1000)
-      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.format("X"))
+      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.format("x"), { with: "relative" })
       sorted[bot.joinedTimestamp] = thisGuild
     }
 

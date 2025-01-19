@@ -39,7 +39,7 @@ function scheduleNicknameChange(client, member) {
     }
   })
 
-  messages.push(`${client.profile.emojis.check} Scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
+  messages.push(`${client.profile.emojis.check} Yes scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
 
   return [result, messages]
 }

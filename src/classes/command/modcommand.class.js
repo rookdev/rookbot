@@ -612,7 +612,7 @@ class ModCommand extends AdminCommand {
           let dm_desc = `You have been ${tenses.past} from the ${interaction.guild.name} server. ` +
           `(` +
           (role != "" ? `Role: ${role}; Reason: ` : "") +
-          (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.format("X"))}; Reason: ` : "") +
+          (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.format("x"))}; Reason: ` : "") +
           reason +
           `)`
           if (
@@ -736,7 +736,7 @@ class ModCommand extends AdminCommand {
               // Logged DateTime
               {
                 name: 'Time',
-                value: timeFormat(now.format("X"), { with: "relative" })
+                value: timeFormat(now.format("x"), { with: "relative" })
               }
             ],
             [
@@ -769,7 +769,7 @@ class ModCommand extends AdminCommand {
 
           // Timeout
           if (durationSeconds != 0) {
-            let untilDateTime = moment(now.format("X") + durationMilliseconds)
+            let untilDateTime = moment(now.format("x") + durationMilliseconds)
             logFields.push(
               [
                 // Seconds
@@ -787,7 +787,7 @@ class ModCommand extends AdminCommand {
                 // Until
                 {
                   name: 'Timeout Until',
-                  value: timeFormat(untilDateTime.format("X"))
+                  value: timeFormat(untilDateTime.format("x"), { with: "relative" })
                 }
               ]
             )

@@ -220,7 +220,7 @@ module.exports = class SearchCommand extends ModCommand {
             avatar: banner.displayAvatarURL({ size: Math.pow(2, 7) })
           }
         }
-        let thisNow = now.format("X") + (banNum * 1000)
+        let thisNow = now.format("x") + (banNum * 1000)
         let logEntry = [
           `[${now.toISOString()}]`,
           `User:     ${ban.user.username} (ID: ${ban.user.id})`
@@ -311,7 +311,7 @@ module.exports = class SearchCommand extends ModCommand {
             [
               {
                 name: "Time",
-                value: timeFormat(timestampDateTime.format("X"))
+                value: timeFormat(timestampDateTime.format("x"), { with: "relative" })
               }
             ]
           )

@@ -138,7 +138,7 @@ module.exports = async (client, deletedMessage) => {
         {
           name: 'Deleted At',
           value: auditDateTime
-            ? timeFormat(auditDateTime.format("X"))
+            ? timeFormat(auditDateTime.format("x"), { with: "relative" })
             : 'Unknown'
         }
       ]

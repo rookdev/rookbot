@@ -534,7 +534,7 @@ module.exports = class SayCommand extends ModCommand {
             // Posted Time
             {
               name: "Time",
-              value: timeFormat(resultDateTime.format("X"))
+              value: timeFormat(resultDateTime.format("x"), { with: "relative" })
             }
           ],
           [

@@ -16,7 +16,7 @@ module.exports = async (client, member) => {
 
   messages.push(
     {
-      timestamp: eventTime.format("X"),
+      timestamp: eventTime.format("x"),
       datetime: eventTime.toISOString(),
       name: member.displayName,
       username: member.user.tag

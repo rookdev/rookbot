@@ -37,6 +37,7 @@ class RookCommand {
     this.content = ""             // Message Content
     this.error = false            // Did we have an error?
     this.ephemeral = false        // Make sure Ephemeral Response
+    this.testPageNum = 0
 
     // Figure out if we're in Production or Development
     let PROD = false
@@ -265,7 +266,11 @@ class RookCommand {
   }
 
   async build(client, interaction, coptions={}) {
-    console.log(`/${this.name}: Rook Build`)
+    let buildMsg = `/${this.name}: Rook Build`
+    if (this.testPageNum > 0) {
+      buildMsg += `: Page ${this.testPageNum}`
+    }
+    console.log(buildMsg)
 
     // If we don't have an error yet,
     //  Process canned option values into sent option values
@@ -801,6 +806,7 @@ class RookCommand {
       }
       // Cycle through test options
       for (let thisTest of this.testOptions) {
+        this.testPageNum += 1
         // Reset props
         this.props = {}
         // Reset error

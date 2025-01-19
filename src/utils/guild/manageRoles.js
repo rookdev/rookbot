@@ -37,14 +37,14 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   }
 
   if (!rrs[reaction.message.id]) {
-    // messages.push(`${client.profile.emojis.warning} Not a watched message: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+    // messages.push(`${client.profile.emojis.warning}: Message${client.profile.emoji.no}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
   if (!rrs[reaction.message.id][reaction.emoji.name]) {
-    messages.push(`${client.profile.emojis.warning} Not a watched emoji: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+    messages.push(`${client.profile.emojis.warning}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.no}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
-  messages.push(`${mode.toUpperCase()}: Watched Message & Emoji: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+  messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
 
   if (!reaction.me) {
     await reaction.react()
