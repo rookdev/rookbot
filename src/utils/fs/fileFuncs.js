@@ -6,8 +6,9 @@ function getAPath(directory=[], filename="") {
   if (
     directory[0] &&
     (
-      directory[0].includes(":\\") ||
-      directory[0].includes(":\\\\")
+      directory[0].includes(`home${path.sep}runner`) ||
+      directory[0].includes(`:${path.sep}`) ||
+      directory[0].includes(`:${path.sep}${path.sep}`)
     )
   ) {
     dirpath = path.join(...directory)
