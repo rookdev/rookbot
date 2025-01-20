@@ -67,7 +67,7 @@ module.exports = (client) => {
         if (messages.length) {
           if (showDateTime && showScript && firstScript) {
             // Print DateTime
-            let now = moment()
+            let now = moment.utc()
             let dateStamp = ""
             now.utc()
             dateStamp += now.format()

@@ -58,7 +58,7 @@ module.exports = class MentionCommand extends RookCommand {
         {
           name: "channelinfo",
           description: "Get info about a Channel",
-          options: { "target-type": "channel "}
+          options: { "target-type": "channel" }
         },
         {
           name: "emojiinfo",

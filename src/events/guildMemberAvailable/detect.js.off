@@ -12,7 +12,7 @@ module.exports = async (client, member) => {
   let result = true
   let messages = []
 
-  let eventTime = moment()
+  let eventTime = moment.utc()
 
   messages.push(
     {

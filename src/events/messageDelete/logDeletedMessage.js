@@ -127,9 +127,9 @@ module.exports = async (client, deletedMessage) => {
     }
   }
 
-  let auditDateTime = moment()
+  let auditDateTime = moment.utc()
   if (auditEntry?.createdTimestamp) {
-    auditDateTime = moment(auditEntry.createdTimestamp)
+    auditDateTime = moment.utc(auditEntry.createdTimestamp)
   }
   if (auditDateTime) {
     fields.push(
@@ -259,7 +259,7 @@ module.exports = async (client, deletedMessage) => {
     `${this.DEV ? 'DEV' : ''}deletedMessages.log`
   )
   let logEntry = [
-    `[${moment().toISOString()}]`,
+    `[${moment.utc().toISOString()}]`,
     `Author:     ${deletedMessage.author.tag} (ID: ${deletedMessage.author.id})`
   ]
   if (deleter) {

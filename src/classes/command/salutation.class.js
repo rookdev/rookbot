@@ -205,9 +205,9 @@ class SalutationCommand extends RookCommand {
         )
 
     // When did we launch?
-    let launchedMoment  = moment(client.readyTimestamp)
+    let launchedMoment  = moment.utc(client.readyTimestamp)
     // If we're exiting, we're doing it now
-    let offlineMoment   = moment()
+    let offlineMoment   = moment.utc()
 
     // Build default server info
     let server = {

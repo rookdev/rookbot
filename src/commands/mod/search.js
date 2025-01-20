@@ -196,7 +196,7 @@ module.exports = class SearchCommand extends ModCommand {
     }
 
     if (searchType == "Ban") {
-      let now = moment()
+      let now = moment.utc()
       const fetchedLogs = await interaction.guild.fetchAuditLogs({
         type: AuditLogEvent.MemberBanAdd
       })
@@ -302,7 +302,7 @@ module.exports = class SearchCommand extends ModCommand {
             ]
           )
         } else if(logLine.includes("Z]")) {
-          let timestampDateTime = moment(
+          let timestampDateTime = moment.utc(
             logLine
               .replace("[","")
               .replace("]","")

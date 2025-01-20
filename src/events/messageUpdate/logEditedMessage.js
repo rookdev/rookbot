@@ -139,7 +139,7 @@ module.exports = async (client, oldMessage, newMessage) => {
         // Edited DateTime
         {
           name: 'Edited At',
-          value: timeFormat(moment().format("x"), { with: "relative" })
+          value: timeFormat(moment.utc().format("x"), { with: "relative" })
         }
       ],
       [
@@ -221,7 +221,7 @@ module.exports = async (client, oldMessage, newMessage) => {
     `${this.DEV ? 'DEV' : ''}editedMessages.log`
   )
   const logEntry = [
-    `[${moment().toISOString()}]`,
+    `[${moment.utc().toISOString()}]`,
     `Author:      ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
     `Guild:       ${newMessage.guild?.name} (ID: ${newMessage.guild?.id})`,
     // @ts-ignore

@@ -368,8 +368,8 @@ class ModCommand extends AdminCommand {
       durationMilliseconds = durationSeconds * 1000
       durationStr = timeConversion(durationMilliseconds)
     }
-    let now = moment()
-    let timeoutUntil = moment(
+    let now = moment.utc()
+    let timeoutUntil = moment.utc(
       parseInt(now.format("x")) +
       parseInt(durationMilliseconds)
     )
@@ -730,7 +730,7 @@ class ModCommand extends AdminCommand {
 
 
           let logFields = []
-          let now = moment()
+          let now = moment.utc()
           logFields.push(
             [
               // Logged DateTime
@@ -769,7 +769,10 @@ class ModCommand extends AdminCommand {
 
           // Timeout
           if (durationSeconds != 0) {
-            let untilDateTime = moment(now.format("x") + durationMilliseconds)
+            let untilDateTime = moment.utc(
+              parseInt(now.format("x")) +
+              parseInt(durationMilliseconds)
+            )
             logFields.push(
               [
                 // Seconds

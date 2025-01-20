@@ -50,7 +50,7 @@ module.exports = async (client, oldMember) => {
       return [result, messages]
     }
 
-    const joinedMoment  = moment(oldMember.joinedTimestamp)
+    const joinedMoment  = moment.utc(oldMember.joinedTimestamp)
     const leftMoment    = moment.utc()
     const durationStr   = timeConversion(
       moment.duration(
@@ -158,7 +158,7 @@ module.exports = async (client, oldMember) => {
       `${this.DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
-      `[${moment().toISOString()}]`,
+      `[${moment.utc().toISOString()}]`,
       `User:    ${oldMember.user.tag} (ID: ${oldMember.user.id})`,
       `Guild:   ${oldMember.guild.name} (ID: ${oldMember.guild.id})`,
       `Event:   Member Left`,

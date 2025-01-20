@@ -43,7 +43,8 @@
   },
   "rando": {
     "player": {
-      "name": "Super Metroid Item Randomizer"
+      "name": "Super Metroid Item Randomizer",
+      "avatar": "https://static.wikia.nocookie.net/metroid/images/8/89/M3_sprite_Screw_Attack_logo.gif"
     },
     "scripts": [
     ],

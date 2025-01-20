@@ -105,11 +105,18 @@ module.exports = class SayCommand extends ModCommand {
   async buildPayload(destChannel, message, attachment) {
     let payload = null
 
-    if (message) {
+    if (typeof message === "object") {
+      console.log(message)
+      for (let property of ["content","embeds","files"]) {
+        if (message[property]) {
+          payload[property] = message[property]
+        }
+      }
+    } else if (typeof message === "string") {
       payload = message
     }
 
-    if (!payload) {
+    if (!payload && attachment) {
       let attachmentRes = await fetch(attachment.attachment)
       let attachmentJSON = await attachmentRes.json()
       payload = await new MessagePayload(
@@ -168,7 +175,9 @@ module.exports = class SayCommand extends ModCommand {
       this.props.description = `Couldn't load Message ID '${messageID}'`
       return false
     }
-    message = message.fetch()
+    if (message.partial) {
+      message = message.fetch()
+    }
 
     return message
   }
@@ -205,6 +214,28 @@ module.exports = class SayCommand extends ModCommand {
       channel = await interaction.guild.channels.cache.find(
         c => c.name === channel
       )
+    }
+
+    // Bot doesn't have perms SendMessages in channel
+    if (
+      !channel
+      .permissionsFor(client.user)
+      .has(PermissionFlagsBits.SendMessages)
+    ) {
+      this.error = true
+      this.props.description = `Bot doesn't have ${inlineCode('SendMessages')} for ${channel}`
+      return false
+    }
+
+    // User doesn't have perms ManageMessages in channel
+    if (
+      !channel
+      .permissionsFor(interaction.user)
+      .has(PermissionFlagsBits.ManageMessages)
+    ) {
+      this.error = true
+      this.props.description = `User doesn't have ${inlineCode('ManageMessages')} for ${channel}`
+      return false
     }
 
     // If we're using a visage
@@ -432,7 +463,7 @@ module.exports = class SayCommand extends ModCommand {
         if (notPostedByClientError) {
           this.error = true
           this.props.description = [
-            `Destination Message not editable by ${destGuild.members.me}`,
+            `Destination Message not editable by ${interaction.guild.members.me}`,
             destMessageURL
           ]
           return false
@@ -447,7 +478,8 @@ module.exports = class SayCommand extends ModCommand {
 
         let this_package = {
           content: srcMessage.content ?? null,
-          embeds: srcMessage.embeds ?? null
+          embeds: srcMessage.embeds ?? null,
+          files: srcMessage.attachments?.toJSON() ?? null
         }
 
         // If rookhook, use hook
@@ -470,15 +502,19 @@ module.exports = class SayCommand extends ModCommand {
       }
 
       // Clone to Channel
-      if (channel) {
+      if (channel && !destMessage) {
         let content = srcMessage.content ?? null
         let embeds = srcMessage.embeds ?? null
+        let files = srcMessage.attachments?.toJSON() ?? null
         let this_package = {}
         if (content) {
           this_package.content = content
         }
         if (embeds) {
           this_package.embeds = embeds
+        }
+        if (files) {
+          this_package.files = files
         }
 
         // If rookhook, use hook
@@ -527,7 +563,7 @@ module.exports = class SayCommand extends ModCommand {
       let region = ((!this.DEV) ? "Production" : "Development")
 
       // Get the posted time
-      let resultDateTime = moment(result.createdTimestamp)
+      let resultDateTime = moment.utc(result.createdTimestamp)
       props.mod = {
         fields: [
           [
@@ -631,7 +667,7 @@ module.exports = class SayCommand extends ModCommand {
         `${this.DEV ? 'DEV' : ''}ghostMessages.log`
       )
       let logEntry = [
-        `[${moment().toISOString()}]`,
+        `[${moment.utc().toISOString()}]`,
         `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
         `Mode:        ${mode.ucfirst()}`,
         `Visage:      ${visage}`,
@@ -649,9 +685,10 @@ module.exports = class SayCommand extends ModCommand {
       let logsChannel = await this.getChannel(client, interaction, "logging-say")
       if (logsChannel) {
         logsChannel.send({ embeds: [ embeds.mod ] })
-        this.null = true
       }
     }
+
+    this.null = true
 
     return true
   }

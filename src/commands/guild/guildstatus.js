@@ -64,7 +64,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     // Creation DateTime
-    let createdDateTime = moment(interaction.guild.createdTimestamp)
+    let createdDateTime = moment.utc(interaction.guild.createdTimestamp)
     this.props.description += "\n\n"
     this.props.description += bold("Created") + "\n"
     this.props.description += timeFormat(createdDateTime.format("x"), { with: "relative" })

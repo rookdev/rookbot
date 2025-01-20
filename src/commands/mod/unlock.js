@@ -66,7 +66,7 @@ module.exports = class UnlockCommand extends ModCommand {
       // Send public confirmation in the channel
       const embedProps = {
         color: this.profile.colors.success,
-        title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.warning },
+        title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.success },
         description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold('unlocked')}.`,
       }
       const embed = new RookEmbed(client, embedProps)

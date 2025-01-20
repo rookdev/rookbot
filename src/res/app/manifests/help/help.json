@@ -336,6 +336,43 @@
       ],
       "access": "unset",
       "segment": "local"
+    },
+    "slap": {
+      "name": "slap",
+      "category": "fun",
+      "description": "Slap another user around with a specified item",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        },
+        {
+          "name": "item",
+          "description": "Item to slap with"
+        },
+        {
+          "name": "distance",
+          "description": "How far to slap"
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "trout": {
+      "name": "trout",
+      "category": "fun",
+      "description": "Slap another user around a bit with a large trout",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "slap",
+      "access": "Admin",
+      "segment": "local"
     }
   },
   "guild": {

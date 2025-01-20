@@ -56,8 +56,8 @@ module.exports = async (client, newMember) => {
       return [result, messages]
     }
 
-    let joinedDateTime = moment(fetchedMember.joinedTimestamp)
-    let createdDateTime = moment(fetchedMember.user.createdTimestamp)
+    let joinedDateTime = moment.utc(fetchedMember.joinedTimestamp)
+    let createdDateTime = moment.utc(fetchedMember.user.createdTimestamp)
     let logFields = [
       [
         // Joined DateTime
@@ -160,7 +160,7 @@ module.exports = async (client, newMember) => {
       `${this.DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
-      `[${moment().toISOString()}]`,
+      `[${moment.utc().toISOString()}]`,
       `User:    ${fetchedMember.user.tag} (ID: ${fetchedMember.user.id})`,
       `Guild:   ${fetchedMember.guild.name} (ID: ${fetchedMember.guild.id})`,
       `Event:   Member Joined`,

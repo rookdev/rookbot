@@ -142,7 +142,7 @@ module.exports = class PurgeCommand extends ModCommand {
     }
 
     // Log to file
-    let now = new moment()
+    let now = new moment.utc()
     const logFilePath = fileFuncs.getAPath(
       [
         "src",

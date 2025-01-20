@@ -667,7 +667,7 @@ class RookCommand {
 
   async execute(client, interaction, coptions, independent=false) {
     // Print data about the calling of this command
-    let now = moment()
+    let now = moment.utc()
     let dateTable = new AsciiTable(
       `/${this.name}`,
       {}

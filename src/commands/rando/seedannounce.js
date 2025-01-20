@@ -239,7 +239,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       let scheduledDateTime = null
       if (numFuncs.myIsNumeric(scheduledTime)) {
         // console.log(`Numeric: ${scheduledTime}`)
-        scheduledDateTime = moment(parseInt(scheduledTime))
+        scheduledDateTime = moment.utc(parseInt(scheduledTime))
       } else {
         // console.log(`Not Numeric: ${scheduledTime}`)
         scheduledDateTime = strtotime(scheduledTime)
@@ -249,7 +249,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         this.props.description = `Couldn't figure out a DateTime from '${scheduledTime}'.`
         return false
       }
-      adjustedDateTime = moment(scheduledDateTime)
+      adjustedDateTime = moment.utc(scheduledDateTime)
     }
 
     // Get the data

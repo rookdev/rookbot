@@ -12,7 +12,7 @@ module.exports = (ms = 0) => {
     durations.d   = durations.h  *   24
     durations.wk  = durations.d  *    7
     durations.mo  = durations.d  *   30
-    durations.yr  = durations.mo *   12
+    durations.yr  = durations.d  *  365
 
     let keys = Object.keys(durations);
     keys = keys.sort(function(a,b){return durations[b]-durations[a]});
@@ -20,7 +20,9 @@ module.exports = (ms = 0) => {
     for (let key of keys) {
       const units = Math.trunc(ms / durations[key])
       if (units > 0) {
-        portions.push(units + key)
+        if (key != "ms") {
+          portions.push(units + key)
+        }
         ms -= (units * durations[key])
       }
     }

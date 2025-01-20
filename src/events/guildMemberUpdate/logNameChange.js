@@ -53,11 +53,11 @@ module.exports = async (client, oldMember, newMember) => {
         Date.now() - a.createdTimestamp < (20 * 1000)
     )
 
-    let auditMoment = moment()
+    let auditMoment = moment.utc()
     if (auditEntry) {
       // console.log("Log Entry Found!")
       if (auditEntry?.createdTimestamp) {
-        auditMoment = moment(auditEntry.createdTimestamp)
+        auditMoment = moment.utc(auditEntry.createdTimestamp)
       }
     } else {
       // console.log(fetchedLogs)
@@ -226,7 +226,7 @@ module.exports = async (client, oldMember, newMember) => {
       `${this.DEV ? 'DEV' : ''}nicknameChanges.log`
     )
     const logEntry = [
-      `[${moment().toISOString()}]`,
+      `[${moment.utc().toISOString()}]`,
       `User:         ${newMember.user.tag} (ID: ${newMember.user.id})`,
       `Guild:        ${newMember.guild.name} (ID: ${newMember.guild.id})`,
       `Event:        Nickname Changed`,

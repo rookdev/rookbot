@@ -69,7 +69,7 @@ module.exports = async (hashID, gameID="z3r") => {
       ]
     }
 
-    let generatedDateTime = moment(hash_meta?.generated)
+    let generatedDateTime = moment.utc(hash_meta?.generated)
 
     fields = [
       [

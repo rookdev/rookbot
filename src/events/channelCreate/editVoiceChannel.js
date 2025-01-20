@@ -22,7 +22,7 @@ async function selectName(newChannel) {
     ],
     "voiceChannelNames.json"
   )
-  if (namesDB) {
+  if (!namesDB) {
     messages.push(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
     return [newName, messages]
   }
