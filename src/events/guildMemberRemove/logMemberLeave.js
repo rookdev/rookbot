@@ -140,7 +140,16 @@ module.exports = async (client, oldMember) => {
     let console_log = {
       guild: oldMember.guild.name,
       member: oldMember.user.tag,
-      action: "leave"
+      action: "leave",
+      joinAt: oldMember.joinedAt,
+      joinStamp: oldMember.joinedTimestamp,
+      joinMoment: joinMoment,
+      leftMoment: leftMoment,
+      joinMomentStamp: joinMoment.format("x"),
+      leftMomentStamp: leftMoment.format("x"),
+      diffStamp: joinMoment.diff(leftMoment),
+      durationMoment = moment.duration(Math.abs(diffStamp)),
+      duration: durationStr
     }
     messages.push("🚪 " + JSON.stringify(console_log))
 

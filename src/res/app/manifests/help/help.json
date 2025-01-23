@@ -542,6 +542,29 @@
       "access": "Admin",
       "segment": "local"
     },
+    "hyperlink": {
+      "name": "hyperlink",
+      "category": "misc",
+      "description": "Helps create markdown hyperlink",
+      "options": [
+        {
+          "name": "link-url",
+          "description": "URL for Hyperlink",
+          "required": true
+        },
+        {
+          "name": "link-text",
+          "description": "Text for Hyperlink",
+          "required": true
+        },
+        {
+          "name": "hide-embed",
+          "description": "Suppress Embed Preview"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
     "nl": {
       "name": "nl",
       "category": "misc",
