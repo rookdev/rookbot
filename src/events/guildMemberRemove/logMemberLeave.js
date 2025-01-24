@@ -50,17 +50,25 @@ module.exports = async (client, oldMember) => {
       return [result, messages]
     }
 
-    const joinedMoment  = moment.utc(oldMember.joinedTimestamp)
-    const leftMoment    = moment.utc()
-    const durationStr   = timeConversion(
-      moment.duration(
-        Math.abs(
-          joinedMoment.diff(
-            leftMoment
+    let joinedMoment = null
+    const leftMoment = moment.utc()
+    let durationStr = ""
+    const validJoin = oldMember.joinedAt && oldMember.joinedTimestamp
+    const validLeave = leftMoment
+
+    if (validJoin && validLeave) {
+      joinedMoment  = moment.utc(oldMember.joinedTimestamp)
+      durationStr   = timeConversion(
+        moment.duration(
+          Math.abs(
+            joinedMoment.diff(
+              leftMoment
+            )
           )
         )
       )
-    )
+    }
+
 
     // Prepare the log embed
     const logEmbed = new RookEmbed(client, {
@@ -84,7 +92,7 @@ module.exports = async (client, oldMember) => {
           // Left DateTime
           {
             name: 'Left At',
-            value: leftMoment
+            value: validLeave
               ? timeFormat(leftMoment.format("x"), { with: "relative" })
               : 'Unknown' // Handle cases where leftAt is null
           }
@@ -93,7 +101,7 @@ module.exports = async (client, oldMember) => {
           // Joined DateTime
           {
             name: 'Joined At',
-            value: joinedMoment
+            value: validJoin
               ? (timeFormat(joinedMoment.format("x"), { with: "relative" }))
               : 'Unknown' // Handle cases where joinedAt is null
           }
@@ -102,7 +110,7 @@ module.exports = async (client, oldMember) => {
           // Duration DateTime
           {
             name: 'Lasted For',
-            value: durationStr != ""
+            value: (validJoin && validLeave)
               ? durationStr
               : 'Unknown' // Handle cases where Duration is null
           }
@@ -141,15 +149,15 @@ module.exports = async (client, oldMember) => {
       guild: oldMember.guild.name,
       member: oldMember.user.tag,
       action: "leave",
-      joinAt: oldMember.joinedAt,
-      joinStamp: oldMember.joinedTimestamp,
-      joinMoment: joinMoment,
-      leftMoment: leftMoment,
-      joinMomentStamp: joinMoment.format("x"),
-      leftMomentStamp: leftMoment.format("x"),
-      diffStamp: joinMoment.diff(leftMoment),
-      durationMoment = moment.duration(Math.abs(diffStamp)),
-      duration: durationStr
+      joinAt: validJoin ? oldMember.joinedAt : null,
+      joinStamp: validJoin ? oldMember.joinedTimestamp : null,
+      joinMoment: validJoin ? joinedMoment : null,
+      leftMoment: validLeave ? leftMoment : null,
+      joinMomentStamp: validJoin ? joinedMoment.format("x") : null,
+      leftMomentStamp: validLeave ? leftMoment.format("x") : null,
+      diffStamp: (validJoin && validLeave) ? joinedMoment.diff(leftMoment) : null,
+      durationMoment: (validJoin && validLeave) ? moment.duration(Math.abs(joinedMoment.diff(leftMoment))) : null,
+      duration: (validJoin && validLeave) ? durationStr : null
     }
     messages.push("🚪 " + JSON.stringify(console_log))
 
