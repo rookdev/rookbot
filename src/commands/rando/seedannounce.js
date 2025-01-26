@@ -186,6 +186,9 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       const randoTitle = randoData.rando.player.name
       const majorItems = randoData.madlibs.major
       const uselessItems = randoData.madlibs.useless
+      const blessedLocations = randoData.madlibs.blessed_locations
+      const cursedLocations = randoData.madlibs.cursed_locations
+      const speedTech = randoData.madlibs.speed_tech
       const footerTexts = randoData.madlibs.footers
 
       this.props.title = {
@@ -195,9 +198,12 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // Select a random footer text
       var randomFooterText = footerTexts[Math.floor(Math.random() * footerTexts.length)] || ""
 
-      // Select a random major item
+      // Select random words
       const randomMajorItem = majorItems[Math.floor(Math.random() * majorItems.length)] || ""
       const randomUselessItem = uselessItems[Math.floor(Math.random() * uselessItems.length)] || ""
+      const randomBlessedLocation = blessedLocations[Math.floor(Math.random() * blessedLocations.length)] || ""
+      const randomCursedLocation = cursedLocations[Math.floor(Math.random() * cursedLocations.length)] || ""
+      const randomSpeedTech = speedTech[Math.floor(Math.random() * speedTech.length)] || ""
 
       // Modify the major item if it starts with "A " and if it's not at the beginning of the sentence
       let formattedMajorItem = randomMajorItem || ""
@@ -209,8 +215,17 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // Replace '[MAJOR_ITEM]' with the modified major item
       randomFooterText = randomFooterText.replace('[MAJOR_ITEM]', formattedMajorItem)
 
-      // Replace '[USELESS_ITEM]' with the modified major item
+      // Replace '[USELESS_ITEM]' with the modified useless item
       randomFooterText = randomFooterText.replace('[USELESS_ITEM]', randomUselessItem)
+
+      // Replace '[BLESSED_LOCATION]' with the modified location
+      randomFooterText = randomFooterText.replace('[BLESSED_LOCATION]', randomBlessedLocation)
+
+      // Replace '[CURSED_LOCATION]' with the modified location
+      randomFooterText = randomFooterText.replace('[CURSED_LOCATION]', randomCursedLocation)
+
+      // Replace '[SPEED_TECH]' with the modified speed tech
+      randomFooterText = randomFooterText.replace('[SPEED_TECH]', randomSpeedTech)
 
       // Create the embed
       this.props.playerTypes = {

@@ -13,8 +13,7 @@
       "A Progressive Sword",
       "A Progressive Glove",
       "Lamp",
-      "Half-Magic",
-      "A Progressive Suit"
+      "Half-Magic"
     ],
     "useless": [
       "3 Bombs",
@@ -29,24 +28,68 @@
       "Cane of Byrna",
       "Magic Cape"
     ],
+    "cursed_locations": [
+      "on Pedestal",
+      "in Kakariko Library",
+      "at Lumberjack Cave",
+      "at Mimic Cave",
+      "on Graveyard Ledge",
+      "in King's Tomb",
+      "at Ganon's Tower",
+      "on Bob's Torch in GT",
+      "on DP Torch",
+      "in Bob's Chest in GT",
+      "in GT Randomizer Room",
+      "at GT Validation Chest"
+    ],
+    "blessed_locations":[
+      "in Blind's Hut",
+      "in Paradox Cave",
+      "in Hookshot (Hoverboots) Cave",
+      "in Moldorm Cave"
+    ],
+    "speed_tech":[
+      "item-dash",
+      "hookpush",
+      "stuckpush",
+      "boots clip",
+      "use hoverboots"
+    ],
     "footers": [
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll be able to [SPEED_TECH] early this time!",
+      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
+      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
+      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
+      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
+      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
       "Good luck out there, adventurers!",
       "May the RNG be ever in your favor!",
       "Don't forget to grab [MAJOR_ITEM]!",
       "Watch out for those pesky Lynels!",
       "Hookshot, Bombs, Boots, Go!",
-      "Hoping [MAJOR_ITEM] won't be on Pedestal!",
-      "Hoping [MAJOR_ITEM] won't be at Library!",
-      "Hoping [MAJOR_ITEM] won't be at Lumberjack Cave!",
-      "Hoping [MAJOR_ITEM] won't be at Mimic Cave!",
-      "Hoping [MAJOR_ITEM] won't be at Graveyard Ledge!",
-      "Hoping we'll get a sword within the first hour!",
-      "Hoping we'll find [MAJOR_ITEM] within the first hour!",
       "Hoping that Blind's pun will make us laugh today!",
-      "Hoping that [MAJOR_ITEM] will be in Blind's Hut!",
       "Who wants to do a hookpush vs Ganon? <:",
       "Let's have a beat-up party at Ganon's!",
-      "Hoping that Boots hovering won't be required this time!",
+      "Hoping that we won't need to [SPEED_TECH] this time!",
       "Who's ready for some silverless Ganon action??",
       "please no aga1 seed im allergic",
       "Discount [USELESS_ITEM] at King Zora! Only 500 Rupees!",
@@ -54,6 +97,8 @@
       "[MAJOR_ITEM] on Pedestal? No problem-just hike over the mountain!",
       "Why run when you can clip through instead? 😎"
     ]
+
+
   },
   "rando": {
     "player": {
