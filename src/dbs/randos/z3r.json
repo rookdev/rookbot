@@ -53,7 +53,13 @@
       "hookpush",
       "stuckpush",
       "boots clip",
-      "use hoverboots"
+      "use hoverboots",
+      "perform Yuzuhara's Bottle Adventure (YBA)",
+      "perform spin YBAs",
+      "hammeryump",
+      "hammer doorjuke",
+      "somaria doorjuke",
+      "do Kiki Skip"
     ],
     "footers": [
       "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",

@@ -79,7 +79,12 @@
       "at the end of Terminator"
     ],
     "speed_tech":[
+      "mockball",
+      "simple short charge",
+      "green gate glitch",
+      "do hellruns",
       "microwave",
+      "walljump up Bubble Mountain",
       "shortcharge",
       "gravity jump",
       "Infinite Bomb Jump (IBJ)",
@@ -88,7 +93,13 @@
       "hookpush",
       "stuckpush",
       "boots clip",
-      "use hoverboots"
+      "use hoverboots",
+      "perform Yuzuhara's Bottle Adventure (YBA)",
+      "perform spin YBAs",
+      "hammeryump",
+      "hammer doorjuke",
+      "somaria doorjuke",
+      "do Kiki Skip"
     ],
     "footers": [
       "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
