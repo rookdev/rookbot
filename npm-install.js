@@ -1,6 +1,7 @@
-const shell = require('shelljs')
-const fs = require('fs')
-let PACKAGE = JSON.parse(fs.readFileSync("./package.json", "utf8"))
+// @ts-check
+// Standalone npm install
+const PACKAGE = require('./package.json') // Node Package data
+const shell = require('shelljs')          // Run shell commands
 
 console.log("NPM INSTALL")
 console.log("===========")

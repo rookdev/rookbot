@@ -1,48 +1,67 @@
-const { EmbedBuilder } = require('discord.js');
+// @ts-nocheck
 
-module.exports = {
-  name: 'embed',
-  description: 'Sends an embed with predefined content',
+// AdminCommand
+const { AdminCommand } = require('../../classes/command/admincommand.class')
+
+module.exports = class EmbedCommand extends AdminCommand {
+  constructor(client) {
+    let comprops = {
+      name: "embed",
+      category: "misc",
+      description: "Sends an embed with predefined content",
+      flags: {
+        test: "basic"
+      }
+    }
+    let props = {
+      title: {
+        text: "Embed Title",
+        url: "https://justinbohemier.wixsite.com/portfolio/game-design"
+      },
+      description: "This is an embed description",
+      color: "Random",
+      fields: [
+        [
+          {
+            name: "Field title",
+            value: "Some random value",
+            inline: true
+          }
+        ],
+        [
+          {
+            name: "2nd Field title",
+            value: "Some random value",
+            inline: true
+          }
+        ],
+        [
+          {
+            name: "3rd Field title",
+            value: "Some random value",
+            inline: true
+          }
+        ]
+      ],
+      image: { image: "https://pbs.twimg.com/media/GcPyiUlasAEEtPJ?format=jpg&name=900x900" },
+      footer: {
+        text: "Footer text",
+        image: "https://pbs.twimg.com/media/GcPyiUlasAEEtPJ?format=jpg&name=900x900"
+      }
+    }
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
 
   /**
    * Sends an embed message in response to a slash command interaction.
-   * @param {Client} client
-   * @param {Interaction} interaction
    */
-  execute: async (client, interaction) => {
-    // Acknowledge the interaction immediately without sending a reply yet
-    await interaction.deferReply(); // This avoids the bot "waiting for a response"
-
-    const embed = new EmbedBuilder()
-      .setTitle('Embed title')
-      .setDescription('This is an embed description')
-      .setURL('https://justinbohemier.wixsite.com/portfolio/game-design')
-      .setColor('Random')
-      .setFields(
-        {
-          name: 'Field title',
-          value: 'Some random value',
-          inline: true,
-        },
-        {
-          name: '2nd Field title',
-          value: 'Some random value',
-          inline: true,
-        },
-        {
-          name: '3rd Field title',
-          value: 'Some random value',
-          inline: true,
-        }
-      )
-      .setImage('https://pbs.twimg.com/media/GcPyiUlasAEEtPJ?format=jpg&name=900x900')
-      .setTimestamp()
-      .setFooter({
-        text: 'Footer text',
-        iconURL: 'https://pbs.twimg.com/media/GcPyiUlasAEEtPJ?format=jpg&name=900x900'
-      });
-
-    // Send the embed to the channel
-    await interaction.editReply({ embeds: [ embed ] }); // Edit the initial deferred reply to send the embed
-  },
-};
+  async action(client, interaction, coptions={}) {
+    // all done in constructor
+    return !this.error
+  }
+}

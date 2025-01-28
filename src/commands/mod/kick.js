@@ -1,170 +1,42 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-check
 
-module.exports = {
-  /**
-   *
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    const PROFILE = require('../../PROFILE.json');
-    const guildIDs = require('../../dbs/guilds.json');
-    let DEV_MODE = PROFILE["profiles"][PROFILE["selectedprofile"]]?.DEV
-    const guildID = interaction.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
-    const targetUserInput = interaction.options.get('user-id').value;
-    const reason = interaction.options.get('reason')?.value || 'No reason provided';
+// Command Option Types
+const { ApplicationCommandOptionType } = require('discord.js')
+// ModCommand
+const { ModCommand } = require('../../classes/command/modcommand.class.js')
 
-    // Make the initial reply private
-    await interaction.deferReply({ ephemeral: true });
-
-    // Extract user ID from mention (if it's a mention)
-    const targetUserId = targetUserInput.replace(/[<@!>]/g, '');  // Remove <@>, <@!>, and >
-
-    // Get the user to be kicked
-    let targetUser;
-    try {
-      targetUser = await client.users.fetch(targetUserId);
-    } catch (error) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
+module.exports = class KickCommand extends ModCommand {
+  constructor(client) {
+    let comprops = {
+      name: "kick",
+      category: "mod",
+      description: "Kicks a user from the server.",
+      flags: {
+        bot: "optional",
+        user: "invalid",
+        target: "required"
+      },
+      options: [
+        {
+          name: "target-id",
+          description: "The ID of the user you want to kick.",
+          type: ApplicationCommandOptionType.String,
+          required: true
         },
-        description: "User not found."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ], ephemeral: true }); // Private error message
-      return;
-    }
-
-    // Check if the user is in the server (guild)
-    const guildMember = interaction.guild.members.cache.get(targetUserId);
-    if (!guildMember) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "User is not in the server."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ], ephemeral: true }); // Private error message
-      return;
-    }
-
-    // Attempt to kick the user
-    try {
-      // Kick the user from the server
-      if (!DEV_MODE) {
-        await interaction.guild.members.kick(targetUserId, { reason });
-      }
-
-      // Determine the name to display
-      const targetUserName = guildMember?.nickname || targetUser.username;
-
-      // Reply publicly in the channel to confirm the kick
-      let props = {
-        color: "#00FF00",
-        title: {
-          text: "Success!"
-        },
-        description: `User **${targetUserName}** has been **kicked**. (${reason})`
-      }
-      const embed = new RookEmbed(props)
-      interaction.channel.send({ embeds: [ embed ] });
-
-      if (!DEV_MODE) {
-        // Try to DM the user about the kick (private)
-        try {
-          let props = {
-            color: "#FF0000",
-            title: {
-              text: "Kicked"
-            },
-            description: `You have been kicked from the ${interaction.guild.name} server. (${reason})`
-          }
-          const embed = new RookEmbed(props)
-          await targetUser.send({ embeds: [ embed ] })
-          let props2 = {
-            color: "#FF0000",
-            title: {
-              text: "Error"
-            },
-            description: `✅ User **${targetUserName}** successfully kicked via DMs! Message: ${props.description}`
-          }
-          const embed2 = new RookEmbed(props2);
-        } catch (dmError) {
-          console.log(`Failed to DM user: ${dmError.message}`);
-          let props = {
-            color: "#FF0000",
-            title: {
-              text: "Error"
-            },
-            description: "I couldn't send the DM to the user. They might have DMs disabled."
-          }
-          const embed = new RookEmbed(props)
-          await interaction.followUp({ embeds: [ embed ], ephemeral: true }); // Private follow-up
+        {
+          name: "reason",
+          description: "The reason for kicking the user.",
+          type: ApplicationCommandOptionType.String,
+          required: false
         }
-      } else {
-        await interaction.followUp({content: `User **${targetUserName}** has been **kicked**. (${reason})`});
-      }
-
-      if (!DEV_MODE) {
-        // Log the action in the logs channel (private)
-        const logs = client.channels.cache.get(guildChannels["logging"]);
-        if (logs) {
-          let props = {
-            color: "#FF0000",
-            title: {
-              text: "👟💥🏃‍♂️ User Kicked"
-            },
-            fields: [
-              { name: 'User Kicked',  value: `${targetUser}\n(ID: ${targetUserId})`,              inline: true },
-              { name: 'Kicked By',    value: `${interaction.user}\n(ID: ${interaction.user.id})`, inline: true },
-              { name: 'Reason',       value: reason,                                             inline: false }
-            ],
-            footer: {
-              msg: `Actioned by ${interaction.user.displayName}`
-            }
-          }
-          const embed = new RookEmbed(props)
-          logs.send({ embeds: [ embed ] });
-        } else {
-          console.log("Logs channel not found.");
-        }
-      }
-    } catch (error) {
-      console.log(`There was an error when kicking: ${error.stack}`);
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "I couldn't kick that user."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ], ephemeral: true }); // Private error message
+      ]
     }
-  },
+    let props = {}
 
-  name: 'kick',
-  description: 'Kicks a user from the server.',
-  options: [
-    {
-      name: 'user-id',
-      description: 'The ID of the user you want to kick.',
-      type: ApplicationCommandOptionType.String,
-      required: true,
-    },
-    {
-      name: 'reason',
-      description: 'The reason for kicking the user.',
-      type: ApplicationCommandOptionType.String,
-      required: false,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.KickMembers],
-  botPermissions: [PermissionFlagsBits.KickMembers],
-};
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+}

@@ -1,5 +1,6 @@
+// @ts-nocheck
+
 import AsciiTable from 'ascii-table'
-import semver from 'semver'
 import shell from 'shelljs'
 import fs from 'fs'
 
@@ -11,21 +12,21 @@ for(let module of [ "node", "npm", "discord.js" ]) {
   data[module].current = ""
   let current = ""
   if ([ "node", "npm" ].includes(module)) {
-    current = shell.exec(
+    let current_exec = shell.exec(
       `${module} -v`,
       { silent: true }
     )
-    current = current.stdout.trim()
+    current = current_exec.stdout.trim()
     if (current.startsWith("v")) {
       current = current.substring(1)
     }
     data[module].current = current
   } else {
-    let listing = shell.exec(
+    let listing_exec = shell.exec(
       `npm list ${module} --depth=0`,
       { silent: true }
     )
-    current = listing.stdout.trim()
+    current = listing_exec.stdout.trim()
     let matches = current.match(`${module}@(.*)`)
     if (matches) {
       current = matches[1]
@@ -43,6 +44,7 @@ for(let module of [ "node", "npm", "discord.js" ]) {
 data[ PACKAGE.name ] = { current: `${PACKAGE.version}` }
 
 let Table = new AsciiTable(`♖ ${PACKAGE.name} ♖`, {})
+  .setBorder('|','-','•','•')
   .setHeading(
     "App",
     "Current",
@@ -73,16 +75,16 @@ for(let [module, mData] of Object.entries(data)) {
 }
 console.log(Table.toString())
 
-Table = new AsciiTable("Functionality", {})
-let djs = data["discord.js"]
-for (let func of ["Pagination","Collectors"]) {
-  let validVer = false;
-  if (djs && djs.current) {
-    validVer = semver.lt(djs.current, "13.0.0")
-  }
-  Table.addRow(
-    func,
-    validVer ? "🟩" : "🟥"
-  )
-}
-console.log(Table.toString())
+// Table = new AsciiTable("Functionality", {})
+// let djs = data["discord.js"]
+// for (let func of ["Pagination","Collectors"]) {
+//   let validVer = false
+//   if (djs && djs.current) {
+//     validVer = semver.lt(djs.current, "13.0.0")
+//   }
+//   Table.addRow(
+//     func,
+//     validVer ? "🟩" : "🟥"
+//   )
+// }
+// console.log(Table.toString())

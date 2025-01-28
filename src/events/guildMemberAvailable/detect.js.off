@@ -1,0 +1,20 @@
+// @ts-nocheck
+const { GuildMember } = require('discord.js')
+const { RookClient } = require('../../classes/objects/rclient.class.js')
+
+/**
+ * Logs when a new member joins the server and saves it to a log file.
+ * @param {RookClient} client
+ * @param {GuildMember} member
+ */
+module.exports = async (client, member) => {
+  let eventTime = new Date()
+  console.log(
+    {
+      timestamp: eventTime.getTime(),
+      datetime: eventTime.toISOString(),
+      name: member.displayName,
+      username: member.user.tag
+    }
+  )
+}

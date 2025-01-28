@@ -1,83 +1,175 @@
-const { PermissionFlagsBits } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-module.exports = {
-  /**
-   *
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    const targetChannel = interaction.options.getChannel('channel'); // Get the target channel
-    const message = interaction.options.getString('message'); // Get the message content
+/**
+ * Discord
+ *  Command Option Types
+ *  Permission Flags
+ */
+const { ApplicationCommandOptionType, PermissionFlagsBits, MessageFlags } = require('discord.js')
+// ModCommand
+const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
+const { RookEmbed } = require('../../classes/embed/rembed.class')
+// Use Discord Hammertime
+const timeFormat = require('../../utils/timeFormat')
+const path = require('path')  // Easy filepath management
+const fs = require('fs')      // Filesystem manipulation
 
-    // Check if the bot has permissions to send messages in the target channel
-    if (!targetChannel.permissionsFor(client.user).has(PermissionFlagsBits.SendMessages)) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
+/**
+ * @class
+ * @classdesc Speak as Bot
+ * @this {SayCommand}
+ * @extends {ModCommand}
+ * @public
+ */
+module.exports = class SayCommand extends ModCommand {
+  constructor(client) {
+    let comprops = {
+      name: "say",
+      description: "Say as Bot",
+      category: "bot",
+      options: [
+        {
+          name: "message",
+          description: "Message to send",
+          type: ApplicationCommandOptionType.String,
+          required: true
         },
-        description: `I don't have permission to send messages in ${targetChannel}.`
+        {
+          name: "channel",
+          description: "Channel to send message to",
+          type: ApplicationCommandOptionType.Channel
+        }
+      ],
+      userPermissions: [ PermissionFlagsBits.ManageMessages ],
+      botPermissions: [ PermissionFlagsBits.SendMessages ]
+    }
+    let props = {}
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  async execute(client, interaction, coptions={}, independent=false) {
+    // Defer Ephemeral
+    let intOptions = { flags: MessageFlags.Ephemeral }
+    await interaction.deferReply(intOptions)
+
+    // Get Channel
+    let channel = interaction.options.getChannel("channel") ?? interaction.channel
+    // Get Message
+    let message = interaction.options.getString("message") ?? ""
+
+    // If we have a channel and a message
+    if (channel && (message != "")) {
+      // Send the message
+      let result = await channel.send(message)
+
+      let props = {}
+      let embeds = {}
+
+      /**
+       * Region that this is being sent to
+       *  Development
+       *  Production; also sends to Discord Audit Log
+       */
+      let region = ((!this.DEV) ? "Production" : "Development")
+
+      // Get the posted time
+      let resultDateTime = new Date(result.createdTimestamp)
+      props.mod = {
+        fields: [
+          [
+            // Posted Time
+            {
+              name: "Time",
+              value: timeFormat(resultDateTime.getTime())
+            }
+          ],
+          [
+            // Whodunnit?
+            {
+              name: "User",
+              value: `${interaction.user} (ID: ${interaction.user.id.inlinecode()})`
+            }
+          ],
+          [
+            // Sent in what Guild?
+            {
+              name: "Guild",
+              value:
+                [
+                  interaction?.guild?.name,
+                  `(ID: ${interaction?.guild?.id.inlinecode()})`
+                ]
+            },
+            // Sent to what Channel?
+            {
+              name: "Channel",
+              value:
+                [
+                  `<#${result?.channel?.id}>`,
+                  `(ID: ${channel?.id.inlinecode()})`
+                ]
+            }
+          ],
+          [
+            // Message Link
+            {
+              name: "Message",
+              value: `https://discord.com/channels/${result?.guild?.id}/${result?.channel?.id}/${result?.id} (ID: ${result?.id.inlinecode()})`
+            }
+          ],
+          [
+            // Message Content
+            {
+              name: "Content",
+              value: message.slice(0,1024)
+            }
+          ],
+          [
+            // Region
+            {
+              name: "Region",
+              value: region
+            }
+          ]
+        ]
       }
-      const embed = new RookEmbed(props)
-      await interaction.reply({
-        embeds: [ embed ],
-        ephemeral: true,
-      });
-      return;
+
+      // Edit reply to Mod
+      embeds.mod = new RookEmbed(client, props.mod)
+      await interaction.editReply({ embeds: [ embeds.mod ] })
+
+      // Save the ghost message to a log file
+      const logFilePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'botlogs',
+        `${this.DEV ? 'DEV' : ''}ghostMessages.log`
+      )
+      let logEntry = [
+        `[${new Date().toISOString()}]`,
+        `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
+        `Guild:       ${result.guild.name} (ID: ${result.guild.id})`,
+        `Channel:     #${result.channel.name} (ID: ${result.channel.id})`,
+        `Message ID:  ${result.id}`,
+        `Region:      ${region}`,
+        `Content:     ${message}`,
+        '--------------------------------'
+      ]
+
+      // Append the log entry to the file
+      fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
+
+      let logsChannel = await this.getChannel(client, interaction, "logging-say")
+      logsChannel.send({ embeds: [ embeds.mod ] })
+      this.null = true
     }
 
-    try {
-      // Send the message in the specified channel
-      await targetChannel.send(message);
-
-      // Acknowledge the command
-      let props = {
-        color: "#00FF00",
-        title: {
-          text: "Success!"
-        },
-        description: `Message successfully sent to ${targetChannel}.`
-      }
-      const embed = new RookEmbed(props)
-      await interaction.reply({
-        embeds: [ embed ],
-        ephemeral: true,
-      });
-    } catch (error) {
-      console.error(`Error sending message to ${targetChannel.name}:`, error);
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: `There was an error trying to send the message to ${targetChannel}.`
-      }
-      const embed = new RookEmbed(props)
-      await interaction.reply({
-        embeds: [ embed ],
-        ephemeral: true,
-      });
-    }
-  },
-
-  name: 'say',
-  description: 'Make the bot send a message in the specified channel.',
-  options: [
-    {
-      name: 'channel',
-      description: 'The channel to send the message in.',
-      type: 7, // Type 7 is for channel input
-      required: true,
-    },
-    {
-      name: 'message',
-      description: 'The message to send.',
-      type: 3, // Type 3 is for string input
-      required: true,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.ManageMessages], // Restrict to staff
-  botPermissions: [PermissionFlagsBits.SendMessages], // Ensure bot can send messages
-};
+    return true
+  }
+}

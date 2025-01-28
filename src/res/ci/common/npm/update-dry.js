@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import shell from 'shelljs'
 
 console.log("NPM Update (dry run)")

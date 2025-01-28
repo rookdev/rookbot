@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import shell from 'shelljs'
 
 let DEBUG = false

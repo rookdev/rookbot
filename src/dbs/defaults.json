@@ -3,8 +3,6 @@
   "deleteCommands": false,
   "footer": {
     "image": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
-    "msg": "rookbot"
-  },
-  "thumbnail": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon.png?raw=true",
-  "targetserver": "1303864272832565268"
+    "text": "rookbot"
+  }
 }

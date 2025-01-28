@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import shell from 'shelljs'
 
 console.log("NPM Audit")
@@ -16,18 +18,18 @@ let debug = {
   }
 }
 
-let tmp = shell.exec(
+let tmp_exec = shell.exec(
   "npm list -g --depth=0",
   { silent: true }
 )
-tmp = tmp.stdout.trim()
+let tmp = tmp_exec.stdout.trim()
 debug.betterNPMAudit.exists.global = tmp.includes("better-npm-audit")
 
-tmp = shell.exec(
+tmp_exec = shell.exec(
   "npm list --depth=0",
   { silent: true }
 )
-tmp = tmp.stdout.trim()
+tmp = tmp_exec.stdout.trim()
 debug.betterNPMAudit.exists.user = tmp.includes("better-npm-audit")
 
 // if not global, check user
@@ -37,18 +39,18 @@ debug.betterNPMAudit.exists.user = tmp.includes("better-npm-audit")
 if (!(debug.betterNPMAudit.exists.global)) {
   if (!(debug.betterNPMAudit.exists.user)) {
     console.log("Better NPM Audit not installed at user level.")
-    tmp = shell.exec(
+    tmp_exec = shell.exec(
       "npm i -g better-npm-audit",
       { silent: true }
     )
-    debug.betterNPMAudit.installed.global = tmp.stderr.includes("npm ERR")
+    debug.betterNPMAudit.installed.global = tmp_exec.stderr.includes("npm ERR")
     if (!(debug.betterNPMAudit.exists.global)) {
       console.log("Better NPM Audit Global Install failed.")
-      tmp = shell.exec(
+      tmp_exec = shell.exec(
         "npm i better-npm-audit",
         { silent: true }
       )
-      debug.betterNPMAudit.installed.user = tmp.stderr.includes("npm ERR")
+      debug.betterNPMAudit.installed.user = tmp_exec.stderr.includes("npm ERR")
       if (!(debug.betterNPMAudit.installed.user)) {
         console.log("Better NPM Audit User Install failed.")
       }
@@ -62,5 +64,9 @@ if (
   debug.betterNPMAudit.installed.global ||
   debug.betterNPMAudit.installed.user
   ) {
+  // FIXME:
+  // Use ./node_modules/.bin/* if linux
+  // Use ./* if not linux
+  shell.exec("which better-npm-audit")
   shell.exec("better-npm-audit audit")
 }

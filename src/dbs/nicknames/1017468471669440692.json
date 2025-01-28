@@ -1,0 +1,19 @@
+{
+  "name": "lostflake",
+  "id": "1017468471669440692",
+  "mode": "normal",
+  "parts": {
+    "names": [
+      "Cereal Box",
+      "Serial Box",
+      "French Toast",
+      "Honey Smacks",
+      "CoOoOoOoOkie Crisp",
+      "Cookie Box"
+    ]
+  },
+  "prefixes": {
+    "1282788953052676177":  { "name": "DoI Main", "prefix": "[SR Verifier] " },
+    "1297216081110372474":  { "name": "DoI Navy", "prefix": "[Speedrun] " }
+  }
+}

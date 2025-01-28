@@ -1,101 +1,136 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
-const AsciiTable = require('ascii-table')
+// @ts-nocheck
 
+// Command Option Types
+const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class.js')
+// Use Discord Hammertime
+const timeFormat = require('../../utils/timeFormat.js')
+const AsciiTable = require('ascii-table') // Pretty-print to console
+
+// Sort by keys
 function ksort(obj){
-  let keys = Object.keys(obj).sort(), sortedObj = {};
+  let keys = Object.keys(obj).sort(), sortedObj = {}
 
   for(let i in keys) {
-    sortedObj[keys[i]] = obj[keys[i]];
+    sortedObj[keys[i]] = obj[keys[i]]
   }
 
-  return sortedObj;
+  return sortedObj
 }
 
-module.exports = {
-  name: 'botguilds',
-  description: 'Bot Guilds',
-  options: [
-    {
-      name: 'locale',
-      description: 'Locale',
-      type: 3 // String
-    }
-  ],
-
-  execute: async (client, interaction) => {
-    await interaction.deferReply()
-
-    let props = {
-      title: {
-        text: `Guilds that ${client.user.displayName} is in`
+module.exports = class BotGuildsCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "botguilds",
+      category: "bot",
+      description: "Bot Guilds",
+      flags: {
+        user: "unapplicable",
+        test: "basic"
       },
-      players: {
-        user: {
-          name: interaction.user.displayName,
-          avatar: interaction.user.avatarURL(),
-          username: interaction.user.username
-        },
-        target: {
-          name: client.user.displayName,
-          avatar: client.user.avatarURL(),
-          username: client.user.username
+      options: [
+        {
+          name: "locale",
+          description: "Locale",
+          type: ApplicationCommandOptionType.String
         }
-      }
+      ]
+    }
+    let props = {
+      title: { text: "Bot Guilds" }
+    }
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Set EmbedPlayerTypes to Bot|Bot
+    this.props.playerTypes = {
+      user: "bot",
+      target: "bot"
     }
 
+    this.props.description = []
+    this.props.description.push(
+      `***Guilds that ${client.user} is in:***`,
+      ""
+    )
+
+    // Get Guilds
     let guilds = client.guilds.cache
-    let locale = interaction.options.getString('locale')
+    let locale = coptions['locale']
     if (!locale) {
       locale = "en-AU"
     }
 
     let sorted = []
+
+    // Cycle through guilds
     for (let [guildID, guildData] of guilds) {
+      // Get Guild Owner
       let owner = await guildData.members.fetch(guildData.ownerId)
       if (owner?.user) {
         owner = owner.user
       }
-      let bot = await guildData.members.cache.get(client.user.id)
-      sorted[bot.joinedTimestamp] = {
-        guild: {
-          name: guildData.name,
-          id: guildID
-        },
-        owner: {
-          username: owner.username,
-          discriminator: owner.discriminator,
-          id: owner.id
-        },
-        added: new Date(bot.joinedTimestamp).toLocaleString(locale)
+      // Get Guild Bot
+      let bot = await guildData.members.fetch(client.user.id)
+      let botJoinedDateTime = new Date(bot.joinedTimestamp)
+      // Get Guild Data
+      let thisGuild = {}
+      thisGuild.guild = {
+        name: guildData.name,
+        id: guildID
       }
+      if (owner) {
+        thisGuild.owner = {
+          username: owner.username,
+          id: owner.id
+        }
+      }
+      thisGuild.added = botJoinedDateTime.toLocaleString()
+      thisGuild.addedTimestamp = Math.floor(bot.joinedTimestamp / 1000)
+      thisGuild.addedHammertime = timeFormat(botJoinedDateTime.getTime())
+      sorted[bot.joinedTimestamp] = thisGuild
     }
+
     console.log("")
     console.log("---")
+
     let plural = "server" + ((Object.keys(sorted).length != 1) ? "s" : "")
     console.log(`${client.user.username}#${client.user.discriminator} (ID:${client.user.id}) is on ${Object.keys(sorted).length} ${plural}!`)
-    props.description = []
+
     const Table = new AsciiTable("", {})
+      .setBorder('|','-','•','•')
       .setHeading("Type","Name","ID")
+
+    // Cycle through guilds
     for (let [guildID, guildData] of Object.entries(ksort(sorted))) {
-      let tier = guildData.guild.premiumTier
-      if (!tier) { tier = 0 }
-      Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
-        .addRow("Owner",`\'${guildData.owner.username}#${guildData.owner.discriminator}\'`,`(ID:\'${guildData.owner.id}\')`)
-        .addRow("Added",guildData.added)
-        .addRow("Tier",tier)
-        .addRow("")
-      props.description.push(
-        `**Guild:** ${guildData.guild.name} (ID:\`${guildData.guild.id}\`)`,
-        `**Owner:** \`${guildData.owner.username}#${guildData.owner.discriminator}\` (ID:\`${guildData.owner.id}\`, <@${guildData.owner.id}>)`,
-        `**Added:** ${guildData.added}`,
-        `**Tier:** ${tier}`,
-        ""
-      )
+      if (guildData?.guild) {
+        // Get Guild Tier Level
+        let tier = guildData.guild.premiumTier
+        if (!tier) { tier = 0 }
+        Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
+          .addRow("Owner",`\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
+          .addRow("Added",guildData.added)
+          .addRow("Tier",tier)
+          .addRow("")
+        this.props.description.push(
+          `**Guild:** ${guildData.guild.name} (ID:${guildData.guild.id.inlinecode()})`,
+          `**Owner:** ${guildData.owner.username.inlinecode()} (ID:${guildData.owner.id.inlinecode()}, <@${guildData.owner.id}>)`,
+          `**Added:** ${guildData.addedHammertime}`,
+          `**Tier:** ${tier}`,
+          ""
+        )
+      }
     }
     console.log(Table.toString())
 
-    const embed = new RookEmbed(props)
-
-    await interaction.editReply({ embeds: [ embed ] })
+    return !this.error
   }
 }

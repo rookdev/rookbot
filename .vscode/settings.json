@@ -1,9 +1,16 @@
 {
-    "editor.tabSize": 2,
-    "files.insertFinalNewline": true,
-    "files.trimFinalNewlines": true,
-    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-    "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
-    "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-    "typescript.format.placeOpenBraceOnNewLineForFunctions": false
+  "editor.tabSize": 2,
+  "[python]": {
+    "editor.tabSize": 4
+  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
+  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+  "files.associations": {
+    "*.js.off": "javascript"
+  },
+  "python.REPL.enableREPLSmartSend": false
 }

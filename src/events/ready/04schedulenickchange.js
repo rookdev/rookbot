@@ -1,26 +1,98 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
-const shell = require('shelljs')
+// @ts-nocheck
+
+const scheduleNicknameChange = require('../../utils/scheduleNicknameChange')
+const path = require('path')
 const fs = require('fs')
-const scheduleNicknameChange = require('../../utils/scheduleNicknameChange');
+
+// Does this resemble a number?
+// FIXME: Consolidate
+function isNumeric(n) {
+  let isaN      = !isNaN(n)
+  let isBool    = typeof n === "boolean"
+  let isStr     = typeof n === "string"
+  let isNumStr  = (
+    isStr &&
+    ((n.replace(/\D/g, '') + "") == (n + ""))
+  )
+
+  return (isaN || isNumStr) && !isBool
+}
+
+// natSort
+function natSort(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true });
+}
 
 module.exports = async (client) => {
-    // Schedule the nickname change
-    let guild = await client.guilds.cache.find(g => g.id === '745409743593406634');
-    const doiGuildID = '1282788953052676177';
-    const castIeUserID = `1111517386588307536`;
-    try {
-      const isDoI = guild.id === doiGuildID;
-      const member = await guild.members.fetch(castIeUserID, { force: true }).catch(err => {
-        console.error("Fetch error:", err);
-      });
+  // Get nickname data
+  let nicknameDataPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "dbs",
+    "nicknames",
+  )
 
-      if (!member || !member.user) {
-        throw new Error("Member not found or invalid data.");
+  // Users to search for
+  let users = fs.readdirSync(nicknameDataPath)
+    // Filter JSON documents that are numeric
+    .filter(
+      (fileName) => fileName.indexOf(".json") > -1 &&
+        isNumeric(fileName.substring(0, fileName.indexOf(".") - 1))
+    )
+    // Strip .json extension
+    .map(
+      (fileName) => fileName.replace(".json","")
+    )
+    // Skip first document
+    .slice(1)
+    .sort(natSort)
+  // Cycle through users
+  for(let userID of users) {
+    // Guilds to search in
+    let guilds = fs.readdirSync(path.join(nicknameDataPath,".."))
+      // Filter folders that are numeric
+      .filter(
+        (fileName) => isNumeric(fileName)
+      )
+      .sort(natSort)
+    // Cycle through guilds
+    for(let guildID of guilds) {
+      // Find the guild
+      let guild = await client.guilds.cache.find(
+        g => g.id === guildID
+      )
+      if (!guild) {
+        continue
       }
 
-      await scheduleNicknameChange(client, member, isDoI);
-    } catch (error) {
-      const isDoI = false;
-      const member = null;
+      try {
+        // Get the guild member
+        const member = await guild.members.fetch(userID, { force: true }) || null
+        // If guild owner, bail
+        if (member.guild.ownerId === member.id) {
+          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          continue
+        }
+
+        // Get the client member
+        const clientMember  = guild.members.me
+        const clientPos     = await clientMember.roles.highest.position
+        const memberPos     = await member.roles.highest.position
+
+        // If member is at or over bot, bail
+        if (memberPos >= clientPos) {
+          console.log(`   Failed to schedule nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
+          continue
+        }
+
+        if (member) {
+          // If we got here, schedule the nickname change
+          await scheduleNicknameChange(client, member)
+        }
+      } catch (error) {
+        const member = null
+      }
     }
+  }
 }

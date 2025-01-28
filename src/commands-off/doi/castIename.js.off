@@ -1,0 +1,47 @@
+// @ts-nocheck
+
+// Permission Flags
+const { PermissionFlagsBits } = require('discord.js')
+// NickChangeCommand
+const NickChangeCommand = require("../../commands/misc/nickchange")
+
+/**
+ * @class
+ * @classdesc Change Castle's Nickname
+ * @this {CastleNameCommand}
+ * @extends {NickChangeCommand}
+ * @public
+ */
+module.exports = class CastleNameCommand extends NickChangeCommand {
+  constructor(client) {
+    let comprops = {
+      name: "castlename",
+      category: "doi",
+      description: "Immediately triggers a nickname change for castle, to a random castle-esque name",
+      flags: {
+        test: "basic"
+      },
+      userPermissions: [ PermissionFlagsBits.ViewChannel ],
+      botPermissions: [ PermissionFlagsBits.ManageNicknames ]
+    }
+    let props = {}
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async execute(client, interaction, coptions={}, independent=false) {
+    let options = {
+      "target-id": "1111517386588307536"
+    }
+    return await super.execute(
+      client,
+      interaction,
+      options
+    )
+  }
+}

@@ -1,0 +1,87 @@
+# workflow name
+name: ⏱️Test
+
+# fire on
+on:
+  workflow_call:
+    secrets:
+      DOTENV_PRIVATE_KEY_DEV_CI:
+        description: "Private Decryption Key for Development Environment"
+        required: false
+      DOTENV_PRIVATE_KEY_PROD_CI:
+        description: "Private Decryption Key for Production Environment"
+        required: false
+
+#########
+# actions
+#########
+# actions/setup-node@v4
+
+jobs:
+  install-test:
+    name: Test
+    runs-on: ${{ matrix.os-name }}
+    strategy:
+      matrix:
+        os-name: [ ubuntu-latest ]
+        python-version: [ "3.12" ]
+    steps:
+      # checkout commit
+      - name: ✔️Checkout commit
+        uses: actions/checkout@v4.2.2
+      # install python
+      - name: 💿Install Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      # python version
+      - name: 🐍Python Version
+        shell: bash
+        run: |
+          python --version
+      # install
+      - name: 💿Call Install
+        uses: ./.github/actions/install
+        with:
+          calling-job: test
+          os-name: ${{ matrix.os-name }}
+          python-version: ${{ matrix.python-version }}
+      # install node
+      - name: 💿Install Node
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "22.11.0"
+      # disable funding message
+      - name: 💲Disable funding message
+        run: npm config set fund false
+        shell: bash
+      # install modules
+      - name: 💿Install Modules
+        run: npm i
+        shell: bash
+      # install cross-env-shell
+      - name: 💿Install cross-env-shell
+        run: npm i cross-env-shell --save
+        shell: bash
+      # install dotenvx
+      - name: 💿Install dotenvx
+        run: curl -sfS https://dotenvx.sh/install.sh | sh
+        shell: bash
+      # run audit
+      - name: 🧮App Audit
+        run: npm run-script audit
+        shell: bash
+      # create profile
+      - name: Create gitrook profile
+        run: |
+          python ./resources/ci/common/create_gitrook_profile.py
+      - name: ⏱️Run Bot (Development)
+        run: npm run-script gitrook-dev
+        shell: bash
+        env:
+          DOTENV_PRIVATE_KEY_DEV_CI: ${{ secrets.DOTENV_PRIVATE_KEY_DEV_CI }}
+      # - name: 🌎Run Bot (Production)
+      #   run: dotnevx run -- npm run-script run
+      #   shell: bash
+      #   env:
+      #     DOTENV_PRIVATE_KEY_PROD_CI: ${{ secrets.DOTENV_PRIVATE_KEY_PROD_CI }}

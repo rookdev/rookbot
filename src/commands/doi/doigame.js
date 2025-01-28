@@ -1,49 +1,78 @@
-const { serverGameName_base64encoded } = require('../../../config.json');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-// Decode the base64 string
-const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8');
+// Game Metadata
+const { serverGameName_base64encoded } = require('../../../config.json')
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
-module.exports = {
-  execute: async (client, interaction) => {
-    const guildID = interaction.guild.id;
-    const guildMeta = require(`../../dbs/${guildID}/meta.json`);
+module.exports = class DOIGameCommand extends RookCommand {
+  constructor(client) {
+    // Decode the base64 string
+    const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
+    let comprops = {
+      name: "doigame",
+      category: "doi",
+      description: `Sends a message with download info for *${serverGameName}*.`,
+      flags: {
+        test: "basic"
+      }
+    }
+    let props = {}
 
-    // Ensure the command is properly deferred and acknowledged
-    await interaction.deferReply();
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Decode the base64 string
+    const serverGameName = Buffer.from(serverGameName_base64encoded, 'base64').toString('utf-8')
+
+    // Get Guild ID
+    const guildID = interaction.guild.id
+    // Get Guild Metadata
+    const guildMeta = require(`../../dbs/${guildID}/meta.json`)
 
     try {
       // Create an embed message
-      let props = {
+      this.props = {
         title: {
           text: `Download ${serverGameName}`,
           url: guildMeta["downloads"]
         },
+        playerTypes: {
+          user: "bot",
+          target: "target"
+        },
+        entities: {
+          target: {
+            type:   "game",
+            id:     0,
+            name:   serverGameName,
+            url:    "http://example.com/game",
+            avatar: "https://cdn.discordapp.com/icons/1282788953052676177/09ed26e7671ce6ad89227665c4bdfa11.webp?size=128",
+            tag:    "game"
+          }
+        },
         description: `You can download ${serverGameName} below!`,
         fields: [
-          { name: 'Download Link', value: `[__Click here to download the Latest Game Version__](${guildMeta['downloads']})`, inline: false },
-          { name: 'Need Help?', value: `For more detailed setup instructions, please refer to [our Support Thread](${guildMeta['supportpost']}).`, inline: false }
+          [
+            { name: 'Download Link', value: `[__Click here to download the Latest Game Version__](${guildMeta['downloads']})`, inline: false }
+          ],
+          [
+            { name: 'Need Help?', value: `For more detailed setup instructions, please refer to [our Support Thread](${guildMeta['supportpost']}).`, inline: false }
+          ]
         ]
       }
-      const embed = new RookEmbed(props)
-
-      // Reply to the command with the embed
-      await interaction.editReply({ embeds: [ embed ] });
     } catch (error) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "There was an error posting the download information."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ] });
+      this.error = true
+      this.props.description = "There was an error posting the download information."
     }
-  },
 
-  name: 'doigame',
-  description: `Sends a message with download info for *${serverGameName}*.`, // Use decoded string here
-  permissionsRequired: [],
-  botPermissions: [],
-};
+    return !this.error
+  }
+}

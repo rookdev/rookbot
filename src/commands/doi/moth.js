@@ -1,38 +1,47 @@
-const { Client, Interaction } = require('discord.js');
-const path = require('path');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-module.exports = {
-  /**
-   *
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class')
+const path = require('path')  // Easy filepath management
+
+module.exports = class MothCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "moth",
+      category: "doi",
+      description: "Hear it from the legend himself",
+      flags: {
+        test: "basic"
+      }
+    }
+    let props = {}
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
     // Path to the local video file
-    const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'mothula.mp4');
+    const videoPath = path.join(__dirname, '..', '..', 'res', 'media', 'mothula.mp4')
 
     try {
-
       // Send the video to the channel the command was sent in
-      await interaction.reply({
-        files: [videoPath],
-      });
+      await interaction?.editReply({
+        files: [videoPath]
+      })
+      this.null = true
     } catch (error) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "There as an error uploading the video."
-      }
-      const embed = new RookEmbed(props)
-      console.log(`There was an error when uploading the video: ${error.stack}`);
-      // If error occurs, use an ephemeral reply to privately inform the user
-      await interaction.followUp({ embeds: [ embed ], ephemeral: true });
+      this.error = true
+      this.props.description = "There was an error uploading the video."
+      console.log(`There was an error when uploading the video: ${error.stack}`)
+      return false
     }
-  },
 
-  name: 'moth',
-  description: 'Hear it from the legend himself',
-};
+    return !this.error
+  }
+}

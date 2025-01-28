@@ -1,6 +1,23 @@
 {
-  "admin": "MEGAMIND",
-  "mod": "Mod",
-  "member": "Minions",
-  "muted": "Muted"
+  "admin":  [
+    "Admin"
+  ],
+  "botdev": [
+    "BotDev"
+  ],
+  "mod": [
+    "Mod"
+  ],
+  "booster": [
+    "Fake Booster"
+  ],
+  "access": [
+    "Accepted Values"
+  ],
+  "member": [
+    "Member"
+  ],
+  "muted": [
+    "Muted"
+  ]
 }

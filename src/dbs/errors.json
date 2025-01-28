@@ -1,8 +1,8 @@
 {
-  "adminOnly": [ "nice try, dingus" ],
-  "modOnly" : [ "nice try, bozo" ],
-  "noReason" : [ "You cannot do this command for no reason" ],
-  "botDevOnly": [ "Sorry, only bot devs can run this command. 🤖" ],
+  "adminOnly": [ "Admin-only: nice try, dingus" ],
+  "modOnly" : [ "Mod-only: nice try, bozo" ],
+  "noReason" : [ "Needs Reason: You cannot do this command for no reason" ],
+  "botDevOnly": [ "BotDev: Sorry, only bot devs can run this command. 🤖" ],
   "cantActionBot": [
     "Now who's the Bot? 🤡",
     "Select someone who isn't a bot next time, dummy!"

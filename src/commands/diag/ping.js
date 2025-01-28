@@ -1,40 +1,59 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
+// @ts-nocheck
 
-module.exports = {
-  name: 'ping',
-  description: 'Pong!',
-  // devOnly: Boolean,
-  testOnly: true,
-  // options: Object[],
-  // deleted: Boolean,
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
-  execute: async (client, interaction) => {
-    await interaction.deferReply();
-    const reply = await interaction.fetchReply();
-
-    const ping = reply.createdTimestamp - interaction.createdTimestamp;
-
-    let players = {}
-    players["bot"] = {
-      name: client.user.displayName,
-      avatar: client.user.avatarURL()
-    }
-    players["user"] = {
-      name: interaction.user.displayName,
-      avatar: interaction.user.avatarURL(),
-      username: interaction.user.username
+module.exports = class PingCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "ping",
+      category: "diagnostic",
+      description: "Pong!",
+      flags: {
+        test: "basic"
+      }
     }
     let props = {
-      title: {
-        text: "Pong!"
-      },
-      description: `Client: ${ping}ms | Websocket: ${client.ws.ping}ms`,
-      players: players
-      // image: "https://i.pinimg.com/originals/c8/8c/2f/c88c2fa6b66b89717ddeaafaf8c4d264.gif"
+      title: { text: "Pong!" }
+    }
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Set EmbedPlayerTypes to Discord|Caller
+    this.props.playerTypes = {
+      user: "discord",
+      target: "caller"
     }
 
-    const embed = new RookEmbed(props)
+    console.log(`/${this.name}: Action`)
 
-    await interaction.editReply({ embeds: [ embed ] });
+    // Get Reply object
+    const reply = await interaction?.fetchReply()
+    // Find difference in time
+    const ping = (reply?.createdTimestamp || 0) - (interaction?.createdTimestamp || 0)
+
+    this.props.fields = [
+      [
+        // Client Ping
+        {
+          name: "Client",
+          value: `${ping}ms`
+        },
+        // Websocket Ping
+        {
+          name: "Websocket",
+          value: `${client.ws.ping}ms`
+        }
+      ]
+    ]
+
+    return !this.error
   }
-};
+}

@@ -1,0 +1,14 @@
+{
+  "admin": [
+    "Admin"
+  ],
+  "botdev": [
+    "BotDev"
+  ],
+  "mod": [
+    "Mod"
+  ],
+  "member": [
+    "Member"
+  ]
+}

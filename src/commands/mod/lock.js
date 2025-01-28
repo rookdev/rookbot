@@ -1,89 +1,101 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-module.exports = {
-  /**
-   * Locks a specified channel, preventing the @everyone role from sending messages.
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    const PROFILE = require('../../PROFILE.json');
-    let DEV_MODE = PROFILE["profiles"][PROFILE["selectedprofile"]]?.DEV
-    const guildID = interaction.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
-    const channel = interaction.options.getChannel('channel');
+// Command Option Types, Permission Flags
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
+const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
+const { RookEmbed } = require('../../classes/embed/rembed.class')
 
-    // Acknowledge the interaction
-    await interaction.deferReply({ ephemeral: true });
+// Multiple messages
+
+module.exports = class LockCommand extends ModCommand {
+  constructor(client) {
+    let comprops = {
+      name: "lock",
+      category: "mod",
+      description: "Locks a channel, preventing anyone from sending messages.",
+      options: [
+        {
+          name: "channel",
+          description: "The channel to lock.",
+          type: ApplicationCommandOptionType.Channel,
+          required: true
+        }
+      ],
+      permissions: [ PermissionFlagsBits.ManageChannels ]
+    }
+    let props = {}
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions) {
+    // Get Guild ID
+    const guildID = interaction.guild.id
+    // Get BotDev-defined list of Guild Channels
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    // Get requested Channel ID
+    const channelID = coptions['channel']
+    // Get Channel from Guild based on Channel ID
+    const channel = await client.channels.fetch(channelID)
 
     try {
-      if (!DEV_MODE) {
+      if (!this.DEV) {
         // Lock the channel by denying SEND_MESSAGES for @everyone
-        await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
-          SendMessages: false,
-        });
+        await channel.permissionOverwrites.edit(
+          interaction.guild.roles.everyone, {
+            SendMessages: false,
+          }
+        )
       }
 
       // Send public confirmation in the channel
       const embedProps = {
-        color: '#FF0000',
-        title: { text: 'Channel Locked!' },
-        description: `Channel <#${channel.id}> has been **locked**.`,
-      };
-      const embed = new RookEmbed(embedProps);
-      channel.send({ embeds: [embed] });
+        color: this.profile.colors.bad,
+        title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
+        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **locked**.`,
+      }
+      const embed = new RookEmbed(client, embedProps)
+      channel.send({ embeds: [ embed ] })
+      console.log(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
-      const logs = client.channels.cache.get(guildChannels["logging"]);
-      if (logs) {
+      const logs = await client.channels.fetch(guildChannels["logging"])
+      if (logs && !this.DEV) {
         let props = {
-          color: "#FF0000",
-          title: {
-            text: "🔒 Channel Locked"
-          },
+          color: this.profile.colors.bad,
+          title: { text: "[Log] Channel Locked", emoji: "🔒" },
           fields: [
-            { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${channel.id})`,    inline: true },
-            { name: 'Locked By',      value: `${interaction.user}\n(ID: ${interaction.user.id})`, inline: true }
-          ],
-          footer: {
-            msg: `Actioned by ${interaction.user.displayName}`
-          }
+            [
+              { name: 'Channel Locked', value: `<#${channel.id}>\n(ID: ${channel.id.inlinecode()})` },
+              { name: 'Locked By',      value: `${interaction.user}\n(ID: ${interaction.user.id.inlinecode()})` }
+            ]
+          ]
         }
-        const embed = new RookEmbed(props)
-        logs.send({ embeds: [ embed ] });
+        const embed = new RookEmbed(client, props)
+        logs.send({ embeds: [ embed ] })
+        console.log(`/${this.name}: LogPost`)
       } else {
-        console.log("Logs channel not found.");
+        console.log("Logs channel not found.")
       }
 
       // Complete the interaction with a private success message
-      await interaction.editReply({
-        content: `Channel <#${channel.id}> has been successfully **locked**!`,
-      });
+      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **locked**!`
     } catch (error) {
-       console.log(`There was an error when locking the channel: ${error.stack}`);
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "I couldn't lock the channel."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ], ephemeral: true }); // Private error message
+      console.log(`There was an error when locking the channel: ${error.stack}`)
+      this.error = true
+      this.ephemeral = true
+      this.props.description = `I couldn't lock <#${channel.id}>.`
+      return !this.error
     }
-  },
 
-  name: 'lock',
-  description: 'Locks a channel, preventing anyone from sending messages.',
-  options: [
-    {
-      name: 'channel',
-      description: 'The channel to lock.',
-      type: ApplicationCommandOptionType.Channel,
-      required: true,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.ManageChannels],
-  botPermissions: [PermissionFlagsBits.ManageChannels],
-};
+    return true
+  }
+}

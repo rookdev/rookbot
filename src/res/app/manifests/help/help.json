@@ -1,0 +1,948 @@
+{
+  "app": {
+    "exit": {
+      "name": "exit",
+      "category": "app",
+      "description": "Exit rookbot",
+      "options": [],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "help": {
+      "name": "help",
+      "category": "app",
+      "description": "Help",
+      "options": [
+        {
+          "name": "section-name",
+          "description": "Section Name"
+        },
+        {
+          "name": "command-name",
+          "description": "Command Name"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "install": {
+      "name": "install",
+      "category": "app",
+      "description": "Install Node Modules",
+      "options": [],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "pull": {
+      "name": "pull",
+      "category": "app",
+      "description": "Pull from Main",
+      "options": [
+        {
+          "name": "branch",
+          "description": "Override branch to pull from"
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "shutdown": {
+      "name": "shutdown",
+      "category": "app",
+      "description": "Shutdown (and restart if pm2) rookbot",
+      "options": [],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "update": {
+      "name": "update",
+      "category": "app",
+      "description": "Update Node Modules",
+      "options": [],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "uptime": {
+      "name": "uptime",
+      "category": "app",
+      "description": "Uptime",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "bot": {
+    "goodbye": {
+      "name": "goodbye",
+      "category": "bot",
+      "description": "Goodbye",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "hello": {
+      "name": "hello",
+      "category": "bot",
+      "description": "Hello",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "say": {
+      "name": "say",
+      "category": "bot",
+      "description": "Say as Bot",
+      "options": [
+        {
+          "name": "message",
+          "description": "Message to send",
+          "required": true
+        },
+        {
+          "name": "channel",
+          "description": "Channel to send message to"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "botavatar": {
+      "name": "botavatar",
+      "category": "bot",
+      "description": "Set rookbot's Avatar",
+      "options": [
+        {
+          "name": "avatar-url",
+          "description": "Avatar URL",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "botguilds": {
+      "name": "botguilds",
+      "category": "bot",
+      "description": "Bot Guilds",
+      "options": [
+        {
+          "name": "locale",
+          "description": "Locale"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "botinvite": {
+      "name": "botinvite",
+      "category": "bot",
+      "description": "Invite rookbot",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "botnickname": {
+      "name": "botnickname",
+      "category": "bot",
+      "description": "Set rookbot's Nickname",
+      "options": [
+        {
+          "name": "bot-nickname",
+          "description": "Bot Nickname",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
+    "botsrc": {
+      "name": "botsrc",
+      "category": "bot",
+      "description": "Links to the GitHub repository of rookbot",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "botdev": {
+    "testsuite": {
+      "name": "testsuite",
+      "category": "botdev",
+      "description": "Runs a test suite for a command",
+      "options": [
+        {
+          "name": "command-name",
+          "description": "The name of the command to test.",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    }
+  },
+  "diagnostic": {
+    "ping": {
+      "name": "ping",
+      "category": "diagnostic",
+      "description": "Pong!",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "test": {
+      "name": "test",
+      "category": "diagnostic",
+      "description": "Test",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "doi": {
+    "doigame": {
+      "name": "doigame",
+      "category": "doi",
+      "description": "Sends a message with download info for *The Legend of Zelda - Dungeons of Infinity*.",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "fugetaboutit": {
+      "name": "fugetaboutit",
+      "category": "doi",
+      "description": "Pronunciation Tutorial",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "justin": {
+      "name": "justin",
+      "category": "doi",
+      "description": "Displays an embed showcasing the developer's video games from their portfolio.",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "moth": {
+      "name": "moth",
+      "category": "doi",
+      "description": "Hear it from the legend himself",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "nickchange": {
+      "name": "nickchange",
+      "category": "doi",
+      "description": "Immediately triggers a nickname change for specified user",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "Target User ID",
+          "required": true
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "castiename": {
+      "name": "castiename",
+      "category": "doi",
+      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
+      "options": [],
+      "parent": "nickchange",
+      "access": "unset",
+      "segment": "local"
+    },
+    "castlename": {
+      "name": "castlename",
+      "category": "doi",
+      "description": "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
+      "options": [],
+      "parent": "nickchange",
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "fun": {
+    "coinflip": {
+      "name": "coinflip",
+      "category": "fun",
+      "description": "Flips a coin and return either Heads or Tails",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "diceroll": {
+      "name": "diceroll",
+      "category": "fun",
+      "description": "Rolls a specified number of dice with a specified number of sides",
+      "options": [
+        {
+          "name": "count",
+          "description": "Number of dice to roll (1-10)",
+          "required": true
+        },
+        {
+          "name": "sides",
+          "description": "Number of sides on each die (2-9999)"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "info": {
+    "calc": {
+      "name": "calc",
+      "category": "info",
+      "description": "Evaluates a math expression",
+      "options": [
+        {
+          "name": "expression",
+          "description": "The math expression to evaluate",
+          "required": true
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "color": {
+      "name": "color",
+      "category": "info",
+      "description": "Displays information about a hex color code",
+      "options": [
+        {
+          "name": "hex",
+          "description": "A hex color code (e.g., #FF5733 or FF5733)",
+          "required": true
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "time": {
+      "name": "time",
+      "category": "info",
+      "description": "Time",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "meta": {
+    "guildstatus": {
+      "name": "guildstatus",
+      "category": "meta",
+      "description": "Guild Status",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "mention": {
+      "name": "mention",
+      "category": "meta",
+      "description": "Give code to post a mention in chat",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        },
+        {
+          "name": "target-type",
+          "description": "Mention Type"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "channelinfo": {
+      "name": "channelinfo",
+      "category": "meta",
+      "description": "Get info about a Channel",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "mention",
+      "access": "unset",
+      "segment": "local"
+    },
+    "emojiinfo": {
+      "name": "emojiinfo",
+      "category": "meta",
+      "description": "Get info about an Emoji",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "mention",
+      "access": "unset",
+      "segment": "local"
+    },
+    "roleinfo": {
+      "name": "roleinfo",
+      "category": "meta",
+      "description": "Get info about a Role",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "mention",
+      "access": "unset",
+      "segment": "local"
+    },
+    "vcinfo": {
+      "name": "vcinfo",
+      "category": "meta",
+      "description": "Get info about a Voice Channel",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "ID of target",
+          "required": true
+        }
+      ],
+      "parent": "mention",
+      "access": "unset",
+      "segment": "local"
+    },
+    "roster": {
+      "name": "roster",
+      "category": "meta",
+      "description": "Display a Roster",
+      "options": [
+        {
+          "name": "section-type",
+          "description": "Roster Section"
+        },
+        {
+          "name": "guild-id",
+          "description": "Target Guild"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "misc": {
+    "embed": {
+      "name": "embed",
+      "category": "misc",
+      "description": "Sends an embed with predefined content",
+      "options": [],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "nl": {
+      "name": "nl",
+      "category": "misc",
+      "description": "Posts a rainbow divider line",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "userinfo": {
+      "name": "userinfo",
+      "category": "misc",
+      "description": "Displays data of the mentioned user",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The user you want to see",
+          "required": true
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    }
+  },
+  "mod": {
+    "ban": {
+      "name": "ban",
+      "category": "mod",
+      "description": "Bans a user from the server",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to ban.",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "The reason for banning the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "kick": {
+      "name": "kick",
+      "category": "mod",
+      "description": "Kicks a user from the server.",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to kick.",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "The reason for kicking the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "lock": {
+      "name": "lock",
+      "category": "mod",
+      "description": "Locks a channel, preventing anyone from sending messages.",
+      "options": [
+        {
+          "name": "channel",
+          "description": "The channel to lock.",
+          "required": true
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "lockdown": {
+      "name": "lockdown",
+      "category": "mod",
+      "description": "Locks or unlocks all channels for the @everyone role.",
+      "options": [
+        {
+          "name": "action",
+          "description": "Specify whether to lock or unlock all channels.",
+          "required": true
+        },
+        {
+          "name": "confirm",
+          "description": "Boolean to confirm the action and avoid accidental execution.",
+          "required": true
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "mute": {
+      "name": "mute",
+      "category": "mod",
+      "description": "Mutes a user in the server",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to ban.",
+          "required": true
+        },
+        {
+          "name": "member-role-id",
+          "description": "The ID of the Member Role you want to remove"
+        },
+        {
+          "name": "muted-role-id",
+          "description": "The ID of the Muted Role you want to add"
+        },
+        {
+          "name": "reason",
+          "description": "The reason for banning the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "purge": {
+      "name": "purge",
+      "category": "mod",
+      "description": "Purge Messages",
+      "options": [
+        {
+          "name": "amount",
+          "description": "The number of messages to delete (1 - 100)",
+          "required": true
+        },
+        {
+          "name": "channel",
+          "description": "Channel to purge messages from."
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "clear": {
+      "name": "clear",
+      "category": "mod",
+      "description": "Purge 100 messages",
+      "options": [
+        {
+          "name": "channel",
+          "description": "Channel to purge messages from."
+        }
+      ],
+      "parent": "purge",
+      "access": "Mod",
+      "segment": "local"
+    },
+    "role_add": {
+      "name": "role_add",
+      "category": "mod",
+      "description": "Adds a role to a member",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to add the role to.",
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "Role to add",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "Reason for adding role"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "role_remove": {
+      "name": "role_remove",
+      "category": "mod",
+      "description": "Removes a role from a member",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to remove the role from.",
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "Role to remove",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "Reason for adding role"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "search": {
+      "name": "search",
+      "category": "mod",
+      "description": "Search Logs",
+      "options": [
+        {
+          "name": "search-type",
+          "description": "Search Type",
+          "required": true
+        },
+        {
+          "name": "target-id",
+          "description": "User ID to search for"
+        },
+        {
+          "name": "guild-id",
+          "description": "Guild ID to search in"
+        },
+        {
+          "name": "region",
+          "description": "Development or Production Logs?"
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "timeout": {
+      "name": "timeout",
+      "category": "mod",
+      "description": "Times out a user for a specified duration.",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to timeout.",
+          "required": true
+        },
+        {
+          "name": "duration-seconds",
+          "description": "The duration of the timeout (in seconds).",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "The reason for timing out the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "unban": {
+      "name": "unban",
+      "category": "mod",
+      "description": "Unbans a user from the server.",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to unban.",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "The reason for unbanning the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "unlock": {
+      "name": "unlock",
+      "category": "mod",
+      "description": "Unlocks a channel, allowing users to send messages again.",
+      "options": [
+        {
+          "name": "channel",
+          "description": "The channel to unlock.",
+          "required": true
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "unmute": {
+      "name": "unmute",
+      "category": "mod",
+      "description": "Unmutes a user in the server",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to ban.",
+          "required": true
+        },
+        {
+          "name": "member-role-id",
+          "description": "The ID of the Member Role you want to add"
+        },
+        {
+          "name": "muted-role-id",
+          "description": "The ID of the Muted Role you want to remove"
+        },
+        {
+          "name": "reason",
+          "description": "The reason for banning the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
+    "warn": {
+      "name": "warn",
+      "category": "mod",
+      "description": "Warns a user in the server.",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "The ID of the user you want to warn.",
+          "required": true
+        },
+        {
+          "name": "reason",
+          "description": "The reason for warning the user.",
+          "required": false
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    }
+  },
+  "rando": {
+    "holyimage": {
+      "name": "holyimage",
+      "category": "rando",
+      "description": "Calls a Holy Image",
+      "options": [
+        {
+          "name": "game-id",
+          "description": "Game ID to call from"
+        },
+        {
+          "name": "slug-id",
+          "description": "Slug ID to call"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "seedannounce": {
+      "name": "seedannounce",
+      "category": "rando",
+      "description": "Starts a specified Randomizer Game with all necessary details",
+      "options": [
+        {
+          "name": "randomizer",
+          "description": "Randomizer to choose",
+          "required": true
+        },
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "z3r": {
+      "name": "z3r",
+      "category": "rando",
+      "description": "Starts a Z3R Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "parent": "seedannounce",
+      "access": "unset",
+      "segment": "local"
+    },
+    "smmr": {
+      "name": "smmr",
+      "category": "rando",
+      "description": "Starts a Super Metroid Map Randomizer Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "parent": "seedannounce",
+      "access": "unset",
+      "segment": "local"
+    },
+    "z3m3": {
+      "name": "z3m3",
+      "category": "rando",
+      "description": "Starts a Z3M3 Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "parent": "seedannounce",
+      "access": "unset",
+      "segment": "local"
+    },
+    "ap": {
+      "name": "ap",
+      "category": "rando",
+      "description": "Starts an Archipelago Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        }
+      ],
+      "parent": "seedannounce",
+      "access": "unset",
+      "segment": "local"
+    },
+    "seedmeta": {
+      "name": "seedmeta",
+      "category": "rando",
+      "description": "Gets metadata for a seed",
+      "options": [
+        {
+          "name": "hash-id",
+          "description": "Seed Hash ID to call",
+          "required": true
+        },
+        {
+          "name": "game-id",
+          "description": "Game ID to call from"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    }
+  }
+}

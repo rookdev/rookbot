@@ -1,69 +1,79 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-module.exports = {
-  name: 'color',
-  description: 'Displays information about a hex color code.',
-  options: [
-    {
-      name: 'hex',
-      description: 'A hex color code (e.g., #FF5733 or FF5733).',
-      type: 3, // String
-      required: true,
-    },
-  ],
+// Command Option Types
+const { ApplicationCommandOptionType } = require('discord.js')
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class')
 
-  /**
-   * @param {import('discord.js').Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    const hexInput = interaction.options.getString('hex').replace('#', '').toUpperCase();
+module.exports = class ColorCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "color",
+      category: "info",
+      description: "Displays information about a hex color code",
+      options: [
+        {
+          name: "hex",
+          description: "A hex color code (e.g., #FF5733 or FF5733)",
+          type: ApplicationCommandOptionType.String,
+          required: true
+        }
+      ],
+      testOptions: [
+        { hex: "FFAF00" },
+        { hex: "c8a0c8" },
+        { hex: "#FFAF00" },
+        { hex: "#c8a0c8" }
+      ]
+    }
+    let props = {}
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions) {
+    // Get hex color input
+    const hexInput = coptions.hex.replace('#', '').toUpperCase()
 
     // Validate hex string
-    const hexRegex = /^[0-9A-F]{6}$/;
+    const hexRegex = /^[0-9A-F]{6}$/
     if (!hexRegex.test(hexInput)) {
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "Invalid hex color code. Please provide a valid 6-character hexadecimal string (e.g., #FF5733 or FF5733)."
-      }
-      const embed = new RookEmbed(props)
-
-      await interaction.reply({ embeds: [ embed ], ephemeral: true });
-      return;
+      this.error = true
+      this.props.description = "Invalid hex color code. Please provide a valid 6-character hexadecimal string (e.g., #FF5733 or FF5733)."
+      return !this.error
     }
 
     // Convert hex to RGB
-    const r = parseInt(hexInput.substring(0, 2), 16);
-    const g = parseInt(hexInput.substring(2, 4), 16);
-    const b = parseInt(hexInput.substring(4, 6), 16);
+    const r = parseInt(hexInput.substring(0, 2), 16)
+    const g = parseInt(hexInput.substring(2, 4), 16)
+    const b = parseInt(hexInput.substring(4, 6), 16)
+    let dims = "50x50"
 
     // Create the embed
-    let players = {}
-    players["bot"] = {
-      name: client.user.displayName,
-      avatar: client.user.avatarURL()
-    }
-    players["user"] = {
-      name: interaction.user.displayName,
-      avatar: interaction.user.avatarURL(),
-      username: interaction.user.username
-    }
-    let props = {
+    this.props = {
       color: `${hexInput}`,
       title: {
         text: "Color Information"
       },
+      image: { image: `https://png-pixel.com/${dims}-${hexInput.toLowerCase()}ff.png` },
       fields: [
-        { name: 'Hex', value: `\`#${hexInput}\``,   inline: true },
-        { name: 'RGB', value: `(${r}, ${g}, ${b})`, inline: true },
-      ],
-      players: players
+        [
+          { name: 'Hex', value: `#${hexInput}`.codeblock() },
+          { name: 'RGB', value: `(${r}, ${g}, ${b})`.codeblock() }
+        // ],
+        // [
+        //   { name: 'HSL', value: ("(" + rgbToHsl(r, g, b).join(", ") + ")").codeblock() },
+        //   { name: 'HSV', value: ("(" + rgbToHsv(r, g, b).join(", ") + ")").codeblock() }
+        ]
+      ]
     }
-    const embed = new RookEmbed(props)
 
-    // Send the embed
-    await interaction.reply({ embeds: [ embed ] });
+    return !this.error
   }
-};
+}

@@ -1,41 +1,39 @@
-const { PermissionFlagsBits } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
-const shell = require('shelljs')
-const fs = require('fs')
+// @ts-nocheck
 
-module.exports = {
-  name: 'install',
-  description: 'Install Node Modules',
+// BotDevCommand
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class.js')
+const shell = require('shelljs')  // Run shell commands
 
-  execute: async (client, interaction) => {
-    await interaction.deferReply()
-
-    let GLOBALS = null
-    const defaults = JSON.parse(fs.readFileSync("./src/dbs/defaults.json", "utf8"))
-    let profileName = "default"
-    try {
-      if (fs.existsSync("./src/PROFILE.json")) {
-        GLOBALS = JSON.parse(fs.readFileSync("./src/PROFILE.json", "utf8"))
-      } else {
-        console.log("🟡Install Script: PROFILE manifest not found! Using defaults!")
+/**
+ * @class
+ * @classdesc NPM Install
+ * @this {InstallCommand}
+ * @extends {BotDevCommand}
+ * @public
+ */
+module.exports = class InstallCommand extends BotDevCommand {
+  constructor(client) {
+    let comprops = {
+      name: "install",
+      category: "app",
+      description: "Install Node Modules",
+      flags: {
+        test: "basic"
       }
-      if (
-        GLOBALS?.selectedprofile &&
-        GLOBALS?.profiles &&
-        GLOBALS.selectedprofile in GLOBALS.profiles
-      ) {
-        profileName = GLOBALS.selectedprofile
-        GLOBALS = GLOBALS.profiles[GLOBALS.selectedprofile]
-      } else {
-        GLOBALS = defaults
-      }
-    } catch(err) {
-      console.log("🔴Install Script: PROFILE manifest not found!")
-      process.exit(1)
     }
+    let props = {}
 
-    let PACKAGE = JSON.parse(fs.readFileSync("./package.json","utf8"))
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
 
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Run npm i
     let node_install = null
     try {
       node_install = shell.exec(
@@ -47,23 +45,23 @@ module.exports = {
       console.log(err.stack)
     }
 
-    let props = {}
+    // Get Client User
     let user = client?.user
 
+    // Bucket for console output
     let console_output = [
       "---"
     ]
 
+    // Print Name & Version number
     console_output.push(
       "Installing " +
       (user ? user.username : "") +
-      ` v${PACKAGE.version}!`
+      ` v${this.profile.PACKAGE.version}!`
     )
-    props = {
-      title: {
-        text: "💿 " + console_output[1],
-        url: "https://github.com/mysterypaintwo/rookbot"
-      }
+    this.props.title = {
+      text: "💿 " + console_output[1],
+      url: "https://github.com/mysterypaintwo/rookbot"
     }
 
     // console.log(console_output)
@@ -76,13 +74,11 @@ module.exports = {
 
     */
 
-    console_output.push(node_install)
-    props.description = console_output
+    console_output.push(
+      ("\n" + node_install).codeblock()
+    )
+    this.props.description = console_output
 
-    const embed = new RookEmbed(props)
-
-    await interaction.editReply({ embeds: [ embed ] })
-  },
-  permissionsRequired: [PermissionFlagsBits.Administrator], // Restrict to staff
-  botPermissions: [PermissionFlagsBits.Administrator] // Ensure bot can send messages
+    return !this.error
+  }
 }

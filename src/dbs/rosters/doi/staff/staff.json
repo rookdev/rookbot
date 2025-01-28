@@ -1,0 +1,35 @@
+{
+  "stripe": "#008000",
+  "title": "Staff",
+  "avatar": "https://cdn.discordapp.com/icons/1282788953052676177/09ed26e7671ce6ad89227665c4bdfa11.webp?size=128",
+  "members": {
+    "lead-developer": {
+      "title": "Lead Developer",
+      "users": [
+        "ophelius4360"
+      ]
+    },
+    "developer": {
+      "title": "Developer",
+      "users": [
+        "calicostonewolf",
+        "_charade",
+        "shallow."
+      ]
+    },
+    "bot-developer": {
+      "title": "Bot Developer",
+      "users": [
+        "castierook",
+        "matrethewey"
+      ]
+    },
+    "bot-steward": {
+      "title": "Bot Steward",
+      "users": [
+        "nikosetyris",
+        "shallow."
+      ]
+    }
+  }
+}

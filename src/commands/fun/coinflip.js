@@ -1,33 +1,39 @@
-const { RookEmbed } = require("../../classes/embed/rembed.class");
+// @ts-nocheck
 
-module.exports = {
-    name: 'coinflip',
-    description: 'Flips a coin and returns either Heads or Tails',
+// Base Rook Command
+const { RookCommand } = require("../../classes/command/rcommand.class")
 
-    execute: async (client, interaction) => {
-        // Randomly choose between "Heads" and "Tails"
-        const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails';
-
-        let players = {}
-        players["bot"] = {
-          name: client.user.displayName,
-          avatar: client.user.avatarURL()
-        }
-        players["user"] = {
-          name: interaction.user.displayName,
-          avatar: interaction.user.avatarURL(),
-          username: interaction.user.username
-        }
-        let props = {
-          title: {
-            text: "Flip a coin!"
-          },
-          description: `The coin landed on **${outcome}**!`,
-          players: players
-        }
-        const embed = new RookEmbed(props)
-
-        // Respond with the outcome
-        await interaction.reply({ embeds: [ embed ] });
+module.exports = class CoinFlipCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "coinflip",
+      category: "fun",
+      description: "Flips a coin and return either Heads or Tails",
+      flags: {
+        test: "basic"
+      }
     }
-  };
+    let props = {
+      title: {
+        text: "Flip a coin!"
+      }
+    }
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Randomly choose between "Heads" and "Tails"
+    const outcome = Math.random() < 0.5 ? 'Heads' : 'Tails'
+
+    this.props.description = `The coin landed on **${outcome}**!`
+
+    return !this.error
+  }
+}

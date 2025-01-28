@@ -1,89 +1,98 @@
-const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
 
-module.exports = {
-  /**
-   * Unlocks a specified channel, allowing the @everyone role to send messages.
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    const PROFILE = require('../../PROFILE.json');
-    let DEV_MODE = PROFILE["profiles"][PROFILE["selectedprofile"]]?.DEV
-    const guildID = interaction.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
-    const channel = interaction.options.getChannel('channel');
+// Command Option Types, Permission Flags
+const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
+// ModCommand
+const { ModCommand } = require('../../classes/command/modcommand.class')
+// Base Rook Embed
+const { RookEmbed } = require('../../classes/embed/rembed.class')
 
-    // Acknowledge the interaction
-    await interaction.deferReply({ ephemeral: true });
+// Multiple messages
+
+module.exports = class UnlockCommand extends ModCommand {
+  constructor(client) {
+    let comprops = {
+      name: "unlock",
+      category: "mod",
+      description: "Unlocks a channel, allowing users to send messages again.",
+      options: [
+        {
+          name: "channel",
+          description: "The channel to unlock.",
+          type: ApplicationCommandOptionType.Channel,
+          required: true
+        }
+      ],
+      permissions: [ PermissionFlagsBits.ManageChannels ]
+    }
+    let props = {}
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions) {
+    // Get Guild ID
+    const guildID = interaction.guild.id
+    // Get BotDev-defined list of channels
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    // Get requested Channel ID
+    const channelID = coptions['channel']
+    // Get requested Channel
+    const channel = await client.channels.fetch(channelID)
 
     try {
-      if (!DEV_MODE) {
+      if (!this.DEV) {
         // Unlock the channel by allowing SEND_MESSAGES for @everyone
         await channel.permissionOverwrites.edit(interaction.guild.roles.everyone, {
           SendMessages: null, // Removes the overwrite
-        });
+        })
       }
 
       // Send public confirmation in the channel
       const embedProps = {
-        color: '#00FF00',
-        title: { text: 'Channel Unlocked!' },
-        description: `Channel <#${channel.id}> has been **unlocked**.`,
-      };
-      const embed = new RookEmbed(embedProps);
-      channel.send({ embeds: [embed] });
+        color: this.profile.colors.success,
+        title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.warning },
+        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been **unlocked**.`,
+      }
+      const embed = new RookEmbed(client, embedProps)
+      channel.send({ embeds: [ embed ] })
+      console.log(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
-      const logs = client.channels.cache.get(guildChannels["logging"]);
-      if (logs) {
+      const logs = await client.channels.fetch(guildChannels["logging"])
+      if (logs && !this.DEV) {
         let props = {
-          color: "#FF0000",
-          title: {
-            text: "🔓 Channel Unlocked"
-          },
+          color: this.profile.colors.success,
+          title: { text: "[Log] Channel Unlocked", emoji: this.profile.emojis.unlock },
           fields: [
-            { name: 'Channel Unlocked', value: `<#${channel.id}>\n(ID: ${channel.id})`,    inline: true },
-            { name: 'Unlocked By',      value: `${interaction.user}\n(ID: ${interaction.user.id})`, inline: true }
-          ],
-          footer: {
-            msg: `Actioned by ${interaction.user.displayName}`
-          }
+            [
+              { name: 'Channel Unlocked', value: `<#${channel.id}>\n(ID: ${channel.id})` },
+              { name: 'Unlocked By',      value: `${interaction.user}\n(ID: ${interaction.user.id})` }
+            ]
+          ]
         }
-        const embed = new RookEmbed(props)
-        logs.send({ embeds: [ embed ] });
+        const embed = new RookEmbed(client, props)
+        logs.send({ embeds: [ embed ] })
+        console.log(`/${this.name}: LogPost`)
       } else {
-        console.log("Logs channel not found.");
+        console.log("Logs channel not found.")
       }
 
       // Complete the interaction with a private success message
-      await interaction.editReply({
-        content: `Channel <#${channel.id}> has been successfully **unlocked**!`,
-      });
+      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully **unlocked**!`
     } catch (error) {
-      console.log(`There was an error when unlocking the channel: ${error.stack}`);
-      let props = {
-        color: "#FF0000",
-        title: {
-          text: "Error"
-        },
-        description: "I couldn't unlock the channel."
-      }
-      const embed = new RookEmbed(props)
-      await interaction.editReply({ embeds: [ embed ], ephemeral: true }); // Private error message
+      console.log(`There was an error when unlocking the channel: ${error.stack}`)
+      this.error = true
+      this.ephemeral = true
+      this.props.description = `I couldn't unlock <#${channel.id}>.`
     }
-  },
 
-  name: 'unlock',
-  description: 'Unlocks a channel, allowing users to send messages again.',
-  options: [
-    {
-      name: 'channel',
-      description: 'The channel to unlock.',
-      type: ApplicationCommandOptionType.Channel,
-      required: true,
-    },
-  ],
-  permissionsRequired: [PermissionFlagsBits.ManageChannels],
-  botPermissions: [PermissionFlagsBits.ManageChannels],
-};
+    return true
+  }
+}

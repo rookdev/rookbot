@@ -1,5 +1,7 @@
-import fs from "fs";
-import chalk from "chalk";
+// @ts-nocheck
+
+import fs from "fs"
+import chalk from "chalk"
 const scripts = JSON.parse(fs.readFileSync("./scripts.json","utf8"))
 
 for (let [scriptName,scriptHelp] of Object.entries(scripts.scripts)) {

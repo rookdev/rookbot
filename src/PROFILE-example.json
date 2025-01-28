@@ -2,14 +2,22 @@
   "selectedprofile": "example",
   "profiles": {
     "example": {
-      "DEV": true,
       "name": "rook",
       "stripe": "#FFFFFF",
+      "deleteCommands": false,
       "footer": {
         "image": "https://github.com/mysterypaintwo/rookbot/blob/main/src/res/media/rookbotIcon_dev.png?raw=true",
-        "msg": "This bot is being Tested by rook"
-      },
-      "targetserver": "745409743593406634"
+        "text": "This bot is being Tested by rook"
+      }
+    },
+    "gitrook": {
+      "name": "gitrook",
+      "stripe": "#000000",
+      "deleteCommands": false,
+      "footer": {
+        "image": "https://cdn.discordapp.com/avatars/1313777189187223603/4bc7c1dc2b41b0bd7f77945bcc55feef.webp?size=128",
+        "text": "This bot is being Tested by gitrook"
+      }
     }
   }
 }

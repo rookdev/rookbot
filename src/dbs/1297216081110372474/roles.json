@@ -1,0 +1,11 @@
+{
+  "admin": [
+    "CORE",
+    "Git CORE",
+    "Server CORE",
+    "Bot CORE",
+    "Speedrun CORE",
+    "Beta CORE"
+  ],
+  "botdev": []
+}

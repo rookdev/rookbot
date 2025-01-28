@@ -1,45 +1,46 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
+// @ts-nocheck
 
-module.exports = {
-  name: 'botsrc',
-  description: 'Links to the GitHub repository of rookbot.',
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class.js')
 
-  /**
-   * Sends an embed message with a link to the bot\'s GitHub repository.
-   * @param {Client} client
-   * @param {Interaction} interaction
-   */
-  execute: async (client, interaction) => {
-    // Acknowledge the interaction
-    await interaction.deferReply();
-
-    // Create the embed with the link to the GitHub repository
+module.exports = class BotSourceCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "botsrc",
+      category: "bot",
+      description: "Links to the GitHub repository of rookbot",
+      flags: {
+        test: "basic"
+      }
+    }
     let props = {
       title: {
         text: "rookbot GitHub Repository",
         url: "https://github.com/mysterypaintwo/rookbot"
       },
-      description: "Want to see how rookbot works? Check out its source code on GitHub!",
+      description: "Want to see how rookbot works? Check out its [source code](https://github.com/mysterypaintwo/rookbot) on GitHub!",
       fields: [
         {
           name: 'rookbot on GitHub',
-          value: 'Explore the source code, contribute, or learn more about how rookbot operates. Feel free to fork, report issues, or submit pull requests!',
-          inline: false
-        },
-        {
-          name: 'Link to Repository',
-          value: '[Click here to visit the GitHub repository!](https://github.com/mysterypaintwo/rookbot)',
-          inline: false
+          value: 'Explore the [source code](https://github.com/mysterypaintwo/rookbot), contribute, or learn more about how rookbot operates. Feel free to fork, report issues, or submit pull requests!'
         }
       ],
-      footer: {
-        msg: "Check out the bot's repository for more!",
-        image: "https://github.com/fluidicon.png"
-      }
+      image: { image: "https://github.com/fluidicon.png" }
     }
-    const embed = new RookEmbed(props)
-
-    // Send the embed to the channel
-    await interaction.editReply({ embeds: [ embed ] });
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
   }
-};
+
+  async action(client, interaction, coptions={}) {
+    // all done in constructor
+    // Set EmbedPlayerTypes to Bot|Bot
+    this.props.playerTypes = {
+      user: "bot",
+      target: "bot"
+    }
+    return !this.error
+  }
+}

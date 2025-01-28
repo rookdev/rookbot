@@ -1,0 +1,90 @@
+<html>
+<head>
+<link rel="stylesheet" href="../resources/app/css/global.css" type="text/css" />
+<style type="text/css">
+body {
+  background-image: url(../resources/app/media/rookbotIcon.png);
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-size: calc(160px * 4) calc(160px * 4);
+  image-rendering: pixelated;
+}
+</style>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"
+></script>
+<script>
+async function get_json(url) {
+  let response = await fetch(url)
+  let json = await response.json()
+  return json
+}
+async function load() {
+  let section = window.location.search
+  section = section.slice(section.indexOf("=") + 1)
+  let help = await get_json("../resources/app/meta/manifests/help.json")
+  $("#sectionHeader").text(section)
+
+  for(let [sectionName, sectionData] of Object.entries(help)) {
+    let sectionLink = $("#sectionLink").clone().contents()
+    sectionLink
+      .find("a")
+      .attr("href", `./?section=${sectionName}`)
+      .text(sectionName)
+    $("#sections").append(sectionLink)
+  }
+
+  if(section in help) {
+    for(let [commandName, cmd] of Object.entries(help[section])) {
+      let listing = $("#cmdListing").clone().contents()
+      listing
+        .append($("#cmdTitle").clone().contents())
+      listing
+        .find("code")
+        .text("/" + commandName)
+      listing
+        .append($("#cmdDescription").clone().contents())
+      listing
+        .find("dd")
+        .text(cmd.description)
+      listing
+        .append($("#cmdOptions").clone().contents())
+      for(let [optionID, option] of Object.entries(cmd.options)) {
+        let cmdOption = $("#cmdOption").clone().contents()
+        cmdOption
+          .find("code")
+          .text(option.name)
+        if (option.required) {
+          cmdOption.find("dt")
+            .append(
+              $("<span>")
+              .html(" - <em>required</em>")
+            )
+        }
+        cmdOption.find("dd")
+          .text(option.description)
+        listing.find("ul")
+          .append(cmdOption)
+      }
+      $("#section").append(listing)
+    }
+  }
+}
+</script>
+</head>
+<body>
+<h1>rookbot Help</h1>
+<ul id="sections"></ul>
+<h2 id="sectionHeader"></h2>
+<ul id="section"></ul>
+<template id="sectionLink"><li><a href=""></a></li></template>
+<template id="cmdListing"><li></li></template>
+<template id="cmdTitle"><dt><code></code></dt></template>
+<template id="cmdDescription"><dd></dd></template>
+<template id="cmdOptions"><ul></ul></template>
+<template id="cmdOption"><li><dt><code></code></dt><dd></dd></li></template>
+<script>load()</script>
+</body>
+</html>

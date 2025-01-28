@@ -1,0 +1,26 @@
+{
+  "name": "Murder",
+  "id": "283321345612185611",
+  "mode": "build",
+  "parts": {
+    "pre": [
+      "Chef",
+      "Doctor",
+      "Dr"
+    ],
+    "names": [
+      "Murder"
+    ],
+    "post": [
+      "How",
+      "What",
+      "When",
+      "Where",
+      "Who",
+      "Why"
+    ]
+  },
+  "prefixes": {
+    "1282788953052676177":  { "name": "DoI Main", "prefix": "[Head Admin] " }
+  }
+}

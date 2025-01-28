@@ -19,8 +19,8 @@ on: [push, pull_request]
 # ubuntu-latest
 
 jobs:
-  # Test
-  test:
+  # Install, List Actions, Discord Notif
+  install-list-notif:
     name: 🧮
     runs-on: ${{ matrix.os-name }}
     continue-on-error: True
@@ -47,7 +47,7 @@ jobs:
       - name: 💿Call Install
         uses: ./.github/actions/install
         with:
-          calling-job: test
+          calling-job: install-list-notif
           os-name: ${{ matrix.os-name }}
           python-version: ${{ matrix.python-version }}
       # Analyze used GitHub Actions
@@ -55,10 +55,6 @@ jobs:
         shell: bash
         run: |
           python ./resources/ci/common/list_actions.py
-      # test
-      - name: ⏱️Call Test
-        uses: ./.github/actions/test
-
       # Send Discord Notification to Updates
       - name: Build Discord Notification Payload
         env:
@@ -69,3 +65,97 @@ jobs:
           contains(github.ref, 'stable') ||
           contains(github.ref, 'unstable') ||
           contains(github.ref, 'castIe')
+
+  # Install, Test
+  install-test:
+    name: ⏱️
+    uses: ./.github/workflows/test.yml
+    secrets:
+      DOTENV_PRIVATE_KEY_DEV_CI: ${{ secrets.DOTENV_PRIVATE_KEY_DEV_CI }}
+
+  # Prepare Pages
+  pages-prepare:
+    name: 🌎->📦
+    runs-on: ${{ matrix.os-name }}
+    needs: [install-test]
+
+    strategy:
+      matrix:
+        os-name: [ ubuntu-latest ]
+
+    steps:
+      # checkout commit
+      - name: ✔️Checkout commit
+        uses: actions/checkout@v4.2.2
+      # get parent dir
+      - name: 📁Get Parent Directory
+        id: parentDir
+        uses: ./.github/actions/get-parent-dir
+      # Prepare Pages
+      - name: 🌎->📦Prepare GitHub Pages
+        shell: bash
+        run: |
+          python ./resources/ci/common/prepare_pages.py
+      # upload pages artifact for later step
+      - name: 🔼Upload Pages Artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          name: pages-${{ matrix.os-name }}
+          path: ${{ steps.parentDir.outputs.parentDir }}/pages
+
+  # Deploy Pages
+  pages-deploy:
+    name: 🌎->🚀
+    runs-on: ${{ matrix.os-name }}
+    needs: [pages-prepare]
+
+    strategy:
+      matrix:
+        os-name: [ ubuntu-latest ]
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # checkout commit
+      - name: ✔️Checkout commit
+        uses: actions/checkout@v4.2.2
+      # download pages artifact
+      - name: 🔽Download Pages Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: pages-${{ matrix.os-name }}
+          path: ./
+      # extract pages artifact
+      - name: 📂Extract Pages Artifact
+        shell: bash
+        run: |
+          tar xvf artifact.tar
+          rm artifact.tar
+      # Prepare Differences
+      - name: 📝Prepare Differences
+        shell: bash
+        run: |
+          git add .
+      # List Differences
+      - name: ➖List Differences
+        shell: bash
+        run: |
+          git diff --name-status --cached
+      # List commit message
+      - name: 📝List Commit Message
+        shell: bash
+        run: |
+          cat commit.txt
+      # Push to GH-Pages
+      - name: 🚀Push to GH-Pages
+        uses: actions/deploy-pages@v4.0.5
+        with:
+          artifact-name: pages-${{ matrix.os-name }}
+        if: contains(github.ref, 'main')

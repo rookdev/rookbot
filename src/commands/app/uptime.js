@@ -1,58 +1,43 @@
-const { RookEmbed } = require('../../classes/embed/rembed.class.js')
+// @ts-nocheck
 
-module.exports = {
-  name: 'uptime',
-  description: 'Uptime',
+// Base Rook Command
+const { RookCommand } = require('../../classes/command/rcommand.class.js')
+// Pretty-print time durations
+const timeConversion = require('../../utils/timeConversion.js')
 
-  execute: async (client, interaction) => {
-    function timeConversion(duration = 0) {
-      const portions = [];
-      const msInSec = 1000;
-      const msInMin = msInSec * 60;
-      const msInHour = msInMin * 60;
-      const msInDay = msInHour * 24;
-
-      const days = Math.trunc(duration / msInDay)
-      if (days > 0) {
-        portions.push(days + 'd')
-        duration -= (days * msInDay)
+module.exports = class UptimeCommand extends RookCommand {
+  constructor(client) {
+    let comprops = {
+      name: "uptime",
+      category: "app",
+      description: "Uptime",
+      flags: {
+        user: "unapplicable",
+        test: "basic"
       }
-
-      const hours = Math.trunc(duration / msInHour)
-      if (hours > 0) {
-        portions.push(hours + 'h')
-        duration -= (hours * msInHour)
-      }
-
-      const minutes = Math.trunc(duration / msInMin)
-      if (minutes > 0) {
-        portions.push(minutes + 'm')
-        duration -= (minutes * msInMin)
-      }
-
-      const seconds = Math.trunc(duration / msInSec)
-      if (seconds > 0) {
-        portions.push(seconds + 's')
-      }
-      return portions.join(' ')
     }
-
-    await interaction.deferReply()
-
     let props = {
-      title: {
-        text: "Uptime"
-      }
+      title: { text: "Uptime", emoji: "⏱️" }
     }
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
 
-    const uptime = client.uptime
-    props.description = [
-        `<@${client.user.id}> has been online for:`,
-        await timeConversion(uptime)
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    // Get uptime
+    const uptime = await client.uptime
+
+    // Print uptime
+    this.props.description = [
+      `<@${client.user.id}> has been online for:`,
+      await timeConversion(uptime)
     ]
 
-    const embed = new RookEmbed(props)
-
-    await interaction.editReply({ embeds: [ embed ] })
+    return !this.error
   }
 }

@@ -1,11 +1,15 @@
-const { Client, EmbedBuilder, Message } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-const { RookEmbed } = require('../../classes/embed/rembed.class');
+// @ts-nocheck
+
+const { RookClient } = require('../../classes/objects/rclient.class')
+const { RookEmbed } = require('../../classes/embed/rembed.class')
+const { Message } = require('discord.js')
+const timeFormat = require('../../utils/timeFormat')
+const path = require('path')
+const fs = require('fs')
 
 /**
  * Logs edited messages from the server.
- * @param {Client} client
+ * @param {RookClient} client
  * @param {Message} oldMessage
  * @param {Message} newMessage
  */
@@ -13,110 +17,181 @@ module.exports = async (client, oldMessage, newMessage) => {
   try {
     // Check for invalid or undefined data
     if (!newMessage) {
-      console.warn('MessageUpdate event received invalid data:', { oldMessage, newMessage });
-      return;
+      console.warn('  MessageUpdate event received invalid data:', { oldMessage, newMessage })
+      return
     }
 
     // Ensure the message is in a guild and not from a bot
     if (!newMessage.guild) {
-      console.warn('MessageUpdate occurred outside of a guild:', newMessage);
-      return;
+      console.warn('  MessageUpdate occurred outside of a guild:', newMessage)
+      return
     }
-    if (newMessage.author?.bot) return;
+    if (newMessage.author?.bot) {
+      // console.warn(`Message update from bot:`, newMessage)
+      return
+    }
 
     // Fetch full messages if necessary
     if (oldMessage.partial) {
       try {
-        oldMessage = await oldMessage.fetch();
+        oldMessage = await oldMessage.fetch()
       } catch (err) {
-        console.error('Failed to fetch old message:', err);
-        return;
+        console.error('  Failed to fetch old message:', err)
+        return
       }
     }
 
     if (newMessage.partial) {
       try {
-        newMessage = await newMessage.fetch();
+        newMessage = await newMessage.fetch()
       } catch (err) {
-        console.error('Failed to fetch new message:', err);
-        return;
+        console.error('  Failed to fetch new message:', err)
+        return
       }
     }
 
     // Handle cases where the old or new content is unavailable
-    const oldContent = oldMessage.content ?? '*(Content unavailable)*';
-    const newContent = newMessage.content ?? '*(Content unavailable)*';
+    const oldContent = oldMessage.content ?? '*(Content unavailable)*'
+    const newContent = newMessage.content ?? '*(Content unavailable)*'
 
     // Skip if the content hasn't changed
     if (oldContent === newContent) {
-      console.warn('No content change detected.');
-      return;
+      // console.warn('  No content change detected.')
+      return
     }
 
     // Fetch the log channel using its ID
-    const guildID = newMessage.guild.id;
-    const guildChannels = require(`../../dbs/${guildID}/channels.json`);
-    const logChannelObject = newMessage.guild.channels.cache.get(guildChannels["logging"]);
+    const guildID = newMessage.guild?.id
+    const guildChannels = require(`../../dbs/${guildID}/channels.json`)
+    let log_type = "logging"
+    let log_check = "logging-messages"
+    if (log_check in guildChannels) {
+      log_type = log_check
+    }
+    const logChannel = await client.channels.fetch(guildChannels[log_type])
 
-    const embed = new RookEmbed({
-      color: '#FFA500', // Orange for message updates
-      title: {
-        text: '✏️ Message Edited',
-      },
-      thumbnail: {
-        url: newMessage.author.displayAvatarURL({ dynamic: true, size: 128 }), // Add user's profile picture
-      },
-      fields: [
-        {
-          name: 'Author',
-          value: `<@${newMessage.author.id}> (ID: ${newMessage.author.id})`,
-        },
-        {
-          name: 'Channel',
-          value: `<#${newMessage.channel.id}>`,
-        },
-        {
-          name: 'Old Content',
-          value: oldContent || '*No old content*', // Ensure there's always a default value
-        },
-        {
-          name: 'New Content',
-          value: newContent || '*No new content*', // Ensure there's always a default value
-        },
-      ],
-      footer: {
-        msg: `Message ID: ${newMessage.id}`,
-      },
-      timestamp: true,
-    });
-
-    // Send the embed to the log channel, if found and valid
-    if (logChannelObject?.isTextBased()) {
-      await logChannelObject.send({ embeds: [embed] });
-    } else {
-      console.warn('Log channel not found or not a text-based channel.');
+    let editor = newMessage.author
+    let editMember = await newMessage.guild.members.fetch(editor.id)
+    if (editMember) {
+      editor = editMember
     }
 
-    // Optional: Save the edited message to a log file
+    let player = {
+      name: editor.displayName,
+      avatar: editor.displayAvatarURL( { size: Math.pow(2, 7) } )
+    }
+
+    const embed = new RookEmbed(client, {
+      color: client.profile.colors.info,
+      title: {
+        text: '[Log] Message Edited',
+        emoji: "✏️"
+      },
+      players: {
+        user: player,
+        target: player
+      },
+      fields: [
+        [
+          // Edited DateTime
+          {
+            name: 'Edited At',
+            value: timeFormat(new Date().getTime())
+          }
+        ],
+        [
+          // Who wrote it?
+          {
+            name: 'Author',
+            value: `<@${newMessage.author.id}>` + " " +
+              `(ID: ${newMessage.author.id.inlinecode()})`
+          }
+        ],
+        [
+          // Guild Info
+          {
+            name: 'Guild',
+            value: [
+              newMessage.guild.name,
+              `(ID: ${newMessage.guild.id.inlinecode()})`
+            ]
+          },
+          // Channel Link
+          {
+            name: 'Channel',
+            value: [
+              `<#${newMessage.channel.id}>`,
+              `(ID: ${newMessage.channel.id.inlinecode()})`
+            ]
+          }
+        ],
+        [
+          // Message Link
+          {
+            name: 'Message',
+            value: newMessage.url +
+              `(ID: ${newMessage.id.inlinecode()})`
+          }
+        ],
+        [
+          // Old Content
+          {
+            name: 'Old Content',
+            value: oldContent.slice(0,1024) || '*No old content*' // Ensure there's always a default value
+          }
+        ],
+        [
+          // New Content
+          {
+            name: 'New Content',
+            value: newContent.slice(0,1024) || '*No new content*' // Ensure there's always a default value
+          }
+        ]
+      ]
+    })
+
+    let console_log = {
+      guild: newMessage.guild.name,
+      member: newMessage.author.tag,
+      action: "edit",
+      channel: newMessage.channel.name,
+      message: newMessage.id
+    }
+    console.log("   " + JSON.stringify(console_log))
+
+    // Send the embed to the log channel, if found and valid
+    if (logChannel) {
+      // @ts-ignore
+      await logChannel.send({ embeds: [embed] })
+    } else {
+      console.warn('Log channel not found.')
+    }
+
+    // Save the edited message to a log file
+    const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
     const logFilePath = path.join(
       __dirname,
       '..',
       '..',
       'botlogs',
-      'editedMessages.log'
-    );
+      `${DEV ? 'DEV' : ''}editedMessages.log`
+    )
     const logEntry = [
       `[${new Date().toISOString()}]`,
-      `Author: ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
-      `Channel: #${newMessage.channel.name}`,
+      `Author:      ${newMessage.author.tag} (ID: ${newMessage.author.id})`,
+      `Guild:       ${newMessage.guild?.name} (ID: ${newMessage.guild?.id})`,
+      // @ts-ignore
+      `Channel:     #${newMessage.channel.name}`,
+      `Message ID:  ${newMessage.id}`,
+      `Event:       Message Edited`,
       `Old Content: ${oldContent}`,
       `New Content: ${newContent}`,
-      `Message ID: ${newMessage.id}`,
-    ].join('\n') + '\n\n';
+      '--------------------------------'
+    ].join('\n') + '\n\n'
 
     // Append the log entry to the file
-    fs.appendFileSync(logFilePath, logEntry, 'utf8');
+    fs.appendFileSync(logFilePath, logEntry, 'utf8')
   } catch (error) {
-    console.error('Error in logEditedMessage handler:', error);
+    console.error('Error in logEditedMessage handler:', error)
   }
-};
+}

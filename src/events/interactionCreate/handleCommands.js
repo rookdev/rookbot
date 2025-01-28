@@ -1,84 +1,111 @@
-const getLocalCommands = require('../../utils/getLocalCommands');
+// @ts-nocheck
+
+const { MessageFlags } = require('discord.js')
+const getLocalCommands = require('../../utils/getLocalCommands')
 
 module.exports = async (client, interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+  if (!interaction.isChatInputCommand()) return
 
-  const roles = require('../../dbs/roles.json');
-  const userIDs = require('../../dbs/userids.json');
-  const guildIDs = require('../../dbs/guilds.json');
+  const roles = require('../../dbs/roles.json')
+  const userIDs = require('../../dbs/userids.json')
+  const guildIDs = require('../../dbs/guilds.json')
 
-  const localCommands = getLocalCommands();
+  const localCommands = getLocalCommands(client)
 
   try {
-    const commandObject = localCommands.find(
-      (cmd) => cmd.name === interaction.commandName
-    );
+    let commandObject = localCommands.find(
+      cmd => cmd.name === interaction.commandName
+    )
 
-    if (!commandObject) return;
-
-    if (commandObject.devOnly) {
-      let roleName = "botdev";
-      let roleUserNames = roles[roleName];
-      let roleUserIDs = [];
-      for (let [userName, userID] of Object.entries(userIDs)) {
-        if (roleUserNames.includes(userName)) {
-          roleUserIDs.push(userID);
+    let coptions = {}
+    if (!commandObject) {
+      for (let cmd of localCommands) {
+        if (cmd?.aliases && cmd.aliases.length > 0) {
+          for (let alias of cmd.aliases) {
+            if (alias.name === interaction.commandName) {
+              commandObject = cmd
+              coptions = alias.options
+              console.log(`/${alias.name} is an alias of /${cmd.name} with`, coptions)
+            }
+          }
         }
       }
-      console.log(roleName,roleUserNames,roleUserIDs);
+      if (!commandObject) {
+        return
+      }
+    }
+
+    if (commandObject.devOnly) {
+      let roleName = "botdev"
+      let roleUserNames = roles[roleName]
+      let roleUserIDs = []
+      for (let [userName, userID] of Object.entries(userIDs)) {
+        if (roleUserNames.includes(userName)) {
+          roleUserIDs.push(userID)
+        }
+      }
+      console.log(roleName,roleUserNames,roleUserIDs)
       if (!roleUserIDs.includes(interaction.member.id)) {
-        interaction.reply({
-          content: 'Only developers are allowed to run this command.',
-          ephemeral: true,
-        });
-        return;
+        let intOptions = {
+          content: `${client.profile.emojis.fail} Only BotDevs are allowed to run this command.`,
+          flags: MessageFlags.Ephemeral
+        }
+        interaction.reply(intOptions)
+        return
       }
     }
 
     if (commandObject.testOnly) {
-      let testGuilds = [];
+      let testGuilds = []
       for (let [guildID, guildName] of Object.entries(guildIDs)) {
         if (guildName.includes("Test")) {
-          testGuilds.push(guildID);
+          testGuilds.push(guildID)
         }
       }
       if (!(testGuilds.includes(interaction.guild.id))) {
-        interaction.reply({
-          content: 'This command cannot be ran here.',
-          ephemeral: true,
-        });
-        return;
+        let intOptions = {
+          content: `${client.profile.emojis.fail} This command cannot be ran here.`,
+          flags: MessageFlags.Ephemeral
+        }
+        interaction.reply(intOptions)
+        return
       }
     }
 
-    if (commandObject.permissionsRequired?.length) {
-      for (const permission of commandObject.permissionsRequired) {
+    if (commandObject.userPermissions?.length) {
+      for (const permission of commandObject.userPermissions) {
         if (!interaction.member.permissions.has(permission)) {
-          interaction.reply({
-            content: 'Not enough permissions.',
-            ephemeral: true,
-          });
-          return;
+          let intOptions = {
+            content: `${client.profile.emojis.user} User is missing permissions.`,
+            flags: MessageFlags.Ephemeral
+          }
+          interaction.reply(intOptions)
+          return
         }
       }
     }
 
     if (commandObject.botPermissions?.length) {
       for (const permission of commandObject.botPermissions) {
-        const bot = interaction.guild.members.me;
+        const bot = interaction.guild.members.me
 
         if (!bot.permissions.has(permission)) {
-          interaction.reply({
-            content: "I don't have enough permissions.",
-            ephemeral: true,
-          });
-          return;
+          let intOptions = {
+            content: `${client.profile.emojis.bot} Bot is missing permissions.`,
+            flags: MessageFlags.Ephemeral
+          }
+          interaction.reply(intOptions)
+          return
         }
       }
     }
 
-    await commandObject.execute(client, interaction);
+    await commandObject.execute(
+      client,
+      interaction,
+      coptions
+    )
   } catch (error) {
-    console.log(`There was an error running this command: ${error.stack}`);
+    console.log(`There was an error running this command: ${error.stack}`)
   }
-};
+}

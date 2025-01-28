@@ -7,14 +7,14 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 1. **Download Raspberry Pi OS**:
    - Visit the [Raspberry Pi OS website](https://www.raspberrypi.com/software/) and download **Raspberry Pi OS Lite** (minimal, no desktop) or Full version if you prefer a GUI.
 
-2. **Flash the OS to an SD Card**:
+1. **Flash the OS to an SD Card**:
    - Use **[Raspberry Pi Imager](https://www.raspberrypi.com/software/)** to flash the OS onto a microSD card. During this process:
      - Go to **Advanced Options** (press `Ctrl+Shift+X` in the Imager) to:
        - Enable SSH.
        - Set the username and password.
        - Configure Wi-Fi (if you're not using Ethernet).
 
-3. **Insert the SD Card and Boot**:
+1. **Insert the SD Card and Boot**:
    - Insert the SD card into your Raspberry Pi, connect it to power, and let it boot.
    - If using SSH, find your Pi's IP address (check your router or use a tool like `arp -a`) and connect with:
      ```bash
@@ -32,23 +32,23 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      sudo apt update && sudo apt upgrade -y
      ```
 
-2. **Install Node.js**:
+1. **Install Node.js**:
    - Add the Node.js repository:
      ```bash
-     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
      ```
    - Install Node.js and npm:
      ```bash
      sudo apt install -y nodejs
      ```
 
-3. **Install Git**:
+1. **Install Git**:
    - Run:
      ```bash
      sudo apt install -y git
      ```
 
-4. **Install PM2**:
+1. **Install PM2**:
    - PM2 is a process manager to keep rookbot running:
      ```bash
      sudo npm install -g pm2
@@ -64,18 +64,18 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      cd ~
      ```
 
-2. **Clone the rookbot Repository**:
+1. **Clone the rookbot Repository**:
    - Clone your GitHub repository:
      ```bash
      git clone https://github.com/mysterypaintwo/rookbot.git
      ```
 
-3. **Navigate to rookbot's Folder**:
+1. **Navigate to rookbot's Folder**:
    ```bash
    cd rookbot
    ```
 
-4. **Install the Dependencies**:
+1. **Install the Dependencies**:
 - Run:
     ```bash
     npm install
@@ -85,21 +85,16 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 
 ## Step 4: Set Up Environment Variables
 
-1. **Create a `.env` File**:
-   - If rookbot uses sensitive tokens, create a `.env` file in the project directory:
+1. **Create a Global Environment Variable File**:
+   - Copy `.env.example` to `.env.GLOBAL`
      ```bash
-     nano .env
+     cp .env.example .env.GLOBAL
      ```
-   - Add your variables (e.g.):
-     ```env
-     TOKEN = the_bot_token
-     ```
-   - Save and exit (Ctrl+O, Enter, Ctrl+X).
 
-2. **Ensure Your Code Loads the `.env` File**:
-   - Use the `dotenv` library in rookbot:
+1. **Slice Global Environment Variable File into individual files**
+   - Run script
      ```bash
-     npm install dotenv
+     python ./resources/ci/common/create_envs.py
      ```
 
 ---
@@ -116,7 +111,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      npm run-script menu
      ```
 
-2. **Run rookbot Persistently with PM2**:
+1. **Run rookbot Persistently with PM2**:
    - Start rookbot with PM2:
      ```bash
      pm2 start run.js --name rookbot
@@ -127,7 +122,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      pm2 save
      ```
 
-3. **Check rookbot Logs**:
+1. **Check rookbot Logs**:
    - View logs if there's an issue:
      ```bash
      pm2 logs rookbot
@@ -145,17 +140,21 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      git push
      ```
 
-2. **Pull Changes on the Raspberry Pi**:
+1. **Pull Changes on the Raspberry Pi**:
    - On the Raspberry Pi, navigate to the rookbot repo's ``root directory`` and pull updates:
      ```bash
      cd ~/rookbot
      node git-pull.js
      ```
 
-3. **Restart rookbot**:
+1. **Restart rookbot**:
    - Restart rookbot with PM2:
      ```bash
      pm2 restart rookbot
+     ```
+   - Restat rookbot from Discord:
+     ```bash
+     /shutdown
      ```
 
 ---
@@ -174,7 +173,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 1. **Open the Terminal**:
    - If you are logged into your Raspberry Pi, open a terminal.
 
-2. **Generate an SSH Key Pair**:
+1. **Generate an SSH Key Pair**:
    - Run the following command:
      ```bash
      ssh-keygen -t ed25519 -C "your_email@example.com"
@@ -184,13 +183,13 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      - Press **Enter** to save the key in the default location (`/home/pi/.ssh/id_ed25519`).
      - Optionally, enter a passphrase for added security (or press **Enter** to leave it blank).
 
-3. **View the Generated Public Key**:
+1. **View the Generated Public Key**:
    - Display the public key:
      ```bash
      cat ~/.ssh/id_ed25519.pub
      ```
 
-4. **Copy the Key**:
+1. **Copy the Key**:
    - Select and copy the entire output of the above command.
 
 ---
@@ -200,10 +199,10 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
 1. **Log in to GitHub**:
    - Open [GitHub](https://github.com) in your browser and log in to your account.
 
-2. **Navigate to SSH Keys**:
+1. **Navigate to SSH Keys**:
    - Go to your **Profile Settings** → **SSH and GPG keys** → **New SSH Key**.
 
-3. **Add the Key**:
+1. **Add the Key**:
    - Title the key (e.g., "Raspberry Pi").
    - Paste the public key you copied earlier into the **Key** field.
    - Click **Add SSH Key**.
@@ -222,7 +221,7 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      Hi <your-username>! You've successfully authenticated, but GitHub does not provide shell access.
      ```
 
-2. **If You Encounter Issues**:
+1. **If You Encounter Issues**:
    - Ensure the SSH agent is running and the key is added:
      ```bash
      eval "$(ssh-agent -s)"
@@ -239,13 +238,13 @@ This guide walks you through setting up and running rookbot on a Raspberry Pi 4 
      git clone git@github.com:mysterypaintwo/rookbot.git
      ```
 
-2. **Navigate to the Repository**:
+1. **Navigate to the Repository**:
    - After cloning, move into the repository folder:
      ```bash
      cd rookbot
      ```
 
-3. **Continue with Your Setup**:
+1. **Continue with Your Setup**:
    - Install dependencies or follow further instructions specific to your bot.
 
 ---
@@ -262,25 +261,25 @@ Now you're ready to securely clone and work with your private GitHub repository 
      pm2 list
      ```
 
-2. **Stop the Bot**:
+1. **Stop the Bot**:
    - Stop the bot process by its name (e.g., `rookbot`) or ID:
      ```bash
      pm2 stop rookbot
      ```
 
-3. **Delete the PM2 Script**:
+1. **Delete the PM2 Script**:
    - Remove the bot from PM2 management:
      ```bash
      pm2 delete rookbot
      ```
 
-4. **Clear PM2 Saved State**:
+1. **Clear PM2 Saved State**:
    - Ensure PM2 does not restart the bot after reboot:
      ```bash
      pm2 save
      ```
 
-5. **Optional: Uninstall PM2**:
+1. **Optional: Uninstall PM2**:
    - If you no longer need PM2, uninstall it:
      ```bash
      sudo npm uninstall -g pm2
@@ -296,7 +295,7 @@ Now you're ready to securely clone and work with your private GitHub repository 
      cd ~
      ```
 
-2. **Delete the Bot Directory**:
+1. **Delete the Bot Directory**:
    - Use the `rm` command to remove the bot files:
      ```bash
      rm -rf rookbot
@@ -313,7 +312,7 @@ Now you're ready to securely clone and work with your private GitHub repository 
      pm2 list
      ```
 
-2. **Check for Bot Files**:
+1. **Check for Bot Files**:
    - Verify the `rookbot` directory no longer exists:
      ```bash
      ls ~
