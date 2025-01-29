@@ -1,0 +1,18 @@
+{
+  "major_item": [
+    "Morph Ball",
+    "Hi-Jump Boots",
+    "Varia Suit",
+    "Screw Attack",
+    "Ice Beam",
+    "Wave Beam",
+    "Long Beam"
+  ],
+  "useless_item": [
+    "Missiles"
+  ],
+  "cursed_location": [],
+  "blessed_location": [],
+  "speed_tech": [],
+  "footers": []
+}

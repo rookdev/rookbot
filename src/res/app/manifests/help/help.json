@@ -1142,6 +1142,40 @@
       "access": "unset",
       "segment": "local"
     },
+    "varia": {
+      "name": "varia",
+      "category": "rando",
+      "description": "Starts a Super Metroid VARIA Randomizer Game with all necessary details",
+      "options": [
+        {
+          "name": "ping-multiplayer-role",
+          "description": "Whether or not to ping the Multiplayer Ping role"
+        },
+        {
+          "name": "pingable-role-id",
+          "description": "Role ID number to ping"
+        },
+        {
+          "name": "seed-url",
+          "description": "The URL of the seed to play"
+        },
+        {
+          "name": "prep-time",
+          "description": "The number of minutes to prepare before the game starts."
+        },
+        {
+          "name": "scheduled-time",
+          "description": "A parsesable DateTime for when to schedule this game"
+        },
+        {
+          "name": "group-id",
+          "description": "Group ID number"
+        }
+      ],
+      "parent": "seedannounce",
+      "access": "unset",
+      "segment": "local"
+    },
     "ap": {
       "name": "ap",
       "category": "rando",

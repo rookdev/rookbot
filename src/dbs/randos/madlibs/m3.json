@@ -1,0 +1,67 @@
+{
+  "major_item": [
+    "Morph Ball",
+    "Morph Bombs",
+    "Charge Beam",
+    "Speed Booster",
+    "A Progressive Suit",
+    "Hi-Jump Boots",
+    "Varia Suit",
+    "Gravity Suit",
+    "Space Jump",
+    "Plasma Beam",
+    "Screw Attack",
+    "Ice Beam"
+  ],
+  "useless_item": [
+    "5 Missiles",
+    "Spring Ball",
+    "Spazer Beam",
+    "Grapple Beam"
+  ],
+  "cursed_location": [
+    "at X-Ray Scope Check",
+    "the left item at Golden Torizo",
+    "in Maridia",
+    "at the top of Aquaduct",
+    "in the Maridia West Sand Hole",
+    "in the Maridia East Sand Hole",
+    "at the top of Crateria Super Room",
+    "at the top of Crateria West Ocean"
+  ],
+  "blessed_location":[
+    "at Morph Ball Check",
+    "in the Green Hill Zone pipe",
+    "at the end of Terminator"
+  ],
+  "speed_tech":[
+    "mockball",
+    "simple short charge",
+    "green gate glitch",
+    "do hellruns",
+    "microwave",
+    "walljump up Bubble Mountain",
+    "shortcharge",
+    "gravity jump",
+    "Infinite Bomb Jump (IBJ)"
+  ],
+  "footers": [
+    "Hoping [MAJOR_ITEM] won't be [CURSED_LOCATION]!",
+    "Hoping that [MAJOR_ITEM] will be [BLESSED_LOCATION]!",
+    "Hoping we'll be able to [SPEED_TECH] early this time!",
+    "Hoping we'll find [MAJOR_ITEM] within the first hour!",
+    "Good luck out there, galactic warrior!",
+    "May the RNG be ever in your favor!",
+    "I wonder who we'll be microwaving today~",
+    "Don't forget to grab [MAJOR_ITEM]!",
+    "Hoping we'll find Morph Bombs before Power Bombs!",
+    "Hoping that we won't need to [SPEED_TECH] this time!",
+    "Why run when you can clip through instead? 😎",
+    "Praying we won't have to do Suitless Maridia!",
+    "Hoping we won't have to Continuous Wall Jump (CWJ) across Crateria Moat!",
+    "Hoping we won't have to shinespark across Crateria Moat!",
+    "Hoping we won't have to shinespark up Crateria Super Room!",
+    "Hoping we won't have to shortcharge through Pink Brinstar Waterway!",
+    "Hoping SM won't require Reverse Boss Order (RBO)!"
+  ]
+}

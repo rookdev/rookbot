@@ -1,0 +1,29 @@
+{
+  "major_item": [
+    "Magical Rod",
+    "Raft",
+    "Stepladder",
+    "Recorder",
+    "Bow",
+    "Silver Arrow",
+    "Wooden Sword",
+    "White Sword",
+    "Magical Sword",
+    "Wooden Shield",
+    "Magical Shield",
+    "Blue Candle",
+    "Red Candle"
+  ],
+  "useless_item": [
+    "Bomb",
+    "Wooden Arrow",
+    "Yellow Rupee",
+    "Blue Rupee",
+    "Food",
+    "Letter"
+  ],
+  "cursed_location": [],
+  "blessed_location": [],
+  "speed_tech": [],
+  "footers": []
+}
