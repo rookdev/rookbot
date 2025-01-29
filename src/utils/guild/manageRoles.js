@@ -17,11 +17,12 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     reaction = await reaction.fetch()
   }
 
-  if (reaction.message.partial) {
-    await reaction.message.fetch()
+  let message = reaction.message
+  if (message.partial) {
+    message = await message.fetch()
   }
 
-  let guild = reaction.message.guild
+  let guild = message.guild
 
   let rrs = fileFuncs.getAFile(
     [
@@ -36,24 +37,24 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     return [result, messages]
   }
 
-  if (!rrs[reaction.message.id]) {
-    // messages.push(`${client.profile.emojis.warning}: Message${client.profile.emoji.no}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+  if (!rrs[message.id]) {
+    // messages.push(`${client.profile.emojis.warning}: Message${client.profile.emoji.no}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
-  if (!rrs[reaction.message.id][reaction.emoji.name]) {
-    messages.push(`${client.profile.emojis.warning}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.no}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+  if (!rrs[message.id][reaction.emoji.name]) {
+    messages.push(`${client.profile.emojis.warning}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.no}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
-  messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${reaction.message.guild.name}/${reaction.message.channel.name}/${user.username}/${reaction.emoji.name}`)
+  messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}`)
 
   if (!reaction.me) {
     await reaction.react()
-    for (let emojiName of Object.keys(rrs[reaction.message.id])) {
+    for (let emojiName of Object.keys(rrs[message.id])) {
       if (emojiName.includes("#")) {
         continue
       }
 
-      let emoji = await reaction.message.guild.emojis.cache.find(
+      let emoji = await message.guild.emojis.cache.find(
         e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
       )
 
@@ -61,10 +62,10 @@ const manageRoles = async (client, reaction, user, mode="add") => {
         emoji = emojiName
       }
 
-      let reacted = await reaction.message.reactions.resolve(emoji)?.me
+      let reacted = await message.reactions.resolve(emoji)?.me
       if (!reacted) {
         try {
-          await reaction.message.react(emoji)
+          await message.react(emoji)
         } catch (error) {
           messages.push(emojiName,emoji,error)
           return [result, messages]
@@ -73,8 +74,8 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     }
   }
 
-  let roleName = rrs[reaction.message.id][reaction.emoji.name]
-  let role = reaction.message.guild.roles.cache.find(
+  let roleName = rrs[message.id][reaction.emoji.name]
+  let role = message.guild.roles.cache.find(
     r => r.name === roleName
   )
 
@@ -82,7 +83,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     return [result, messages]
   }
 
-  let guildMember = await reaction.message.guild.members.fetch(user.id)
+  let guildMember = await message.guild.members.fetch(user.id)
   if (mode == "add") {
     guildMember.roles.add(role)
   } else if (mode == "remove") {

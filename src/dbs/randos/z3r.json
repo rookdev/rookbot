@@ -1,6 +1,6 @@
 {
   "madlibs": {
-    "major": [
+    "major_item": [
       "Pegasus Boots",
       "Fire Rod",
       "Hookshot",
@@ -15,7 +15,7 @@
       "Lamp",
       "Half-Magic"
     ],
-    "useless": [
+    "useless_item": [
       "3 Bombs",
       "Greg",
       "Validation Arrow",
@@ -28,7 +28,7 @@
       "Cane of Byrna",
       "Magic Cape"
     ],
-    "cursed_locations": [
+    "cursed_location": [
       "on Pedestal",
       "in Kakariko Library",
       "at Lumberjack Cave",
@@ -42,7 +42,7 @@
       "in GT Randomizer Room",
       "at GT Validation Chest"
     ],
-    "blessed_locations":[
+    "blessed_location":[
       "in Blind's Hut",
       "in Paradox Cave",
       "in Hookshot (Hoverboots) Cave",
@@ -103,8 +103,6 @@
       "[MAJOR_ITEM] on Pedestal? No problem-just hike over the mountain!",
       "Why run when you can clip through instead? 😎"
     ]
-
-
   },
   "rando": {
     "player": {

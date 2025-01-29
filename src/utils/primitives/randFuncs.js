@@ -17,6 +17,12 @@ function roll(sides=2,dice=1) {
 }
 
 function randPick(input) {
+  if (typeof input == "string") {
+    input = [input]
+  }
+  if (!input?.length) {
+    return "Error: Invalid input"
+  }
   if (input.length <= 0) {
     return "Error: Length too short"
   }

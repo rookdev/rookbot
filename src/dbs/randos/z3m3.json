@@ -1,6 +1,6 @@
 {
   "madlibs": {
-    "major": [
+    "major_item": [
       "Pegasus Boots",
       "Fire Rod",
       "Hookshot",
@@ -28,7 +28,7 @@
       "Screw Attack",
       "Ice Beam"
     ],
-    "useless": [
+    "useless_item": [
       "3 Bombs",
       "Greg",
       "Validation Arrow",
@@ -40,13 +40,13 @@
       "Shovel",
       "Cane of Byrna",
       "Magic Cape",
-      
+
       "5 Missiles",
       "Spring Ball",
       "Spazer Beam",
       "Grapple Beam"
     ],
-    "cursed_locations": [
+    "cursed_location": [
       "on Pedestal",
       "in Kakariko Library",
       "at Lumberjack Cave",
@@ -69,7 +69,7 @@
       "at the top of Crateria Super Room",
       "at the top of Crateria West Ocean"
     ],
-    "blessed_locations":[
+    "blessed_location":[
       "in Blind's Hut",
       "in Paradox Cave",
       "in Hookshot (Hoverboots) Cave",

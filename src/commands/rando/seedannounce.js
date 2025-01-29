@@ -22,17 +22,29 @@ function article(input="") {
 }
 
 function isValidURLFromDomain(input, domain) {
-  try {
-    // Parse the input string as a URL
-    const url = new URL(input)
+  let valid = false
 
-    // Check if the hostname and protocol match the expected domain
-    const expectedUrl = new URL(domain)
-    return (url.hostname === expectedUrl.hostname)
-  } catch (error) {
-    // If URL constructor throws, the input is not a valid URL
-    return false
+  if (typeof domain != "object") {
+    domain = [domain]
   }
+
+  for (let pattern of domain) {
+    if (!valid) {
+      try {
+        // Parse the input string as a URL
+        const url = new URL(input)
+
+        // Check if the hostname and protocol match the expected pattern
+        const expectedUrl = new URL(pattern)
+        valid = (url.hostname === expectedUrl.hostname)
+      } catch (error) {
+        // If URL constructor throws, the input is not a valid URL
+        valid = false
+      }
+    }
+  }
+
+  return valid
 }
 
 module.exports = class SeedAnnounceCommand extends RookCommand {
@@ -59,6 +71,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
               name:   "Super Metroid Map Randomizer",
               value:  "m3maprando"
             },
+            // {
+            //   name:   "Super Metroid VARIA Randomizer",
+            //   value:  "varia"
+            // },
             // {
             //   name:   "Quad Randomizer",
             //   value:  "z1m1z3m3"
@@ -134,7 +150,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { randomizer: "m3maprando", "seed-url": "https://maprando.com/seed/wPvtmGMpc" },
         { randomizer: "m3maprando", "prep-time": 60 },
         { randomizer: "m3maprando", "scheduled-time": "3155760000" },
-        { randomizer: "m3maprando", "group-id": "1983" }
+        { randomizer: "m3maprando", "group-id": "1983" },
+        { randomizer: "varia" },
+        { randomizer: "varia", "ping-multiplayer-role": true },
+        { randomizer: "varia", "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410" },
+        { randomizer: "varia", "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410?msg=%27Suits%20restriction%27%20forced%20to%20off" },
+        { randomizer: "varia", "prep-time": 60 },
+        { randomizer: "varia", "scheduled-time": "3155760000" },
+        { randomizer: "varia", "group-id": "1983" }
       ],
       aliases: [
         // ALttPR
@@ -167,6 +190,13 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           description: "Starts a Z3M3 Game with all necessary details",
           options: { randomizer: "z3m3" }
         },
+
+        // VARIA
+        // {
+        //   name: "varia",
+        //   description: "Starts a Super Metroid VARIA Randomizer Game with all necessary details",
+        //   options: { randomizer: "varia" }
+        // },
 
         // Quad
         // {
@@ -270,12 +300,36 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Get the title
     const randoTitle = randoData?.rando?.player?.name ?? randomizer
-    // Get Major Items
-    const majorItems = randoData?.madlibs?.major      ?? []
-    // Get Useless Items
-    const uselessItems = randoData?.madlibs?.useless  ?? []
-    // Get Footers
-    const footerTexts = randoData?.madlibs?.footers   ?? []
+
+    // Get Text pieces
+    const textPieces = {
+      major_item: [],
+      useless_item: [],
+      blessed_location: [],
+      cursed_location: [],
+      speed_tech: [],
+      footers: []
+    }
+
+    // Collect selected Text pieces
+    let gotPiece = {}
+
+    // Cycle through Text pieces
+    for (let textType of Object.keys(textPieces)) {
+      gotPiece[textType] = null
+      // If this rando has this piece type
+      if (randoData?.madlibs[textType]) {
+        // Store collection for later
+        textPieces[textType] = randoData.madlibs[textType]
+        // Store selected piece
+        gotPiece[textType] = randFuncs.randPick(textPieces[textType])
+      }
+    }
+
+    console.log(
+      textPieces,
+      gotPiece
+    )
 
     // Get Pingable Role ID
     roleID = randoData?.rando["pingable-role-id"] ?? roleID
@@ -285,25 +339,23 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       text: `${randoTitle} Game Details`
     }
 
-    // Select a random footer text
-    var randomFooterText = randFuncs.randPick(footerTexts) ?? ""
+    let randomFooterText = ""
+    if (gotPiece?.footers) {
+      randomFooterText = randFuncs.randPick(gotPiece?.footers)
 
-    // Select a random major item
-    const randomMajorItem = randFuncs.randPick(majorItems) ?? ""
-    const randomUselessItem = randFuncs.randPick(uselessItems) ?? ""
+      // Modify the major item if it starts with "A " and if it's not at the beginning of the sentence
+      let formattedMajorItem = gotPiece?.major_item ?? ""
+      if (formattedMajorItem.startsWith('A ') && randomFooterText.indexOf('[MAJOR_ITEM]') > 0) {
+        // Only lowercase the first letter if '[MAJOR_ITEM]' is in the middle
+        formattedMajorItem = formattedMajorItem.charAt(0).toLowerCase() + formattedMajorItem.slice(1)
+      }
+      gotPiece.major_item = formattedMajorItem
 
-    // Modify the major item if it starts with "A " and if it's not at the beginning of the sentence
-    let formattedMajorItem = randomMajorItem ?? ""
-    if (formattedMajorItem.startsWith('A ') && randomFooterText.indexOf('[MAJOR_ITEM]') > 0) {
-      // Only lowercase the first letter if '[MAJOR_ITEM]' is in the middle
-      formattedMajorItem = formattedMajorItem.charAt(0).toLowerCase() + formattedMajorItem.slice(1)
+      for (let rKey of Object.keys(textPieces)) {
+        const search = `[${rKey.toUpperCase()}]`
+        randomFooterText = randomFooterText.replace(search, gotPiece[rKey])
+      }
     }
-
-    // Replace '[MAJOR_ITEM]' with the modified major item
-    randomFooterText = randomFooterText.replace('[MAJOR_ITEM]', formattedMajorItem)
-
-    // Replace '[USELESS_ITEM]' with the modified major item
-    randomFooterText = randomFooterText.replace('[USELESS_ITEM]', randomUselessItem)
 
     // Create the embed
     this.props.playerTypes = {
@@ -377,7 +429,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (
       isValidURLFromDomain(
         seedURL,
-        randoData.rando.permalink
+        randoData.rando?.permalink
       )
     ) {
       this.props.description.push(

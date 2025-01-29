@@ -1,6 +1,6 @@
 {
   "madlibs": {
-    "major": [
+    "major_item": [
       "Morph Ball",
       "Morph Bombs",
       "Charge Beam",
@@ -14,7 +14,7 @@
       "Screw Attack",
       "Ice Beam"
     ],
-    "useless": [
+    "useless_item": [
       "5 Missiles",
       "Spring Ball",
       "Spazer Beam",
@@ -46,8 +46,6 @@
       "name": "Super Metroid Item Randomizer",
       "avatar": "https://static.wikia.nocookie.net/metroid/images/8/89/M3_sprite_Screw_Attack_logo.gif"
     },
-    "scripts": [
-    ],
     "permalink": "https://sm.samus.link/seed/<hash>"
   }
 }

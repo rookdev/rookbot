@@ -1,15 +1,8 @@
 {
-  "madlibs": {
-    "major": [],
-    "useless": [],
-    "footers": []
-  },
   "rando": {
     "player": {
       "name": "Archipelago",
       "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/ap.png"
-    },
-    "scripts": [],
-    "permalink": ""
+    }
   }
 }

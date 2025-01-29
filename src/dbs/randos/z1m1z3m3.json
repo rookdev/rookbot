@@ -1,6 +1,6 @@
 {
   "madlibs": {
-    "major": [
+    "major_item": [
       "Morph Ball",
       "Pegasus Boots",
       "Fire Rod",
@@ -27,7 +27,7 @@
       "Screw Attack",
       "Ice Beam"
     ],
-    "useless": [
+    "useless_item": [
       "3 Bombs",
       "Greg",
       "Validation Arrow",
@@ -79,8 +79,6 @@
       "name": "Quad Randomizer",
       "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/smz3.png"
     },
-    "scripts": [
-    ],
     "permalink": "https://quad.beta.samus.link/seed/<hash>"
   }
 }

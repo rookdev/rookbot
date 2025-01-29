@@ -176,7 +176,7 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
     if (message.partial) {
-      message = message.fetch()
+      message = await message.fetch()
     }
 
     return message
