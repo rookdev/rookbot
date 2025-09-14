@@ -596,11 +596,13 @@ class ModCommand extends AdminCommand {
         printResult = await this.print_it(client, interaction, [ props.public ])
         embeds.public = this.pages[0]
         this.pages = []
-        interaction.channel.send(
-          {
-            embeds: [ embeds.public ]
-          }
-        )
+        if (!this.null) {
+          interaction.channel.send(
+            {
+              embeds: [ embeds.public ]
+            }
+          )
+        }
         this.null = true
         this.props.null = true
         console.log(`/${this.name}: ModPost`)
@@ -680,13 +682,15 @@ class ModCommand extends AdminCommand {
           printResult = await this.print_it(client, interaction, [ props.mod ])
           embeds.mod = this.pages[0]
           this.pages = []
-          interaction.followUp(
-            {
-              embeds: [ embeds.mod ],
-              flags: MessageFlags.Ephemeral
-            }
-          )
-          console.log(`/${this.name}: YouPost`)
+          if (interaction.hasOwnProperty("followUp")) {
+            interaction.followUp(
+              {
+                embeds: [ embeds.mod ],
+                flags: MessageFlags.Ephemeral
+              }
+            )
+            console.log(`/${this.name}: YouPost`)
+          }
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
@@ -703,12 +707,14 @@ class ModCommand extends AdminCommand {
           printResult = await this.print_it(client, interaction, [ props.mod ])
           embeds.mod = this.pages[0]
           this.pages = []
-          interaction.followUp(
-            {
-              embeds: [ embeds.mod ],
-              flags: MessageFlags.Ephemeral
-            }
-          )
+          if (interaction.hasOwnProperty("followUp")) {
+            interaction.followUp(
+              {
+                embeds: [ embeds.mod ],
+                flags: MessageFlags.Ephemeral
+              }
+            )
+          }
         }
       }
 
@@ -752,8 +758,8 @@ class ModCommand extends AdminCommand {
               {
                 name: tenses.past.ucfirst() + ' By',
                 value: [
-                  interaction.user,
-                  `[${inlineCode(interaction.user.id)}]`
+                  interaction?.user,
+                  `[${inlineCode(interaction?.user?.id)}]`
                 ]
               }
             ],
@@ -871,9 +877,9 @@ class ModCommand extends AdminCommand {
         let logEntry = [
           `[${now.toISOString()}]`,
           `User:     ${user.tag} (ID: ${user.id})`,
-          `Actor:    ${interaction.user.tag} (ID: ${interaction.user.id})`,
+          `Actor:    ${interaction?.user?.tag} (ID: ${interaction?.user?.id})`,
           `Action:   ${tenses.past.ucfirst()}`,
-          `Guild:    ${interaction.guild.name} (ID: ${interaction.guild.id})`,
+          `Guild:    ${interaction?.guild?.name} (ID: ${interaction?.guild?.id})`,
         ]
         if (durationSeconds != 0) {
           logEntry.push(
@@ -937,7 +943,13 @@ class ModCommand extends AdminCommand {
       "roles.json"
     )
 
-    if (this.ROLES && this.ROLES.length > 0) {
+    if (
+      this.ROLES &&
+      (
+        (this.ROLES.length > 0) ||
+        (Object.keys(this.ROLES).length > 0)
+      )
+    ) {
       // Get Mod roles
       let APPROVED_ROLES = this.ROLES["admin"].concat(this.ROLES["mod"])
       // Bail if we don't have intended Approved Roles data
@@ -960,11 +972,13 @@ class ModCommand extends AdminCommand {
 
     // Process canned option values into sent option values
     if (!(this.error)) {
-      for (let option of this.options) {
-        if ((!(coptions.hasOwnProperty(option.name)))) {
-          let thisOption = interaction.options.get(option.name)
-          if (thisOption) {
-            coptions[option.name] = thisOption.value
+      if (interaction?.options) {
+        for (let option of this.options) {
+          if ((!(coptions.hasOwnProperty(option.name)))) {
+            let thisOption = interaction.options.get(option.name)
+            if (thisOption) {
+              coptions[option.name] = thisOption.value
+            }
           }
         }
       }

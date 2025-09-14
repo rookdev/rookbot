@@ -395,7 +395,9 @@ class SalutationCommand extends RookCommand {
           "channels.json"
         )
         // Find the Guild Channel to send the embed to
-        if (!channelIDs) { this.error = true; continue }
+        if (!channelIDs) {
+          console.log(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
+        }
 
         for (let channelName of [
           "bot-salutations",
@@ -406,23 +408,29 @@ class SalutationCommand extends RookCommand {
         ]) {
           if (!channel) {
             let channelID = channelIDs[channelName]
+            console.log(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             if (channelID) {
-              // console.log(`Loading '${channelID}' of '${guild?.name}' [${guild?.id}]`)
+              console.log(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
               channel = await guild?.channels.fetch(channelID)
             } else {
-              // console.log(`Loading '${channelName}' of '${guild?.name}' [${guild?.id}]`)
-              channel = guild?.channels?.cache?.find(
+              console.log(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              channel = await guild?.channels?.cache?.find(
                 c => c.name === channelName
               )
+            }
+            if (channel) {
+              console.log(`Loaded   '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             }
           }
         }
 
-        if (!guild) {
-          guild = await interaction.guild
-        }
-        if (!channel) {
-          channel = await interaction.channel
+        if (interaction) {
+          if (!guild) {
+            guild = await interaction.guild
+          }
+          if (!channel) {
+            channel = await interaction.channel
+          }
         }
 
         // If we found the channel
@@ -440,34 +448,46 @@ class SalutationCommand extends RookCommand {
 
         this.props.entities.guild = server
 
-        // Print this page
-        let printResult = await this.print_it(client, interaction, [ this.props ])
+        let printResult = null
+        let msg = ""
 
-        if (printResult) {
-          // Set up package
-          let this_package = { embeds: this.pages }
+        if (channel) {
+          // Print this page
+          printResult = await this.print_it(client, interaction, [ this.props ])
+          if (printResult) {
+            // Set up package
+            let this_package = { embeds: this.pages }
 
-          // Send package
-          await channel.send(this_package)
-          this.null = true
-
-          // Edit the interaction reply to
-          //  Link to the channel we sent it to
-          if (
-            interaction &&
-            interaction?.guild &&
-            interaction?.guild?.id &&
-            channel?.guild &&
-            channel?.guild?.id &&
-            interaction.guild.id === channel.guild.id &&
-            typeof interaction.editReply === "function"
-          ) {
-            await interaction.editReply(
-              {
-                content: `See ${channel}!`
-              }
-            )
+            if (
+              channel &&
+              channel?.guild &&
+              channel?.guild?.id &&
+              interaction.guild.id === channel.guild.id
+            ) {
+              // Send package
+              await channel.send(this_package)
+              this.null = true
+              msg = `See ${channel}!`
+            }
+          } else {
+            msg = "Print FAILED"
           }
+        } else {
+          msg = "Channel FAILED"
+        }
+
+        // Edit the interaction reply
+        if (
+          interaction &&
+          interaction?.guild &&
+          interaction?.guild?.id &&
+          typeof interaction.editReply === "function"
+        ) {
+          await interaction.editReply(
+            {
+              content: msg
+            }
+          )
         }
       }
     }

@@ -8,6 +8,18 @@ const shell = require('shelljs')          // Run shell commands
 const path = require('path')              // Easy filepath management
 const fs = require('fs')                  // Filesystem manipulation
 
+const { setGlobalDispatcher, Agent } = require('undici')
+
+// Create a new Agent with a custom connect timeout
+const customAgent = new Agent({
+  connect: {
+    timeout: 20_000 // 20 seconds
+  }
+})
+
+// Set this custom agent as the global dispatcher
+setGlobalDispatcher(customAgent)
+
 // This is what is intended to run dotenvx
 // Print Package version
 console.log("")
