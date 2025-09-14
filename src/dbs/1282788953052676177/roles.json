@@ -1,5 +1,8 @@
 {
   "admin": [
+    "Owner",
+    "Developer",
+    "Head Admin",
     "Admin"
   ],
   "botdev": [

@@ -88,7 +88,7 @@ module.exports = async (client, message) => {
     "roles.json"
   )
  
-  // If it's an admin
+  // If it's an admin or mod
   if (
     ROLES &&
     (
@@ -96,8 +96,9 @@ module.exports = async (client, message) => {
       (Object.keys(ROLES).length > 0)
     )
   ) {
-    // Get Admin roles
-    let APPROVED_ROLES = ROLES["admin"]
+    // Get Mod roles
+    let APPROVED_ROLES = ROLES["admin"].concat(ROLES["mod"])
+
     // Bail if we don't have intended Approved Roles data
     if (!APPROVED_ROLES) {
       // console.log("Couldn't get Roles List")
@@ -110,7 +111,7 @@ module.exports = async (client, message) => {
         r => APPROVED_ROLES.includes(r.name)
       )
     ) {
-      // console.log("It's an Admin")
+      // console.log("It's an Admin or Mod")
       return [result, messages]
     }
   }
