@@ -474,7 +474,7 @@ class SalutationCommand extends RookCommand {
               channel &&
               channel?.guild &&
               channel?.guild?.id &&
-              interaction.guild.id === channel.guild.id
+              interaction?.guild?.id === channel?.guild?.id
             ) {
               // Send package
               await channel.send(this_package)
