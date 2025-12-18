@@ -256,7 +256,7 @@ module.exports = async (client, deletedMessage) => {
       "src",
       "botlogs"
     ],
-    `${this.DEV ? 'DEV' : ''}deletedMessages.log`
+    `${DEV ? 'DEV' : ''}deletedMessages.log`
   )
   let logEntry = [
     `[${moment.utc().toISOString()}]`,

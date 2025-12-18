@@ -157,7 +157,7 @@ module.exports = async (client, newMember) => {
         "src",
         "botlogs"
       ],
-      `${this.DEV ? 'DEV' : ''}memberChanges.log`
+      `${DEV ? 'DEV' : ''}memberChanges.log`
     )
     const logEntry = [
       `[${moment.utc().toISOString()}]`,

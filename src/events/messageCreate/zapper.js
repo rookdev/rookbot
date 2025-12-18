@@ -119,13 +119,6 @@ module.exports = async (client, message) => {
   // Check Editable
   let editable = banCmd.botCanEdit(client, guildMember)
 
-  /**
-   * Region that this is being sent to
-   *  Development
-   *  Production; also sends to Discord Audit Log
-   */
-  let region = ((!banCmd.DEV) ? "Production" : "Development")
-
   const logsChannel = await banCmd.getChannel(client, message, [ `logging-zapper`, "logging" ])
   if (logsChannel) {
     if (banCmd.DEV) {

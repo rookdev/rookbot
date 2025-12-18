@@ -3,6 +3,10 @@ const fs = require('fs')
 
 function getAPath(directory=[], filename="") {
   let dirpath = ""
+  if (typeof directory === "string") {
+    return path.join(directory, filename)
+  }
+
   if (
     directory[0] &&
     (

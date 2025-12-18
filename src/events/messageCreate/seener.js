@@ -66,21 +66,14 @@ module.exports = async (client, message) => {
 
   let pretty_name = "Message_Stamp".split("_").map(x => x.ucfirst()).join(" ")
 
-  const pingCmd = new PingCommand(client)
-  /**
-   * Region that this is being sent to
-   *  Development
-   *  Production; also sends to Discord Audit Log
-   */
-  let region = ((!pingCmd.DEV) ? "Production" : "Development")
-
   // LogFile for ACTION
+  const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
   let logFilePath = fileFuncs.getAPath(
     [
       "src",
       "botlogs"
     ],
-    ((this.DEV ? "DEV" : "") + "member" + pretty_name.replace(" ", "") + "s.log")
+    ((DEV ? "DEV" : "") + "member" + pretty_name.replace(" ", "") + "s.log")
   )
   // https://discord.com/channels/745409743593406634/1325367661755895890/1329353927933558810
   // GID: [18]
@@ -99,16 +92,32 @@ module.exports = async (client, message) => {
     userIDStr +
     guildIDStr
   ]
+
+  // console.log(logEntry)
+
   let entries = fileFuncs.getAFile(logFilePath)
   if (entries) {
+    // console.log("We've got entries!")
     if (entries.includes(userIDStr + guildIDStr)) {
+      // console.log("We've got a user!")
       let userIdx = entries.indexOf(userIDStr + guildIDStr)
       if (userIdx) {
-        console.log(entries)
-        let userCount = entries.substring(0, userIdx).match(new RegExp(userIDStr + guildIDStr), "g")
-        if (userCount) {
+        // console.log(`First instance is at: ${userIdx}`)
+        let recordNumber = -1
+        recordNumber = Math.ceil(userIdx / 192)
+        if (recordNumber > 0) {
+          recordNumber -= 1
+          // console.log(`User is at: ${recordNumber}!`)
           entries = entries.split("\n")
-          console.log(entries[userCount])
+          // console.log(entries[recordNumber])
+          entries[recordNumber] = ""
+          entries = entries.filter(
+            item => item.trim() != ""
+          )
+          fs.writeFileSync(logFilePath, entries.join("\n"), "utf8")
+          if (entries.length > 0) {
+            fs.appendFileSync(logFilePath, "\n", "utf8")
+          }
         }
       }
     }

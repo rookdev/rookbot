@@ -24,14 +24,14 @@ jobs:
     strategy:
       matrix:
         os-name: [ ubuntu-latest ]
-        python-version: [ "3.12" ]
+        python-version: [ "3.13" ]
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
       # install python
       - name: 💿Install Python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: ${{ matrix.python-version }}
       # python version
@@ -48,9 +48,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       # install node
       - name: 💿Install Node
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.1.0
         with:
-          node-version: "22.11.0"
+          node-version: "24.12.0"
       # disable funding message
       - name: 💲Disable funding message
         run: npm config set fund false

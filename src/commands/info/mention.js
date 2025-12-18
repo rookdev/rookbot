@@ -24,7 +24,9 @@ const {
 } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
+const moment = require('moment')
 
 module.exports = class MentionCommand extends RookCommand {
   constructor(client) {
@@ -353,6 +355,63 @@ module.exports = class MentionCommand extends RookCommand {
               specs.joinedStr = timeFormat(targetMember?.joinedTimestamp, { with: "relative" })
             }
 
+            if (targetMember?.presence?.status) {
+              specs.status = targetMember.presence.status != "offline"
+            }
+
+            let pretty_name = "Message_Stamp".split("_").map(x => x.ucfirst()).join(" ")
+            let logFilePath = fileFuncs.getAPath(
+              [
+                "src",
+                "botlogs"
+              ],
+              ((this.DEV ? "DEV" : "") + "member" + pretty_name.replace(" ", "") + "s.log")
+            )
+            let pad = 20
+            let userIDStr = `U:${targetId.padEnd(pad)}` + `;`
+            let guildIDStr = `G:${guild.name}:[${guild.id}]`
+            let entries = fileFuncs.getAFile(logFilePath)
+            if (entries) {
+              // console.log("We've got entries!")
+              if (entries.includes(userIDStr + guildIDStr)) {
+                // console.log("We've got a user!")
+                let userIdx = entries.indexOf(userIDStr + guildIDStr)
+                if (userIdx) {
+                  // console.log(`First instance is at: ${userIdx}`)
+                  let recordNumber = -1
+                  recordNumber = Math.ceil(userIdx / 192)
+                  if (recordNumber > 0) {
+                    recordNumber -= 1
+                    // console.log(`User is at: ${recordNumber}!`)
+                    entries = entries.split("\n")
+                    let record = entries[recordNumber]
+
+                    specs.online = false
+                    if (targetMember?.presence?.status) {
+                      specs.online = targetMember.presence.status != "offline"
+                    }
+                    specs.seenStr = specs.online ? "🟩ONLINE🟩" : "SEEN"
+                    let seenTime  = record.match(/T\:([^;]+)/)
+                    let seenChan  = record.match(/C\:([\d]+)/)
+                    let seenMsg   = record.match(/M\:([\d]+)/)
+
+                    if (!specs.online) {
+                      if (seenTime) {
+                        // console.log(seenTime)
+                        specs.seenStr = timeFormat(moment.utc(seenTime[1]), { with: "relative" })
+                      }
+                    }
+                    if (seenChan) {
+                      if (seenMsg) {
+                        specs.seenChan = `https://discord.com/channels/${guild.id}/${seenChan[1]}`
+                        specs.seenMsg = `${specs.seenChan}/${seenMsg[1]}`
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
             // Set Target to Member
             this.props.playerTypes = {
               user: "target",
@@ -491,6 +550,30 @@ module.exports = class MentionCommand extends RookCommand {
           }
         ]
       )
+
+      if (specs?.seenStr) {
+        this.props.fields.push(
+          [
+            // Seen Time
+            {
+              name: "Last Seen Time",
+              value: specs?.seenStr
+            }
+          ],
+          [
+            // Seen In
+            {
+              name: "Last Seen In",
+              value: specs?.seenChan
+            },
+            // Seen Saying
+            {
+              name: "Last Seen Saying",
+              value: specs?.seenMsg
+            }
+          ]
+        )
+      }
 
       if (targetType == "user" && targetMember) {
         this.props.fields.push(

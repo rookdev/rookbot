@@ -7,8 +7,8 @@ on: [push, pull_request]
 #########
 # actions
 #########
-# actions/checkout@v4.2.2
-# actions/setup-python@v5.3.0
+# actions/checkout@v6.0.1
+# actions/setup-python@v6.1.0
 # rookdev/rookbot/install
 # rookdev/rookbot/test
 
@@ -28,14 +28,14 @@ jobs:
     strategy:
       matrix:
         os-name: [ ubuntu-latest ]
-        python-version: [ "3.12" ]
+        python-version: [ "3.13" ]
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
       # install python
       - name: 💿Install Python
-        uses: actions/setup-python@v5.3.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: ${{ matrix.python-version }}
       # python version
@@ -86,7 +86,7 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
       # get parent dir
       - name: 📁Get Parent Directory
         id: parentDir
@@ -99,7 +99,7 @@ jobs:
       # upload pages artifact for later step
       - name: 🔼Upload Pages Artifact
         id: deployment
-        uses: actions/upload-pages-artifact@v3.0.1
+        uses: actions/upload-pages-artifact@v4.0.0
         with:
           name: pages-${{ matrix.os-name }}
           path: ${{ steps.parentDir.outputs.parentDir }}/pages
@@ -125,10 +125,10 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
       # download pages artifact
       - name: 🔽Download Pages Artifact
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v7.0.0
         with:
           name: pages-${{ matrix.os-name }}
           path: ./

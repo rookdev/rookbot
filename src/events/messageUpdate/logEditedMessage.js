@@ -218,7 +218,7 @@ module.exports = async (client, oldMessage, newMessage) => {
       "src",
       "botlogs"
     ],
-    `${this.DEV ? 'DEV' : ''}editedMessages.log`
+    `${DEV ? 'DEV' : ''}editedMessages.log`
   )
   const logEntry = [
     `[${moment.utc().toISOString()}]`,
