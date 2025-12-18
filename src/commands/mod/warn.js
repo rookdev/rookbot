@@ -32,10 +32,10 @@ module.exports = class WarnCommand extends ModCommand {
       ],
       testOptions: [
         {
-          "target-id":  "282859044593598464"
+          "target-id":  "964106782790283295"
         },
         {
-          "target-id":  "282859044593598464",
+          "target-id":  "964106782790283295",
           "reason":     "Because"
         }
       ],

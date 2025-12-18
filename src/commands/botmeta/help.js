@@ -45,7 +45,6 @@ module.exports = class HelpCommand extends RookCommand {
             { name: serverGameName, value: "doi" },
             { name: "Fun",          value: "fun" },
             { name: "Information",  value: "info" },
-            { name: "Meta",         value: "meta" },
             { name: "Miscellaneous",value: "misc" },
             { name: "Moderation",   value: "mod" },
             { name: "Randomizers",  value: "rando" },
@@ -115,88 +114,90 @@ module.exports = class HelpCommand extends RookCommand {
     // Cycle through sections
     for(let [sectionName, sectionCmds] of Object.entries(showJSON)) {
       // Cycle through commands
-      for(let [cmdName, cmd] of Object.entries(sectionCmds)) {
-        let fields = []
-        fields.push(
-          [
-            // Command Name
-            {
-              name: "Name",
-              value: inlineCode(cmd.name)
-            },
-            // Command Category
-            {
-              name: "Category",
-              value: inlineCode(cmd.category)
-            }
-          ]
-        )
-
-        // If we've got a Parent Command, note it
-        if (cmd?.parent) {
-          fields[0].push(
-            {
-              name: "Parent",
-              value: inlineCode(cmd.parent)
-            }
-          )
-        }
-
-        fields.push(
-          [
-            // Command Description
-            {
-              name: "Description",
-              value: cmd?.description ?? " "
-            }
-          ]
-        )
-
-        // If we've set the Command Access, note it
-        if (cmd?.access && cmd.access.toLowerCase() != "unset") {
+      if(sectionCmds) {
+        for(let [cmdName, cmd] of Object.entries(sectionCmds)) {
+          let fields = []
           fields.push(
             [
+              // Command Name
               {
-                name: "Access",
-                value: cmd.access
+                name: "Name",
+                value: inlineCode(cmd.name)
+              },
+              // Command Category
+              {
+                name: "Category",
+                value: inlineCode(cmd.category)
               }
             ]
           )
-        }
 
-        // If the command has options, list them
-        if(cmd?.options && cmd.options.length > 0) {
-          // Cycle through options
-          for(let [optionID, option] of Object.entries(cmd.options)) {
-            // If we've got an option and it's got a name
-            if (option && option?.name) {
-              // Set the name
-              let optionName = "Option: " + inlineCode(option.name)
-              if (option?.required && option.required) {
-                optionName += ` - ` + italic("required")
+          // If we've got a Parent Command, note it
+          if (cmd?.parent) {
+            fields[0].push(
+              {
+                name: "Parent",
+                value: inlineCode(cmd.parent)
               }
-              // Add the name & description
-              fields.push(
-                [
-                  {
-                    name: optionName,
-                    value: option.description ?? " "
-                  }
-                ]
-              )
+            )
+          }
+
+          fields.push(
+            [
+              // Command Description
+              {
+                name: "Description",
+                value: cmd?.description ?? " "
+              }
+            ]
+          )
+
+          // If we've set the Command Access, note it
+          if (cmd?.access && cmd.access.toLowerCase() != "unset") {
+            fields.push(
+              [
+                {
+                  name: "Access",
+                  value: cmd.access
+                }
+              ]
+            )
+          }
+
+          // If the command has options, list them
+          if(cmd?.options && cmd.options.length > 0) {
+            // Cycle through options
+            for(let [optionID, option] of Object.entries(cmd.options)) {
+              // If we've got an option and it's got a name
+              if (option && option?.name) {
+                // Set the name
+                let optionName = "Option: " + inlineCode(option.name)
+                if (option?.required && option.required) {
+                  optionName += ` - ` + italic("required")
+                }
+                // Add the name & description
+                fields.push(
+                  [
+                    {
+                      name: optionName,
+                      value: option.description ?? " "
+                    }
+                  ]
+                )
+              }
             }
           }
-        }
 
-        // Set title to include Section Name & Command Name
-        let props = {
-          title: { text: `Help - ${sectionName} - ${cmdName}` },
-          description: " ",
-          fields: fields
-        }
+          // Set title to include Section Name & Command Name
+          let props = {
+            title: { text: `Help - ${sectionName} - ${cmdName}` },
+            description: " ",
+            fields: fields
+          }
 
-        // Push this page
-        this.pages.push(props)
+          // Push this page
+          this.pages.push(props)
+        }
       }
     }
 

@@ -216,6 +216,12 @@ module.exports = class SayCommand extends ModCommand {
       )
     }
 
+    if (!channel) {
+      this.error = true
+      this.props.description = `Couldn't load Channel`
+      return false
+    }
+
     // Bot doesn't have perms SendMessages in channel
     if (
       !channel

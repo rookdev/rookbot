@@ -125,12 +125,16 @@ class SalutationCommand extends RookCommand {
         { silent: true }
       )
       let git_log = git_log_exec.stdout.trim()
+      if (git_log != "") {
       let latest_commit = git_log.split("\n")[0]
-      COMMIT = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)
-      if (COMMIT && (COMMIT.length > 0)) {
-        COMMIT = COMMIT[1]
+        if (latest_commit != "") {
+          COMMIT = latest_commit.match(/^(?:[^\s]+)(?:[\s])([^\s]{7})/)
+          if (COMMIT && (COMMIT.length > 0)) {
+            COMMIT = COMMIT[1]
+          }
+          COMMIT_TITLE = git_log.split("\n")[4].trim()
+        }
       }
-      COMMIT_TITLE = git_log.split("\n")[4].trim()
     } catch (err) {
       console.log(err)
     }
@@ -264,35 +268,43 @@ class SalutationCommand extends RookCommand {
           name: "Server ID",
           value: "0"
         }
-      ],
-      [
-        // Git Status
-        {
-          name: "Branch",
-          value:
-            console_output[5].substring(console_output[5].indexOf(':') + 2)
-              .replace(
-                `<${BRANCH}>`,
-                hyperlink(
-                  inlineCode(BRANCH),
-                  `${git_info.root}/tree/${BRANCH}`
+      ]
+    ]
+
+    if (BRANCH && COMMIT) {
+      this.props["fields"].push(
+        [
+          // Git Status
+          {
+            name: "Branch",
+            value:
+              console_output[5].substring(console_output[5].indexOf(':') + 2)
+                .replace(
+                  `<${BRANCH}>`,
+                  hyperlink(
+                    inlineCode(BRANCH),
+                    `${git_info.root}/tree/${BRANCH}`
+                  )
                 )
-              )
-        },
-        {
-          name: "Commit",
-          value:
-            console_output[6].substring(console_output[6].indexOf(':') + 2)
-              .replace(
-                `[${COMMIT}]`,
-                hyperlink(
-                  inlineCode(COMMIT),
-                  `${git_info.root}/tree/${COMMIT}`
+          },
+          {
+            name: "Commit",
+            value:
+              console_output[6].substring(console_output[6].indexOf(':') + 2)
+                .replace(
+                  `[${COMMIT}]`,
+                  hyperlink(
+                    inlineCode(COMMIT),
+                    `${git_info.root}/tree/${COMMIT}`
+                  )
                 )
-              )
-            + ": " + inlineCode(COMMIT_TITLE)
-        }
-      ],
+              + ": " + inlineCode(COMMIT_TITLE)
+          }
+        ]
+      )
+    }
+
+    this.props["fields"].push(
       [
         // Launch Time
         {
@@ -300,7 +312,7 @@ class SalutationCommand extends RookCommand {
           value: timeFormat(launchedMoment.format("x"), { with: "relative" })
         }
       ]
-    ]
+    )
 
     // If we're exiting
     if (mode == "exit") {
@@ -478,6 +490,7 @@ class SalutationCommand extends RookCommand {
 
         // Edit the interaction reply
         if (
+          msg != "" &&
           interaction &&
           interaction?.guild &&
           interaction?.guild?.id &&

@@ -86,6 +86,9 @@ web_modules/
 ## Yarn Integrity file
 .yarn-integrity
 
+## stfp config
+sftp.json
+
 ## dotenv environment variable files
 .env*
 

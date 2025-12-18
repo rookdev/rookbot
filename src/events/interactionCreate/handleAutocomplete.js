@@ -33,7 +33,6 @@ module.exports = async (client, interaction) => {
         { name: "Dungeons of Infinity", value: "doi" },
         { name: "Fun",                  value: "fun" },
         { name: "Information",          value: "info" },
-        { name: "Meta",                 value: "meta" },
         { name: "Miscellaneous",        value: "misc" },
         { name: "Moderation",           value: "mod" },
         { name: "Randomizers",          value: "rando" }

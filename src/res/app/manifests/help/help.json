@@ -1174,7 +1174,7 @@
       ],
       "parent": "seedannounce",
       "access": "unset",
-      "segment": "new"
+      "segment": "local"
     },
     "ap": {
       "name": "ap",

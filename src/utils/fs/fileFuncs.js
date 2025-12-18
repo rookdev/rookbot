@@ -8,6 +8,8 @@ function getAPath(directory=[], filename="") {
     (
       directory[0].includes(`home${path.sep}minerva`) ||
       directory[0].includes(`home${path.sep}runner`) ||
+      directory[0].includes(`opt${path.sep}rookbot`) ||
+      directory[0].includes(`opt${path.sep}minrook`) ||
       directory[0].includes(`:${path.sep}`) ||
       directory[0].includes(`:${path.sep}${path.sep}`)
     )

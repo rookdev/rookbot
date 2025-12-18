@@ -1,0 +1,40 @@
+{
+  "1450519964413984929": {
+    "#note":    "#welcome: Welcome",
+    "akariwuv": "Member"
+  },
+  "1450975596116049982": {
+    "#note": "#reaction-roles: Reaction Roles",
+    "#note":  "Community Roles",
+    "📰":     "ServerAnnouncements",
+
+    "#note":    "Multiplayer Roles",
+    "🎮":       "MultiWorld",
+    "mothula":  "MultiworldMayhem",
+    "🎲":       "Randovania",
+    "firerod":  "ALttPR",
+    "maprando": "SMMR",
+    "smz3":     "SMZ3"
+  },
+  "1450257697990512810": {
+    "video_game": "MultiWorld"
+  },
+  "1450260277458112594": {
+    "mothula": "MultiworldMayhem"
+  },
+  "1450384716363730944": {
+    "game_die": "Randovania"
+  },
+  "1450388012939612213": {
+    "firerod": "ALttPR"
+  },
+  "1450389844156219455": {
+    "maprando": "SMMR"
+  },
+  "1450390668492148886": {
+    "smz3": "SMZ3"
+  },
+  "1450529672445169747": {
+    "newspaper": "Server Announcements"
+  }
+}

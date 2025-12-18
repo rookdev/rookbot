@@ -82,13 +82,13 @@ module.exports = class MentionCommand extends RookCommand {
         }
       ],
       testOptions: [
-        { "target-id": "<#895062573999878234>" },                 // #bot-console
-        { "target-id": "<:heartcontainer:1323926395868549161>" }, // :heartcontainer:
-        { "target-id": "<@&833812507012366366>" },                // @Admin
-        { "target-id": "<@!263968998645956608>" },                // @Minnie
-        { "target-id": "<@!1111517386588307536>" },               // @castIe
-        { "target-id": "<@!1307416505171968011>" },               // @minrook
-        { "target-id": "<#!1097065219014021130>" }                // Voice:General
+        { "target-id": "<#1450623993584419037>" },          // #bot-console
+        { "target-id": "<:mothula:1450259843540582440>" },  // :mothula:
+        { "target-id": "<@&1450182051528572963>" },         // @Admin
+        { "target-id": "<@!263968998645956608>" },          // @Minnie
+        { "target-id": "<@!1111517386588307536>" },         // @castIe
+        { "target-id": "<@!1307416505171968011>" },         // @minrook
+        { "target-id": "<#!1450229840006615242>" }          // Voice:General
       ]
     }
     let props = {
@@ -304,7 +304,11 @@ module.exports = class MentionCommand extends RookCommand {
         targetMention = userMention(targetId)
         if (guild) {
           // Get Guild Member
-          targetMember = await guild?.members?.fetch(targetId)
+          try {
+            targetMember = await guild?.members?.fetch(targetId)
+          } catch(err) {
+            console.log(err)
+          }
           if (targetMember) {
             specs = {
               name: targetMember.user.tag

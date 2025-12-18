@@ -98,7 +98,7 @@ let uname = shell.exec("uname", { silent: true })           // Get OS name
 
 // Get dotenvx executable path
 let bin = dotenvx.stdout.trim()
-console.log(bin)
+console.log("dotenvx path: " + bin)
 
 // If Windows, just run bare executable
 if (bin.includes("WinGet") || uname.stdout.trim().includes("MINGW")) {

@@ -1,0 +1,21 @@
+{
+  "admin": [
+    "Admin"
+  ],
+  "botdev": [
+    "rookbot dev",
+    "rookbot steward"
+  ],
+  "mod": [
+    "Mod"
+  ],
+  "booster": [
+    "Server Booster"
+  ],
+  "member": [
+    "Member"
+  ],
+  "muted": [
+    "Muted"
+  ]
+}
