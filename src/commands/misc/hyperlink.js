@@ -35,6 +35,10 @@ module.exports = class HyperlinkCommand extends RookCommand {
           description: "Suppress Embed Preview",
           type: ApplicationCommandOptionType.Boolean
         }
+      ],
+      testOptions: [
+        { "link-url": "http://google.com", "link-text": "Google" },
+        { "link-url": "http://google.com", "link-text": "Google", "hide-embed": true }
       ]
     }
     let props = {}
@@ -66,12 +70,12 @@ module.exports = class HyperlinkCommand extends RookCommand {
       return false
     }
 
-    console.log(
-      {
-        href: href,
-        text: text
-      }
-    )
+    // console.log(
+    //   {
+    //     href: href,
+    //     text: text
+    //   }
+    // )
 
     href = hide_embed ? hideLinkEmbed(href) : href
     let link = hyperlink(text, href)

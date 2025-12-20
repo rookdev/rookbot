@@ -48,15 +48,22 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     for (let [msgID, msgData] of Object.entries(rrs)) {
       this.props = {}
       this.props.description = []
-      for (let [emojiName, roleName] of Object.entries(msgData)) {
+      for (let [emojiName, roleData] of Object.entries(msgData)) {
         // Title
         if (emojiName == "#title") {
-          this.props.title = { text: roleName }
+          this.props.title = { text: roleData }
         } else if (emojiName == "#description") {
           // Description
-          this.props.description.push(roleName)
+          this.props.description.push(roleData)
           this.props.description.push("")
         } else if (!emojiName.includes("#")) {
+          // Emoji : { Role, Description }
+          let roleName = roleData
+          let roleDesc = ""
+          if (typeof roleData != "string") {
+            roleDesc = roleData["description"] ?? ""
+            roleName = roleData["role"] ?? ""
+          }
           // Emoji : Role
           let emoji = interaction.guild.emojis.cache.find(
             e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
@@ -67,7 +74,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
           if (!emoji) {
             emoji = emojiName
           }
-          this.props.description.push(`${emoji}: ${role}`)
+          this.props.description.push(`${emoji}: ${role} ${roleDesc}`)
         }
       }
       if (!interaction.deferred && !interaction.replied) {

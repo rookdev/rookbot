@@ -1,40 +1,25 @@
 {
-  "1450519964413984929": {
-    "#note":    "#welcome: Welcome",
-    "akariwuv": "Member"
+  "1451699174058758291": {
+    "#note":        "#welcome: Welcome",
+    "#title":       "Welcome to the ZDoI Randomizer Community!",
+    "#description": "Please react below to gain access to the server.",
+    "akariwuv":     "Member"
   },
-  "1450975596116049982": {
-    "#note": "#reaction-roles: Reaction Roles",
-    "#note":  "Community Roles",
-    "📰":     "ServerAnnouncements",
-
-    "#note":    "Multiplayer Roles",
-    "🎮":       "MultiWorld",
-    "mothula":  "MultiworldMayhem",
-    "🎲":       "Randovania",
-    "firerod":  "ALttPR",
-    "maprando": "SMMR",
-    "smz3":     "SMZ3"
+  "1451694506888921108": {
+    "#note":        "#reaction-roles: Community Roles",
+    "#title":       "Community Roles",
+    "#description": "Alerts about the community",
+    "📰":           { "role": "ServerAnnouncements", "description": "Server-wide Announcements" }
   },
-  "1450257697990512810": {
-    "video_game": "MultiWorld"
-  },
-  "1450260277458112594": {
-    "mothula": "MultiworldMayhem"
-  },
-  "1450384716363730944": {
-    "game_die": "Randovania"
-  },
-  "1450388012939612213": {
-    "firerod": "ALttPR"
-  },
-  "1450389844156219455": {
-    "maprando": "SMMR"
-  },
-  "1450390668492148886": {
-    "smz3": "SMZ3"
-  },
-  "1450529672445169747": {
-    "newspaper": "Server Announcements"
+  "1451694540405870666": {
+    "#note":        "#reaction-roles: Multiplayer Roles",
+    "#title":       "Multiplayer Roles",
+    "#description": "Alerts for multiplayer games",
+    "🎮":           { "role": "MultiWorld",       "description": "([Archipelago](<http://archipelago.gg>))" },
+    "mothula":      { "role": "MultiworldMayhem", "description": "([Submission/Rules Page](<http://mothula.neocities.org/MMM>))" },
+    "🎲":           { "role": "Randovania",       "description": "([Randovania](<http://randovania.org>))" },
+    "firerod":      { "role": "ALttPR",           "description": "([A Link to the Past Randomizer](<http://alttpr.com>))" },
+    "maprando":     { "role": "SMMR",             "description": "([Super Metroid Map Randomizer](<http://maprando.com>))" },
+    "smz3":         { "role": "SMZ3",             "description": "([Super Metroid / Zelda 3 Combo Randomizer](<http://samus.link>))" }
   }
 }

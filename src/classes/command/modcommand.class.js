@@ -944,6 +944,9 @@ class ModCommand extends AdminCommand {
     )
 
     if (
+      (
+        !(coptions.hasOwnProperty("bypass"))
+      ) &&
       this.ROLES &&
       (
         (this.ROLES.length > 0) ||

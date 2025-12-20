@@ -31,6 +31,11 @@ module.exports = class SlapCommand extends AdminCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      testOptions: [
+        { "target-id": "1306491719717748830" },
+        { "target-id": "1306491719717748830", "item": "a sledgehammer" },
+        { "target-id": "1306491719717748830", "distance": "a fair bit" }
+      ],
       aliases: [
         {
           name: "trout",

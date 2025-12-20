@@ -244,8 +244,11 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
+    // console.log("We've got a valid channel!")
+
     // If we're using a visage
     if (visage) {
+      // console.log("We're selecting a visage!")
       // Get Guild Metadata
       let guildMetadata = fileFuncs.getAFile(
         [
@@ -336,6 +339,7 @@ module.exports = class SayCommand extends ModCommand {
         // Wait a second after editing the webhook
         await wait(1 * 1000)
       }
+      // console.log("We've selected a visage!")
     }
 
     // Result
@@ -343,12 +347,14 @@ module.exports = class SayCommand extends ModCommand {
 
     // No Message
     if ((message == "") && !sourceMessageURL && !attachment) {
+      // console.log("No message sent!")
       this.error = true
       this.props.description = "No message content sent"
       return false
     }
     // Message too long
     if (message.length > 1024) {
+      // console.log("Message too long!")
       this.error = true
       this.props.description = `Message too long [${message.length}]`
       return false
@@ -356,6 +362,7 @@ module.exports = class SayCommand extends ModCommand {
 
     // Say Mode
     if (mode == "say") {
+      // console.log(`${mode.ucfirst()}: Startup!`)
       // If rookhook, use hook
       if (rookhook) {
         // console.log(`${mode.ucfirst()}: rookhook`)
@@ -376,6 +383,7 @@ module.exports = class SayCommand extends ModCommand {
         result = await channel.send(message)
       }
     } else if (mode == "edit") {
+      // console.log(`${mode.ucfirst()}: Startup!`)
       // Edit Mode
       // No Destination Message
       if (!destMessageURL) {
@@ -432,6 +440,7 @@ module.exports = class SayCommand extends ModCommand {
         result = await destMessage.edit(message)
       }
     } else if (mode == "clone") {
+      // console.log(`${mode.ucfirst()}: Startup!`)
       // Clone Mode
       // No Source Message
       if (!sourceMessageURL) {
@@ -492,16 +501,25 @@ module.exports = class SayCommand extends ModCommand {
         if (rookhook) {
           result = await rookhook.editMessage(destMessage, this_package)
           if (srcMessage.reactions) {
-            for (let reaction in srcMessage.reactions.cache) {
-              console.log(reaction)
-            }
+            // do nothing
           }
         } else {
           // Else, use bot
           result = await destMessage.edit(this_package)
           if (srcMessage.reactions) {
-            for (let reaction in srcMessage.reactions.cache) {
-              console.log(reaction)
+            // console.log("Source Message has reactions!")
+            for (let [emojiName, reaction] of srcMessage.reactions.cache) {
+              let emoji = srcMessage.guild.emojis.cache.find(
+                e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
+              )
+              if (!emoji) {
+                emoji = emojiName
+              }
+              // console.log(emoji)
+              let reacted = await destMessage.reactions.resolve(emoji)?.me
+              if (!reacted) {
+                await destMessage.react(emoji)
+              }
             }
           }
         }

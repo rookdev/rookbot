@@ -153,7 +153,8 @@ module.exports = async (client, message) => {
     message,
     {
       'target-id': targetUserId,
-      'reason': "Posted in zapper"
+      'reason': "Posted in zapper",
+      'bypass': true
     }
   )
 

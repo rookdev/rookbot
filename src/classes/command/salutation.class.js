@@ -420,12 +420,12 @@ class SalutationCommand extends RookCommand {
         ]) {
           if (!channel) {
             let channelID = channelIDs[channelName]
-            console.log(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+            // console.log(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             if (channelID) {
-              console.log(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
+              // console.log(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
               channel = await guild?.channels.fetch(channelID)
             } else {
-              console.log(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              // console.log(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
               channel = await guild?.channels?.cache?.find(
                 c => c.name === channelName
               )
