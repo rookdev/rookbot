@@ -1,0 +1,18 @@
+{
+  "7": {
+    "datetime": "",
+    "players": {
+      "Fechdog": {
+        "game": "Ocarina of Time",
+        "eligible": [
+          "platinum",
+          "onyx",
+          "diamond",
+          "ruby",
+          "emerald",
+          "sapphire"
+        ]
+      }
+    }
+  }
+}

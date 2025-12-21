@@ -389,13 +389,30 @@ module.exports = class MentionCommand extends RookCommand {
                     specs.online = false
                     if (targetMember?.presence?.status) {
                       specs.online = targetMember.presence.status != "offline"
+                      switch(targetMember.presence.status) {
+                        case "invisible":
+                          this.props.color = "#808080"
+                          break
+                        case "idle":
+                          this.props.color = "#ffaf00"
+                          break
+                        case "dnd":
+                          this.props.color = "#ff0000"
+                          break
+                        case "online":
+                          this.props.color = "#00ff00"
+                          break
+                        default:
+                          this.props.color = "#000000"
+                          break
+                      }
                     }
                     specs.seenStr = specs.online ? "🟩ONLINE🟩" : "SEEN"
                     let seenTime  = record.match(/T\:([^;]+)/)
                     let seenChan  = record.match(/C\:([\d]+)/)
                     let seenMsg   = record.match(/M\:([\d]+)/)
 
-                    if (!specs.online) {
+                    if (!specs.online || true) {
                       if (seenTime) {
                         // console.log(seenTime)
                         specs.seenStr = timeFormat(moment.utc(seenTime[1]), { with: "relative" })
@@ -556,7 +573,7 @@ module.exports = class MentionCommand extends RookCommand {
           [
             // Seen Time
             {
-              name: "Last Seen Time",
+              name: "Last Seen Active",
               value: specs?.seenStr
             }
           ],
