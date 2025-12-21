@@ -132,6 +132,9 @@ dist
 # TernJS port file
 .tern-port
 
+# TypeScript config
+tsconfig.json
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged

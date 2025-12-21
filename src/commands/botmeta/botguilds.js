@@ -5,6 +5,7 @@ const { ApplicationCommandOptionType, inlineCode, bold, userMention } = require(
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 // Use Discord HammerTime
+const stringFuncs = require('../../utils/primitives/stringFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
 const moment = require('moment')
@@ -103,7 +104,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     console.log("")
     console.log("---")
 
-    let plural = "server" + ((Object.keys(sorted).length != 1) ? "s" : "")
+    let plural = "server".pluralize(Object.keys(sorted).length)
     console.log(`${client.user.username}#${client.user.discriminator} (ID:${client.user.id}) is on ${Object.keys(sorted).length} ${plural}!`)
 
     const Table = new AsciiTable("", {})

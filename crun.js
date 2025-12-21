@@ -5,7 +5,6 @@ const fileFuncs = require('./src/utils/fs/fileFuncs')
 const PACKAGE = require('./package.json') // Node Package data
 const emojis = require('./src/dbs/emojis.json') // Global Emojis
 const shell = require('shelljs')          // Run shell commands
-const path = require('path')              // Easy filepath management
 const fs = require('fs')                  // Filesystem manipulation
 
 const { setGlobalDispatcher, Agent } = require('undici')

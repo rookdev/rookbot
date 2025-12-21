@@ -19,3 +19,17 @@ String.prototype.boldItalic = function() {
 String.prototype.boldUnderline = function() {
   return bold(underline(this))
 }
+
+// Add pluralize() to string
+String.prototype.pluralize = function(count = 2) {
+  let singular = this
+  let plural = ""
+  if (singular.endsWith("s")) {
+    plural = this.substring(0, this.length - 2) + 'i'
+  } else if (singular.endsWith("y")) {
+    plural = this.substring(0, this.length - 1) + "ies"
+  } else {
+    plural = singular + 's'
+  }
+  return count == 1 ? singular : plural
+}

@@ -1,0 +1,674 @@
+{
+  "orichalcum": {
+    "name": "Orichalcum",
+    "color": "#A855F7",
+    "cat": "metals",
+    "description": "Awarded for enduring a fully randomized Multiworld that was crafted to be the absolute hardest that it could be and defeating your goal. (Glitches, Cosmetics, and soft QoL features excluded)",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario World",
+            "date": "11/25/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "MegaMan Battle Network 3",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Mothula",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Donkey Kong Country",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Murder",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Secret of Evermore",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "SuperSquad33",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Super Metroid",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Void",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Mario & Luigi Superstar Saga",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "platinum": {
+    "name": "Platinum",
+    "color": "#5FE5DC",
+    "cat": "metals",
+    "description": "Awarded for conquering a fully randomized Multiworld with a 100% mayhem YAML configuration and defeating your goal. (Glitches, Cosmetics, and soft QoL features excluded)",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/20/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "The Wind Waker",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "ArtsyLG",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Kirby's Dream Land 3",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/23/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Flareon",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Pokémon Mystery Dungeon: Explorers of Sky",
+            "date": "10/25/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Pokemon Red and Blue",
+            "date": "11/9/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #4",
+            "name": "Pokemon Crystal",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Kyle",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario 64",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Mothula",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/24/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Donkey Kong Country",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Murder",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Lingo 2",
+            "date": "10/22/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Lingo",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Royal",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Super Mario 64",
+            "date": "10/22/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Super Mario World",
+            "date": "11/9/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario World",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "SuperSquad33",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Super Metroid",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Void",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/26/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Celeste",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "gold": {
+    "name": "Gold",
+    "color": "#ffd700",
+    "cat": "metals",
+    "description": "Awarded for conquering a fully randomized Multiworld with a 90% mayhem YAML configuration and defeating your goal. (Glitches, Cosmetics, and soft QoL features excluded)",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "A Link to the Past",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Kyle",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "Ocarina of Time",
+            "date": "10/18/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #2",
+            "name": "Ocarina of Time",
+            "date": "10/20/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Mothula",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "A Link to the Past",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Murder",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "Lingo 2",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Royal",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "Super Mario 64",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "silver": {
+    "name": "Silver",
+    "color": "#c0c0c0",
+    "cat": "metals",
+    "description": "Awarded for conquering a fully randomized Multiworld with a 85% mayhem YAML configuration and defeating your goal. (Glitches, Cosmetics, and soft QoL features excluded)",
+    "winners": [
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "A Link to the Past",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Maskeroshi",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Void",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "A Link to the Past",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "bronze": {
+    "name": "Bronze",
+    "color": "#cd7f32",
+    "cat": "metals",
+    "description": "Awarded for joining a Multiworld tournament but not completing your goal. Better luck next time!",
+    "winners": [
+      {
+        "name": "Flareon",
+        "games": [
+          {
+            "tournament": "MMM #1",
+            "name": "Pokémon Mystery Dungeon: Explorers of Sky",
+            "date": "10/18/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Maskeroshi",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Ocarina of Time",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "diamond": {
+    "name": "Diamond",
+    "color": "#b9f2ff",
+    "cat": "gems",
+    "description": "The ultimate achievement. Awarded for conquering a 100% mayhem YAML with Death Link enabled, completing your goal alongside at least one other Death Link survivor, and earning the #1 spot in the community poll. Very well done.",
+    "winners": [
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "onyx": {
+    "name": "Onyx",
+    "color": "#000000",
+    "cat": "gems",
+    "description": "Awarded for surviving Death Link with at least one other Death Link finisher. You felt every death. You finished anyway.",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/20/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "The Wind Waker",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "ArtsyLG",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Kirby's Dream Land 3",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/23/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Flareon",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Pokemon Crystal",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Kyle",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Ocarina of Time",
+            "date": "10/21/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario 64",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Murder",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Lingo",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Royal",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Super Mario 64",
+            "date": "10/22/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #3",
+            "name": "Super Mario World",
+            "date": "11/9/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario World",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "SuperSquad33",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Super Metroid",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Void",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/26/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "ruby": {
+    "name": "Ruby",
+    "color": "#e0115f",
+    "cat": "gems",
+    "description": "Awarded for earning the #1 spot in the community poll. You have been heavily noticed by your peers, and have been rewarded!",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Super Mario World",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Ocarina of Time",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Flareon",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "Pokémon Mystery Dungeon: Explorers of Sky",
+            "date": "10/26/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "emerald": {
+    "name": "Emerald",
+    "color": "#50c878",
+    "cat": "gems",
+    "description": "Awarded for earning the #2 spot in the community poll. You have been heavily noticed by your peers, and have been rewarded!",
+    "winners": [
+      {
+        "name": "7n7",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "The Wind Waker",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Void",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/26/2025",
+            "count": 1
+          },
+          {
+            "tournament": "MMM #4",
+            "name": "Mario & Luigi Superstar Saga",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  "sapphire": {
+    "name": "Sapphire",
+    "color": "#6fa8dc",
+    "cat": "gems",
+    "description": "Awarded for earning the #3 spot in the community poll. You have been heavily noticed by your peers, and have been rewarded!",
+    "winners": [
+      {
+        "name": "Fechdog",
+        "games": [
+          {
+            "tournament": "MMM #2",
+            "name": "A Link to the Past",
+            "date": "10/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Flareon",
+        "games": [
+          {
+            "tournament": "MMM #4",
+            "name": "Pokemon Crystal",
+            "date": "11/26/2025",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "name": "Murder",
+        "games": [
+          {
+            "tournament": "MMM #3",
+            "name": "Lingo",
+            "date": "11/9/2025",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  }
+}
