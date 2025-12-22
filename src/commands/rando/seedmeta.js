@@ -38,6 +38,10 @@ module.exports = class SeedMetaCommand extends RookCommand {
             {
               name:   "Super Metroid Item Randomizer",
               value:  "sm-total"
+            },
+            {
+              name:   "Super Metroid X-Fusion Randomizer",
+              value:  "m4xfr"
             }
             // {
             //   name:   "Quad Randomizer",
@@ -51,7 +55,8 @@ module.exports = class SeedMetaCommand extends RookCommand {
         { "game-id": "z3m3",        "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
         // { "game-id": "z1m1z3m3",    "hash-id": "MOaOZII0QzS80DG9VTluXw" },
         { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" },
-        { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" }
+        { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" },
+        { "game-id": "m4xfr",       "hash-id": "VE9YSUMgQk9NQiBIT1JOVE8gVEFOSw" }
       ]
     }
     let props = {

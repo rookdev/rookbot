@@ -447,6 +447,113 @@ module.exports = async (hashID, gameID="z3r") => {
         }
       ]
     ]
+  } else if (gameID == "m4xfr") {
+    // SM X-Fusion Rando
+    let logic = await get_url(`https://castie.ddns.net/xf_rando/seed/${hashID}/data/logic.json`)
+    if (!logic?.randoVersion) {
+      // Settings Data not found
+      return [
+        [
+          {
+            name: "Error",
+            value: "No Settings Data found!"
+          }
+        ]
+      ]
+    }
+
+    fields = [
+      [
+        {
+          name: "Seed",
+          value: logic.seed
+        },
+        {
+          name: "Hash",
+          value: logic.seedHash
+        },
+        {
+          name: "Time",
+          value: moment.utc(logic.timestamp)
+        }
+      ],
+      [
+        {
+          name: "Version",
+          value: logic.randoVersion
+        },
+        {
+          name: "itemProgression",
+          value: logic.settings.itemProgression
+        },
+        {
+          name: "progressionRate",
+          value: logic.settings.progressionRate
+        }
+      ],
+      [
+        {
+          name: "itemPriority",
+          value: logic.settings.itemPriority
+        },
+        {
+          name: "wideBeforePlasma",
+          value: logic.settings.wideBeforePlasma
+        },
+        {
+          name: "missileStart",
+          value: logic.settings.missileStart
+        }
+      ],
+      [
+        {
+          name: "etankStart",
+          value: logic.settings.etankStart
+        },
+        {
+          name: "reserveXStart",
+          value: logic.settings.reserveXStart
+        },
+        {
+          name: "powerBombStart",
+          value: logic.settings.powerBombStart
+        }
+      ],
+      [
+        {
+          name: "chargeBeamStart",
+          value: logic.settings.chargeBeamStart
+        },
+        {
+          name: "iceMissileStart",
+          value: logic.settings.iceMissileStart
+        },
+        {
+          name: "samusSprite",
+          value: logic.settings.samusSprite
+        }
+      ],
+      [
+        {
+          name: "Start Location",
+          value: logic.startLocation.fullName
+        },
+        {
+          name: "Permalink",
+          value: hyperlink(
+            inlineCode(hashID),
+            `https://castie.ddns.net/xf_rando/seed/${hashID}/`
+          )
+        },
+        {
+          name: "Logic JSON",
+          value: hyperlink(
+            inlineCode(hashID),
+            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/logic.json`
+          )
+        }
+      ]
+    ]
   }
 
   return fields

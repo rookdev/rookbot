@@ -1,0 +1,12 @@
+{
+  "madlibs": [ "m3" ],
+  "rando": {
+    "player": {
+      "name": "Super Metroid X-Fusion Randomizer",
+      "avatar": "https://static.wikia.nocookie.net/metroid/images/8/89/M3_sprite_Screw_Attack_logo.gif"
+    },
+    "scripts": [
+    ],
+    "permalink": "https://castie.ddns.net/xf_rando/seed/<hash>/"
+  }
+}

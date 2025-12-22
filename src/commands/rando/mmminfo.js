@@ -20,7 +20,9 @@ const {
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
+const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const moment = require('moment')
 
 module.exports = class MMMInfoCommand extends RookCommand {
   constructor(client) {
@@ -67,29 +69,47 @@ module.exports = class MMMInfoCommand extends RookCommand {
 
         this.props = {
           title: { text: `MMM #${episodeID}`},
-          description: [episode.datetime],
+          description: [],
           entities: {
             user: {
               name: "Mothula's Multiworld Mayhem",
               avatar: "https://cdn.discordapp.com/guilds/1450159772622913628/users/192821967802466304/avatars/19060e0ae7693f7ec4b39775e38fe20e.webp?size=256",
               url: "http://mothula.neocities.org/MMM"
             }
+          },
+          playerTypes: {
+            user: "user",
+            target: "user"
           }
         }
+        if (episode?.datetime && episode.datetime != "") {
+          episode.datetime = timeFormat(episode.datetime, { with: "relative" })
+        }
+        this.props.description.push(episode.datetime)
         this.props.description.push("")
 
         for (let [pName, pData] of Object.entries(episode.players)) {
           let trophies = ""
           for (let trophy of pData.eligible) {
-            trophies += interaction.guild.emojis.cache.find(`mmm${trophy}`)
+            let emoji = interaction.guild.emojis.cache.find(
+              e => (e.name === `mmm${trophy}`) || (e.name === `:mmm${trophy}:`)
+            )
+            trophies += `${emoji}`
           }
           this.props.description.push(
             [
-              `${pName}: ${pData.game}`,
-              trophies
+              `${bold(pName)}: ${italic(pData.game)} [${trophies}]`
             ]
           )
         }
+
+        this.props.description.push("")
+        this.props.description.push(
+          hyperlink(
+            "Mothula's Multiworld Mayhem",
+            "http://mothula.neocities.org/MMM"
+          )
+        )
       }
     }
 
@@ -108,13 +128,6 @@ module.exports = class MMMInfoCommand extends RookCommand {
           title: { text: `${tData.name} Trophy` },
           color: tData.color,
           description: [tData.description],
-          playerTypes: {
-            target: "target"
-          },
-          playerTypes: {
-            user: "user",
-            target: "target"
-          },
           entities: {
             user: {
               name: "Mothula's Multiworld Mayhem",
@@ -125,6 +138,10 @@ module.exports = class MMMInfoCommand extends RookCommand {
               name: tData.name + " Trophy",
               avatar: `http://alttp.mymm1.com/images/mmm/trophies/${tType}.png`
             }
+          },
+          playerTypes: {
+            user: "user",
+            target: "target"
           }
         }
         props.description.push("")
