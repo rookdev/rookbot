@@ -449,8 +449,11 @@ module.exports = async (hashID, gameID="z3r") => {
     ]
   } else if (gameID == "m4xfr") {
     // SM X-Fusion Rando
+    let seedData = await get_url(`https://castie.ddns.net/xf_rando/seed/${hashID}/data/seed.json`)
+    let metadata = seedData.metadata
+    let settings = seedData.settings
     let logic = await get_url(`https://castie.ddns.net/xf_rando/seed/${hashID}/data/logic.json`)
-    if (!logic?.randoVersion) {
+    if (!metadata?.randoVersion) {
       // Settings Data not found
       return [
         [
@@ -466,83 +469,92 @@ module.exports = async (hashID, gameID="z3r") => {
       [
         {
           name: "Seed",
-          value: logic.seed
+          value: metadata.seed
         },
         {
           name: "Hash",
-          value: logic.seedHash
+          value: metadata.hash4Word
         },
         {
           name: "Time",
-          value: moment.utc(logic.timestamp)
+          value: moment.utc(metadata.created)
         }
       ],
       [
         {
           name: "Version",
-          value: logic.randoVersion
+          value: metadata.randoVersion
         },
         {
           name: "itemProgression",
-          value: logic.settings.itemProgression
+          value: settings.itemProgression
         },
         {
           name: "progressionRate",
-          value: logic.settings.progressionRate
+          value: settings.progressionRate
         }
       ],
       [
         {
           name: "itemPriority",
-          value: logic.settings.itemPriority
+          value: settings.itemPriority
         },
         {
           name: "wideBeforePlasma",
-          value: logic.settings.wideBeforePlasma
+          value: settings.wideBeforePlasma
         },
         {
           name: "missileStart",
-          value: logic.settings.missileStart
+          value: settings.missileStart
         }
       ],
       [
         {
           name: "etankStart",
-          value: logic.settings.etankStart
+          value: settings.etankStart
         },
         {
           name: "reserveXStart",
-          value: logic.settings.reserveXStart
+          value: settings.reserveXStart
         },
         {
           name: "powerBombStart",
-          value: logic.settings.powerBombStart
+          value: settings.powerBombStart
         }
       ],
       [
         {
           name: "chargeBeamStart",
-          value: logic.settings.chargeBeamStart
+          value: settings.chargeBeamStart
         },
         {
           name: "iceMissileStart",
-          value: logic.settings.iceMissileStart
+          value: settings.iceMissileStart
         },
         {
           name: "samusSprite",
-          value: logic.settings.samusSprite
+          value: settings.samusSprite
         }
       ],
       [
         {
           name: "Start Location",
           value: logic.startLocation.fullName
-        },
+        }
+      ],
+      [
         {
           name: "Permalink",
           value: hyperlink(
             inlineCode(hashID),
             `https://castie.ddns.net/xf_rando/seed/${hashID}/`
+          )
+        },
+        {
+          name: "Seed JSON",
+          value: hyperlink(
+            inlineCode(hashID),
+            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/seed.json`
           )
         },
         {

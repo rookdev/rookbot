@@ -75,6 +75,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
               name:   "Super Metroid VARIA Randomizer",
               value:  "varia"
             },
+            {
+              name:   "Super Metroid X-Fusion Randomizer",
+              value:  "m4xfr"
+            },
             // {
             //   name:   "Quad Randomizer",
             //   value:  "z1m1z3m3"
@@ -157,7 +161,13 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { randomizer: "varia", "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410?msg=%27Suits%20restriction%27%20forced%20to%20off" },
         { randomizer: "varia", "prep-time": 60 },
         { randomizer: "varia", "scheduled-time": "3155760000" },
-        { randomizer: "varia", "group-id": "1983" }
+        { randomizer: "varia", "group-id": "1983" },
+        { randomizer: "m4xfr" },
+        { randomizer: "m4xfr", "ping-multiplayer-role": true },
+        { randomizer: "m4xfr", "seed-url": "https://castie.ddns.net/xf_rando/seed/VE9YSUMgQk9NQiBIT1JOVE8gVEFOSw/" },
+        { randomizer: "m4xfr", "prep-time": 60 },
+        { randomizer: "m4xfr", "scheduled-time": "3155760000" },
+        { randomizer: "m4xfr", "group-id": "1983" }
       ],
       aliases: [
         // ALttPR
@@ -196,6 +206,13 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           name: "varia",
           description: "Starts a Super Metroid VARIA Randomizer Game with all necessary details",
           options: { randomizer: "varia" }
+        },
+
+        // M4XFR
+        {
+          name: "m4xfr",
+          description: "Starts a Super Metroid X-Fusion Randomizer Game with all necessary details",
+          options: { randomizer: "m4xfr" }
         },
 
         // Quad
@@ -465,6 +482,9 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       )
 
       // Get metadata fields
+      if (seedURL.endsWith("/")) {
+        seedURL = seedURL.substring(0, seedURL.length - 1)
+      }
       let hashID = seedURL.split("/")
       hashID = hashID[hashID.length - 1]
       this.props.fields = await getSeedFields(hashID, randomizer)
