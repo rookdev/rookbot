@@ -8,6 +8,100 @@
     "scripts": [
       "[Unstable June 2024 (`esync-v20240601-smz3`)](https://github.com/alttpo/alttpo/releases/tag/esync-v20240601-smz3)"
     ],
-    "permalink": "https://alttpr.com/h/<hash>"
+    "permalink": "https://alttpr.com/h/<hash>",
+    "fields": {
+      "sources": {
+        "hash_meta": {
+          "url": "http://alttp.mymm1.com/seeds/meta.php?hash=<hash>",
+          "check": "generated"
+        }
+      },
+      "items": [
+        [
+          {
+            "name": "logic",
+            "value": ["hash_meta","logic"]
+          },
+          {
+            "name": "items",
+            "value": "???"
+          },
+          {
+            "name": "dungeon_items",
+            "value": ["hash_meta","dungeon_items"]
+          }
+        ],
+        [
+          {
+            "name": "accessibility",
+            "value": ["hash_meta","accessibility"]
+          },
+          {
+            "name": "goal",
+            "value": ["hash_meta","goal"]
+          },
+          {
+            "name": "tower/ganon",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "world_state",
+            "value": ["hash_meta","mode"]
+          },
+          {
+            "name": "boss_shuffle",
+            "value": ["hash_meta","enemizer.boss_shuffle"]
+          },
+          {
+            "name": "enemy_shuffle",
+            "value": ["hash_meta","enemizer.enemy_shuffle"]
+          }
+        ],
+        [
+          {
+            "name": "weapons",
+            "value": ["hash_meta","weapons"]
+          },
+          {
+            "name": "enemy_damage",
+            "value": ["hash_meta","enemizer.enemy_damage"]
+          },
+          {
+            "name": "enemy_health",
+            "value": ["hash_meta","enemizer.enemy_health"]
+          }
+        ],
+        [
+          {
+            "name": "build",
+            "value": ["hash_meta","build"]
+          },
+          {
+            "name": "tournament",
+            "value": "???"
+          },
+          {
+            "name": "pseudoboots",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "pot_shuffle",
+            "value": ["hash_meta","enemizer.pot_shuffle"]
+          },
+          {
+            "name": "hash_id",
+            "value": "???"
+          },
+          {
+            "name": "generation_date",
+            "value": "???"
+          }
+        ]
+      ]
+    }
   }
 }

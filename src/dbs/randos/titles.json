@@ -1,0 +1,19 @@
+{
+  "logic":                  "📝Logic",
+  "items":                  "🎒Items",
+  "dungeon_items":          "🗝️Dungeon Items",
+  "accessibility":          "♿Accessibility",
+  "goal":                   "🏁Goal",
+  "tower/ganon":            "♖Tower/🐗Ganon",
+  "world_state":            "🌐World State",
+  "enemizer.boss_shuffle":  "⚁Boss Shuffle",
+  "enemizer.enemy_shuffle": "⚀Enemy Shuffle",
+  "weapons":                "⚔️Weapons",
+  "enemizer.enemy_damage":  "⚔️Enemy Damage",
+  "enemizer.enemy_health":  "❤️Enemy Health",
+  "build":                  "🛠️Build",
+  "tournament":             "🥇Tournament",
+  "pseudoboots":            "👢Pseudoboots",
+  "enemizer.pot_shuffle":   "🍯Pot Shuffle",
+  "hash_id":                "#️Hash ID"
+}

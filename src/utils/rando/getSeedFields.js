@@ -1,5 +1,7 @@
 // Formatters
 const { inlineCode, hyperlink } = require('discord.js')
+const stringFuncs = require('../../utils/primitives/stringFuncs')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../formatters/timeFormat')
 // Decode slugIDs
@@ -53,114 +55,107 @@ module.exports = async (hashID, gameID="z3r") => {
     ]
   }
 
+  let randoSeedTitles = fileFuncs.getAFile(
+    [
+      "src",
+      "dbs",
+      "randos"
+    ],
+    "titles.json"
+  )
+
   // Z3R
   if (gameID == "z3r") {
-    hash_meta = await get_url(`http://alttp.mymm1.com/seeds/meta.php?hash=${hashID}`)
-
-    if (!hash_meta?.generated) {
-      // Hash Data not found
-      return [
-        [
-          {
-            name: "Error",
-            value: "No Hash Data found!"
-          }
+    let rData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
+      `${gameID}.json`
+    )
+    let sources = {}
+    for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
+      sources[sKey] = await get_url(sData["url"].replace("<hash>",hashID))
+      if (!sources[sKey][sData["check"]]) {
+        // Hash Data not found
+        return [
+          [
+            {
+              name: "Error",
+              value: "No Hash Data found!"
+            }
+          ]
         ]
-      ]
+      }
     }
 
-    let generatedDateTime = moment.utc(hash_meta?.generated)
+    let generatedDateTime = moment.utc(sources.hash_meta?.generated)
 
-    fields = [
-      [
-        {
-          name: "📝Logic",
-          value: hash_meta.logic
-        },
-        {
-          name: "🎒Items",
-          value: `${hash_meta?.item_placement.ucfirst()}/${hash_meta?.item_pool.ucfirst()}/${hash_meta?.item_functionality.ucfirst()}`
-        },
-        {
-          name: "🗝️Dungeon Items",
-          value: hash_meta?.dungeon_items.ucfirst()
+    fields = []
+    for (let itemRow of rData["rando"]["fields"]["items"]) {
+      let fieldRow = []
+      for (let itemCell of itemRow) {
+        let itemName = itemCell["name"]
+        let itemValue = null
+        if (typeof itemCell["value"] != "string") {
+          for (let sKey of itemCell["value"]) {
+            // console.log(sKey,itemName,itemValue)
+            if (!itemValue) {
+              itemValue = sources[sKey]
+            } else {
+              itemValue = itemValue[sKey]
+            }
+          }
+        } else if (itemCell["value"] == "???") {
+          switch(itemCell["name"]) {
+            case "items":
+              itemValue = ""
+              itemValue += sources.hash_meta?.item_placement.ucfirst()
+              itemValue += '/'
+              itemValue += sources.hash_meta?.item_pool.ucfirst()
+              itemValue += '/'
+              itemValue += sources.hash_meta?.item_functionality.ucfirst()
+              break
+            case "tower/ganon":
+              itemValue = ""
+              itemValue += sources.hash_meta?.entry_crystals_tower + " Crystals"
+              itemValue += '/'
+              itemValue += sources.hash_meta?.entry_crystals_ganon + " Crystals"
+              break
+            case "tournament":
+              itemValue = sources.hash_meta?.tournament ? emojis.check : emojis.nocheck
+              break
+            case "pseudoboots":
+              itemValue = sources.hash_meta?.pseudoboots ? emojis.check : emojis.nocheck
+              break
+            case "hash_id":
+              itemValue = hyperlink(
+                inlineCode(sources.hash_meta?.hash),
+                `http://alttpr.com/h/${sources.hash_meta?.hash}`
+              )
+              break
+            case "generation_date":
+              itemValue = timeFormat(generatedDateTime.format("x"), { with: "relative" })
+              break
+          }
         }
-      ],
-      [
-        {
-          name: "♿Accessibility",
-          value: hash_meta?.accessibility.ucfirst()
-        },
-        {
-          name: "🏁Goal",
-          value: hash_meta?.goal.ucfirst()
-        },
-        {
-          name: "♖Tower/🐗Ganon",
-          value: `${hash_meta?.entry_crystals_tower} Crystals/${hash_meta?.entry_crystals_ganon} Crystals`
+        if (itemName && itemValue) {
+          if (randoSeedTitles[itemName]) {
+            itemName = randoSeedTitles[itemName]
+          } else {
+            itemName = itemName.split("_").map(x => x.ucfirst()).join(" ")
+          }
+          fieldRow.push(
+            {
+              name: itemName,
+              value: itemValue.ucfirst()
+            }
+          )
         }
-      ],
-      [
-        {
-          name: "🌐World State",
-          value: hash_meta?.mode.ucfirst()
-        },
-        {
-          name: "⚁Boss Shuffle",
-          value: hash_meta["enemizer.boss_shuffle"].ucfirst()
-        },
-        {
-          name: "⚀Enemy Shuffle",
-          value: hash_meta["enemizer.enemy_shuffle"].ucfirst()
-        }
-      ],
-      [
-        {
-          name: "⚔️Weapons",
-          value: hash_meta?.weapons.ucfirst()
-        },
-        {
-          name: "⚔️Enemy Damage",
-          value: hash_meta["enemizer.enemy_damage"].ucfirst()
-        },
-        {
-          name: "❤️Enemy Health",
-          value: hash_meta["enemizer.enemy_health"].ucfirst()
-        },
-      ],
-      [
-        {
-          name: "🛠️Build",
-          value: hash_meta?.build
-        },
-        {
-          name: "🥇Tournament",
-          value: hash_meta?.tournament ? emojis.check : emojis.nocheck
-        },
-        {
-          name: "👢Pseudoboots",
-          value: hash_meta?.pseudoboots ? emojis.check : emojis.nocheck
-        },
-      ],
-      [
-        {
-          name: "🍯Pot Shuffle",
-          value: hash_meta["enemizer.pot_shuffle"].ucfirst()
-        },
-        {
-          name: "#️Hash ID",
-          value: "" +
-            hyperlink(
-              inlineCode(hash_meta?.hash),
-              `http://alttpr.com/h/${hash_meta?.hash}`
-            )
-        },
-        {
-          name: "Generation Date",
-          value: timeFormat(generatedDateTime.format("x"), { with: "relative" })
-        }
-      ]
-    ]
+      }
+      fields.push(fieldRow)
+    }
   } else if (gameID == "m3maprando") {
     // SM Map Rando
     let settings = await get_url(`http://maprando.com/seed/${hashID}/data/settings.json`)
