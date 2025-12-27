@@ -7,7 +7,8 @@ const fs = require('fs/promises')
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-let help = {}
+let helpDoc = {}
+let aliasesDoc = {}
 
 async function extractCommand(command) {
   let {
@@ -71,10 +72,10 @@ async function registerCommand(
   )
 
   // Add to Help
-  if(!(cmdParts.category in help)) {
-    help[cmdParts.category] = {}
+  if(!(cmdParts.category in helpDoc)) {
+    helpDoc[cmdParts.category] = {}
   }
-  help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "local")
+  helpDoc[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "local")
 
   // If command already exists
   if (existingCommand) {
@@ -85,7 +86,7 @@ async function registerCommand(
       try {
         await commandsManager.delete(existingCommand.id)
         delete client.commands[cmdParts.name]
-        delete help[cmdParts.category][cmdParts.name]
+        delete helpDoc[cmdParts.category][cmdParts.name]
       } catch (error) {
         messages.push(`${client.profile.emojis.fail} Failed to delete: "${cmdParts.name}":`, error.message)
       }
@@ -119,10 +120,10 @@ async function registerCommand(
           client.commands[cmdParts.name] = await commandsManager.fetch(existingCommand.id)
 
           // Add to Help
-          if(!(cmdParts.category in help)) {
-            help[cmdParts.category] = {}
+          if(!(cmdParts.category in helpDoc)) {
+            helpDoc[cmdParts.category] = {}
           }
-          help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "edited")
+          helpDoc[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "edited")
         } else {
           // Failed to edit
           messages.push(`${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message)
@@ -154,10 +155,10 @@ async function registerCommand(
       client.commands[cmdParts.name] = newCommand
 
       // Add to Help
-      if(!(cmdParts.category in help)) {
-        help[cmdParts.category] = {}
+      if(!(cmdParts.category in helpDoc)) {
+        helpDoc[cmdParts.category] = {}
       }
-      help[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "new")
+      helpDoc[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "new")
     } catch (error) {
       // If error
       if (error.code === 429) {
@@ -231,10 +232,16 @@ module.exports = async (client) => {
       if (cmdParts.aliases && cmdParts.aliases.length > 0) {
         // continue
         let parentName = cmdParts.name
+        if (!aliasesDoc[parentName]) {
+          aliasesDoc[parentName] = {}
+        }
         for (let alias of cmdParts.aliases) {
           cmdParts.name = alias?.name
           cmdParts.description = alias?.description
           cmdParts.defaultOptions = alias?.options
+          if (!aliasesDoc[parentName][cmdParts.name]) {
+            aliasesDoc[parentName][cmdParts.name] = {}
+          }
           let newOptions = []
           if (cmdParts?.options && cmdParts.options.length > 0) {
             for (let i in cmdParts.options) {
@@ -249,6 +256,12 @@ module.exports = async (client) => {
 
           cmdParts.options = newOptions
           cmdParts.parent = parentName
+          let msg = ""
+          msg = cmdParts.name + ": "
+          for (let [msgName, msgValue] of Object.entries(alias.options)) {
+            aliasesDoc[parentName][cmdParts.name][msgName] = msgValue
+          }
+          messages.push(msg)
 
           if (cmdParts.options.length == 0) {
             delete cmdParts.options
@@ -273,10 +286,21 @@ module.exports = async (client) => {
       "./src/res/app/manifests/help/help.json",
       (
         JSON.stringify(
-          help,
+          helpDoc,
           null,
           2
         ) +
+        "\n"
+      ).replace(/\n/g, "\r\n")
+    )
+    await fs.writeFile(
+      "./src/res/app/manifests/help/aliases.json",
+      (
+        JSON.stringify(
+          aliasesDoc,
+          null,
+          2
+        ) + 
         "\n"
       ).replace(/\n/g, "\r\n")
     )

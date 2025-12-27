@@ -1,0 +1,64 @@
+{
+  "nickchange": {
+    "castiename": {
+      "target-id": "1111517386588307536"
+    },
+    "castlename": {
+      "target-id": "1111517386588307536"
+    }
+  },
+  "slap": {
+    "trout": {
+      "distance": "a bit",
+      "item": "a large trout"
+    }
+  },
+  "mention": {
+    "channelinfo": {
+      "target-type": "channel"
+    },
+    "emojiinfo": {
+      "target-type": "emoji"
+    },
+    "roleinfo": {
+      "target-type": "role"
+    },
+    "userinfo": {
+      "target-type": "user"
+    },
+    "vcinfo": {
+      "target-type": "channel"
+    }
+  },
+  "purge": {
+    "clear": {
+      "amount": 100
+    }
+  },
+  "seedannounce": {
+    "z3r": {
+      "randomizer": "z3r"
+    },
+    "alttpr": {
+      "randomizer": "z3r"
+    },
+    "smmr": {
+      "randomizer": "m3maprando"
+    },
+    "z3m3": {
+      "randomizer": "z3m3"
+    },
+    "smz3": {
+      "randomizer": "z3m3"
+    },
+    "varia": {
+      "randomizer": "varia"
+    },
+    "m4xfr": {
+      "randomizer": "m4xfr"
+    },
+    "ap": {
+      "randomizer": "ap"
+    }
+  }
+}

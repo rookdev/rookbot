@@ -129,8 +129,8 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         // Rando & Ping
         // Rando & Seed URL
         // Rando & Prep Time
-        // Rando & Group ID
         // Rando & Start Time
+        // Rando & Group ID
         { randomizer: "z3r" },
         { randomizer: "z3r", "ping-multiplayer-role": true },
         { randomizer: "z3r", "seed-url": "https://alttpr.com/h/0yAONb6XMV" },
@@ -245,7 +245,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     const randomizer = coptions.randomizer ?? "z3m3"
 
     // Ping role?
-    const doPing = coptions['ping-multiplayer-role'] ?? false // Default to false
+    let doPing = coptions['ping-multiplayer-role'] ?? false // Default to false
     // Role to ping
     let roleID = coptions['pingable-role-id'] ?? 0
     // Seed URL
@@ -269,7 +269,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Generate random group name
     const randNum = coptions['group-id'] ?? randFuncs.myRand(10000000001)
-    const groupName = `zdoi${randNum}`
+    const groupName = randNum.startsWith("zdoi") ? randNum : `zdoi${randNum}`
 
     // Get the current timestamp and add <prepTimeMinutes> minutes of prep time
     const now = moment.utc()
@@ -423,44 +423,48 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Construct the content for the channel message
     // Get the Pinger role
     let roleObject = null
-    if (doPing) {
-      console.log("Do Ping")
-      let roleIDs = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          interaction?.guild?.id
-        ],
-        "roleIDs.json"
-      )
-      if (roleIDs) {
-        // If no role, try the one listed in the guild DB
-        if ((roleID == 0) && (roleIDs["pingable-multiplayer-role"])) {
+    let roleIDs = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        interaction?.guild?.id
+      ],
+      "roleIDs.json"
+    )
+    if (roleIDs) {
+      // If no role, try the one listed in the guild DB
+      if (roleID == 0) {
+        if (roleIDs[randomizer]) {
+          console.log(`Found Game-Specific Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
+          roleID = roleIDs[randomizer]
+        } else if (doPing && roleIDs["pingable-multiplayer-role"]) {
           console.log(`Found Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
           roleID = roleIDs["pingable-multiplayer-role"]
-        }
+        }          
       }
+    }
 
-      if (roleID != 0) {
-        // If we've got a role, try to find it
-        roleID = roleID.replace(/[<#@&!>]/g, '')
-        roleObject = await interaction?.guild?.roles.fetch(roleID)
-        if (!roleObject) {
-          this.error = true
-          console.log(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)
-          this.props.description = `Role doesn't exist in ${italic(interaction?.guild?.name)} with ID of '${roleID}'.`
-          return false
-        } else {
-          console.log(`Role Found`)
-        }
+    if (roleID != 0) {
+      // If we've got a role, try to find it
+      roleID = roleID.replace(/[<#@&!>]/g, '')
+      roleObject = await interaction?.guild?.roles.fetch(roleID)
+      if (!roleObject) {
+        this.error = true
+        console.log(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)
+        this.props.description = `Role doesn't exist in ${italic(interaction?.guild?.name)} with ID of '${roleID}'.`
+        return false
+      } else {
+        console.log(`Role Found`)
+        doPing = true
       }
     }
 
     // Build the Pinger
     if (doPing && roleObject && (roleID != 0)) {
+      console.log("Do Ping")
       this.content = roleMention(roleID)
       console.log(`Role Ping: On`)
-      this.props.description.push("🔔")
+      this.props.description.push(`🔔${roleMention(roleID)}`)
     }
 
     // Add the Announcement
