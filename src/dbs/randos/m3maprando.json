@@ -8,6 +8,114 @@
     "scripts": [
       "[Unstable June 2024 (`esync-v20240601-smz3`)](https://github.com/alttpo/alttpo/releases/tag/esync-v20240601-smz3) and [SMMR `ROMMapping.as`](https://drive.google.com/file/d/1vlltxwFO5kjOiCUvMD1abIuMNFOJFbO6/view?usp=sharing)"
     ],
-    "permalink": "https://maprando.com/seed/<hash>"
+    "permalink": "https://maprando.com/seed/<hash>",
+    "fields": {
+      "sources": {
+        "settings": {
+          "url": "http://maprando.com/seed/<hash>/data/settings.json",
+          "check": "version"
+        }
+      },
+      "items": [
+        [
+          {
+            "name": "game_version",
+            "value": ["settings","version"]
+          },
+          {
+            "name": "objectives",
+            "value": ["settings","objectives_mode"]
+          },
+          {
+            "name": "map_layout",
+            "value": ["settings","map_layout"]
+          }
+        ],
+        [
+          {
+            "name": "doors_mode",
+            "value": ["settings", "doors_mode"]
+          },
+          {
+            "name": "start_location_mode",
+            "value": ["settings", "start_location_mode"]
+          },
+          {
+            "name": "save_animals",
+            "value": ["settings","save_animals"]
+          }
+        ],
+        [
+          {
+            "name": "wall_jump",
+            "value": ["settings","other_settings","wall_jump"]
+          },
+          {
+            "name": "etank_refill",
+            "value": ["settings","other_settings","etank_refill"]
+          },
+          {
+            "name": "area_assignment",
+            "value": ["settings","other_settings","area_assignment"]
+          }
+        ],
+        [
+          {
+            "name": "item_dot_change",
+            "value": ["settings","other_settings","item_dot_change"]
+          },
+          {
+            "name": "transition_letters",
+            "value": "???"
+          },
+          {
+            "name": "door_locks_size",
+            "value": ["settings","other_settings","door_locks_size"]
+          }
+        ],
+        [
+          {
+            "name": "maps_revealed",
+            "value": ["settings","other_settings","maps_revealed"]
+          },
+          {
+            "name": "map_station_reveal",
+            "value": ["settings","other_settings","map_station_reveal"]
+          },
+          {
+            "name": "energy_free_shinesparks",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "ultra_low_qol",
+            "value": "???"
+          },
+          {
+            "name": "tournament",
+            "value": "???"
+          },
+          {
+            "name": "hash_id",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "metadata",
+            "value": "???"
+          },
+          {
+            "name": "compiled_maps",
+            "value": "???"
+          },
+          {
+            "name": "visualizer",
+            "value": "???"
+          }
+        ]
+      ]
+    }
   }
 }

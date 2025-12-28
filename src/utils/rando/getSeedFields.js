@@ -16,6 +16,7 @@ async function get_url(in_url) {
     let json = await req.json()
     return json
   } catch(e) {
+    console.log(in_url)
     console.log(e.stack)
   }
 }
@@ -149,7 +150,7 @@ module.exports = async (hashID, gameID="z3r") => {
           fieldRow.push(
             {
               name: itemName,
-              value: itemValue.ucfirst()
+              value: `${itemValue} `.trim().ucfirst()
             }
           )
         }
@@ -158,182 +159,190 @@ module.exports = async (hashID, gameID="z3r") => {
     }
   } else if (gameID == "m3maprando") {
     // SM Map Rando
-    let settings = await get_url(`http://maprando.com/seed/${hashID}/data/settings.json`)
-    if (!settings?.version) {
-      // Settings Data not found
-      return [
-        [
-          {
-            name: "Error",
-            value: "No Settings Data found!"
-          }
+    fields = []
+    let rData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
+      `${gameID}.json`
+    )
+    let sources = {}
+    for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
+      sources[sKey] = await get_url(sData["url"].replace("<hash>",hashID))
+      if (!sources[sKey][sData["check"]]) {
+        // Hash Data not found
+        return [
+          [
+            {
+              name: "Error",
+              value: "No Hash Data found!"
+            }
+          ]
         ]
-      ]
+      }
     }
-
-    fields = [
-      [
-        {
-          name: "📝Objectives",
-          value: settings?.objectives_mode
-        },
-        {
-          name: "🗺️Map Layout",
-          value: settings?.map_layout
-        },
-        {
-          name: "🚪Doors Mode",
-          value: settings?.doors_mode
+    for (let itemRow of rData["rando"]["fields"]["items"]) {
+      let fieldRow = []
+      for (let itemCell of itemRow) {
+        let itemName = itemCell["name"]
+        let itemValue = null
+        if (typeof itemCell["value"] != "string") {
+          for (let sKey of itemCell["value"]) {
+            // console.log(sKey,itemName,itemValue)
+            if (!itemValue) {
+              itemValue = sources[sKey]
+            } else {
+              itemValue = itemValue[sKey]
+            }
+          }
+        } else if (itemCell["value"] == "???") {
+          switch(itemCell["name"]) {
+            case "transition_letters":
+              itemValue = sources["settings"]?.other_settings.transition_letters ? emojis.check : emojis.nocheck
+              break
+            case "energy_free_shinesparks":
+              itemValue = sources["settings"]?.other_settings.energy_free_shinesparks ? emojis.check : emojis.nocheck
+              break
+            case "ultra_low_qol":
+              itemValue = sources["settings"]?.other_settings.ultra_low_qol ? emojis.check : emojis.nocheck
+              break
+            case "tournament":
+              itemValue = sources["settings"]?.other_settings.race_mode ? emojis.check : emojis.nocheck
+              break
+            case "hash_id":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            `https://maprando.com/seed/${hashID}`
+                          )
+              break
+            case "metadata":
+              itemValue = hyperlink(
+                            "Settings",
+                            `https://maprando.com/seed/${hashID}/data/settings.json`
+                          ) + ", " +
+                          hyperlink(
+                            "Spoiler",
+                            `https://maprando.com/seed/${hashID}/data/spoiler.json`
+                          )
+              break
+            case "compiled_maps":
+              itemValue = `By ` +
+                          hyperlink(
+                            "Area",
+                            `https://maprando.com/seed/${hashID}/data/map-assigned.png`
+                          ) + ", " +
+                          hyperlink(
+                            "Origin",
+                            `https://maprando.com/seed/${hashID}/data/map-vanilla.png`
+                          )
+              break
+            case "visualizer":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            `https://maprando.com/seed/${hashID}/data/visualizer/index.html`
+                          )
+              break
+            default:
+              itemValue = itemCell["value"]
+              break
+          }
         }
-      ],
-      [
-        {
-          name: "▶️Start Location",
-          value: settings?.start_location_mode
-        },
-        {
-          name: "🐱Save Animals Expectation?",
-          value: settings?.save_animals
-        },
-        {
-          name: "👢Wall Jump?",
-          value: settings?.other_settings.wall_jump
+        if (itemName && itemValue) {
+          if (randoSeedTitles[itemName]) {
+            itemName = randoSeedTitles[itemName]
+          } else {
+            itemName = itemName.split("_").map(x => x.ucfirst()).join(" ")
+          }
+          fieldRow.push(
+            {
+              name: itemName,
+              value: `${itemValue} `.trim().ucfirst()
+            }
+          )
         }
-      ],
-      [
-        {
-          name: "🥫ETank Refill?",
-          value: settings?.other_settings.etank_refill
-        },
-        {
-          name: "🗺️Area Assignment",
-          value: settings?.other_settings.area_assignment
-        },
-        {
-          name: "◻️Item Dot Change",
-          value: settings?.other_settings.item_dot_change
-        }
-      ],
-      [
-        {
-          name: "🗺️Transition Letters?",
-          value: settings?.other_settings.transition_letters ? emojis.check : emojis.nocheck
-        },
-        {
-          name: "🔒Door Locks Size",
-          value: settings?.other_settings.door_locks_size
-        },
-        {
-          name: "🗺️Maps Revealed?",
-          value: settings?.other_settings.maps_revealed
-        }
-      ],
-      [
-        {
-          name: "🗺️Map Station Reveal",
-          value: settings?.other_settings.map_station_reveal
-        },
-        {
-          name: "✨Energy-Free Shinesparks?",
-          value: settings?.other_settings.energy_free_shinesparks ? emojis.check : emojis.nocheck
-        },
-        {
-          name: "🌡️Ultra-Low QoL?",
-          value: settings?.other_settings.ultra_low_qol ? emojis.check : emojis.nocheck
-        }
-      ],
-      [
-        {
-          name: "🥇Race Mode?",
-          value: settings?.other_settings.race_mode ? emojis.check : emojis.nocheck
-        },
-        {
-          name: "#️Hash ID",
-          value: "" +
-            hyperlink(
-              inlineCode(hashID),
-              `https://maprando.com/seed/${hashID}`
-            )
-        },
-        {
-          name: "📝Metadata",
-          value: "" +
-            hyperlink(
-              "Settings",
-              `https://maprando.com/seed/${hashID}/data/settings.json`
-            ) + ", " +
-            hyperlink(
-              "Spoiler",
-              `https://maprando.com/seed/${hashID}/data/spoiler.json`
-            )
-        }
-      ],
-      [
-        {
-          name: "🗺️Compiled Maps",
-          value: `By ` +
-            hyperlink(
-              "Area",
-              `https://maprando.com/seed/${hashID}/data/map-assigned.png`
-            ) + ", " +
-            hyperlink(
-              "Origin",
-              `https://maprnado.com/seed/${hashID}/data/map-vanilla.png`
-            )
-        },
-        {
-          name: "👀Visualizer",
-          value: "" +
-            hyperlink(
-              inlineCode(hashID),
-              `https://maprando.com/seed/${hashID}/data/visualizer/index.html`
-            )
-        }
-      ]
-    ]
+      }
+      fields.push(fieldRow) 
+    }
   } else if (["z3m3", "z1m1z3m3", "sm-total"].includes(gameID)) {
     // Z3M3
+    // Quad
+    // SM Total
     let decoded = decode(hashID).replaceAll("-",'')
 
-    let permalinkURL = `https://samus.link/seed/${hashID}`
-    let apiURL = ""
-
-    if (gameID == "z3m3") {
-      apiURL = `https://samus.link/api/seed/${decoded}`
-    } else if (gameID == "z1m1z3m3") {
-      // FIXME: Doesn't work
-      // apiURL = `https://quad.beta.samus.link/api/seed/${decoded}`
-    } else if (gameID == "sm-total") {
-      apiURL = `https://sm.samus.link/api/seed/${decoded}`
+    let rData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
+      `${gameID}.json`
+    )
+    if (
+      [
+        "z3m3",
+        "sm-total"
+      ].includes(gameID)
+    ) {
+      gameID = "z3m3"
     }
-    hash_meta = await get_url(apiURL)
-    console.log(apiURL)
-
-    if (!hash_meta?.worlds) {
-      // Hash Data not found
-      return [
-        [
-          {
-            name: "Error",
-            value: "No Hash Data found!"
+    let fData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
+      `${gameID}.json`
+    )
+    let sources = {}
+    for (let [sKey, sData] of Object.entries(fData["rando"]["fields"]["sources"])) {
+      let check = false
+      console.log(`URL: ${sData['url']}, Check: ${sData['check']}`)
+      if (
+        sData["url"].includes("[") ||
+        sData["url"].includes("]") ||
+        sData["url"].includes("seeddata.")
+      ) {
+        let urlParts = sData["url"].split(".")
+        let urlObj = urlParts.shift()
+        let urlSub = urlParts.join(".")
+        let evalCheck = `sources["${urlObj}"]`
+        if (urlSub != "") {
+          evalCheck += `.${urlSub}`
+        }
+        check = eval(evalCheck)
+        sources[sKey] = check
+        let isJSON = false
+        try {
+          isJSON = JSON.parse(sources[sKey])
+          if (isJSON) {
+            sources[sKey] = JSON.parse(sources[sKey])
           }
+        } catch(err) {
+          // do nothing
+        }
+      } else {
+        sources[sKey] = await get_url(sData["url"].replace("<slugid>",decoded))
+        check = sources[sKey][sData["check"]]
+      }
+      if (!check) {
+        // Hash Data not found
+        return [
+          [
+            {
+              name: "Error",
+              value: "No Hash Data found!"
+            }
+          ]
         ]
-      ]
+      }
+      if (sources[sKey]["spoiler"]) {
+        sources[sKey]["spoiler"] = null
+      }
     }
-
-    let settings = hash_meta.worlds[0].settings
-    settings = JSON.parse(settings)
-
-    if (!settings?.goal) {
-      return [
-        [
-          {
-            name: "Error",
-            value: "No Settings Data found!"
-          }
-        ]
-      ]
-    }
+    console.log(sources)
+    fields = []
 
     let nums = [
       "Zero",
@@ -345,10 +354,10 @@ module.exports = async (hashID, gameID="z3r") => {
       "Six",
       "Seven"
     ]
-    settings.opentower = nums.indexOf(settings?.opentower?.replace("crystals","").ucfirst())
-    settings.ganonvulnerable = nums.indexOf(settings?.ganonvulnerable?.replace("crystals","").ucfirst())
-    settings.opentourian = nums.indexOf(settings?.opentourian?.replace("bosses","").ucfirst())
-    let goal = settings?.goal
+    sources["settings"].opentower = nums.indexOf(sources["settings"]?.opentower?.replace("crystals","").ucfirst())
+    sources["settings"].ganonvulnerable = nums.indexOf(sources["settings"]?.ganonvulnerable?.replace("crystals","").ucfirst())
+    sources["settings"].opentourian = nums.indexOf(sources["settings"]?.opentourian?.replace("bosses","").ucfirst())
+    let goal = sources["settings"]?.goal
     if (goal) {
       switch(goal) {
         case "defeatboth":
@@ -366,82 +375,70 @@ module.exports = async (hashID, gameID="z3r") => {
       }
     }
 
-    fields = [
-      [
-        {
-          name: "📝Logic",
-          value: settings?.logic?.ucfirst()
-        },
-        {
-          name: "📝SMLogic",
-          value: settings?.smlogic?.ucfirst()
-        },
-        {
-          name: "🗝️Dungeon Items",
-          value: settings?.keyshuffle?.ucfirst()
-        },
-      ],
-      [
-        {
-          name: "🏁Goal",
-          value: goal
-        },
-        {
-          name: "♖Tower/🐗Ganon",
-          value: gameID != "sm-total" ? `${settings?.opentower} Crystals/${settings?.ganonvulnerable} Crystals` : ""
-        },
-        {
-          name: "🧠Tourian Open",
-          value: gameID != "sm-total" ? `${settings?.opentourian} G4 Bosses` : ""
+    let permalinkURL = rData.rando.permalink.replace("<hash>", hashID)
+    let apiURL = rData.rando.fields.sources["hash_meta"].url.replace("<slugid>", decoded)
+
+    for (let itemRow of fData["rando"]["fields"]["items"]) {
+      let fieldRow = []
+      for (let itemCell of itemRow) {
+        let itemName = itemCell["name"]
+        let itemValue = null
+        if (typeof itemCell["value"] != "string") {
+          for (let sKey of itemCell["value"]) {
+            // console.log(sKey,itemName,itemValue)
+            if (!itemValue) {
+              itemValue = sources[sKey]
+            } else {
+              itemValue = itemValue[sKey]
+            }
+          }
+        } else if (itemCell["value"] == "???") {
+          switch(itemCell["name"]) {
+            case "goal":
+              itemValue = goal
+              break
+            case "tower/ganon":
+              itemValue = (sources["settings"]?.opentower && sources["settings"].opentower && sources["settings"].opentower > -1) ? `${sources["settings"]?.opentower} Crystals/${sources["settings"]?.ganonvulnerable} Crystals` : ""
+              break
+            case "tourian_open":
+              itemValue = (sources["settings"]?.opentourian && sources["settings"].opentourian && sources["settings"].opentourian > -1) ? `${sources["settings"]?.opentourian} G4 Bosses` : ""
+              break
+            case "race_hash":
+              itemValue = inlineCode(sources["hash_meta"]?.hash)
+              break
+            case "permalink":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            permalinkURL
+                          )
+              break
+            case "guid_permalink":
+              itemValue = hyperlink(
+                            inlineCode(decoded),
+                            apiURL
+                          )
+              break
+            default:
+              itemValue = itemCell["value"]
+              break
+          }
         }
-      ],
-      [
-        {
-          name: "🌐World State",
-          value: settings?.gamemode?.ucfirst()
-        },
-        {
-          name: "⚔️Sword Location",
-          value: settings?.swordlocation?.ucfirst()
-        },
-        {
-          name: "⚪Morph Location",
-          value: settings?.morphlocation?.ucfirst()
-        },
-      ],
-      [
-        {
-          name: "📝Version",
-          value: hash_meta?.gameVersion
-        },
-        {
-          name: "🥇Tournament",
-          value: settings?.race == "true" ? emojis.check : emojis.nocheck
+        if (itemName && itemValue) {
+          if (randoSeedTitles[itemName]) {
+            itemName = randoSeedTitles[itemName]
+          } else {
+            itemName = itemName.split("_").map(x => x.ucfirst()).join(" ")
+          }
+          fieldRow.push(
+            {
+              name: itemName,
+              value: `${itemValue} `.trim().ucfirst()
+            }
+          )
         }
-      ],
-      [
-        {
-          name: "#️Race Hash",
-          value: inlineCode(hash_meta?.hash)
-        },
-        {
-          name: "#️Seed ID",
-          value: "" +
-            hyperlink(
-              inlineCode(hashID),
-              permalinkURL
-            )
-        },
-        {
-          name: "#️Seed Guid",
-          value: "" +
-            hyperlink(
-              inlineCode(decoded),
-              apiURL
-            )
-        }
-      ]
-    ]
+      }
+      fields.push(fieldRow)
+    }
   } else if (gameID == "m4xfr") {
     // SM X-Fusion Rando
     let seedData = await get_url(`https://castie.ddns.net/xf_rando/seed/${hashID}/data/seed.json`)
@@ -472,24 +469,28 @@ module.exports = async (hashID, gameID="z3r") => {
         },
         {
           name: "Time",
-          value: moment.utc(metadata.created)
+          value: timeFormat(moment.utc(metadata.created).format("x"), { with: "relative" })
         }
       ],
       [
         {
-          name: "Version",
+          name: "Rando Version",
           value: metadata.randoVersion
+        },
+        {
+          name: "Game Version",
+          value: metadata.gameVersion
         },
         {
           name: "itemProgression",
           value: settings.itemProgression
-        },
-        {
-          name: "progressionRate",
-          value: settings.progressionRate
         }
       ],
       [
+        {
+          name: "progressionRate",
+          value: settings.progressionRate
+        },
         {
           name: "itemPriority",
           value: settings.itemPriority
@@ -497,13 +498,13 @@ module.exports = async (hashID, gameID="z3r") => {
         {
           name: "wideBeforePlasma",
           value: settings.wideBeforePlasma
-        },
-        {
-          name: "missileStart",
-          value: settings.missileStart
         }
       ],
       [
+        {
+          name: "missileStart",
+          value: settings.missileStart
+        },
         {
           name: "etankStart",
           value: settings.etankStart
@@ -511,13 +512,13 @@ module.exports = async (hashID, gameID="z3r") => {
         {
           name: "reserveXStart",
           value: settings.reserveXStart
-        },
-        {
-          name: "powerBombStart",
-          value: settings.powerBombStart
         }
       ],
       [
+        {
+          name: "powerBombStart",
+          value: settings.powerBombStart
+        },
         {
           name: "chargeBeamStart",
           value: settings.chargeBeamStart
@@ -525,13 +526,13 @@ module.exports = async (hashID, gameID="z3r") => {
         {
           name: "iceMissileStart",
           value: settings.iceMissileStart
-        },
-        {
-          name: "samusSprite",
-          value: settings.samusSprite
         }
       ],
       [
+        {
+          name: "samusSprite",
+          value: settings.samusSprite
+        },
         {
           name: "Start Location",
           value: logic.startLocation.fullName
@@ -561,6 +562,121 @@ module.exports = async (hashID, gameID="z3r") => {
         }
       ]
     ]
+
+    fields = []
+    let rData = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        "randos"
+      ],
+      `${gameID}.json`
+    )
+    let sources = {}
+    for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
+      if (
+        sData["url"].includes("[") ||
+        sData["url"].includes("]") ||
+        sData["url"].includes("seeddata.")
+      ) {
+        let urlParts = sData["url"].split(".")
+        let urlObj = urlParts.shift()
+        let urlSub = urlParts.join(".")
+        let evalCheck = `sources["${urlObj}"]`
+        if (urlSub != "") {
+          evalCheck += `.${urlSub}`
+        }
+        check = eval(evalCheck)
+        sources[sKey] = check
+        let isJSON = false
+        try {
+          isJSON = JSON.parse(sources[sKey])
+        } catch(err) {
+          // do nothing
+        }
+        if (isJSON) {
+          sources[sKey] = JSON.parse(sources[sKey])
+        }
+      } else {
+        sources[sKey] = await get_url(sData["url"].replace("<hash>",hashID))
+        check = sources[sKey][sData["check"]]
+      }
+      if (!sources[sKey][sData["check"]]) {
+        // Hash Data not found
+        return [
+          [
+            {
+              name: "Error",
+              value: "No Hash Data found!"
+            }
+          ]
+        ]
+      }
+    }
+    for (let itemRow of rData["rando"]["fields"]["items"]) {
+      let fieldRow = []
+      for (let itemCell of itemRow) {
+        let itemName = itemCell["name"]
+        let itemValue = null
+        if (typeof itemCell["value"] != "string") {
+          for (let sKey of itemCell["value"]) {
+            // console.log(sKey,itemName,itemValue)
+            if (!itemValue) {
+              itemValue = sources[sKey]
+            } else {
+              itemValue = itemValue[sKey]
+            }
+          }
+        } else if (itemCell["value"] == "???") {
+          switch(itemCell["name"]) {
+            case "seed":
+              itemValue = inlineCode(sources["metadata"].seed)
+              break
+            case "hash":
+              itemValue = inlineCode(sources["metadata"].hash4Word)
+              break
+            case "time":
+              itemValue = timeFormat(moment.utc(sources["metadata"].created).format("x"), { with: "relative" })
+              break
+            case "permalink":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            `https://castie.ddns.net/xf_rando/seed/${hashID}/`
+                          )
+              break
+            case "seed_json":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/seed.json`
+                          )
+              break
+            case "logic_json":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/logic.json`
+                          )
+              break
+            default:
+              itemValue = itemCell["value"]
+              break
+          }
+        }
+        if (itemName && itemValue) {
+          if (randoSeedTitles[itemName]) {
+            itemName = randoSeedTitles[itemName]
+          } else {
+            itemName = itemName.split("_").map(x => x.ucfirst()).join(" ")
+          }
+          fieldRow.push(
+            {
+              name: itemName,
+              value: `${itemValue} `.trim().ucfirst()
+            }
+          )
+        }
+      }
+      fields.push(fieldRow) 
+    }
   }
 
   return fields

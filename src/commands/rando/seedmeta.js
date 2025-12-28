@@ -56,7 +56,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         // { "game-id": "z1m1z3m3",    "hash-id": "MOaOZII0QzS80DG9VTluXw" },
         { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" },
         { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" },
-        { "game-id": "m4xfr",       "hash-id": "VE9YSUMgQk9NQiBIT1JOVE8gVEFOSw" }
+        { "game-id": "m4xfr",       "hash-id": "RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ" }
       ]
     }
     let props = {
@@ -77,8 +77,18 @@ module.exports = class SeedMetaCommand extends RookCommand {
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"
     let hashID = coptions['hash-id'] ?? ""
+    let autodetect = false
+    let autodetected = false
 
-    if (gameID == "z3r" && hashID != "") {
+    if (
+      gameID == "z3r" &&
+      hashID != "" &&
+      (
+        hashID.includes("http://") ||
+        hashID.includes("https://")
+      )
+    ) {
+      autodetect = true
       for (let filename of fileFuncs.getAllFiles(
         [
           "src",
@@ -87,21 +97,34 @@ module.exports = class SeedMetaCommand extends RookCommand {
         ]
       )) {
         let randoData = fileFuncs.getAFile(
-          [
-            "src",
-            "dbs",
-            "randos"
-          ],
+          // [
+          //   "src",
+          //   "dbs",
+          //   "randos"
+          // ],
           filename
         )
         if (randoData?.rando?.permalink) {
-          if (hashID.includes(randoData.rando.permalink.replace("<hash>",""))) {
-            let filenameParts = filename.split("\\")
-            if (filenameParts.length < 2) {
-              filenameParts = filename.split("/")
+          if (typeof randoData.rando.permalink == "string") {
+            randoData.rando.permalink = [randoData.rando.permalink]
+          }
+          for (let pattern of randoData.rando.permalink) {
+            let thisPattern = pattern.replace("<hash>","")
+            if (thisPattern.endsWith("//")) {
+              thisPattern = thisPattern.substring(0, thisPattern.length - 2)
             }
-            gameID = filenameParts[filenameParts.length - 1]
-            gameID = gameID.substring(0, gameID.indexOf("."))
+            if (hashID.includes(thisPattern)) {
+              console.log(filename,randoData.rando.permalink,thisPattern)
+              let filenameParts = filename.split("\\")
+              if (filenameParts.length < 2) {
+                filenameParts = filename.split("/")
+              }
+              gameID = filenameParts[filenameParts.length - 1]
+              gameID = gameID.substring(0, gameID.indexOf("."))
+              console.log(filename,randoData.rando.permalink,thisPattern,gameID)
+              autodetected = true
+              break
+            }
           }
         }
       }
@@ -115,7 +138,20 @@ module.exports = class SeedMetaCommand extends RookCommand {
       hashID = hashID[hashID.length - 1]
     }
 
-    let fields = await getSeedFields(hashID, gameID)
+    let fields = []
+    if (autodetect && !autodetected) {
+      // failed autodetect
+      console.log("Failed Autodetect!")
+    } else if (autodetect && autodetected) {
+      // succeeded autodetect
+      console.log("Succeeded Autodetect!")
+      console.log(hashID,gameID)
+      fields = await getSeedFields(hashID, gameID)      
+    } else {
+      // received explicit reference
+      console.log("Got Explicit Reference!")
+      fields = await getSeedFields(hashID, gameID)      
+    }
 
     let randoData = require(`../../dbs/randos/${gameID}.json`)
     this.props.title = {

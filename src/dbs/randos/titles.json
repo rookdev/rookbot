@@ -1,5 +1,6 @@
 {
   "logic":                  "📝Logic",
+  "smlogic":                "📝SM Logic",
   "items":                  "🎒Items",
   "dungeon_items":          "🗝️Dungeon Items",
   "accessibility":          "♿Accessibility",
@@ -15,5 +16,35 @@
   "tournament":             "🥇Tournament",
   "pseudoboots":            "👢Pseudoboots",
   "enemizer.pot_shuffle":   "🍯Pot Shuffle",
-  "hash_id":                "#️Hash ID"
+  "hash_id":                "#️Hash ID",
+  "generation_date":        "Generation Date",
+
+  "tourian_open":           "🧠Tourian Open",
+  "sword_location":         "⚔️Sword Location",
+  "morph_location":         "⚪Morph Location",
+  "game_version":           "📝Game Version",
+  "race_hash":              "#️Race Hash",
+  "permalink":              "#️Seed ID",
+  "guid_permalink":         "#️Seed Guid",
+
+  "objectives":               "📝Objectives",
+  "map_layout":               "🗺️Map Layout",
+  "doors_mode":               "🚪Doors Mode",
+  "start_location_mode":      "▶️Start Location",
+  "save_animals":             "🐱Save Animals Expectation?",
+  "wall_jump":                "👢Wall Jump?",
+  "etank_refill":             "🥫ETank Refill?",
+  "area_assignment":          "🗺️Area Assignment",
+  "item_dot_change":          "◻️Item Dot Change",
+  "transition_letters":       "🗺️Transition Letters?",
+  "door_locks_size":          "🔒Door Locks Size",
+  "maps_revealed":            "🗺️Maps Revealed?",
+  "map_station_reveal":       "🗺️Map Station Reveal",
+  "energy_free_shinesparks":  "✨Energy-Free Shinesparks?",
+  "ultra_low_qol":            "🌡️Ultra-Low QoL?",
+  "metadata":                 "📝Metadata",
+  "compiled_maps":            "🗺️Compiled Maps",
+  "visualizer":               "👀Visualizer",
+
+  "rando_version":            "📝Randomizer Version"
 }

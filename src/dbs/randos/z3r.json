@@ -51,11 +51,11 @@
             "value": ["hash_meta","mode"]
           },
           {
-            "name": "boss_shuffle",
+            "name": "enemizer.boss_shuffle",
             "value": ["hash_meta","enemizer.boss_shuffle"]
           },
           {
-            "name": "enemy_shuffle",
+            "name": "enemizer.enemy_shuffle",
             "value": ["hash_meta","enemizer.enemy_shuffle"]
           }
         ],
@@ -65,11 +65,11 @@
             "value": ["hash_meta","weapons"]
           },
           {
-            "name": "enemy_damage",
+            "name": "enemizer.enemy_damage",
             "value": ["hash_meta","enemizer.enemy_damage"]
           },
           {
-            "name": "enemy_health",
+            "name": "enemizer.enemy_health",
             "value": ["hash_meta","enemizer.enemy_health"]
           }
         ],
@@ -89,7 +89,7 @@
         ],
         [
           {
-            "name": "pot_shuffle",
+            "name": "enemizer.pot_shuffle",
             "value": ["hash_meta","enemizer.pot_shuffle"]
           },
           {

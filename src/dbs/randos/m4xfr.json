@@ -7,6 +7,126 @@
     },
     "scripts": [
     ],
-    "permalink": "https://castie.ddns.net/xf_rando/seed/<hash>/"
+    "permalink": "https://castie.ddns.net/xf_rando/seed/<hash>/",
+    "fields": {
+      "sources": {
+        "seeddata": {
+          "url": "https://castie.ddns.net/xf_rando/seed/<hash>/data/seed.json",
+          "check": "metadata"
+        },
+        "metadata": {
+          "url": "seeddata.metadata",
+          "check": "randoVersion"
+        },
+        "settings": {
+          "url": "seeddata.settings",
+          "check": "samusSprite"
+        },
+        "logic": {
+          "url": "https://castie.ddns.net/xf_rando/seed/<hash>/data/logic.json",
+          "check": "startLocation"
+        }
+      },
+      "items": [
+        [
+          {
+            "name": "seed",
+            "value": "???"
+          },
+          {
+            "name": "hash",
+            "value": "???"
+          },
+          {
+            "name": "time",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "rando_version",
+            "value": ["metadata","randoVersion"]
+          },
+          {
+            "name": "game_version",
+            "value": ["metadata","gameVersion"]
+          },
+          {
+            "name": "item_progression",
+            "value": ["settings","itemProgression"]
+          }
+        ],
+        [
+          {
+            "name": "progression_rate",
+            "value": ["settings","progressionRate"]
+          },
+          {
+            "name": "item_priority",
+            "value": ["settings","itemPriority"]
+          },
+          {
+            "name": "wide_before_plasma",
+            "value": ["settings","wideBeforePlasma"]
+          }
+        ],
+        [
+          {
+            "name": "missile_start",
+            "value": ["settings", "missileStart"]
+          },
+          {
+            "name": "etank_start",
+            "value": ["settings","etankStart"]
+          },
+          {
+            "name": "reserve_x_start",
+            "value": ["settings","reserveXStart"]
+          }
+        ],
+        [
+          {
+            "name": "power_bomb_start",
+            "value": ["settings","powerBombStart"]
+          },
+          {
+            "name": "charge_beam_start",
+            "value": ["settings","chargeBeamStart"]
+          },
+          {
+            "name": "ice_missile_start",
+            "value": ["settings","iceMissileStart"]
+          }
+        ],
+        [
+          {
+            "name": "samus_sprite",
+            "value": ["settings","samusSprite"]
+          },
+          {
+            "name": "start_location",
+            "value": ["logic","startLocation","fullName"]
+          },
+          {
+            "name": "tournament",
+            "value": ["logic","isRace"]
+          }
+        ],
+        [
+          {
+            "name": "permalink",
+            "value": "???"
+          },
+          {
+            "name": "seed_json",
+            "value": "???"
+          },
+          {
+            "name": "logic_json",
+            "value": "???"
+          }
+        ]
+      ]
+    }
   }
 }

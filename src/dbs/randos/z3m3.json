@@ -8,6 +8,86 @@
     "scripts": [
       "[Stable February 2022 (`alttpo-client-win64-stable-20220213.1`)](https://dev.azure.com/ALttPO/alttpo/_build/results?buildId=693&view=artifacts&pathAsName=false&type=publishedArtifacts)"
     ],
-    "permalink": "https://samus.link/seed/<hash>"
+    "permalink": "https://samus.link/seed/<hash>",
+    "fields": {
+      "sources": {
+        "hash_meta": {
+          "url": "https://samus.link/api/seed/<slugid>",
+          "check": "worlds"
+        },
+        "settings": {
+          "url": "hash_meta.worlds[0].settings",
+          "check": "goal"
+        }
+      },
+      "items": [
+        [
+          {
+            "name": "logic",
+            "value": ["settings","gamemode"]
+          },
+          {
+            "name": "smlogic",
+            "value": ["settings","smlogic"]
+          },
+          {
+            "name": "dungeon_items",
+            "value": ["settings","keyshuffle"]
+          }
+        ],
+        [
+          {
+            "name": "goal",
+            "value": "???"
+          },
+          {
+            "name": "tower/ganon",
+            "value": "???"
+          },
+          {
+            "name": "tourian_open",
+            "value": "???"
+          }
+        ],
+        [
+          {
+            "name": "world_state",
+            "value": ["settings","gamemode"]
+          },
+          {
+            "name": "sword_location",
+            "value": ["settings","swordlocation"]
+          },
+          {
+            "name": "morph_location",
+            "value": ["settings","morphlocation"]
+          }
+        ],
+        [
+          {
+            "name": "game_version",
+            "value": ["hash_meta","gameVersion"]
+          },
+          {
+            "name": "tournament",
+            "value": ["settings","race"]
+          }
+        ],
+        [
+          {
+            "name": "race_hash",
+            "value": "???"
+          },
+          {
+            "name": "permalink",
+            "value": "???"
+          },
+          {
+            "name": "guid_permalink",
+            "value": "???"
+          }
+        ]
+      ]
+    }
   }
 }

@@ -164,7 +164,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { randomizer: "varia", "group-id": "1983" },
         { randomizer: "m4xfr" },
         { randomizer: "m4xfr", "ping-multiplayer-role": true },
-        { randomizer: "m4xfr", "seed-url": "https://castie.ddns.net/xf_rando/seed/VE9YSUMgQk9NQiBIT1JOVE8gVEFOSw/" },
+        { randomizer: "m4xfr", "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/" },
         { randomizer: "m4xfr", "prep-time": 60 },
         { randomizer: "m4xfr", "scheduled-time": "3155760000" },
         { randomizer: "m4xfr", "group-id": "1983" }
@@ -269,7 +269,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Generate random group name
     const randNum = coptions['group-id'] ?? randFuncs.myRand(10000000001)
-    const groupName = randNum.startsWith("zdoi") ? randNum : `zdoi${randNum}`
+    const groupName = (typeof randNum == "string" && randNum.startsWith("zdoi")) ? randNum : `zdoi${randNum}`
 
     // Get the current timestamp and add <prepTimeMinutes> minutes of prep time
     const now = moment.utc()

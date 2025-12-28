@@ -5,6 +5,18 @@
       "name": "Super Metroid Item Randomizer",
       "avatar": "https://static.wikia.nocookie.net/metroid/images/8/89/M3_sprite_Screw_Attack_logo.gif"
     },
-    "permalink": "https://sm.samus.link/seed/<hash>"
+    "permalink": "https://sm.samus.link/seed/<hash>",
+    "fields": {
+      "sources": {
+        "hash_meta": {
+          "url": "https://sm.samus.link/api/seed/<slugid>",
+          "check": "worlds"
+        },
+        "settings": {
+          "url": "hash_meta.worlds[0].settings",
+          "check": "goal"
+        }
+      }
+    }
   }
 }
