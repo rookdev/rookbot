@@ -24,6 +24,16 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 
+async function get_url(in_url) {
+  try {
+    let req = await fetch(in_url)
+    let json = await req.json()
+    return json
+  } catch(e) {
+    console.log(e.stack)
+  }
+}
+
 module.exports = class MMMInfoCommand extends RookCommand {
   constructor(client) {
     let comprops = {
@@ -54,13 +64,8 @@ module.exports = class MMMInfoCommand extends RookCommand {
     let episodeID = coptions["episode-id"] ?? "winners"
 
     if (episodeID != "winners") {
-      let episodes = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          "mmm"
-        ],
-        "example.json"
+      let episodes = await get_url(
+        "https://github.com/rookdev/mmm-data/raw/refs/heads/main/dbs/example.json"
       )
       if (!Object.keys(episodes).includes(episodeID)) {
         episodeID = "winners"
@@ -114,14 +119,10 @@ module.exports = class MMMInfoCommand extends RookCommand {
     }
 
     if (episodeID == "winners") {
-      let mmmWinners = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          "mmm",
-        ],
-        "winners.json"
+      let mmmWinners = await get_url(
+        "https://github.com/rookdev/mmm-data/raw/refs/heads/main/dbs/winners.json"
       )
+
 
       for (let [tType, tData] of Object.entries(mmmWinners)) {
         let props = {
