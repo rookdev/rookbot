@@ -724,7 +724,7 @@ class RookCommand {
         )
       }
       if (this.botPermissions) {
-        let clientMember = interaction.guild.members.me
+        let clientMember = interaction.guild?.members.me
         Table.addRow(
           "Bot Permissions",
           this.botPermissions,
