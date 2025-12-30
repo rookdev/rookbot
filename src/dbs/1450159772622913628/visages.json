@@ -7,6 +7,10 @@
     "name": "Link",
     "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/link.png?raw=true"
   },
+  "sa-x": {
+    "name": "SA-X",
+    "avatar": "https://static.wikia.nocookie.net/metroid/images/2/23/SA-X_Closeup.PNG"
+  },
   "reset": {
     "name": "rookbot impersonator",
     "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"

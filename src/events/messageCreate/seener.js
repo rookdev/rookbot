@@ -58,10 +58,23 @@ module.exports = async (client, message) => {
   let emoji = ""
 
   const targetUserId = message.author.id
-  const targetUser = await client.users.fetch(targetUserId)
+  let targetUser = null
+  try {
+    targetUser = await client.users.fetch(targetUserId)
+  } catch(err) {
+    console.log(`No user found for seener [${message.author.id}]`)
+    return [result, messages]
+  }
 
   // Get the guild member (to fetch nickname if present)
-  const guildMember = await message.guild.members.fetch(targetUserId)
+  let guildMember = null
+  try {
+    guildMember = await message.guild.members.fetch(targetUserId)
+  } catch(err) {
+    console.log(`No guild member found for seener [${message.author.id}]`)
+    return [result, messages]
+  }
+
   const user = guildMember?.user ?? targetUser
 
   let pretty_name = "Message_Stamp".split("_").map(x => x.ucfirst()).join(" ")
