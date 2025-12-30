@@ -1,5 +1,8 @@
 // @ts-nocheck
 
+// Discord Permission Flags
+const { PermissionFlagsBits } = require('discord.js')
+
 // Instance Greeting
 const { SalutationCommand } = require('../../classes/command/salutation.class')
 
@@ -15,7 +18,9 @@ module.exports = class GoodbyeCommand extends SalutationCommand {
     let comprops = {
       name: "goodbye",
       category: "app",
-      description: "Goodbye"
+      description: "Goodbye",
+      // BotPerms: Administrator
+      permissions: [ PermissionFlagsBits.Administrator ]
     }
     super(
       client,
