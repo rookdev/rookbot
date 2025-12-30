@@ -27,74 +27,60 @@
             "value": ["settings","objectives_mode"]
           },
           {
-            "name": "map_layout",
             "value": ["settings","map_layout"]
           }
         ],
         [
           {
-            "name": "doors_mode",
             "value": ["settings", "doors_mode"]
           },
           {
-            "name": "start_location_mode",
             "value": ["settings", "start_location_mode"]
           },
           {
-            "name": "save_animals",
             "value": ["settings","save_animals"]
           }
         ],
         [
           {
-            "name": "wall_jump",
             "value": ["settings","other_settings","wall_jump"]
           },
           {
-            "name": "etank_refill",
             "value": ["settings","other_settings","etank_refill"]
           },
           {
-            "name": "area_assignment",
             "value": ["settings","other_settings","area_assignment"]
           }
         ],
         [
           {
-            "name": "item_dot_change",
             "value": ["settings","other_settings","item_dot_change"]
           },
           {
-            "name": "transition_letters",
-            "value": "???"
+            "value": ["settings","other_settings","transition_letters"]
           },
           {
-            "name": "door_locks_size",
             "value": ["settings","other_settings","door_locks_size"]
           }
         ],
         [
           {
-            "name": "maps_revealed",
             "value": ["settings","other_settings","maps_revealed"]
           },
           {
-            "name": "map_station_reveal",
             "value": ["settings","other_settings","map_station_reveal"]
           },
           {
-            "name": "energy_free_shinesparks",
-            "value": "???"
+            "value": ["settings","other_settings","energy_free_shinesparks"]
           }
         ],
         [
           {
-            "name": "ultra_low_qol",
-            "value": "???"
+            "value": ["settings","other_settings","ultra_low_qol"]
           },
           {
             "name": "tournament",
-            "value": "???"
+            "value": ["settings","other_settings","race_mode"]
           },
           {
             "name": "hash_id",

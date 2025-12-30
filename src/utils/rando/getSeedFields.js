@@ -136,7 +136,7 @@ module.exports = async (hashID, gameID="z3r") => {
   for (let itemRow of rData["rando"]["fields"]["items"]) {
     let fieldRow = []
     for (let itemCell of itemRow) {
-      let itemName = itemCell["name"]
+      let itemName = itemCell["name"] ?? itemCell["value"].at(-1)
       let itemValue = null
       if (typeof itemCell["value"] != "string") {
         for (let sKey of itemCell["value"]) {
@@ -146,6 +146,27 @@ module.exports = async (hashID, gameID="z3r") => {
           } else {
             itemValue = itemValue[sKey]
           }
+        }
+        if ([
+          true,
+          "true",
+          "True",
+          "yes",
+          "Yes",
+          "y",
+          "Y"
+        ].includes(itemValue)) {
+          itemValue = emojis.check
+        } else if ([
+          false,
+          "false",
+          "False",
+          "no",
+          "No",
+          "n",
+          "N"
+        ].includes(itemValue)) {
+          itemValue = emojis.nocheck
         }
       } else if (itemCell["value"] == "???") {
         if (["z3r"].includes(gameID)) {
@@ -164,12 +185,6 @@ module.exports = async (hashID, gameID="z3r") => {
               itemValue += '/'
               itemValue += sources.hash_meta?.entry_crystals_ganon + " Crystals"
               break
-            case "tournament":
-              itemValue = sources.hash_meta?.tournament ? emojis.check : emojis.nocheck
-              break
-            case "pseudoboots":
-              itemValue = sources.hash_meta?.pseudoboots ? emojis.check : emojis.nocheck
-              break
             case "hash_id":
               itemValue = hyperlink(
                 inlineCode(sources.hash_meta?.hash),
@@ -182,18 +197,6 @@ module.exports = async (hashID, gameID="z3r") => {
           }
         } else if(["m3maprando"].includes(gameID)) {
           switch(itemCell["name"]) {
-            case "transition_letters":
-              itemValue = sources["settings"]?.other_settings.transition_letters ? emojis.check : emojis.nocheck
-              break
-            case "energy_free_shinesparks":
-              itemValue = sources["settings"]?.other_settings.energy_free_shinesparks ? emojis.check : emojis.nocheck
-              break
-            case "ultra_low_qol":
-              itemValue = sources["settings"]?.other_settings.ultra_low_qol ? emojis.check : emojis.nocheck
-              break
-            case "tournament":
-              itemValue = sources["settings"]?.other_settings.race_mode ? emojis.check : emojis.nocheck
-              break
             case "hash_id":
               itemValue = hyperlink(
                             inlineCode(hashID),
