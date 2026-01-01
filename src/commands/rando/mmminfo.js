@@ -65,7 +65,7 @@ module.exports = class MMMInfoCommand extends RookCommand {
 
     if (episodeID != "winners") {
       let episodes = await get_url(
-        "https://github.com/rookdev/mmm-data/raw/refs/heads/main/dbs/example.json"
+        "https://rookdev.github.io/mmm-data/dbs/example.json"
       )
       if (!Object.keys(episodes).includes(episodeID)) {
         episodeID = "winners"
@@ -120,7 +120,7 @@ module.exports = class MMMInfoCommand extends RookCommand {
 
     if (episodeID == "winners") {
       let mmmWinners = await get_url(
-        "https://github.com/rookdev/mmm-data/raw/refs/heads/main/dbs/winners.json"
+        "https://rookdev.github.io/mmm-data/dbs/winners.json"
       )
 
 
