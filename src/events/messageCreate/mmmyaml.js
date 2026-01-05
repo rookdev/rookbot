@@ -19,17 +19,6 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 const fileFuncs = require('../../utils/fs/fileFuncs')
-const yaml = require(`js-yaml`)
-
-async function get_url(in_url) {
-  try {
-    let req = await fetch(in_url)
-    let txt = await req.text()
-    return txt
-  } catch(e) {
-    console.log(e.stack)
-  }
-}
 
 module.exports = async (client, message) => {
   let result = false
@@ -88,20 +77,17 @@ module.exports = async (client, message) => {
     if (aData.name.toLowerCase().includes("yaml") || aData.name.toLowerCase().includes("yml")) {
       // console.log(aData)
       // console.log(aData.name + ": " + aData.url)
-      let aYaml = await get_url(aData.url)
-      let dYaml = yaml.load(aYaml)
-      // console.log(aData.name + ": " + JSON.stringify(dYaml))
-      // console.log(dYaml["name"] + ": " + dYaml["game"])
+      let aYaml = await fileFuncs.getAURL(aData.url)
 
       let yamlFields = [
         [
           {
             name: 'Player',
-            value: dYaml["name"]
+            value: aYaml["name"]
           },
           {
             name: 'Game',
-            value: dYaml["game"]
+            value: aYaml["game"]
           }
         ]
       ]

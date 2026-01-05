@@ -1,4 +1,5 @@
 const path = require('path')
+const yaml = require(`js-yaml`)
 const fs = require('fs')
 
 function getAPath(directory=[], filename="") {
@@ -24,6 +25,27 @@ function getAPath(directory=[], filename="") {
   }
 
   return path.join(dirpath,filename)
+}
+
+async function getAURL(url, format=null) {
+  let filename = url.split("/").at(-1)
+  let filext = format ?? filename.split(".").at(-1)
+  try {
+    let req = await fetch(url)
+    if (["json"].includes(filext)) {
+      let json = await req.json()
+      return json
+    } else if (["yaml","yml"].includes(filext)) {
+      let yStr = await req.text()
+      let yData = yaml.load(yStr)
+      return yData
+    } else {
+      let txt = await req.text()
+      return txt
+    }
+  } catch(e) {
+    console.log(e.stack)
+  }
 }
 
 function getAFile(directory=[], filename="") {
@@ -91,5 +113,6 @@ function getAllFiles(directory, foldersOnly=false) {
 module.exports = {
   getAFile,
   getAPath,
+  getAURL,
   getAllFiles
 }

@@ -1,15 +1,5 @@
 // @ts-nocheck
 
-async function get_url(in_url) {
-  try {
-    let req = await fetch(in_url)
-    let json = await req.json()
-    return json
-  } catch(e) {
-    console.log(e.stack)
-  }
-}
-
 // Array Remove - By John Resig (MIT Licensed)
 Array.prototype.remove = function(from, to) {
   var rest = this.slice((to || from) + 1 || this.length)
@@ -43,7 +33,7 @@ module.exports = async (client, interaction) => {
     // Holy Image
     if(focused.name == "game-id") {
       return
-      let gameIDsPlus = await get_url(`http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`)
+      let gameIDsPlus = await fileFuncs.getAURL(`http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`)
       let options = gameIDsPlus["games"]
       let newoptions = []
       let i = 0

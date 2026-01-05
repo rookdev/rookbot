@@ -26,16 +26,6 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 const fileFuncs = require('../../utils/fs/fileFuncs')
 
-async function get_url(in_url) {
-  try {
-    let req = await fetch(in_url)
-    let json = await req.json()
-    return json
-  } catch(e) {
-    console.log(e.stack)
-  }
-}
-
 module.exports = async (client, message) => {
   let result = false
   let messages = []
@@ -97,7 +87,7 @@ module.exports = async (client, message) => {
     let isRDVgame = aData.name.toLowerCase().includes("rdvgame")
     let isRDVpreset = aData.name.toLowerCase().includes("rdvpreset")
     if (isRDVgame || isRDVpreset) {
-      let aJSON = await get_url(aData.url)
+      let aJSON = await fileFuncs.getAURL(aData.url, "yaml")
       let info = isRDVgame ? aJSON.info : null
       let preset = isRDVgame ? info.presets[0] : aJSON
 

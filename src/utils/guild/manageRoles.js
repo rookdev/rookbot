@@ -75,6 +75,11 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   }
 
   let roleName = rrs[message.id][reaction.emoji.name]
+  if (typeof roleName == "object") {
+    if (roleName["role"]) {
+      roleName = roleName["role"]
+    }
+  }
   let role = message.guild.roles.cache.find(
     r => r.name === roleName
   )
@@ -86,6 +91,55 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   let guildMember = await message.guild.members.fetch(user.id)
   if (mode == "add") {
     guildMember.roles.add(role)
+    // if admin, cycle through reactions on this post
+    //  for each reaction, cycle through users who reacted
+    //   for each user, assign the role, just in case
+    // Get list of roles
+    rolesDB = fileFuncs.getAFile(
+      [
+        "src",
+        "dbs",
+        guild.id
+      ],
+      "roles.json"
+    )
+
+    if (rolesDB) {
+      // Get Admin roles
+      let ADMIN_ROLES = rolesDB["admin"]
+      if (await guildMember.roles.cache.some(r=>ADMIN_ROLES.includes(r.name))) {
+        // We're an Admin
+        // messages.push("   We're an Admin!")
+        let guildMembers = await message.guild.members
+        let guildRoles = await message.guild.roles
+        for (let [rName, thisReaction] of await message.reactions.cache) {
+          // Cycle through reactions
+          if (rName.length > 10) {
+            rName = thisReaction.emoji.name
+          }
+          // messages.push(`    Re: ${rName}`)
+          for (let [uName, thisUser] of await thisReaction.users.cache) {
+            // Cycle through users
+            // messages.push(`     Us: ${thisUser.tag}`)
+            let thisMember = await guildMembers.fetch(thisUser.id)
+            if (thisMember) {
+              // If this user doesn't have this role
+              let thisRole = rrs[message.id][rName]
+              if (typeof thisRole == "object") {
+                thisRole = thisRole["role"]
+              }
+              // messages.push(`      Ro: ${thisRole}`)
+              thisRole = await guildRoles.cache.find(r=>r.name == thisRole)
+              if (thisRole) {
+                if (! await thisMember.roles.cache.some(r=>r.name == thisRole.name)) {
+                  thisMember.roles.add(thisRole)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   } else if (mode == "remove") {
     guildMember.roles.remove(role)
   }

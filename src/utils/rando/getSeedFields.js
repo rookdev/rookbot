@@ -10,17 +10,6 @@ const { decode } = require('slugid')
 const emojis = require('../../dbs/emojis.json')
 const moment = require('moment')
 
-async function get_url(in_url) {
-  try {
-    let req = await fetch(in_url)
-    let json = await req.json()
-    return json
-  } catch(e) {
-    console.log(in_url)
-    console.log(e.stack)
-  }
-}
-
 module.exports = async (hashID, gameID="z3r") => {
   let fields = [
     [
@@ -102,10 +91,10 @@ module.exports = async (hashID, gameID="z3r") => {
       }
     } else {
       if (sData["url"].indexOf("<hash>") > -1) {
-        sources[sKey] = await get_url(sData["url"].replace("<hash>",hashID))
+        sources[sKey] = await fileFuncs.getAURL(sData["url"].replace("<hash>",hashID))
       } else if (sData["url"].indexOf("<slugid>") > -1) {
         slugID = decode(hashID).replaceAll("-",'')
-        sources[sKey] = await get_url(sData["url"].replace("<slugid>",slugID))
+        sources[sKey] = await fileFuncs.getAURL(sData["url"].replace("<slugid>",slugID))
       }
       check = sources[sKey][sData["check"]]
     }

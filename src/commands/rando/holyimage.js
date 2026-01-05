@@ -4,16 +4,7 @@
 const { ApplicationCommandOptionType, italic } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-
-async function get_url(in_url) {
-  try {
-    let req = await fetch(in_url)
-    let json = await req.json()
-    return json
-  } catch(e) {
-    console.log(e.stack)
-  }
-}
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 module.exports = class HolyImageCommand extends RookCommand {
   constructor(client) {
@@ -63,12 +54,17 @@ module.exports = class HolyImageCommand extends RookCommand {
     // console.log(gameID,slugID)
 
     // Get Game Names
-    let gameNames = await get_url(`http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`)
+    let gameNames = await fileFuncs.getAURL(
+      `http://alttp.mymm1.com/holyimage/metadata.php?mode=gameIDs&expand=1`,
+      "json"
+    )
     // Get this Game Name
     let gameName = gameNames["games"][gameID]
 
     // Get this game's Holy Images
-    let holyimages  = await get_url(`http://alttp.mymm1.com/holyimage/holyimages-${gameID}.json`)
+    let holyimages  = await fileFuncs.getAURL(
+      `http://alttp.mymm1.com/holyimage/holyimages-${gameID}.json`
+    )
 
     let image = null
 
