@@ -1,0 +1,129 @@
+// @ts-nocheck
+
+// Command Option Types
+const { ApplicationCommandOptionType } = require('discord.js')
+// BotDevCommand
+const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+// Get Local Commands
+const getLocalCommands = require('../../utils/client/getLocalCommands')
+const fileFuncs = require('../../utils/fs/fileFuncs')
+
+module.exports = class BatchModCommand extends BotDevCommand {
+  constructor(client) {
+    let comprops = {
+      name: "batchmod",
+      category: "mod",
+      description: "Runs a batch of Mod commands",
+      flags: {
+        user: "unapplicable",
+        target: "unapplicable",
+        mention: "unapplicable",
+        bot: "unapplicable"
+      },
+      options: [
+        {
+          name: "batchlist",
+          description: "A text file with a list of batch commands.",
+          type: ApplicationCommandOptionType.Attachment,
+          required: true
+        }
+      ]
+    }
+    let props = {}
+
+    super(
+      client,
+      {...comprops},
+      {...props}
+    )
+  }
+
+  // declare props: import('../../types/embed').EmbedProps
+
+  async action(client, interaction, coptions={}) {
+    console.log(`/${this.name}: Action`)
+
+    // Get Local Commands
+    const localCommands = getLocalCommands(client)
+    // Get requested Command Name
+    let commandName = coptions["command-name"] ?? "ping"
+    let batchFile = interaction.options.getAttachment("batchlist")
+    let batchList = await fileFuncs.getAURL(batchFile.attachment, "txt")
+
+    let batchLines = batchList.split("\n")
+    commandName = batchLines.shift()
+    let bOptions = JSON.parse(batchLines.shift())
+
+    try {
+      // Find the command
+      const commandObject = localCommands.find(
+        cmd => cmd.name === commandName
+      )
+
+      // Return if couldn't find it
+      if (!commandObject) {
+        console.log(`Couldn't find /${commandName}`)
+        this.error = true
+        this.props.description = `Couldn't find /${commandName}`
+        return !this.error
+      }
+
+      // If UserPermissions
+      if (commandObject.userPermissions?.length) {
+        for (const permission of commandObject.userPermissions) {
+          // If we're missing one, abort
+          // @ts-ignore
+          if (!interaction?.member?.permissions.has(permission)) {
+            console.log(`/${commandName} attempted without proper user perms`)
+            let intOptions = {
+              content: `${this.profile.emojis.user} User is missing permissions.`,
+              flags: MessageFlags.Ephemeral
+            }
+            await interaction?.reply(intOptions)
+            this.error = true
+            return !this.error
+          }
+        }
+      }
+
+      // If BotPermissions
+      if (commandObject.botPermissions?.length) {
+        for (const permission of commandObject.botPermissions) {
+          const bot = interaction?.guild?.members.me
+          if (bot) {
+            // If we're missing one, abort
+            if (!bot.permissions.has(permission)) {
+              console.log(`/${commandName} attempted without proper bot perms`)
+              let intOptions = {
+                content: `${this.profile.emojis.bot} Bot is missing permissions.`,
+                flags: MessageFlags.Ephemeral
+              }
+              await interaction?.reply(intOptions)
+              this.error = true
+              return !this.error
+            }
+          }
+        }
+      }
+
+      // Run the test function
+      console.log(`/${this.name}/${commandObject.name}`)
+
+      for (let username of batchLines) {
+        if (username.trim() != "") {
+          let targetMember = await interaction.guild.members.cache.find(
+            m => m.user.tag === username.trim()
+          )
+          bOptions["target-id"] = targetMember.user.id
+          bOptions["bypass"] = true
+          await commandObject.action(client, interaction, bOptions)
+        }
+      }
+    } catch (error) {
+      console.log(`There was an error running this command: ${error.stack}`)
+    }
+    this.null = true
+
+    return true
+  }
+}
