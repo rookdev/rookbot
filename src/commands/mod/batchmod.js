@@ -7,6 +7,7 @@ const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // Get Local Commands
 const getLocalCommands = require('../../utils/client/getLocalCommands')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
 module.exports = class BatchModCommand extends BotDevCommand {
   constructor(client) {
@@ -40,20 +41,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
 
   // declare props: import('../../types/embed').EmbedProps
 
-  async action(client, interaction, coptions={}) {
-    console.log(`/${this.name}: Action`)
-
-    // Get Local Commands
-    const localCommands = getLocalCommands(client)
-    // Get requested Command Name
-    let commandName = coptions["command-name"] ?? "ping"
-    let batchFile = interaction.options.getAttachment("batchlist")
-    let batchList = await fileFuncs.getAURL(batchFile.attachment, "txt")
-
-    let batchLines = batchList.split("\n")
-    commandName = batchLines.shift()
-    let bOptions = JSON.parse(batchLines.shift())
-
+  async find_command(interaction, localCommands, commandName) {
     try {
       // Find the command
       const commandObject = localCommands.find(
@@ -105,18 +93,78 @@ module.exports = class BatchModCommand extends BotDevCommand {
           }
         }
       }
+      return commandObject
+    } catch(error) {
+      console.log(`There was an error running this command: ${error.stack}`)
+      return false
+    }
+  }
 
-      // Run the test function
+  async action(client, interaction, coptions={}) {
+    console.log(`/${this.name}: Action`)
+
+    // Get Local Commands
+    const localCommands = getLocalCommands(client)
+    // Get requested Command Name
+    let commandName = coptions["command-name"] ?? "ping"
+    let batchFile = interaction.options.getAttachment("batchlist")
+    let batchList = await fileFuncs.getAURL(batchFile.attachment, "txt")
+
+    let batchLines = batchList.split("\n")
+    // Get full document
+    // First line is command name
+    // Next line is JSON object of options to send
+    // Next line is first of list of names to act on
+    // When '---' start new command
+
+    try {
+      let newCommand = false
+      let getParams = false
+      commandName = batchLines.shift()
+      let bOptions = JSON.parse(batchLines.shift())
+      let commandObject = await this.find_command(interaction, localCommands, commandName)
+      // Run the mod function
       console.log(`/${this.name}/${commandObject.name}`)
-
-      for (let username of batchLines) {
-        if (username.trim() != "") {
-          let targetMember = await interaction.guild.members.cache.find(
-            m => m.user.tag === username.trim()
-          )
-          bOptions["target-id"] = targetMember.user.id
-          bOptions["bypass"] = true
-          await commandObject.action(client, interaction, bOptions)
+      console.log(" " + JSON.stringify(bOptions))
+      for (let batchLine of batchLines) {
+        batchLine = batchLine.trim()
+        // Get JSON params
+        // Get new Command object
+        if (getParams) {
+          commandObject = await this.find_command(interaction, localCommands, commandName)
+          bOptions = JSON.parse(batchLine)
+          console.log(" ")
+          console.log(`/${this.name}/${commandObject.name}`)
+          console.log(" " + JSON.stringify(bOptions))
+          getParams = false
+        }
+        // Get new Command name
+        if (newCommand) {
+          commandName = batchLine
+          newCommand = false
+          getParams = true
+        }
+        // Start of new command
+        if (batchLine == "---") {
+          newCommand = true
+          commandObject = null
+        }
+        // Process names
+        if (commandObject) {
+          let username = batchLine
+          if (username != "") {
+            let targetMember = await interaction.guild.members.cache.find(
+              m => m.user.tag === username
+            )
+            if (targetMember) {
+              bOptions["target-id"] = targetMember.user.id
+              bOptions["bypass"] = true
+              console.log(`  ${username}`)
+              await commandObject.action(client, interaction, bOptions)
+            }
+            // Wait half a second after submitting action
+            await wait(0.5 * 1000)
+          }
         }
       }
     } catch (error) {

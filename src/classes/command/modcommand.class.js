@@ -143,9 +143,16 @@ class ModCommand extends AdminCommand {
       }
       // Add the Role
       // @ts-ignore
-      if (addRole && addRole != 0) {
+      if (
+        addRole &&
+        (addRole != 0)
+      ) {
         try {
-          await user.roles.add(addRole.id)
+          let hasRole = await user.roles.cache.get(addRole.id)
+          if (!hasRole) {
+            // console.log(`Adding Role: ${user.displayName} [${addRole.id}]`)
+            await user.roles.add(addRole.id)
+          }
           success = true
         } catch(e) {
           console.log(e)
@@ -183,9 +190,16 @@ class ModCommand extends AdminCommand {
       }
       // Remove the Role
       // @ts-ignore
-      if (remRole && remRole != 0) {
+      if (
+        remRole &&
+        (remRole != 0)
+      ) {
         try {
-          await user.roles.remove(remRole.id)
+          let hasRole = await user.roles.cache.get(remRole.id)
+          if (hasRole) {
+            // console.log(`Removing Role: ${user.displayName} [${remRole.id}]`)
+            await user.roles.remove(remRole.id)
+          }
           success = true
         } catch(e) {
           console.log(e)
@@ -643,13 +657,13 @@ class ModCommand extends AdminCommand {
           embeds.dm = this.pages[0]
           this.pages = []
           if (!this.DEV) {
-            await targetUser.send(
-              {
-                embeds: [ embeds.dm ]
-              }
-            )
+            // await targetUser.send(
+            //   {
+            //     embeds: [ embeds.dm ]
+            //   }
+            // )
           }
-          console.log(`/${this.name}: DM Post`)
+          // console.log(`/${this.name}: DM Post`)
 
           // Reply to Mod for DM about ACTION
           this.ephemeral = true

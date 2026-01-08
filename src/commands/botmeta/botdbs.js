@@ -121,6 +121,13 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             this.props.description.push(`Avatar: ${hyperlink('Link',vData.avatar)}`)
             this.props.description.push("")
           }
+        } else {
+          let lines = []
+          for (let [k, v] of Object.entries(thisDB)) {
+            lines.push(`${k}: ${JSON.stringify(v)}`)
+          }
+          this.props.description.push(codeBlock(lines.join("\n")))
+          this.props.description.push("")
         }
       }
     }

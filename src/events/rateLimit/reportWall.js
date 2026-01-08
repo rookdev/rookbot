@@ -18,5 +18,5 @@ module.exports = async (client) => {
       guildInfo += `)`
     }
   }
-  console.log(`SHARD DISCONNECTED: ${client.user.tag}${guildInfo} at ${offlineTime}`)
+  console.log(`RATE LIMITED: ${client.user.tag}${guildInfo} at ${offlineTime}`)
 }
