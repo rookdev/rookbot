@@ -160,6 +160,7 @@ module.exports = class MentionCommand extends RookCommand {
       target: "guild"
     }
     this.props.entities = {}
+    this.props.description = []
 
     let specs = {}
 
@@ -187,6 +188,24 @@ module.exports = class MentionCommand extends RookCommand {
               position: channel?.position,
               extra: channel?.flags?.toArray().join(", ")
             }
+            if (specs.subtype == "GuildCategory") {
+              this.props.description.push("Channels".boldUnderline())
+              for (let [cID, thisChannel] of await channel.children.cache) {
+                this.props.description.push(
+                  (thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck) +
+                  inlineCode(thisChannel.name)
+                )
+              }
+            }
+            if (channel?.parent?.name) {
+              specs.parent = {
+                name: channel.parent.name,
+                id: channel.parent.id
+              }
+            }
+            if (channel?.permissionsLocked) {
+              specs.synced = true
+            }
             if (specs.extra) {
               specs.extra = codeBlock(specs.extra)
             }
@@ -199,6 +218,9 @@ module.exports = class MentionCommand extends RookCommand {
             switch (specs?.subtype) {
               case "GuildVoice":
                 avatar = "https://em-content.zobj.net/source/twitter/408/speaker-high-volume_1f50a.png"
+                break
+              case "GuildCategory":
+                avatar = "https://em-content.zobj.net/source/twitter/408/file-folder_1f4c1.png"
                 break
               default:
                 avatar = "https://em-content.zobj.net/source/twitter/408/keycap-number-sign_23-fe0f-20e3.png"
@@ -505,6 +527,21 @@ module.exports = class MentionCommand extends RookCommand {
 
       this.props.fields.push(
         [
+          // Parent Name
+          {
+            name: "Parent Name",
+            value: specs?.parent?.name
+          },
+          // Parent ID
+          {
+            name: "Parent ID",
+            value: specs?.parent?.id ? codeBlock(specs.parent.id) : ""
+          }
+        ]
+      )
+
+      this.props.fields.push(
+        [
           // Topic
           {
             name: "Topic",
@@ -529,6 +566,21 @@ module.exports = class MentionCommand extends RookCommand {
           {
             name: "Position",
             value: specs?.position ? codeBlock(specs?.position) : ""
+          },
+          // Synced?
+          {
+            name: "Synced",
+            value: (targetType == "channel") ?
+              (
+                specs?.synced ?
+                (
+                  specs.synced ?
+                  this.profile.emojis.check :
+                  this.profile.emojis.nocheck
+                )
+                : ""
+              )
+              : ""
           },
           // Hoisted
           {
