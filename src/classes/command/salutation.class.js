@@ -408,7 +408,7 @@ class SalutationCommand extends RookCommand {
         )
         // Find the Guild Channel to send the embed to
         if (!channelIDs) {
-          console.log(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
+          // console.log(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
         }
 
         for (let channelName of [

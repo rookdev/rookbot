@@ -21,12 +21,16 @@ module.exports = (client, exceptions = []) => {
         continue
       }
 
-      if (commandObject.name.includes("Command")) {
-        let cmd = new commandObject(client)
-        commandObject = cmd
-      }
+      if (commandObject) {
+        if (commandObject?.name) {
+          if (commandObject.name.includes("Command")) {
+            let cmd = new commandObject(client)
+            commandObject = cmd
+          }
 
-      localCommands.push(commandObject)
+          localCommands.push(commandObject)
+        }
+      }
     }
   }
 

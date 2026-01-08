@@ -63,7 +63,7 @@ module.exports = async (client) => {
         const member = await guild.members.fetch(userID, { force: true }) ?? null
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
-          messages.push(`${client.profile.emojis.fail} No  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
           continue
         }
 
@@ -72,10 +72,28 @@ module.exports = async (client) => {
         const clientPos     = await clientMember.roles.highest.position
         const memberPos     = await member.roles.highest.position
 
-        // If member is at or over bot, bail
-        if ((member.id !== clientMember.id) && (memberPos >= clientPos)) {
-          messages.push(`${client.profile.emojis.fail} No  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is greater than or equal to '${clientMember.displayName}'.`)
-          continue
+        // If member's not the bot
+        if (member.id !== clientMember.id) {
+          // If member is above or equal to the bot
+          if (memberPos >= clientPos) {
+            // If member is over the bot, bail
+            let relation = ""
+            if (memberPos > clientPos) {
+              relation = "^"
+            } else if (memberPos == clientPos) {
+              // If member is at the bot, bail
+              relation = "="
+            }
+            let msg = `${client.profile.emojis.fail}${relation} No`
+            if (relation == "^") {
+              relation = "greater than"
+            } else if (relation == "=") {
+              relation = "equal to"
+            }
+            msg += `  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is ${relation} '${clientMember.displayName}'.`
+            messages.push(msg)
+            continue
+          }
         }
 
         if (member) {

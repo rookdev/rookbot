@@ -261,7 +261,7 @@ module.exports = async (client) => {
           for (let [msgName, msgValue] of Object.entries(alias.options)) {
             aliasesDoc[parentName][cmdParts.name][msgName] = msgValue
           }
-          messages.push(msg)
+          // messages.push(msg)
 
           if (cmdParts.options.length == 0) {
             delete cmdParts.options
