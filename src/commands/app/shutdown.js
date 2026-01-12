@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Formatters: userMention
-const { userMention } = require('discord.js')
+const { userMention, ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
@@ -18,6 +18,13 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       name: "shutdown",
       category: "app",
       description: "Shutdown (and restart if pm2) rookbot",
+      options: [
+        {
+          name: "restart",
+          description: "Restart?",
+          type: ApplicationCommandOptionType.Boolean
+        }
+      ],
       flags: {
         test: "basic"
       }
@@ -36,6 +43,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async execute(client, interaction, coptions={}, independent=false) {
+    let restart = coptions["restart"] ?? false
     this.props.playerTypes = {
       user: "caller",
       target: "bot"
@@ -110,6 +118,11 @@ module.exports = class ShutdownCommand extends BotDevCommand {
 
       // Run unreadyEvent
       await unready(client, interaction)
+
+      if (restart) {
+        // shell:
+        // node ./crun.js --loadoptions
+      }
 
       // Alert with SHUTDOWN action
       console.log(`!!! SHUTDOWN`)

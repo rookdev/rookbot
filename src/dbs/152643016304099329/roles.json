@@ -2,14 +2,11 @@
   "admin": [
     "Admin"
   ],
-  "botdev": [
-    "BotDev"
-  ],
   "mod": [
-    "Mod"
+    "Lead Guy"
   ],
   "member": [
-    "Member"
+    "Guy"
   ],
   "muted": [
     "Muted"

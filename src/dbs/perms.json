@@ -1,0 +1,333 @@
+{
+  "#note": { "djs": "General Sever Permissions" },
+  "VIEW_CHANNEL": {
+    "djs": [
+      "Allows guild members to view a channel, which includes",
+      "reading messages in text channels and joining voice channels"
+    ],
+    "mobile": "View Channels",
+    "permflag": "ViewChannel"
+  },
+  "MANAGE_CHANNELS": {
+    "djs": "Allows management and editing of channels",
+    "mobile": "Manage Channels",
+    "permflag": "ManageChannels"
+  },
+  "MANAGE_ROLES": {
+    "djs": "Allows management and editing of roles",
+    "mobile": "Manage Roles",
+    "permflag": "ManageRoles"
+  },
+  "CREATE_GUILD_EXPRESSIONS": {
+    "djs": [
+      "Allows for creating emojis, stickers, and soundboard sounds",
+      "and editing and deleting those created by the current user"
+    ],
+    "mobile": "Create Expressions",
+    "permflag": "CreateGuildExpressions"
+  },
+  "MANAGE_GUILD_EXPRESSIONS": {
+    "djs": [
+      "Allows for editing and deleting emojis, stickers and soundboard",
+      "sounds created by all users"
+    ],
+    "mobile": "Manage Expressions",
+    "permflag": "ManageGuildExpressions"
+  },
+  "VIEW_AUDIT_LOG": {
+    "djs": "Allows for viewing of audit logs",
+    "mobile": "View Audit Log",
+    "permflag": "ViewAuditLog"
+  },
+  "VIEW_GUILD_INSIGHTS": {
+    "djs": "Allows for viewing guild insights",
+    "mobile": "View Server Insights",
+    "permflag": "ViewGuildInsights"
+  },
+  "MANAGE_WEBHOOKS": {
+    "djs": "Allows management and editing of webhooks",
+    "mobile": "Manage Webhooks",
+    "permflag": "ManageWebhooks"
+  },
+  "MANAGE_GUILD": {
+    "djs": "Allows management and editing of the guild",
+    "mobile": "Manage Server",
+    "permflag": "ManageGuild"
+  },
+
+  "#note2": { "djs": "Membership Permissions" },
+  "CREATE_INSTANT_INVITE": {
+    "djs": "Allows creaton of instant invites",
+    "mobile": "Create Invite",
+    "permflag": "CreateInstantInvite"
+  },
+  "CHANGE_NICKNAME": {
+    "djs": "Allows for modification of own nickname",
+    "mobile": "Change Nickname",
+    "permflag": "ChangeNickname"
+  },
+  "MANAGE_NICKNAMES": {
+    "djs": "Allows for modification of other users nicknames",
+    "mobile": "Manage Nicknames",
+    "permflag": "ManageNicknames"
+  },
+  "KICK_MEMBERS": {
+    "djs": "Allows kicking members",
+    "mobile": "Kick, Approve, and Reject Members",
+    "permflag": "KickMembers"
+  },
+  "BAN_MEMBERS": {
+    "djs": "Allows banning members",
+    "mobile": "Ban Members",
+    "permflag": "BanMembers"
+  },
+  "MODERATE_MEMBERS": {
+    "djs": [
+      "Allows for timing out users to prevent them from sending or",
+      "reacting to messages in chat and threads, and from speaking in",
+      "voice and stage channels"
+    ],
+    "mobile": "Timeout Members",
+    "permflag": "ModerateMembers"
+  },
+
+  "#note3": { "djs": "Text Channel Permissions" },
+  "SEND_MESSAGES": {
+    "djs": [
+      "Allows for sending messages in a channel and creating",
+      "threads in a forum (does not allow sending messages in threads)"
+    ],
+    "mobile": "Send Messages and Create Posts",
+    "permflag": "SendMessages"
+  },
+  "SEND_MESSAGES_IN_THREADS": {
+    "djs": "Allows for sending messages in threads",
+    "mobile": "Send Messages in Threads and Posts",
+    "permflag": "SendMessagesInThreads"
+  },
+  "CREATE_PUBLIC_THREADS": {
+    "djs": "Allows for creating public and announcement threads",
+    "mobile": "Create Public Threads",
+    "permflag": "CreatePublicThreads"
+  },
+  "CREATE_PRIVATE_THREADS": {
+    "djs": "Allows for creating private threads",
+    "mobile": "Create Private Threads",
+    "permflag": "CreatePrivateThreads"
+  },
+  "EMBED_LINKS": {
+    "djs": [
+      "Links sent by users with this permission will be auto-embedded"
+    ],
+    "mobile": "Embed Links",
+    "permflag": "EmbedLinks"
+  },
+  "ATTACH_FILES": {
+    "djs": "Allows for uploading images and files",
+    "mobile": "Attach Files",
+    "permflag": "AttachFiles"
+  },
+  "ADD_REACTIONS": {
+    "djs": [
+      "Allows for adding new reactions to messages. This permission",
+      "does not apply to reacting with an existing reaction on a message."
+    ],
+    "mobile": "Add Reactions",
+    "permflag": "AddReactions"
+  },
+  "USE_EXTERNAL_EMOJIS": {
+    "djs": "Allows the usage of custom emojis from other servers",
+    "mobile": "Use External Emoji",
+    "permflag": "UseExternalEmojis"
+  },
+  "USE_EXTERNAL_STICKERS": {
+    "djs": "Allows the usage of custom stickers from other servers",
+    "mobile": "Use External Stickers",
+    "permflag": "UseExternalStickers"
+  },
+  "MENTION_EVERYONE": {
+    "djs": [
+      "Allows for using the @everyone tag to notify all users in",
+      "a channel, and the @here tag to notify all online users in",
+      "a channel"
+    ],
+    "mobile": "Mention @everyone, @here, and All Roles",
+    "permflag": "MentionEveryone"
+  },
+  "MANAGE_MESSAGES": {
+    "djs": "Allows for deletion of other users messages",
+    "mobile": "Manage Messages",
+    "permflag": "ManageMessages"
+  },
+  "PIN_MESSAGES": {
+    "djs": "Allows pinning and unpinning of messages",
+    "mobile": "Pin Messages",
+    "permflag": "PinMessages"
+  },
+  "BYPASS_SLOWMODE": {
+    "djs": "Allows bypassing slowmode restrictions",
+    "mobile": "Bypass Slowmode",
+    "permflag": "BypassSlowmode"
+  },
+  "MANAGE_THREADS": {
+    "djs": [
+      "Allows for deleting and archiving treads and viewing all",
+      "private threads"
+    ],
+    "mobile": "Manage Threads and Posts",
+    "permflag": "ManageThreads"
+  },
+  "READ_MESSAGE_HISTORY": {
+    "djs": "Allows for reading of message history",
+    "mobile": "Read Message History",
+    "permflag": "ReadMessageHistory"
+  },
+  "SEND_TTS_MESSAGES": {
+    "djs": "Allows for sending of /tts messages",
+    "mobile": "Send Text-to-Speech Messages",
+    "permflag": "SendTTSMessages"
+  },
+  "SEND_VOICE_MESSAGES": {
+    "djs": "Allows sending voice messages",
+    "mobile": "Send Voice Messages",
+    "permflag": "SendVoiceMessages"
+  },
+  "SEND_POLLS": {
+    "djs": "Allows sending polls",
+    "mobile": "Create Polls",
+    "permflag": "SendPolls"
+  },
+
+  "#note4": { "djs": "Voice Channel Permissions" },
+  "CONNECT": {
+    "djs": "Allows for joining of a voice channel",
+    "mobile": "Connect",
+    "permflag": "Connect"
+  },
+  "SPEAK": {
+    "djs": "Allows for speaking in a voice channel",
+    "mobile": "Speak",
+    "permflag": "Speak"
+  },
+  "STREAM": {
+    "djs": "Allows the user to go live",
+    "mobile": "Video",
+    "permflag": "Stream"
+  },
+  "USE_SOUNDBOARD": {
+    "djs": "Allows for using soundboard in a channel",
+    "mobile": "Use Soundboard",
+    "permflag": "UseSoundboard"
+  },
+  "USE_EXTERNAL_SOUNDS": {
+    "djs": [
+      "Allows the usage of custom soundboard sounds from other servers"
+    ],
+    "mobile": "Use External Sounds",
+    "permflag": "UseExternalSounds"
+  },
+  "USE_VAD": {
+    "djs": [
+      "Allows for using voice-activity-detection in a voice channel"
+    ],
+    "mobile": "Use Voice Activity",
+    "permflag": "UseVAD"
+  },
+  "PRIORITY_SPEAKER": {
+    "djs": "Allows for using priority speaker in a voice channel",
+    "mobile": "Priority Speaker",
+    "permflag": "PrioritySpeaker"
+  },
+  "MUTE_MEMBERS": {
+    "djs": "Allows for muting members in a voice channel",
+    "mobile": "Move Members",
+    "permflag": "MuteMembers"
+  },
+  "DEAFEN_MEMBERS": {
+    "djs": "Allows for deafening of members in a voice channel",
+    "mobile": "Deafen Members",
+    "permflag": "DeafenMembers"
+  },
+  "MOVE_MEMBERS": {
+    "djs": "Allows for moving of members between voice channels",
+    "mobile": "Move Members",
+    "permflag": "MoveMembers"
+  },
+  "VOICE_CHANNEL_STATUS": {
+    "djs": "???",
+    "mobile": "Set Voice Channel Status",
+    "permflag": "???"
+  },
+
+  "#note5": { "djs": "Apps Permissions" },
+  "USE_APPLICATION_COMMANDS": {
+    "djs": [
+      "Allows members to use application commands,",
+      "including slash commands and context menu commands"
+    ],
+    "mobile": "Use Application Commands",
+    "permflag": "UseApplicationCommands"
+  },
+  "USE_EMBEDDED_ACTIVITIES": {
+    "djs": [
+      "Allows for using Activities (applications with the EMBEDDED flag)"
+    ],
+    "mobile": "Use Activities",
+    "permflag": "UseEmbeddedActivities"
+  },
+  "USE_EXTERNAL_APPS": {
+    "djs": [
+      "Allows user-installed apps to send public responses.",
+      "When disabled, users will still be allows to use their apps",
+      "but the responses will be ephemeral.",
+      "This only applies to apps not also installed to the server."
+    ],
+    "mobile": "Use External Apps",
+    "permflag": "UseExternalApps"
+  },
+
+  "#note6": { "djs": "Stage Channel Permissions" },
+  "REQUEST_TO_SPEAK": {
+    "djs": "Allows for reaquesting to speak in stage channels",
+    "mobile": "Request to Speak",
+    "permflag": "RequestToSpeak"
+  },
+
+  "#note7": { "djs": "Events Permissions" },
+  "CREATE_EVENTS": {
+    "djs": [
+      "Allows for creating scheduled events, and editing and deleting",
+      "those created by the current user"
+    ],
+    "mobile": "Create Events",
+    "permflag": "CreateEvents"
+  },
+  "MANAGE_EVENTS": {
+    "djs": [
+      "Allows for editing and deleting scheduled events created by",
+      "all users"
+    ],
+    "mobile": "Manage Events",
+    "permflag": "ManageEvents"
+  },
+
+  "#note8": { "djs": "Advanced Permissions" },
+  "ADMINISTRATOR": {
+    "djs": [
+      "Allows all permissions and bypasses channel permission overwrites"
+    ],
+    "mobile": "Administrator",
+    "permflag": "Administrator"
+  },
+
+  "VIEW_CREATOR_MONETIZATION_ANALYTICS": {
+    "djs": "Allows for viewing role subscription insights",
+    "mobile": "???",
+    "permflag": "ViewCreatorMonetizationAnalytics"
+  },
+  "MANAGE_EMOJIS_AND_STICKERS": {
+    "djs": "???",
+    "mobile": "???",
+    "permflag": "ManageEmojisAndStickers"
+  }
+}

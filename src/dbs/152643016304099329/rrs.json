@@ -1,41 +1,41 @@
 {
-  "704940193173733390": {
+  "1460103867244216504": {
     "#title": "Announcement Roles",
     "#description": "These are roles that the Admins and Moderators of this server may use for announcements.",
     "📣": {
-      "name": "announcements",
-      "desc": "Server Announcements"
+      "role": "announcements",
+      "description": "Server Announcements"
     }
   },
-  "704943384455938088": {
+  "1460104023196569772": {
     "#title": "Streaming Roles",
     "#description": "These are roles that facilitate communication regarding when certain accounts Go Live.",
     "bruh": {
-      "name": "SomeguyLive",
-      "desc": "When SomeguyRB Goes Live"
+      "role": "SomeguyLive",
+      "description": "When SomeguyRB Goes Live"
     }
   },
-  "757829352019984485": {
+  "1460104144294645792": {
     "#title": "Gaming Roles",
     "#description": "These are roles that facilitate communication regarding when players of certain games are trying to put together a pre-made match.",
     "👥": {
-      "name": "Game: Among Us",
-      "desc": "When someone's trying to start up an Among Us match."
+      "role": "Game: Among Us",
+      "description": "When someone's trying to start up an Among Us match."
     }
   },
   "pronouns": {
     "#title": "Pronouns",
     "#description": "Pronouns",
-    "pronoun_he":       { "name": "He/Him" },
-    "pronoun_she":      { "name": "She/Her" },
-    "pronoun_they":     { "name": "They/Them" },
-    "pronoun_neo":      { "name": "Neopronouns" },
-    "pronoun_hethem":   { "name": "He/They" },
-    "pronoun_shethem":  { "name": "She/They" },
-    "pronoun_heher":    { "name": "He/Her" },
-    "pronoun_shehim":   { "name": "She/Him" },
-    "pronoun_theyhim":  { "name": "They/Him" },
-    "pronoun_theyher":  { "name": "They/Her" },
-    "pronoun_any":      { "name": "Any/All" }
+    "pronoun_he":       { "role": "He/Him" },
+    "pronoun_she":      { "role": "She/Her" },
+    "pronoun_they":     { "role": "They/Them" },
+    "pronoun_neo":      { "role": "Neopronouns" },
+    "pronoun_hethem":   { "role": "He/They" },
+    "pronoun_shethem":  { "role": "She/They" },
+    "pronoun_heher":    { "role": "He/Her" },
+    "pronoun_shehim":   { "role": "She/Him" },
+    "pronoun_theyhim":  { "role": "They/Him" },
+    "pronoun_theyher":  { "role": "They/Her" },
+    "pronoun_any":      { "role": "Any/All" }
   }
 }

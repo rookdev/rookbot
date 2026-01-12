@@ -1,0 +1,15 @@
+{
+  "admin": [
+    "Streamer & Owner",
+    "Administrator"
+  ],
+  "mod": [
+    "Moderators"
+  ],
+  "member": [
+    "Friends"
+  ],
+  "muted": [
+    "Penalty Box"
+  ]
+}
