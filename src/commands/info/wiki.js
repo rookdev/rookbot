@@ -50,9 +50,6 @@ module.exports = class WikiCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    // Delete interaction
-    await interaction.deleteReply()
-
     const pagename = coptions["pagename"] ?? "Main Page"  // Get the page name
     const wikikey = coptions["wikikey"] ?? "z3rwiki"
 
@@ -77,12 +74,12 @@ module.exports = class WikiCommand extends RookCommand {
     }
 
     let pattern = interwikiDB[wikikey]
-    let transPagename = pagename.replace(" ", "_")
+    let transPagename = pagename.replaceAll(" ", "_")
     let wikiurl = pattern.replace("%s", transPagename)
     let content = wikiurl
 
-    // Create the embed with the rainbow divider line image
-    await interaction.channel.send(
+    this.null = true
+    await interaction.editReply(
       {
         content: content
       }

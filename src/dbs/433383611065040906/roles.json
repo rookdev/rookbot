@@ -1,5 +1,14 @@
 {
   "admin":  [
     "Potential Minnie Replacements"
+  ],
+  "streaming": [
+    "Streaming"
+  ],
+  "member": [
+    "Otaku"
+  ],
+  "muted": [
+    "Oni"
   ]
 }
