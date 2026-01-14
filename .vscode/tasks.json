@@ -4,12 +4,17 @@
     {
       "label": "List GitHub Actions",
       "type": "shell",
-      "command": "py ./resources/ci/common/list_actions.py"
+      "command": "python3 ./resources/ci/common/list_actions.py"
     },
     {
       "label": "Run Menu",
       "type": "shell",
       "command": "npm run-script menu"
+    },
+    {
+      "label": "Connect to Castle's SSH",
+      "type": "shell",
+      "command": "ssh -i /home/minerva/.ssh/castle-minerva.private minerva@rookbot"
     }
   ]
 }

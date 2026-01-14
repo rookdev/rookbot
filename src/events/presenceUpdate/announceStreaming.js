@@ -2,11 +2,12 @@
 
 // VoiceState
 // Formatters: inlineCode, italic
-const { Presence, ActivityType, inlineCode, italic } = require('discord.js')
+const { Presence, ActivityType, inlineCode, bold, italic, hyperlink } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -18,6 +19,12 @@ module.exports = async (client, oldPresence, newPresence) => {
   let result = false
   let messages = []
 
+  let hadStreaming = false
+  let hasStreaming = false
+  let oldStream = null
+  let newStream = null
+
+  let checkStreaming = false
   let showDebug = false
   if (
     oldPresence &&
@@ -25,10 +32,10 @@ module.exports = async (client, oldPresence, newPresence) => {
     (["idle","dnd","offline"].indexOf(oldPresence.status) < 0) &&
     (["idle","dnd","offline"].indexOf(newPresence.status) < 0)
   ) {
-    showDebug = true
+    checkStreaming = true
   }
-  if (showDebug) {
-    showDebug = false
+  if (checkStreaming) {
+    // This Presence
     let thisPresence = null
     thisPresence = {
       guild: {
@@ -39,8 +46,37 @@ module.exports = async (client, oldPresence, newPresence) => {
         displayName: newPresence.user.displayName
       },
       status: newPresence.status,
-      activities: []
+      oldStream: null,
+      newStream: null,
+      newActivities: [],
+      oldActivities: []
     }
+
+    // Old Presence
+    let oldActivities = []
+    for (let activity of newPresence.activities) {
+      if (activity) {
+        if ([
+          ActivityType.Streaming,
+          ActivityType.Watching
+        ].indexOf(activity?.type) > -1) {
+          let oldActivity = {
+            name: activity?.name,
+            type: activity?.type,
+            url: activity?.url,
+            details: activity?.details,
+            state: activity?.state,
+            createdTimestamp: activity?.createdTimestamp
+          }
+          oldStream = oldActivity.createdTimestamp
+          oldActivities.push(oldActivity)
+          hadStreaming = true
+          showDebug = true
+        }
+      }
+    }
+
+    // New Presence
     let newActivities = []
     for (let activity of newPresence.activities) {
       if (activity) {
@@ -56,12 +92,20 @@ module.exports = async (client, oldPresence, newPresence) => {
             state: activity?.state,
             createdTimestamp: activity?.createdTimestamp
           }
+          newStream = newActivity.createdTimestamp
           newActivities.push(newActivity)
+          hasStreaming = true
           showDebug = true
         }
       }
     }
-    thisPresence.activities = newActivities
+
+    thisPresence.oldStream = oldStream
+    thisPresence.newStream = newStream
+    thisPresence.oldActivities = oldActivities
+    if (oldStream != newStream) {
+      thisPresence.newActivities = newActivities
+    }
     if (showDebug) {
       console.log(thisPresence)
     }
@@ -78,7 +122,11 @@ module.exports = async (client, oldPresence, newPresence) => {
     }
   }
 
-  if (foundActivity) {
+  if (
+    (!hadStreaming) &&
+    hasStreaming &&
+    foundActivity
+  ) {
     const guild = await newPresence.guild
     if (!guild) {
       messages.push(`${client.profile.emojis.fail} No Guild`)
@@ -116,7 +164,7 @@ module.exports = async (client, oldPresence, newPresence) => {
     if (foundActivity.details) {
       props.description.push(italic(foundActivity.details))
     }
-    props.description.push(`Watch them at ${foundActivity.url}!`)
+    props.description.push(`Watch them online ${hyperlink('here',foundActivity.url)}!`)
 
     let embed = new RookEmbed(client, props)
 
