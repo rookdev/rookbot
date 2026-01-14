@@ -253,7 +253,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Prep time length
     const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
     // Scheduled Time
-    const scheduledTime = coptions['scheduled-time'] ?? null
+    let scheduledTime = coptions['scheduled-time'] ?? null
 
       /*
     const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
@@ -289,7 +289,19 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         scheduledDateTime = moment.utc(parseInt(scheduledTime))
       } else {
         // console.log(`Not Numeric: ${scheduledTime}`)
-        scheduledDateTime = strtotime(scheduledTime)
+        let hammerTimePattern = /\<t\:([\d]+)\:[^\>]\>/
+        let matches = scheduledTime.match(hammerTimePattern)
+        if (matches) {
+          // console.log(matches)
+          scheduledTime = matches[1]
+          let platoError = (scheduledTime + "").length - 10
+          let adjustedStamp = scheduledTime
+          if (platoError > 0) {
+            adjustedStamp = Math.floor(scheduledTime / Math.pow(10, platoError))
+            scheduledTime = adjustedStamp
+          }
+          scheduledDateTime = parseInt(scheduledTime)
+        }
       }
       if (!scheduledDateTime) {
         this.error = true

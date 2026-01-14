@@ -1,6 +1,6 @@
 {
   "name": "rookbot",
-  "version": "1.5.1",
+  "version": "1.6",
   "description": "Discord bot for personal usage",
   "main": "src/index.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "commander": "^14.0.2",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
-    "locutus": "^2.0.32",
+    "locutus": "^2.0.37",
     "mathjs": "^15.1.0",
     "moment": "^2.30.1",
     "ms": "^2.1.3",
