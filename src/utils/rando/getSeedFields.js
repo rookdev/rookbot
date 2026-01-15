@@ -1,6 +1,5 @@
 // Formatters
 const { inlineCode, hyperlink } = require('discord.js')
-const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../formatters/timeFormat')
@@ -91,10 +90,26 @@ module.exports = async (hashID, gameID="z3r") => {
       }
     } else {
       if (sData["url"].indexOf("<hash>") > -1) {
-        sources[sKey] = await fileFuncs.getAURL(sData["url"].replace("<hash>",hashID))
+        sources[sKey] = await fileFuncs.getAURL(
+          sData["url"].replace("<hash>",hashID),
+          "json"
+        )
       } else if (sData["url"].indexOf("<slugid>") > -1) {
-        slugID = decode(hashID).replaceAll("-",'')
-        sources[sKey] = await fileFuncs.getAURL(sData["url"].replace("<slugid>",slugID))
+        try {
+          slugID = decode(hashID).replaceAll("-",'')
+        } catch (e) {
+          console.log(
+            [
+              sData["url"],
+              hashID,
+              e.stack
+            ].join("\n")
+          )
+        }
+        sources[sKey] = await fileFuncs.getAURL(
+          sData["url"].replace("<slugid>",slugID),
+          "json"
+        )
       }
       check = sources[sKey][sData["check"]]
     }
@@ -285,6 +300,9 @@ module.exports = async (hashID, gameID="z3r") => {
             }
           }
 
+          if (typeof rData.rando.permalink == "object") {
+            rData.rando.permalink = rData.rando.permalink[0]
+          }
           let permalinkURL = rData.rando.permalink.replace("<hash>", hashID)
           let apiURL = rData.rando.fields.sources["hash_meta"].url.replace("<slugid>", slugID)
 

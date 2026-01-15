@@ -2,6 +2,7 @@
 
 const { ApplicationCommandOptionType } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const autodetectRando = require('../../utils/rando/autodetectRando')
 const getSeedFields = require('../../utils/rando/getSeedFields')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 
@@ -54,9 +55,18 @@ module.exports = class SeedMetaCommand extends RookCommand {
         { "game-id": "z3r",         "hash-id": "0yAONb6XMV" },
         { "game-id": "z3m3",        "hash-id": "q8q8Z5NMQlGiSYgqPHKTkA" },
         // { "game-id": "z1m1z3m3",    "hash-id": "MOaOZII0QzS80DG9VTluXw" },
+        { "game-id": "z1m1z3m3",    "hash-id": "taMbuylcr1ufQm6K" },
         { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" },
         { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" },
-        { "game-id": "m4xfr",       "hash-id": "RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ" }
+        { "game-id": "m4xfr",       "hash-id": "RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ" },
+
+        { "hash-id": "https://alttpr.com/h/0yAONb6XMV" },
+        { "hash-id": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
+        { "hash-id": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw" },
+        { "hash-id": "https://quad.samus.link/seed/taMbuylcr1ufQm6K" },
+        { "hash-id": "https://maprando.com/seed/wPvtmGMpc" },
+        { "hash-id": "https://sm.samus.link/seed/_TbXSywzRgKAMpFAoaiNLQ" },
+        { "hash-id": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/" }
       ]
     }
     let props = {
@@ -88,70 +98,10 @@ module.exports = class SeedMetaCommand extends RookCommand {
         hashID.includes("https://")
       )
     ) {
-      autodetect = true
-      for (let filename of fileFuncs.getAllFiles(
-        [
-          "src",
-          "dbs",
-          "randos"
-        ]
-      )) {
-        let randoData = fileFuncs.getAFile(
-          // [
-          //   "src",
-          //   "dbs",
-          //   "randos"
-          // ],
-          filename
-        )
-        if (randoData?.rando?.permalink) {
-          if (typeof randoData.rando.permalink == "string") {
-            randoData.rando.permalink = [randoData.rando.permalink]
-          }
-          for (let pattern of randoData.rando.permalink) {
-            let thisPattern = pattern.replace("<hash>","")
-            if (thisPattern.endsWith("//")) {
-              thisPattern = thisPattern.substring(0, thisPattern.length - 2)
-            }
-            if (hashID.includes(thisPattern)) {
-              console.log(filename,randoData.rando.permalink,thisPattern)
-              let filenameParts = filename.split("\\")
-              if (filenameParts.length < 2) {
-                filenameParts = filename.split("/")
-              }
-              gameID = filenameParts[filenameParts.length - 1]
-              gameID = gameID.substring(0, gameID.indexOf("."))
-              console.log(filename,randoData.rando.permalink,thisPattern,gameID)
-              autodetected = true
-              break
-            }
-          }
-        }
-      }
+      [gameID, hashID] = await autodetectRando(hashID)
     }
 
-    if (hashID.includes("http://") || hashID.includes("https://")) {
-      if (hashID.endsWith("/")) {
-        hashID = hashID.substring(0, hashID.length - 1)
-      }
-      hashID = hashID.split("/")
-      hashID = hashID[hashID.length - 1]
-    }
-
-    let fields = []
-    if (autodetect && !autodetected) {
-      // failed autodetect
-      console.log("Failed Autodetect!")
-    } else if (autodetect && autodetected) {
-      // succeeded autodetect
-      console.log("Succeeded Autodetect!")
-      console.log(hashID,gameID)
-      fields = await getSeedFields(hashID, gameID)      
-    } else {
-      // received explicit reference
-      console.log("Got Explicit Reference!")
-      fields = await getSeedFields(hashID, gameID)      
-    }
+    let fields = await getSeedFields(hashID, gameID) 
 
     let randoData = require(`../../dbs/randos/${gameID}.json`)
     this.props.title = {

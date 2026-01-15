@@ -44,7 +44,12 @@ async function getAURL(url, format=null) {
       return txt
     }
   } catch(e) {
-    console.log(e.stack)
+    console.log(
+      [
+        url,
+        e.stack
+      ].join("\n")
+    )
   }
 }
 

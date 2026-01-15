@@ -1,9 +1,10 @@
 // @ts-nocheck
 
 // Command Option Types, Formatters: bold, italic, userMention, roleMention
-const { ApplicationCommandOptionType, bold, italic, userMention, roleMention } = require('discord.js')
+const { ApplicationCommandOptionType, bold, italic, inlineCode, userMention, roleMention } = require('discord.js')
 const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const autodetectRando = require('../../utils/rando/autodetectRando')
 const getSeedFields = require('../../utils/rando/getSeedFields')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -55,47 +56,6 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       description: "Starts a specified Randomizer Game with all necessary details",
       options: [
         {
-          name: "randomizer",
-          description: "Randomizer to choose",
-          type: ApplicationCommandOptionType.String,
-          choices: [
-            {
-              name:   "A Link to the Past Randomizer",
-              value:  "z3r"
-            },
-            {
-              name:   "Super Metroid + A Link to the Past Combination Randomizer",
-              value:  "z3m3"
-            },
-            {
-              name:   "Super Metroid Map Randomizer",
-              value:  "m3maprando"
-            },
-            {
-              name:   "Super Metroid VARIA Randomizer",
-              value:  "varia"
-            },
-            {
-              name:   "Super Metroid X-Fusion Randomizer",
-              value:  "m4xfr"
-            },
-            // {
-            //   name:   "Quad Randomizer",
-            //   value:  "z1m1z3m3"
-            // },
-            {
-              name:   "Archipelago",
-              value:  "ap"
-            }
-          ],
-          required: true
-        },
-        {
-          name: "ping-multiplayer-role",
-          description: "Whether or not to ping the Multiplayer Ping role",
-          type: ApplicationCommandOptionType.Boolean
-        },
-        {
           name: "pingable-role-id",
           description: "Role ID number to ping",
           type: ApplicationCommandOptionType.String
@@ -124,110 +84,38 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         }
       ],
       testOptions: [
-        {},
-        // Rando
         // Rando & Ping
-        // Rando & Seed URL
         // Rando & Prep Time
         // Rando & Start Time
         // Rando & Group ID
-        { randomizer: "z3r" },
-        { randomizer: "z3r", "ping-multiplayer-role": true },
-        { randomizer: "z3r", "seed-url": "https://alttpr.com/h/0yAONb6XMV" },
-        { randomizer: "z3r", "prep-time": 60 },
-        { randomizer: "z3r", "scheduled-time": "3155760000" },
-        { randomizer: "z3r", "group-id": "1983" },
-        { randomizer: "z3m3" },
-        { randomizer: "z3m3", "ping-multiplayer-role": true },
-        { randomizer: "z3m3", "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
-        { randomizer: "z3m3", "prep-time": 60 },
-        { randomizer: "z3m3", "scheduled-time": "3155760000" },
-        { randomizer: "z3m3", "group-id": "1983" },
-        { randomizer: "z1m1z3m3" },
-        { randomizer: "z1m1z3m3", "ping-multiplayer-role": true },
-        { randomizer: "z1m1z3m3", "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw" },
-        { randomizer: "z1m1z3m3", "prep-time": 60 },
-        { randomizer: "z1m1z3m3", "scheduled-time": "3155760000" },
-        { randomizer: "z1m1z3m3", "group-id": "1983" },
-        { randomizer: "m3maprando" },
-        { randomizer: "m3maprando", "ping-multiplayer-role": true },
-        { randomizer: "m3maprando", "seed-url": "https://maprando.com/seed/wPvtmGMpc" },
-        { randomizer: "m3maprando", "prep-time": 60 },
-        { randomizer: "m3maprando", "scheduled-time": "3155760000" },
-        { randomizer: "m3maprando", "group-id": "1983" },
-        { randomizer: "varia" },
-        { randomizer: "varia", "ping-multiplayer-role": true },
-        { randomizer: "varia", "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410" },
-        { randomizer: "varia", "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410?msg=%27Suits%20restriction%27%20forced%20to%20off" },
-        { randomizer: "varia", "prep-time": 60 },
-        { randomizer: "varia", "scheduled-time": "3155760000" },
-        { randomizer: "varia", "group-id": "1983" },
-        { randomizer: "m4xfr" },
-        { randomizer: "m4xfr", "ping-multiplayer-role": true },
-        { randomizer: "m4xfr", "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/" },
-        { randomizer: "m4xfr", "prep-time": 60 },
-        { randomizer: "m4xfr", "scheduled-time": "3155760000" },
-        { randomizer: "m4xfr", "group-id": "1983" }
-      ],
-      aliases: [
-        // ALttPR
-        {
-          name: "z3r",
-          description: "Starts a Z3R Game with all necessary details",
-          options: { randomizer: "z3r" }
-        },
-        {
-          name: "alttpr",
-          description: "Starts a Z3R Game with all necessary details",
-          options: { randomizer: "z3r" }
-        },
-
-        // M3MapRando
-        {
-          name: "smmr",
-          description: "Starts a Super Metroid Map Randomizer Game with all necessary details",
-          options: { randomizer: "m3maprando" }
-        },
-
-        // SMALttPR
-        {
-          name: "z3m3",
-          description: "Starts a Z3M3 Game with all necessary details",
-          options: { randomizer: "z3m3" }
-        },
-        {
-          name: "smz3",
-          description: "Starts a Z3M3 Game with all necessary details",
-          options: { randomizer: "z3m3" }
-        },
-
-        // VARIA
-        {
-          name: "varia",
-          description: "Starts a Super Metroid VARIA Randomizer Game with all necessary details",
-          options: { randomizer: "varia" }
-        },
-
-        // M4XFR
-        {
-          name: "m4xfr",
-          description: "Starts a Super Metroid X-Fusion Randomizer Game with all necessary details",
-          options: { randomizer: "m4xfr" }
-        },
-
-        // Quad
-        // {
-        //   name: "quad",
-        //   description: "Starts a Quad Randomizer Game with all necessary details",
-        //   options: { randomizer: "z1m1z3m3" }
-        // },
-
-        // Archipelago
-        {
-          name: "ap",
-          description: "Starts an Archipelago Game with all necessary details",
-          options: { randomizer: "ap" }
-        }
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "ping-multiplayer-role": true },
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "prep-time": 60 },
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "scheduled-time": "3155760000" },
+        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "group-id": "1983" },
+        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "ping-multiplayer-role": true },
+        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "prep-time": 60 },
+        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "scheduled-time": "3155760000" },
+        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "group-id": "1983" },
+        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "ping-multiplayer-role": true },
+        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "prep-time": 60 },
+        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "scheduled-time": "3155760000" },
+        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "group-id": "1983" },
+        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "ping-multiplayer-role": true },
+        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "prep-time": 60 },
+        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "scheduled-time": "3155760000" },
+        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "group-id": "1983" },
+        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "ping-multiplayer-role": true },
+        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "prep-time": 60 },
+        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "scheduled-time": "3155760000" },
+        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "group-id": "1983" },
+        { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "ping-multiplayer-role": true },
+        { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "prep-time": 60 },
+        { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "scheduled-time": "3155760000" },
+        { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "group-id": "1983" },
+        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "ping-multiplayer-role": true },
+        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "prep-time": 60 },
+        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "scheduled-time": "3155760000" },
+        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "group-id": "1983" }
       ]
     }
     props = props || {}
@@ -241,11 +129,6 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    // Get GameID
-    const randomizer = coptions.randomizer ?? "z3m3"
-
-    // Ping role?
-    let doPing = coptions['ping-multiplayer-role'] ?? false // Default to false
     // Role to ping
     let roleID = coptions['pingable-role-id'] ?? 0
     // Seed URL
@@ -254,6 +137,8 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
     // Scheduled Time
     let scheduledTime = coptions['scheduled-time'] ?? null
+
+    const [randomizer, hashID] = await autodetectRando(seedURL)
 
       /*
     const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
@@ -449,7 +334,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         if (roleIDs[randomizer]) {
           console.log(`Found Game-Specific Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
           roleID = roleIDs[randomizer]
-        } else if (doPing && roleIDs["pingable-multiplayer-role"]) {
+        } else if (roleIDs["pingable-multiplayer-role"]) {
           console.log(`Found Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
           roleID = roleIDs["pingable-multiplayer-role"]
         }          
@@ -467,12 +352,11 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         return false
       } else {
         console.log(`Role Found`)
-        doPing = true
       }
     }
 
     // Build the Pinger
-    if (doPing && roleObject && (roleID != 0)) {
+    if (roleObject && (roleID != 0)) {
       console.log("Do Ping")
       this.content = roleMention(roleID)
       console.log(`Role Ping: On`)
@@ -516,7 +400,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Group Name
     this.props.description.push(
       bold('Group Name'),
-      groupName,
+      inlineCode(groupName),
       ""  // A blank space, baby
     )
 

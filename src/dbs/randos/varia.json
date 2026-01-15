@@ -13,6 +13,10 @@
       "https://randommetroidsolver.pythonanywhere.com/customizer/<hash>",
       "https://variabeta.pythonanywhere.com/<hash>",
       "https://variabeta.pythonanywhere.com/customizer/<hash>"
-    ]
+    ],
+    "fields": {
+      "sources": {},
+      "items": []
+    }
   }
 }

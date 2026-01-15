@@ -5,6 +5,13 @@
       "name": "Quad Randomizer",
       "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/quad.png"
     },
-    "permalink": "https://quad.beta.samus.link/seed/<hash>"
+    "permalink": [
+      "https://quad.beta.samus.link/seed/<hash>",
+      "https://quad.samus.link/seed/<hash>"
+    ],
+    "fields": {
+      "sources": {},
+      "items": []
+    }
   }
 }
