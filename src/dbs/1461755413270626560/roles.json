@@ -3,10 +3,18 @@
     "Admin"
   ],
   "botdev": [
+    "Bot Dev",
     "rookbot dev",
     "rookbot steward"
   ],
+  "bot": [
+    "Bot"
+  ],
   "mod": [
+    "Mod"
+  ],
+  "captain": [
+    "Captain"
   ],
   "booster": [
     "Server Booster"

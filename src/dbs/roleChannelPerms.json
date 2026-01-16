@@ -98,6 +98,8 @@
         "CreatePublicThreads": true,
         "CreatePrivateThreads": true,
         "AddReactions": true,
+        "UseExternalEmojis": true,
+        "UseExternalStickers": true,
         "Speak": true,
         "Stream": true,
         "UseApplicationCommands": true
@@ -133,7 +135,7 @@
   "mod-mod-override": {
     "description": [
       "Moderator Override",
-      "Can use external emojis, send TTS/voice messages,",
+      "Can send TTS/voice messages,",
       "Use soundboard, embedded activities, external apps"
     ],
     "profiles": {
@@ -146,7 +148,6 @@
         "captain-mod-override"
       ],
       "mod-mod-override": {
-        "UseExternalEmojis": true,
         "SendTTSMessages": true,
         "SendVoiceMessages": true,
         "UseSoundboard": true,
