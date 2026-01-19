@@ -223,9 +223,9 @@ class SalutationCommand extends RookCommand {
         interaction?.guild?.id ??
         client.guild.id ??
         process.env?.GUILD_ID,
-      avatar: this?.channel?.guild.iconURL({ size: Math.pow(2, 7) }) ??
-        interaction?.guild?.iconURL({ size: Math.pow(2, 7) }) ??
-        client.guild.iconURL({ size: Math.pow(2, 7) }) ??
+      avatar: this?.channel?.guild.iconURL({ size: 128 }) ??
+        interaction?.guild?.iconURL({ size: 128 }) ??
+        client.guild.iconURL({ size: 128 }) ??
         ""
     }
     if (server?.id) {
@@ -452,7 +452,7 @@ class SalutationCommand extends RookCommand {
           id:     guild.id,
           name:   guild?.name ?? "?",
           url:    "http://example.com/guild",
-          avatar: guild.iconURL({ size: Math.pow(2, 7) })
+          avatar: guild.iconURL({ size: 128 })
         }
 
         this.props.fields[1][0].value = server?.name ?? "?"

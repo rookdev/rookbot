@@ -455,7 +455,7 @@ class RookCommand {
           id:     client.user.id,
           name:   client.user.displayName,
           url:    "http://example.com/bot",
-          avatar: client.user.displayAvatarURL({ size: Math.pow(2, 7) }),
+          avatar: client.user.displayAvatarURL({ size: 128 }),
           tag:    client.user.tag
         }
 
@@ -473,7 +473,7 @@ class RookCommand {
               id:     clientMember.id,
               name:   clientMember.displayName,
               url:    "http://example.com/botMember",
-              avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) }),
+              avatar: clientMember.displayAvatarURL({ size: 128 }),
               tag:    clientMember.user.tag
             }
           }
@@ -488,7 +488,7 @@ class RookCommand {
               tag:    interaction.user.tag
             }
             if (typeof interaction.user?.displayAvatarURL === "function") {
-              page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
+              page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -502,7 +502,7 @@ class RookCommand {
               tag:    callerMember.user.tag
             }
             if (typeof callerMember?.displayAvatarURL === "function") {
-              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: Math.pow(2, 7) })
+              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -514,7 +514,7 @@ class RookCommand {
               id:     interaction.guild.id,
               name:   interaction.guild.name,
               url:    "http://example.com/guild",
-              avatar: interaction.guild.iconURL({ size: Math.pow(2, 7) })
+              avatar: interaction.guild.iconURL({ size: 128 })
             }
           }
         }

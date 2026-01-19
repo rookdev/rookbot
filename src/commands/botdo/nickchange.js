@@ -72,7 +72,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     this.props.entities = {
       caller: {
         name: interaction.user.displayName,
-        avatar: interaction.user.displayAvatarURL({ size: Math.pow(2, 7) })
+        avatar: interaction.user.displayAvatarURL({ size: 128 })
       }
     }
 
@@ -127,7 +127,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     // Set Target to command target
     this.props.entities.target = {
       name: member?.displayName,
-      avatar: member.displayAvatarURL({ size: Math.pow(2, 7) })
+      avatar: member.displayAvatarURL({ size: 128 })
     }
 
     // Check Editable

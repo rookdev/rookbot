@@ -37,18 +37,19 @@ module.exports = class HelpCommand extends RookCommand {
           description: "Section Name",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "Application",  value: "app" },
-            { name: "BotDo",        value: "botdo" },
-            { name: "BotEdit",      value: "botedit" },
-            { name: "BotMeta",      value: "botmeta" },
-            { name: "Diagnostics",  value: "diagnostic" },
-            { name: serverGameName, value: "doi" },
-            { name: "Fun",          value: "fun" },
-            { name: "Information",  value: "info" },
-            { name: "Miscellaneous",value: "misc" },
-            { name: "Moderation",   value: "mod" },
-            { name: "Randomizers",  value: "rando" },
-            { name: "Unsorted",     value: "undefined" }
+            { name: "Administration", value: "admin" },
+            { name: "Application",    value: "app" },
+            { name: "BotDo",          value: "botdo" },
+            { name: "BotEdit",        value: "botedit" },
+            { name: "BotMeta",        value: "botmeta" },
+            { name: "Diagnostics",    value: "diagnostic" },
+            { name: serverGameName,   value: "doi" },
+            { name: "Fun",            value: "fun" },
+            { name: "Information",    value: "info" },
+            { name: "Miscellaneous",  value: "misc" },
+            { name: "Moderation",     value: "mod" },
+            { name: "Randomizers",    value: "rando" },
+            { name: "Unsorted",       value: "undefined" }
           ]
         },
         {

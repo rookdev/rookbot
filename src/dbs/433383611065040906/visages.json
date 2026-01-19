@@ -1,0 +1,10 @@
+{
+  "otacon": {
+    "name": "Otacon",
+    "avatar": "https://media.discordapp.net/attachments/1112098436188209152/1462831226359513208/otacon.png?ex=696f9f3e&is=696e4dbe&hm=07e79cacb75aa956a8df064ee0af2126c605b8dd9a8447b0fa783311207ee0d7&="
+  },
+  "reset": {
+    "name": "rookbot impersonator",
+    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
+  }
+}

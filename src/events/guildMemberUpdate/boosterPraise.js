@@ -60,13 +60,13 @@ module.exports = async (client, oldMember, newMember) => {
     )
     let msg = {
       name: newMember.displayName,
-      avatar: newMember.displayAvatarURL({ size: Math.pow(2, 7) }),
+      avatar: newMember.displayAvatarURL({ size: 128 }),
       guild: {
         name: newMember.guild.name,
         boosts: newMember.guild.premiumSubscriptionCount
       },
       footer: {
-        image: heartContainerEmoji.imageURL({ size: Math.pow(2, 7) })
+        image: heartContainerEmoji.imageURL({ size: 128 })
       }
     }
     msg.msg = [

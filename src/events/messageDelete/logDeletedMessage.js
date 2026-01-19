@@ -123,7 +123,7 @@ module.exports = async (client, deletedMessage) => {
   let players = {
     target: {
       name: deletedAuthor.displayName,
-      avatar: deletedAuthor.displayAvatarURL({ size: Math.pow(2, 7) })
+      avatar: deletedAuthor.displayAvatarURL({ size: 128 })
     }
   }
 
@@ -158,7 +158,7 @@ module.exports = async (client, deletedMessage) => {
   if (deleter && deleter?.id) {
     players.user = {
       name: deleter.displayName,
-      avatar: deleter.displayAvatarURL({ size: Math.pow(2, 7) })
+      avatar: deleter.displayAvatarURL({ size: 128 })
     }
     fields.push(
       // Deleted by someone we can capture
@@ -175,7 +175,7 @@ module.exports = async (client, deletedMessage) => {
     if (clientMember) {
       players.user = {
         name: clientMember.displayName,
-        avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) })
+        avatar: clientMember.displayAvatarURL({ size: 128 })
       }
     }
     fields.push(

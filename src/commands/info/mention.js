@@ -38,59 +38,73 @@ module.exports = class MentionCommand extends RookCommand {
       options: [
         {
           name: "target-id",
-          description: "ID of target",
-          type: ApplicationCommandOptionType.String,
-          required: true
+          description: "Generic Target ID",
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "mention-id",
+          description: "Mention ID (Role/User)",
+          type: ApplicationCommandOptionType.Mentionable
+        },
+        {
+          name: "channel-id",
+          description: "Channel ID",
+          type: ApplicationCommandOptionType.Channel
+        },
+        {
+          name: "emoji-id",
+          description: "Emoji ID",
+          type: ApplicationCommandOptionType.String
         },
         {
           name: "target-type",
-          description: "Mention Type",
+          description: "Target Type",
           type: ApplicationCommandOptionType.String,
           choices: [
-            { name: "Channel",        value: "channel" },
-            { name: "Emoji",          value: "emoji" },
-            { name: "Role",           value: "role" },
-            { name: "Text Channel",   value: "channel" },
-            { name: "User",           value: "user" },
-            { name: "Voice Channel",  value: "channel" }
+            {
+              name: "User",
+              value: "user"
+            },
+            {
+              name: "Channel",
+              value: "channel"
+            },
+            {
+              name: "Emoji",
+              value: "emoji"
+            },
+            {
+              name: "Role",
+              value: "role"
+            }
           ]
         }
       ],
-      aliases: [
-        {
-          name: "channelinfo",
-          description: "Get info about a Channel",
-          options: { "target-type": "channel" }
-        },
-        {
-          name: "emojiinfo",
-          description: "Get info about an Emoji",
-          options: { "target-type": "emoji" }
-        },
-        {
-          name: "roleinfo",
-          description: "Get info about a Role",
-          options: { "target-type": "role" }
-        },
-        {
-          name: "userinfo",
-          description: "Get info about a User",
-          options: { "target-type": "user" }
-        },
-        {
-          name: "vcinfo",
-          description: "Get info about a Voice Channel",
-          options: { "target-type": "channel" }
-        }
-      ],
       testOptions: [
-        { "target-id": "<#1450623993584419037>" },          // #bot-console
-        { "target-id": "<:mothula:1450259843540582440>" },  // :mothula:
-        { "target-id": "<@&1450182051528572963>" },         // @Admin
-        { "target-id": "<@!263968998645956608>" },          // @Minnie
-        { "target-id": "<@!1111517386588307536>" },         // @castIe
-        { "target-id": "<@!1307416505171968011>" },         // @minrook
-        { "target-id": "<#!1450229840006615242>" }          // Voice:General
+        { "channel-id": "<#1312729342731751487>" },           // #bot-console
+        { "emoji-id":   "<:akariwuv:1462522448065986680>" },  // :akariwuv:
+        { "mention-id": "<@&1303864581873205289>" },          // @Admin
+        { "mention-id": "<@!263968998645956608>" },           // @Minnie
+        { "mention-id": "<@!211926100681424906>" },           // @Nik
+        { "mention-id": "<@!1307416505171968011>" },          // @minrook
+        { "channel-id": "<#!1303864272832565272>" },          // Voice:VC 1
+
+        { "target-id": "<#1312729342731751487>" },           // #bot-console
+        { "target-id": "<:akariwuv:1462522448065986680>" },  // :akariwuv:
+        { "target-id": "<@&1303864581873205289>" },          // @Admin
+        { "target-id": "<@!263968998645956608>" },           // @Minnie
+        { "target-id": "<@!211926100681424906>" },           // @Nik
+        { "target-id": "<@!1307416505171968011>" },          // @minrook
+        { "target-id": "<#!1303864272832565272>" },          // Voice:VC 1
+
+        { "target-id": "1312729342731751487", "target-type": "channel" }, // #bot-console
+        { "target-id": "1462522448065986680", "target-type": "emoji" },   // :akariwuv:
+        { "target-id": "1303864581873205289", "target-type": "role" },    // @Admin
+        { "target-id": "263968998645956608",  "target-type": "user" },    // @Minnie
+        { "target-id": "211926100681424906",  "target-type": "user" },    // @Nik
+        { "target-id": "1307416505171968011", "target-type": "user" },    // @minrook
+        { "target-id": "1303864272832565272", "target-type": "channel" }  // Voice:VC 1
+
       ]
     }
     let props = {
@@ -110,13 +124,26 @@ module.exports = class MentionCommand extends RookCommand {
 
   async action(client, interaction, coptions) {
     // Get Target Input
-    let targetInput   = coptions["target-id"]
-    // Get Target ID
-    let targetId      = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
+    let targetInput   = ""
     // Get Target Type
     let targetType    = coptions["target-type"] ?? "channel"
     let targetMember  = null
     let targetMention = ""
+
+    for (let check of 
+      [
+        "mention",
+        "channel",
+        "emoji",
+        "target"
+      ]
+    ) {
+      if (coptions[`${check}-id`]) {
+        targetInput = coptions[`${check}-id`]
+      }
+    }
+    // Get Target ID
+    let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
     // console.log(
     //   [
@@ -142,6 +169,9 @@ module.exports = class MentionCommand extends RookCommand {
       if(targetInput.includes(check)) {
         targetType = mentionType
       }
+    }
+    if (coptions["emoji-id"] && coptions["emoji-id"] != "") {
+      targetType = "emoji"
     }
     // If @&, it's a Role Mention
     if(targetInput.includes("@") && targetInput.includes("&")) {
@@ -252,9 +282,12 @@ module.exports = class MentionCommand extends RookCommand {
             return false
           }
           if (emoji) {
+            if (!emoji?.name) {
+              break
+            }
             specs = {
               name: emoji?.name,
-              url: emoji?.imageURL({ size: Math.pow(2, 7) }),
+              url: emoji?.imageURL({ size: 128 }),
               animated: emoji?.animated ?
                 (
                   emoji.animated ?
@@ -290,9 +323,12 @@ module.exports = class MentionCommand extends RookCommand {
         if (guild) {
           let role = await guild.roles.fetch(targetId)
           if (role) {
+            if (!role?.name) {
+              break
+            }
             specs = {
               name: role?.name,
-              url: role?.iconURL({ size: Math.pow(2, 7) }),
+              url: role?.iconURL({ size: 128 }),
               hoisted: role?.hoist ?
                 (
                   role.hoist ?
@@ -331,9 +367,12 @@ module.exports = class MentionCommand extends RookCommand {
           try {
             targetMember = await guild?.members?.fetch(targetId)
           } catch(err) {
-            console.log(err)
+            // console.log(err)
           }
           if (targetMember) {
+            if (!targetMember?.user) {
+              break
+            }
             specs = {
               name: targetMember.user.tag
             }
@@ -354,7 +393,7 @@ module.exports = class MentionCommand extends RookCommand {
             }
 
             specs.highest = await targetMember.roles.highest
-            specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: Math.pow(2, 7) })
+            specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
 
             if (specs?.highest) {
 
@@ -462,7 +501,7 @@ module.exports = class MentionCommand extends RookCommand {
                 id:     targetId,
                 name:   targetMember.displayName,
                 url:    "http://example.com/target",
-                avatar: specs?.roleIcon ?? targetMember.displayAvatarURL({ size: Math.pow(2, 7) }),
+                avatar: specs?.roleIcon ?? targetMember.displayAvatarURL({ size: 128 }),
                 tag:    targetMember.user.tag
               }
             }

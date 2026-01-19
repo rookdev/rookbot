@@ -221,9 +221,22 @@ module.exports = class SayCommand extends ModCommand {
     }
 
     if (!rookhook) {
-      this.error = true
-      this.props.description = `rookhook not found for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
-      return false
+      try {
+        await interaction.channel.createWebhook(
+          {
+            name: "rookbot impersonator",
+            avatar: "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
+          }
+        )
+        webhooks = await interaction.guild.fetchWebhooks()
+        rookhook = webhooks.find(
+          w => w.name == "rookbot impersonator"
+        )
+      } catch (e) {
+        this.error = true
+        this.props.description = `rookhook not found and not creatable for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
+        return false
+      }
     }
 
     return rookhook
@@ -255,14 +268,27 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    visages = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        interaction.guild.id
-      ],
-      "visages.json"
-    )
+    if (visage == "guild") {
+      visages = {
+        "guild": {
+          name: interaction.guild.name,
+          avatar: interaction.guild.iconURL({ size: 128 })
+        },
+        "reset": {
+          name: "rookbot impersonator",
+          avatar: "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
+        }
+      }
+    } else {
+      visages = fileFuncs.getAFile(
+        [
+          "src",
+          "dbs",
+          interaction.guild.id
+        ],
+        "visages.json"
+      )
+    }
 
     if (!visages) {
       this.error = true
@@ -525,7 +551,8 @@ module.exports = class SayCommand extends ModCommand {
         switch(mode) {
           case "say":
           case "clone":
-            result = await rookhook.send(message)
+            destMessage = await rookhook.send(message)
+            result = destMessage
             break
           case "edit":
             result = await rookhook.editMessage(destMessage, message)
@@ -536,7 +563,8 @@ module.exports = class SayCommand extends ModCommand {
         switch(mode) {
           case "say":
           case "clone":
-            result = await channel.send(message)
+            destMessage = await channel.send(message)
+            result = destMessage
             break
           case "edit":
             result = await destMessage.edit(message)
@@ -553,7 +581,7 @@ module.exports = class SayCommand extends ModCommand {
             emoji = emojiName
           }
           // console.log(emoji)
-          let reacted = await destMessage.reactions.resolve(emoji)?.me
+          let reacted = await destMessage?.reactions?.resolve(emoji)?.me
           if (!reacted) {
             await destMessage.react(emoji)
           }

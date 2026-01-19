@@ -80,7 +80,7 @@ module.exports = async (client, oldMember, newMember) => {
     let players = {
       target: {
         name: newMember.displayName,
-        avatar: newMember.displayAvatarURL({ size: Math.pow(2, 7) })
+        avatar: newMember.displayAvatarURL({ size: 128 })
       }
     }
     if (auditMoment) {
@@ -109,7 +109,7 @@ module.exports = async (client, oldMember, newMember) => {
     if (updater && updater?.id) {
       players.user = {
         name: updater.displayName,
-        avatar: updater.displayAvatarURL({ size: Math.pow(2, 7) })
+        avatar: updater.displayAvatarURL({ size: 128 })
       }
       fields.push(
         // Updated by someone we can capture
@@ -126,7 +126,7 @@ module.exports = async (client, oldMember, newMember) => {
       if (clientMember) {
         players.user = {
           name: clientMember.displayName,
-          avatar: clientMember.displayAvatarURL({ size: Math.pow(2, 7) })
+          avatar: clientMember.displayAvatarURL({ size: 128 })
         }
       }
       fields.push(

@@ -1,201 +1,202 @@
 {
-  "stack": [
-    "open-base-override",
-    "private-base-override",
-    "access-base-override",
-    "member-write-override",
-    "captain-mod-override",
-    "mod-mod-override",
-    "admin-admin-override"
-  ],
-  "open-base-override": {
-    "description": [
-      "Open Membership Base",
-      "No invites"
+  "chanPerms": {
+    "stack": [
+      "open-base-override",
+      "private-base-override",
+      "access-base-override",
+      "member-write-override",
+      "captain-mod-override",
+      "mod-mod-override",
+      "admin-admin-override"
     ],
-    "profiles": {
-      "open-base-override": {
-        "CreateInstantInvite": false
-      }
-    }
-  },
-  "private-base-override": {
-    "description": [
-      "Private Channel Base",
-      "No invites, can't view"
-    ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override"
+    "open-base-override": {
+      "description": [
+        "Open Membership Base",
+        "No invites"
       ],
-      "private-base-override": {
-        "ViewChannel": false,
-        "Connect": false
+      "profiles": {
+        "open-base-override": {
+          "CreateInstantInvite": false
+        }
       }
-    }
-  },
-  "access-base-override": {
-    "description": [
-      "Access Membership Base",
-      "Alias for private-base-override"
-    ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override",
-        "private-base-override"
+    },
+    "private-base-override": {
+      "description": [
+        "Private Channel Base",
+        "No invites, can't view"
       ],
-      "access-base-override": {}
-    }
-  },
-  "readonly-override": {
-    "description": [
-      "Read-only Override",
-      "Can view, connect"
-    ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override",
-        "private-base-override",
-        "access-base-override"
+      "profiles": {
+        "dependencies": [
+          "open-base-override"
+        ],
+        "private-base-override": {
+          "ViewChannel": false,
+          "Connect": false
+        }
+      }
+    },
+    "access-base-override": {
+      "description": [
+        "Access Membership Base",
+        "Alias for private-base-override"
       ],
-      "readonly-override": {
-        "ViewChannel": true,
-        "Connect": true,
-        "SendMessages": false,
-        "SendMessagesInThreads": false,
-        "CreatePublicThreads": false,
-        "CreatePrivateThreads": false,
-        "AddReactions": false,
-        "UseExternalEmojis": false,
-        "SendVoiceMessages": false,
-        "SendPolls": false,
-        "Speak": false,
-        "Stream": false,
-        "UseSoundboard": false,
-        "UseApplicationCommands": false,
-        "UseEmbeddedActivities": false,
-        "UseExternalApps": false,
-        "CreateEvents": false
+      "profiles": {
+        "dependencies": [
+          "open-base-override",
+          "private-base-override"
+        ],
+        "access-base-override": {}
       }
-    }
-  },
-  "member-write-override": {
-    "description": [
-      "Member Override",
-      "Can send messages, create threads, react,",
-      "speak, stream, use app commands"
-    ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override",
-        "private-base-override",
-        "access-base-override",
-        "readonly-override"
+    },
+    "readonly-override": {
+      "description": [
+        "Read-only Override",
+        "Can view, connect"
       ],
-      "member-write-override": {
-        "SendMessages": true,
-        "SendMessagesInThreads": true,
-        "CreatePublicThreads": true,
-        "CreatePrivateThreads": true,
-        "AddReactions": true,
-        "UseExternalEmojis": true,
-        "UseExternalStickers": true,
-        "Speak": true,
-        "Stream": true,
-        "UseApplicationCommands": true
+      "profiles": {
+        "dependencies": [
+          "open-base-override",
+          "private-base-override",
+          "access-base-override"
+        ],
+        "readonly-override": {
+          "ViewChannel": true,
+          "Connect": true,
+          "SendMessages": false,
+          "SendMessagesInThreads": false,
+          "CreatePublicThreads": false,
+          "AddReactions": false,
+          "Speak": false,
+          "Stream": false
+        }
+      }
+    },
+    "access-welcome-stack": {
+      "description": "Welcome Channel",
+      "profiles": {
+        "@everyone": "readonly-override",
+        "muted": "private-base-override",
+        "member": "private-base-override"
+      }
+    },
+    "access-readonly-stack": {
+      "description": "Information Channel",
+      "profiles": {
+        "@everyone": "access-base-override",
+        "muted": "readonly-override",
+        "member": "readonly-override"
+      }
+    },
+    "access-write-stack": {
+      "description": "General Channel",
+      "profiles": {
+        "@everyone": "access-base-override",
+        "muted": "readonly-override"
+      }
+    },
+    "access-private-stack": {
+      "description": "Private Channel",
+      "profiles": {
+        "@everyone": "private-base-override"
       }
     }
   },
-  "captain-mod-override": {
-    "description": [
-      "Captain Override",
-      "Can manage/pin messages, send polls, mute/deafen/move members",
-      "Create/manage events"
+  "rolePerms": {
+    "stack": [
+      "role-everyone-override",
+      "role-read-override",
+      "role-member-override",
+      "role-captain-override",
+      "role-mod-override",
+      "role-admin-override"
     ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override",
-        "private-base-override",
-        "access-base-override",
-        "readonly-override",
-        "member-write-override"
-      ],
-      "captain-mod-override": {
-        "ManageMessages": true,
-        "PinMessages": true,
-        "SendPolls": true,
-        "MuteMembers": true,
-        "DeafenMembers": true,
-        "MoveMembers": true,
-        "CreateEvents": true,
-        "ManageEvents": true
+    "role-admin-override": {
+      "profiles": {
+        "role-admin-override": [
+          "Administrator",
+          "ViewChannel"
+        ]
       }
-    }
-  },
-  "mod-mod-override": {
-    "description": [
-      "Moderator Override",
-      "Can send TTS/voice messages,",
-      "Use soundboard, embedded activities, external apps"
-    ],
-    "profiles": {
-      "dependencies": [
-        "open-base-override",
-        "private-base-override",
-        "access-base-override",
-        "readonly-override",
-        "member-write-override",
-        "captain-mod-override"
-      ],
-      "mod-mod-override": {
-        "SendTTSMessages": true,
-        "SendVoiceMessages": true,
-        "UseSoundboard": true,
-        "UseEmbeddedActivities": true,
-        "UseExternalApps": true
+    },
+    "role-mod-override": {
+      "profiles": {
+        "dependencies": [
+          "role-captain-override"
+        ],
+        "role-mod-override": [
+          "SendTTSMessages",
+          "CreateGuildExpressions",
+          "ManageGuildExpressions",
+          "ViewAuditLog",
+          "SendVoiceMessages",
+          "UseSoundboard",
+          "UseExternalSounds",
+          "UseEmbeddedActivities",
+          "UseExternalApps",
+          "ManageNicknames",
+          "ModerateMembers",
+          "BanMembers",
+          "KickMembers",
+          "MentionEveryone"
+        ]
       }
-    }
-  },
-  "admin-admin-override": {
-    "description": "Admin Override",
-    "profiles": {
-      "admin-admin-override": {
-        "ViewChannel": true
+    },
+    "role-captain-override": {
+      "profiles": {
+        "role-captain-override": [
+          "ManageMessages",
+          "PinMessages",
+          "SendPolls",
+          "MuteMembers",
+          "DeafenMembers",
+          "MoveMembers",
+          "CreateEvents",
+          "ManageEvents"
+        ]
       }
-    }
-  },
-  "access-welcome-stack": {
-    "description": "Welcome Channel",
-    "profiles": {
-      "@everyone":  "readonly-override",
-      "muted":      "private-base-override",
-      "member":     "private-base-override"
-    }
-  },
-  "access-readonly-stack": {
-    "description": "Information Channel",
-    "profiles": {
-      "@everyone":  "access-base-override",
-      "muted":      "readonly-override",
-      "member":     "readonly-override",
-      "mod":        "mod-mod-override"
-    }
-  },
-  "access-write-stack": {
-    "description": "General Channel",
-    "profiles": {
-      "@everyone":  "access-base-override",
-      "muted":      "readonly-override",
-      "member":     "member-write-override",
-      "mod":        "mod-mod-override",
-      "admin":      "admin-admin-override"
-    }
-  },
-  "access-private-stack": {
-    "description": "Private Channel",
-    "profiles": {
-      "@everyone":  "private-base-override",
-      "admin":      "admin-admin-override"
+    },
+    "role-member-override": {
+      "profiles": {
+        "role-member-override": [
+          "SendMessagesInThreads",
+          "CreatePublicThreads",
+          "ChangeNickname",
+          "AddReactions",
+          "UseExternalEmojis",
+          "UseExternalStickers",
+          "Speak",
+          "Stream",
+          "UseApplicationCommands",
+          "UseVAD",
+          "EmbedLinks"
+        ]
+      }
+    },
+    "role-read-override": {
+      "profiles": {
+        "role-read-override": [
+          "ViewChannel",
+          "Connect"
+        ]
+      }
+    },
+    "role-everyone-override": {
+      "profiles": {
+        "role-everyone-override": [
+          "SendMessages",
+          "ReadMessageHistory"
+        ]
+      }
+    },
+    "role-access-stack": {
+      "profiles": {
+        "admin":      "role-admin-override",
+        "mod":        "role-mod-override",
+        "captain":    "role-captain-override",
+        "member":     "role-member-override",
+        "muted":      "role-read-override",
+        "@everyone":  "role-everyone-override"
+      }
     }
   }
 }

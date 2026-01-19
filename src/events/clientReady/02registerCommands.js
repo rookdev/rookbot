@@ -258,8 +258,10 @@ module.exports = async (client) => {
           cmdParts.parent = parentName
           let msg = ""
           msg = cmdParts.name + ": "
-          for (let [msgName, msgValue] of Object.entries(alias.options)) {
-            aliasesDoc[parentName][cmdParts.name][msgName] = msgValue
+          if (alias.options) {
+            for (let [msgName, msgValue] of Object.entries(alias.options)) {
+              aliasesDoc[parentName][cmdParts.name][msgName] = msgValue
+            }
           }
           // messages.push(msg)
 

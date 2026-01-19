@@ -680,7 +680,7 @@ class ModCommand extends AdminCommand {
             entities: {
               target: {
                 name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: Math.pow(2, 7) })
+                avatar: targetUser.displayAvatarURL({ size: 128 })
               }
             },
             ephemeral: true
@@ -861,7 +861,7 @@ class ModCommand extends AdminCommand {
             entities: {
               target: {
                 name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: Math.pow(2, 7) })
+                avatar: targetUser.displayAvatarURL({ size: 128 })
               }
             },
             fields: logFields

@@ -136,11 +136,11 @@ module.exports = async (client, newMember) => {
       players: {
         user: {
           name: fetchedMember.guild.name,
-          avatar: fetchedMember.guild.iconURL( { size: Math.pow(2, 7) } )
+          avatar: fetchedMember.guild.iconURL( { size: 128 } )
         },
         target: {
           name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { size: Math.pow(2, 7) } )
+          avatar: newMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       fields: logFields

@@ -100,7 +100,7 @@ class RookEmbed extends EmbedBuilder {
 
     let bot = {
       name: "Bot",
-      avatar: client.user.displayAvatarURL({ size: Math.pow(2, 7) })
+      avatar: client.user.displayAvatarURL({ size: 128 })
     }
 
     if (!(props?.players)) {

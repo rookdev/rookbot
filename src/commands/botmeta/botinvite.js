@@ -19,7 +19,7 @@ module.exports = class BotInviteCommand extends RookCommand {
         url: `https://discord.com/oauth2/authorize?client_id=${client.user.id}`
       },
       description: `Invite [rookbot](https://discord.com/oauth2/authorize?client_id=${client.user.id})!`,
-      image: { image: client.user.avatarURL({ size: Math.pow(2, 7) }) }
+      image: { image: client.user.avatarURL({ size: 128 }) }
     }
     super(
       client,

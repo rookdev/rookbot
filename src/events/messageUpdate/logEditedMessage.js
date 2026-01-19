@@ -121,7 +121,7 @@ module.exports = async (client, oldMessage, newMessage) => {
 
   let player = {
     name: editor.displayName,
-    avatar: editor.displayAvatarURL( { size: Math.pow(2, 7) } )
+    avatar: editor.displayAvatarURL( { size: 128 } )
   }
 
   const embed = new RookEmbed(client, {
