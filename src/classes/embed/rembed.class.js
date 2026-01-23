@@ -332,6 +332,8 @@ class RookEmbed extends EmbedBuilder {
       this.props.image.image.trim() != ""
     ) {
       this.setImage(this.props.image.image.trim())
+    } else if (this.props.wide) {
+      this.setImage("https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/widefooter.png?raw=true")
     }
 
     // Set footer

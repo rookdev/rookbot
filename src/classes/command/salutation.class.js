@@ -11,6 +11,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const shell = require('shelljs')                // Run shell commands
 const fs = require('fs')                        // Filesystem manipulation
@@ -398,13 +399,9 @@ class SalutationCommand extends RookCommand {
         let guild = await client.guilds.fetch(guildID)
         let channel = null
 
-        let channelIDs = fileFuncs.getAFile(
-          [
-            "src",
-            "dbs",
-            guildID
-          ],
-          "channels.json"
+        let channelIDs = await dbFuncs.getDB(
+          guildID,
+          "channels"
         )
         // Find the Guild Channel to send the embed to
         if (!channelIDs) {

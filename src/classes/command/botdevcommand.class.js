@@ -5,6 +5,7 @@ const { PermissionFlagsBits } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('../command/admincommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * @class
@@ -19,6 +20,7 @@ class BotDevCommand extends AdminCommand {
     comprops.permissions = [ PermissionFlagsBits.Administrator ]
     // Category: BotDev
     comprops.access = comprops?.access ? comprops.access : "BotDev"
+    comprops.wide = comprops?.wide ? comprops.wide : true
 
     // Create parent object
     super(
@@ -53,13 +55,9 @@ class BotDevCommand extends AdminCommand {
     console.log(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
-      this.ROLES = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          interaction.guild.id
-        ],
-        "roles.json"
+      this.ROLES = await dbFuncs.getDB(
+        interaction.guild.id,
+        "roles"
       )
 
       if (this.ROLES && this.ROLES.length > 0) {

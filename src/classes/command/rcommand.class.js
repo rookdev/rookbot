@@ -11,6 +11,7 @@ const fileFuncs = require('../../utils/fs/fileFuncs')
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const stringFuncs = require("../../utils/primitives/stringFuncs")
 const numFuncs = require("../../utils/primitives/numFuncs")
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 
 class RookCommand {
@@ -30,6 +31,7 @@ class RookCommand {
     this.botPermissions   = setValue(comprops.botPermissions, this.permissions)
     this.userPermissions  = setValue(comprops.userPermissions, this.permissions)
     this.errors           = require('../../dbs/errors.json')
+    this.wide             = setValue(comprops.wide, false)
 
     // Initialize global properties
     this.profile = client.profile // Loaded Profile
@@ -67,6 +69,11 @@ class RookCommand {
     // Default Embed:Players to Command:Players
     if (!Object.hasOwn(this.props, "players")) {
       this.props["players"] = this.players
+    }
+
+    // Default Embed:Wide to what was sent
+    if (!Object.hasOwn(this.props, "wide")) {
+      this.props["wide"] = this.wide
     }
 
     // Initialize Embed:Entities
@@ -206,13 +213,9 @@ class RookCommand {
     let guildID = guild?.id
     let channel = null
 
-    let channelIDs = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guildID
-      ],
-      "channels.json"
+    let channelIDs = await dbFuncs.getDB(
+      guildID,
+      "channels"
     )
 
     if (!channelIDs) {
@@ -601,9 +604,11 @@ class RookCommand {
             if (this_footer?.icon_url && (this_footer.icon_url != "")) {
               this_footer.iconURL = this_footer.icon_url
             }
-            return page.setFooter(this_footer)
+            if (this.wide) {
+            }
+          } else if(this.wide) {
           }
-          return page.setFooter()
+          return page.setFooter(this_footer)
         }
       )
       these_pagination.render()

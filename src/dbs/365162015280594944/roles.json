@@ -1,21 +1,22 @@
 {
-  "admin":  [
-    "Management"
+  "#note": "Trident Esports",
+  "access": [
+    "Accepted Values"
   ],
-  "botdev": [
-    "Discord Manager"
-  ],
-  "mod": [
+  "admin": [
     "Management"
   ],
   "booster": [
     "Server Booster"
   ],
-  "access": [
-    "Accepted Values"
+  "botdev": [
+    "Discord Manager"
   ],
   "member": [
     "Fishy"
+  ],
+  "mod": [
+    "Management"
   ],
   "muted": [
     "Flounder"

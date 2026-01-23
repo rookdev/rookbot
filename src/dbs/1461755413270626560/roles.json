@@ -1,26 +1,27 @@
 {
+  "#note": "Rookbot Sandbox",
   "admin": [
     "Admin"
+  ],
+  "booster": [
+    "Server Booster"
+  ],
+  "bot": [
+    "Bot"
   ],
   "botdev": [
     "Bot Dev",
     "rookbot dev",
     "rookbot steward"
   ],
-  "bot": [
-    "Bot"
-  ],
-  "mod": [
-    "Mod"
-  ],
   "captain": [
     "Captain"
   ],
-  "booster": [
-    "Server Booster"
-  ],
   "member": [
     "Member"
+  ],
+  "mod": [
+    "Mod"
   ],
   "muted": [
     "Muted"

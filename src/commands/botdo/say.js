@@ -27,6 +27,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
@@ -175,13 +176,9 @@ module.exports = class SayCommand extends ModCommand {
 
   async getRookhook(interaction) {
     // Get Guild Metadata
-    let guildMetadata = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        interaction?.guild?.id
-      ],
-      "meta.json"
+    let guildMetadata = await dbFuncs.getDB(
+      interaction?.guild?.id,
+      "meta"
     )
     let rookhook = null // Bucket for rookhook
     let rookhookID = 0  // Bucket for rookhook ID
@@ -244,15 +241,6 @@ module.exports = class SayCommand extends ModCommand {
 
   async setVisage(interaction, visage, channel) {
     // console.log("We're selecting a visage!")
-    // Get Guild Metadata
-    let guildMetadata = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        interaction?.guild?.id
-      ],
-      "meta.json"
-    )
     let rookhook = await this.getRookhook(interaction) // Bucket for rookhook
     let visages = null  // Bucket for visages
 
@@ -280,13 +268,9 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
     } else {
-      visages = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          interaction.guild.id
-        ],
-        "visages.json"
+      visages = await dbFuncs.getDB(
+        interaction.guild.id,
+        "visages"
       )
     }
 

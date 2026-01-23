@@ -10,6 +10,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -83,13 +84,9 @@ module.exports = async (client, oldState, newState) => {
     let embed = new RookEmbed(client, props)
 
     let guildID = member.guild.id
-    const guildChannels = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guildID
-      ],
-      "channels.json"
+    const guildChannels = await dbFuncs.getDB(
+      guildID,
+      "channels"
     )
     if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)

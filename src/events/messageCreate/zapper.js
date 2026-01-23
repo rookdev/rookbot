@@ -26,6 +26,7 @@ const BanCommand = require('../../commands/mod/ban')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -79,13 +80,9 @@ module.exports = async (client, message) => {
   const user = guildMember?.user ?? targetUser
 
   // Get list of roles
-  let ROLES = fileFuncs.getAFile(
-    [
-      "src",
-      "dbs",
-      message.guild.id
-    ],
-    "roles.json"
+  let ROLES = await dbFuncs.getDB(
+    message.guild.id,
+    "roles"
   )
  
   // If it's an admin or mod

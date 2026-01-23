@@ -7,6 +7,7 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class ReactionRolesCommand extends ModCommand {
   constructor(client) {
@@ -30,13 +31,9 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     let messages = []
     let guild = interaction.guild
 
-    let rrs = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guild.id
-      ],
-      "rrs.json"
+    let rrs = await dbFuncs.getDB(
+      guild.id,
+      "rrs"
     )
     if (!rrs) {
       messages.push(`${this.profile.emojis.warning} Reaction Roles not found for '${guild.name}' [${inlineCode(guild.id)}]`)

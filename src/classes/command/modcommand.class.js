@@ -36,6 +36,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -948,13 +949,9 @@ class ModCommand extends AdminCommand {
     console.log(`/${this.name}: Mod Build`)
 
     // Get list of roles
-    this.ROLES = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        interaction.guild.id
-      ],
-      "roles.json"
+    this.ROLES = await dbFuncs.getDB(
+      interaction.guild.id,
+      "roles"
     )
 
     if (

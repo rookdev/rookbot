@@ -10,6 +10,7 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 
 function article(input="") {
@@ -320,13 +321,9 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Construct the content for the channel message
     // Get the Pinger role
     let roleObject = null
-    let roleIDs = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        interaction?.guild?.id
-      ],
-      "roleIDs.json"
+    let roleIDs = await dbFuncs.getDB(
+      interaction?.guild?.id,
+      "roleIDs"
     )
     if (roleIDs) {
       // If no role, try the one listed in the guild DB

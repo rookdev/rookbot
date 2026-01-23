@@ -121,6 +121,9 @@ let del = ""
 let purge = ""
 let profile = ""
 
+// MongoDB
+envs += `-f ./env/db/.env.mongodb `
+
 // CUser
 if (haveCUser && !haveUser && !haveClient) {
   // Set User Token & Client ID

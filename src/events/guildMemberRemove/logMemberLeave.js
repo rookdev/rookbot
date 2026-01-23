@@ -10,6 +10,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -25,13 +26,9 @@ module.exports = async (client, oldMember) => {
   try {
     // Fetch the log channel using the oldMember's guild ID
     const guildID = oldMember.guild.id
-    const guildChannels = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guildID
-      ],
-      "channels.json"
+    const guildChannels = await dbFuncs.getDB(
+      guildID,
+      "channels"
     )
     if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${oldMember.guild.name}' [${oldMember.guild.id}]`)

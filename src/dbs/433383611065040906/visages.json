@@ -1,10 +1,15 @@
 {
+  "#note": "kaishin no memegeki",
+  "maroo": {
+    "avatar": "https://media.discordapp.net/attachments/1112098436188209152/1462952525606031421/maroo.png?ex=69701036&is=696ebeb6&hm=a0f5ad6ba8cb62e3e41ef9b9b0f88450756008078bcf8bf87fce5e8585d0219c&=",
+    "name": "maroo"
+  },
   "otacon": {
-    "name": "Otacon",
-    "avatar": "https://media.discordapp.net/attachments/1112098436188209152/1462831226359513208/otacon.png?ex=696f9f3e&is=696e4dbe&hm=07e79cacb75aa956a8df064ee0af2126c605b8dd9a8447b0fa783311207ee0d7&="
+    "avatar": "https://media.discordapp.net/attachments/1112098436188209152/1462831226359513208/otacon.png?ex=696f9f3e&is=696e4dbe&hm=07e79cacb75aa956a8df064ee0af2126c605b8dd9a8447b0fa783311207ee0d7&=",
+    "name": "Otacon"
   },
   "reset": {
-    "name": "rookbot impersonator",
-    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
+    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true",
+    "name": "rookbot impersonator"
   }
 }

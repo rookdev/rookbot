@@ -9,6 +9,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -37,13 +38,9 @@ module.exports = async (client, deletedMessage) => {
 
   // Fetch the log channel using the deletedMessage's guild ID
   const guildID = deletedMessage.guild?.id ?? 0
-  const guildChannels = fileFuncs.getAFile(
-    [
-      "src",
-      "dbs",
-      guildID
-    ],
-    "channels.json"
+  const guildChannels = await dbFuncs.getDB(
+    guildID,
+    "channels"
   )
   if (!guildChannels) {
     messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)

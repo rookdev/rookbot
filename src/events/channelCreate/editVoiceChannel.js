@@ -7,6 +7,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs') // Random Functions
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 async function selectName(newChannel) {
   let oldName = newChannel.name
@@ -14,13 +15,9 @@ async function selectName(newChannel) {
 
   let messages = []
 
-  let namesDB = fileFuncs.getAFile(
-    [
-      "src",
-      "dbs",
-      newChannel.guild.id
-    ],
-    "voiceChannelNames.json"
+  let namesDB = await dbFuncs.getDB(
+    newChannel.guild.id,
+    "voiceChannelNames"
   )
   if (!namesDB) {
     messages.push(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
@@ -38,8 +35,8 @@ async function selectName(newChannel) {
   }
 
   if (!changeName) {
-    console.log(`'${newChannel.name}' of '${newChannel.guild.name}' not in a specified category`)
-    return newName
+    messages.push(`'${newChannel.name}' of '${newChannel.guild.name}' not in a specified category`)
+    return [newName, messages]
   }
 
   if (changeName) {
@@ -70,7 +67,7 @@ async function selectName(newChannel) {
     }
 
     if ((oldName == newName) || (newName.length > 32)) {
-      console.log(`${client.profile.emojis.warning} Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
+      messages.push(`${client.profile.emojis.warning} Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
       let newMessages = []
       [newName, newMessages] = await selectName(newChannel)
       messages = messages.concat(newMessages)

@@ -11,6 +11,9 @@ __pycache__
 ## Resources
 resources/user/*
 
+# MongoDB scratch files
+src/mongodb/output/*
+
 # Node
 ## Logs
 logs

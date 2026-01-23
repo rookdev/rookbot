@@ -1,17 +1,27 @@
 {
+  "#note": "TridentBot",
   "Cheese Wagon Brigade": {
-    "add": [ "Cheese Wagon Brigade", "Pub Trivia" ],
+    "add": [
+      "Cheese Wagon Brigade",
+      "Pub Trivia"
+    ],
     "prefix": "🚌 | "
   },
-  "Pub Trivia": {
-    "add": [ "Pub Trivia" ],
-    "prefix": "🍺 | "
-  },
   "Member": {
-    "add": [ "Member" ],
+    "add": [
+      "Member"
+    ],
     "prefix": "🖥️ | "
   },
+  "Pub Trivia": {
+    "add": [
+      "Pub Trivia"
+    ],
+    "prefix": "🍺 | "
+  },
   "Reset Member": {
-    "only": [ "Member" ]
+    "only": [
+      "Member"
+    ]
   }
 }

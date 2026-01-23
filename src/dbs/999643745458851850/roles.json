@@ -1,13 +1,14 @@
 {
+  "#note": "pinkkuchu's room",
   "admin": [
-    "Streamer & Owner",
-    "Administrator"
-  ],
-  "mod": [
-    "Moderators"
+    "Administrator",
+    "Streamer & Owner"
   ],
   "member": [
     "Friends"
+  ],
+  "mod": [
+    "Moderators"
   ],
   "muted": [
     "Penalty Box"

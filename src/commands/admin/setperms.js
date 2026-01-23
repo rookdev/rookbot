@@ -11,6 +11,7 @@ const {
 // AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class SetPermsCommand extends AdminCommand {
   constructor(client) {
@@ -308,13 +309,9 @@ module.exports = class SetPermsCommand extends AdminCommand {
 
     if (profileToApply) {
       this.props.description.push("---")
-      guildRoles = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          interaction.guild.id
-        ],
-        "roles.json"
+      guildRoles = await dbFuncs.getDB(
+        interaction.guild.id,
+        "roles"
       )
       this.props.description.push(`${this.profile.emojis.dev}Loading Role Profile: '${inlineCode(profileToApply)}'`)
       // If it's an override profile

@@ -5,6 +5,7 @@ const { PermissionFlagsBits, inlineCode } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../command/rcommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * @class
@@ -53,13 +54,9 @@ class AdminCommand extends RookCommand {
     console.log(`/${this.name}: Admin Build`)
     if (interaction) {
       // Get list of roles
-      this.ROLES = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          interaction.guild.id
-        ],
-        "roles.json"
+      this.ROLES = await dbFuncs.getDB(
+        interaction.guild.id,
+        "roles"
       )
 
       if (this.ROLES && this.ROLES.length > 0) {

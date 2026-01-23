@@ -11,6 +11,7 @@ const { ApplicationCommandOptionType, codeBlock } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class WikiCommand extends RookCommand {
   constructor(client) {
@@ -60,13 +61,9 @@ module.exports = class WikiCommand extends RookCommand {
 
     let guild = interaction?.guild
     if (guild) {
-      let interwikiFile = fileFuncs.getAFile(
-        [
-          "src",
-          "dbs",
-          guild.id
-        ],
-        "interwiki.json"
+      let interwikiFile = await dbFuncs.getDB(
+        guild.id,
+        "interwiki"
       )
       if (interwikiFile) {
         interwikiDB = interwikiFile

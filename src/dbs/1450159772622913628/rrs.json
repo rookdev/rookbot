@@ -1,25 +1,47 @@
 {
-  "1451699174058758291": {
-    "#note":        "#welcome: Welcome",
-    "#title":       "Welcome to the ZDoI Randomizer Community!",
-    "#description": "Please react below to gain access to the server.",
-    "akariwuv":     "Member"
-  },
+  "#note": "ZDoI Randomizer Community",
   "1451694506888921108": {
-    "#note":        "#reaction-roles: Community Roles",
-    "#title":       "Community Roles",
     "#description": "Alerts about the community",
-    "📰":           { "role": "ServerAnnouncements", "description": "Server-wide Announcements" }
+    "#note": "#reaction-roles: Community Roles",
+    "#title": "Community Roles",
+    "📰": {
+      "description": "Server-wide Announcements",
+      "role": "ServerAnnouncements"
+    }
   },
   "1451694540405870666": {
-    "#note":        "#reaction-roles: Multiplayer Roles",
-    "#title":       "Multiplayer Roles",
     "#description": "Alerts for multiplayer games",
-    "🎮":           { "role": "MultiWorld",       "description": "([Archipelago](<http://archipelago.gg>))" },
-    "mothula":      { "role": "MultiworldMayhem", "description": "([Submission/Rules Page](<http://mothula.neocities.org/MMM>))" },
-    "🎲":           { "role": "Randovania",       "description": "([Randovania](<http://randovania.org>))" },
-    "firerod":      { "role": "ALttPR",           "description": "([A Link to the Past Randomizer](<http://alttpr.com>))" },
-    "maprando":     { "role": "SMMR",             "description": "([Super Metroid Map Randomizer](<http://maprando.com>))" },
-    "smz3":         { "role": "SMZ3",             "description": "([Super Metroid / Zelda 3 Combo Randomizer](<http://samus.link>))" }
+    "#note": "#reaction-roles: Multiplayer Roles",
+    "#title": "Multiplayer Roles",
+    "firerod": {
+      "description": "([A Link to the Past Randomizer](<http://alttpr.com>))",
+      "role": "ALttPR"
+    },
+    "maprando": {
+      "description": "([Super Metroid Map Randomizer](<http://maprando.com>))",
+      "role": "SMMR"
+    },
+    "mothula": {
+      "description": "([Submission/Rules Page](<http://mothula.neocities.org/MMM>))",
+      "role": "MultiworldMayhem"
+    },
+    "smz3": {
+      "description": "([Super Metroid / Zelda 3 Combo Randomizer](<http://samus.link>))",
+      "role": "SMZ3"
+    },
+    "🎮": {
+      "description": "([Archipelago](<http://archipelago.gg>))",
+      "role": "MultiWorld"
+    },
+    "🎲": {
+      "description": "([Randovania](<http://randovania.org>))",
+      "role": "Randovania"
+    }
+  },
+  "1451699174058758291": {
+    "#description": "Please react below to gain access to the server.",
+    "#note": "#welcome: Welcome",
+    "#title": "Welcome to the ZDoI Randomizer Community!",
+    "akariwuv": "Member"
   }
 }

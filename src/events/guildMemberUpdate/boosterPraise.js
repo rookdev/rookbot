@@ -3,6 +3,7 @@ const { GuildMember, bold } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * @param {RookClient} client
@@ -15,13 +16,9 @@ module.exports = async (client, oldMember, newMember) => {
 
   let boostRoleID = newMember.guild.roles.premiumSubscriberRole?.id
   if (!boostRoleID) {
-    let roleNames = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        newMember.guild.id
-      ],
-      "roles.json"
+    let roleNames = await dbFuncs.getDB(
+      newMember.guild.id,
+      "roles"
     )
 
     if (!roleNames) {
@@ -104,13 +101,9 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
-    const guildChannels = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guildID
-      ],
-      "channels.json"
+    const guildChannels = await dbFuncs.getDB(
+      guildID,
+      "channels"
     )
     if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMember.guild.name}' [${newMember.guild.id}]`)

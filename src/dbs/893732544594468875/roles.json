@@ -1,19 +1,18 @@
 {
+  "#note": "gabbz' hole",
   "admin": [
     "El Gabberino"
+  ],
+  "booster": [
+    "Server Booster"
   ],
   "botdev": [
     "rookbot dev",
     "rookbot steward"
   ],
+  "member": [],
   "mod": [
     "mod"
   ],
-  "booster": [
-    "Server Booster"
-  ],
-  "member": [
-  ],
-  "muted": [
-  ]
+  "muted": []
 }

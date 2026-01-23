@@ -1,21 +1,22 @@
 {
-  "admin":  [
+  "#note": "TridentBot",
+  "access": [
+    "Accepted Values"
+  ],
+  "admin": [
     "Admin"
-  ],
-  "botdev": [
-    "BotDev"
-  ],
-  "mod": [
-    "Mod"
   ],
   "booster": [
     "Fake Booster"
   ],
-  "access": [
-    "Accepted Values"
+  "botdev": [
+    "BotDev"
   ],
   "member": [
     "Member"
+  ],
+  "mod": [
+    "Mod"
   ],
   "muted": [
     "Muted"

@@ -1,18 +1,19 @@
 {
+  "#note": "TridentBot",
   "agahnim": {
-    "name": "Agahnim",
-    "avatar": "https://cdn.discordapp.com/avatars/1287183074345357397/73352af994a31a6ef83b2c1147615be3.webp?size=512"
+    "avatar": "https://cdn.discordapp.com/avatars/1287183074345357397/73352af994a31a6ef83b2c1147615be3.webp?size=512",
+    "name": "Agahnim"
   },
   "brad": {
-    "name": "Brad",
-    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/brad.png?raw=true"
+    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/brad.png?raw=true",
+    "name": "Brad"
   },
   "link": {
-    "name": "Link",
-    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/link.png?raw=true"
+    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/link.png?raw=true",
+    "name": "Link"
   },
   "reset": {
-    "name": "rookbot impersonator",
-    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true"
+    "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/rookbotIcon.png?raw=true",
+    "name": "rookbot impersonator"
   }
 }

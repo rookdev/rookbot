@@ -1,15 +1,16 @@
 {
+  "#note": "rookdev",
   "admin": [
     "Admin"
   ],
   "botdev": [
     "BotDev"
   ],
-  "mod": [
-    "Mod"
-  ],
   "member": [
     "Member"
+  ],
+  "mod": [
+    "Mod"
   ],
   "muted": [
     "Muted"

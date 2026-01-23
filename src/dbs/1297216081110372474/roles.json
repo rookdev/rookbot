@@ -1,11 +1,12 @@
 {
+  "#note": "DoI Navy",
   "admin": [
+    "Beta CORE",
+    "Bot CORE",
     "CORE",
     "Git CORE",
     "Server CORE",
-    "Bot CORE",
-    "Speedrun CORE",
-    "Beta CORE"
+    "Speedrun CORE"
   ],
   "botdev": []
 }

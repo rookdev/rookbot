@@ -1,18 +1,19 @@
 {
+  "#note": "kaishin no memegeki",
   "1462834806894362760": {
-    "#title": "Starcraft Roles",
     "#description": "Select the faction(s) that you prefer to play to better assist with finding proper opponents!",
+    "#title": "Starcraft Roles",
     "sc_protoss": "Protoss",
-    "sc_terran":  "Terran",
-    "sc_zerg":    "Zerg"
+    "sc_terran": "Terran",
+    "sc_zerg": "Zerg"
   },
   "1462835227717271575": {
-    "#title": "Pronouns",
     "#description": "Select your pronouns!",
-    "♂️": "He/Him",
-    "♀️": "She/Her",
+    "#title": "Pronouns",
     "transgender_sign": "They/Them",
-    "👥": "We/Us",
-    "🌐": "Any/All"
+    "♀️": "She/Her",
+    "♂️": "He/Him",
+    "🌐": "Any/All",
+    "👥": "We/Us"
   }
 }

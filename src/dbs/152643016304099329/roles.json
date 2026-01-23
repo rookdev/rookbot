@@ -1,12 +1,13 @@
 {
+  "#note": "The Guys",
   "admin": [
     "Admin"
   ],
-  "mod": [
-    "Lead Guy"
-  ],
   "member": [
     "Guy"
+  ],
+  "mod": [
+    "Lead Guy"
   ],
   "muted": [
     "Muted"

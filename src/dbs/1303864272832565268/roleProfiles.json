@@ -1,6 +1,9 @@
 {
+  "#note": "rookdev",
   "Bot": {
-    "add": [ "Bot" ],
+    "add": [
+      "Bot"
+    ],
     "prefix": "[/] "
   }
 }

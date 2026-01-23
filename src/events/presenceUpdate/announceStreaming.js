@@ -8,6 +8,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -54,7 +55,7 @@ module.exports = async (client, oldPresence, newPresence) => {
 
     // Old Presence
     let oldActivities = []
-    for (let activity of newPresence.activities) {
+    for (let activity of oldPresence.activities) {
       if (activity) {
         if ([
           ActivityType.Streaming,
@@ -169,13 +170,9 @@ module.exports = async (client, oldPresence, newPresence) => {
     let embed = new RookEmbed(client, props)
 
     let guildID = member.guild.id
-    const guildChannels = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guildID
-      ],
-      "channels.json"
+    const guildChannels = await dbFuncs.getDB(
+      guildID,
+      "channels"
     )
     if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)

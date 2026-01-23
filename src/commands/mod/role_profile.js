@@ -5,7 +5,7 @@ const {
   inlineCode
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
-const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class RoleProfileCommand extends ModCommand {
   constructor(client) {
@@ -80,12 +80,9 @@ module.exports = class RoleProfileCommand extends ModCommand {
     // Get Role Profile
     const profileName = coptions["profile"] ?? ""
 
-    let roleProfiles = fileFuncs.getAFile(
-      [
-        "dbs",
-        guildID
-      ],
-      "roleProfiles.json"
+    let roleProfiles = await dbFuncs.getDB(
+      guildID,
+      "roleProfiles"
     )
 
     if (!roleProfiles) {

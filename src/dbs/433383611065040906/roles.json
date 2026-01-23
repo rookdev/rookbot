@@ -1,14 +1,15 @@
 {
-  "admin":  [
+  "#note": "kaishin no memegeki",
+  "admin": [
     "Potential Minnie Replacements"
-  ],
-  "streaming": [
-    "Streaming"
   ],
   "member": [
     "Otaku"
   ],
   "muted": [
     "Oni"
+  ],
+  "streaming": [
+    "Streaming"
   ]
 }

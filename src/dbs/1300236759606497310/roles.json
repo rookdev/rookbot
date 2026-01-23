@@ -1,19 +1,19 @@
 {
+  "#note": "Yuki TV",
   "admin": [
     "Admin"
+  ],
+  "booster": [
+    "Server Booster"
   ],
   "botdev": [
     "rookbot dev",
     "rookbot steward"
   ],
-  "mod": [
-  ],
-  "booster": [
-    "Server Booster"
-  ],
   "member": [
     "Member"
   ],
+  "mod": [],
   "muted": [
     "Muted"
   ]

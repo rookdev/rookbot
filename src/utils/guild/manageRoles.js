@@ -1,7 +1,7 @@
 const { MessageReaction, User } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
-const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 /**
  * Logs edited messages from the server.
@@ -24,13 +24,9 @@ const manageRoles = async (client, reaction, user, mode="add") => {
 
   let guild = message.guild
 
-  let rrs = fileFuncs.getAFile(
-    [
-      "src",
-      "dbs",
-      guild.id
-    ],
-    "rrs.json"
+  let rrs = await dbFuncs.getDB(
+    guild.id,
+    "rrs"
   )
   if (!rrs) {
     messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
@@ -95,13 +91,9 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     //  for each reaction, cycle through users who reacted
     //   for each user, assign the role, just in case
     // Get list of roles
-    rolesDB = fileFuncs.getAFile(
-      [
-        "src",
-        "dbs",
-        guild.id
-      ],
-      "roles.json"
+    rolesDB = await dbFuncs.getDB(
+      guild.id,
+      "roles"
     )
 
     if (rolesDB) {

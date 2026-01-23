@@ -25,6 +25,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = async (client, message) => {
   let result = false
@@ -52,13 +53,14 @@ module.exports = async (client, message) => {
     return [result, messages]
   }
 
-  let channelIDs = fileFuncs.getAFile(
-    [
-      "src",
-      "dbs",
-      message.guild.id
-    ],
-    "channels.json"
+  if (message.attachments.size < 1) {
+    // console.log("No attachments!")
+    return [result, messages]
+  }
+
+  let channelIDs = await dbFuncs.getDB(
+    message.guild.id,
+    "channels"
   )
 
   if (!channelIDs) {
@@ -71,11 +73,6 @@ module.exports = async (client, message) => {
   let channelID   = channelIDs[channelName]
   if (message.channel.id != channelID) {
     // console.log("Not target Channel ID!")
-    return [result, messages]
-  }
-
-  if (message.attachments.size < 1) {
-    // console.log("No attachments!")
     return [result, messages]
   }
 
