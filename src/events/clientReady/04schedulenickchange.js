@@ -59,7 +59,7 @@ module.exports = async (client) => {
 
       try {
         // Get the guild member
-        const member = await guild.members.fetch(userID, { force: true }) ?? null
+        const member = await getters.getCache(client, guild, "members", userID)
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
           messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)

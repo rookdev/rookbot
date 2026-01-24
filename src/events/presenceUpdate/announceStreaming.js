@@ -9,6 +9,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * Logs edited messages from the server.
@@ -188,7 +189,7 @@ module.exports = async (client, oldPresence, newPresence) => {
       return [result, messages]
     }
 
-    let destChannel = await guild?.channels.fetch(destChannelID)
+    let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
     if (!destChannel) { return [false, []] }
 
     let this_package = { embeds: [ embed ] }

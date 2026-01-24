@@ -97,20 +97,6 @@ module.exports = class NickChangeCommand extends RookCommand {
       member = await this.getCache(client, interaction.guild, "members", targetUserId)
     }
 
-    // Try force-fetching
-    if (!member) {
-      try {
-        member = await guild.members.fetch(
-          {
-            user: [ targetUserId ],
-            force: true
-          }
-        ).first()
-      } catch (error) {
-        // do nothing
-      }
-    }
-
     if (!member) {
       // Bail if no Member
       this.error = true

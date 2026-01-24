@@ -10,6 +10,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -54,7 +55,7 @@ module.exports = async (client, deletedMessage) => {
   }
   let logChannel = null
   try {
-    logChannel = await client.channels.fetch(guildChannels[log_type])
+    logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
   } catch (error) {
     messages.push(`${client.profile.emojis.fail} Log channel not found.`)
     return [result, messages]
@@ -93,7 +94,7 @@ module.exports = async (client, deletedMessage) => {
   // If entry exists, grab the user that deleted the message and display username + tag, if none, display 'Unknown'.
   let deleter = auditEntry?.executor ?? null
   if (deleter) {
-    let deleterMember = await deletedMessage.guild.members.fetch(deleter.id)
+    let deleterMember = await getters.getCache(client, deletedMessage.guild, "members", deleter.id)
     if (deleterMember) {
       deleter = deleterMember
     }
@@ -106,7 +107,7 @@ module.exports = async (client, deletedMessage) => {
   let deletedMember = null
   try {
     // This fails if the member has left
-    deletedMember = await deletedMessage.guild.members.fetch(deletedAuthor.id)
+    deletedMember = await getters.getCache(client, deletedMessage.guild, "members", deletedAuthor.id)
   } catch (error) {
     // do nothing
   }

@@ -195,7 +195,7 @@ module.exports = class MentionCommand extends RookCommand {
     let specs = {}
 
     // Get Guild
-    let guild = await client.guilds.fetch(interaction?.guild?.id)
+    let guild = await this.getCache(client, client, "guilds", interaction?.guild?.id)
 
     switch(targetType) {
       // Channel
@@ -204,7 +204,7 @@ module.exports = class MentionCommand extends RookCommand {
         if (guild) {
           let channel = null
           try {
-            channel = await guild.channels.fetch(targetId)
+            channel = await this.getCache(client, guild, "channels", targetId)
           } catch (error) {
             this.error = true
             this.props.description = `Channel ${inlineCode(targetId)} not found in ${italic(guild.name)}`
@@ -275,7 +275,7 @@ module.exports = class MentionCommand extends RookCommand {
         if (guild) {
           let emoji = null
           try {
-            emoji = await guild.emojis.fetch(targetId)
+            emoji = await this.getCache(client, guild, "emojis", targetId)
           } catch (error) {
             this.error = true
             this.props.description = `Emoji ${inlineCode(targetId)} not found in ${italic(guild.name)}`
@@ -321,7 +321,7 @@ module.exports = class MentionCommand extends RookCommand {
       case "role":
         targetMention = roleMention(targetId)
         if (guild) {
-          let role = await guild.roles.fetch(targetId)
+          let role = await this.getCache(client, guild, "roles", targetId)
           if (role) {
             if (!role?.name) {
               break
@@ -365,7 +365,7 @@ module.exports = class MentionCommand extends RookCommand {
         if (guild) {
           // Get Guild Member
           try {
-            targetMember = await guild?.members?.fetch(targetId)
+            targetMember = await this.getCache(client, guild, "members", targetId)
           } catch(err) {
             // console.log(err)
           }
@@ -396,7 +396,6 @@ module.exports = class MentionCommand extends RookCommand {
             specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
 
             if (specs?.highest) {
-
               let numRoles = await guild.roles.fetch()
               numRoles = numRoles.size
               let highName = specs.highest.name

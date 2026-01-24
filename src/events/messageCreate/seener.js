@@ -26,6 +26,7 @@ const PingCommand = require('../../commands/diag/ping')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -60,7 +61,7 @@ module.exports = async (client, message) => {
   const targetUserId = message.author.id
   let targetUser = null
   try {
-    targetUser = await client.users.fetch(targetUserId)
+    targetUser = await getters.getCache(client, client, "users", targetUserId)
   } catch(err) {
     console.log(`No user found for seener [${message.author.id}]`)
     return [result, messages]
@@ -69,7 +70,7 @@ module.exports = async (client, message) => {
   // Get the guild member (to fetch nickname if present)
   let guildMember = null
   try {
-    guildMember = await message.guild.members.fetch(targetUserId)
+    guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
   } catch(err) {
     console.log(`No guild member found for seener [${message.author.id}]`)
     return [result, messages]

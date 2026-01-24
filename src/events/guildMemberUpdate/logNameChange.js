@@ -10,6 +10,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -67,7 +68,7 @@ module.exports = async (client, oldMember, newMember) => {
     // If entry exists, grab the user that updated the guild member and display username + tag, if none, display 'Unknown'.
     let updater = auditEntry?.executor ?? null
     if (updater) {
-      let updaterMember = await newMember.guild.members.fetch(updater.id)
+      let updaterMember = await getters.getCache(client, newMember.guild, "members", updater.id)
       if (updaterMember) {
         updater = updaterMember
       }
@@ -203,7 +204,7 @@ module.exports = async (client, oldMember, newMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = await client.channels.fetch(guildChannels[log_type])
+    const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
 
     // Send the embed to the log channel, if found and valid
     if (logChannel) {

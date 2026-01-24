@@ -8,6 +8,7 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 
 // Sort by keys
@@ -81,7 +82,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
         owner = owner.user
       }
       // Get Guild Bot
-      let bot = await guildData.members.fetch(client.user.id)
+      let bot = await getters.getCache(client, guildData, "members", client.user.id)
       let botJoinedDateTime = moment.utc(bot.joinedTimestamp)
       // Get Guild Data
       let thisGuild = {}

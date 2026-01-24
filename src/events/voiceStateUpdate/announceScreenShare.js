@@ -11,6 +11,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * Logs edited messages from the server.
@@ -52,7 +53,7 @@ module.exports = async (client, oldState, newState) => {
       return [result, messages]
     }
 
-    const channel = await channels.fetch(channelID)
+    const channel = await getters.getCache(client, newState.guild, "channels", channelID)
     if (!channel) {
       messages.push(`${client.profile.emojis.fail} No Channel`)
       return [result, messages]
@@ -100,7 +101,7 @@ module.exports = async (client, oldState, newState) => {
       return [result, messages]
     }
 
-    let destChannel = await guild?.channels.fetch(destChannelID)
+    let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
     if (!destChannel) { return [false, []] }
 
     let this_package = { embeds: [ embed ] }

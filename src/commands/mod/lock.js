@@ -42,7 +42,7 @@ module.exports = class LockCommand extends ModCommand {
     // Get requested Channel ID
     const channelID = coptions['channel']
     // Get Channel from Guild based on Channel ID
-    const channel = await client.channels.fetch(channelID)
+    const channel = await this.getCache(client, client, "channels", channelID)
 
     try {
       if (!this.DEV) {

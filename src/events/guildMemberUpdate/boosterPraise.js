@@ -112,7 +112,7 @@ module.exports = async (client, oldMember, newMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = await client.channels.fetch(guildChannels[log_type])
+    const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
 
     // Send the embed to the log channel, if found and valid
     if (logChannel) {

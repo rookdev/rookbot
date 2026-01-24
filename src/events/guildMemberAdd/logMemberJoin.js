@@ -25,7 +25,7 @@ module.exports = async (client, newMember) => {
 
   try {
     // Ensure the member's data is fully fetched
-    const fetchedMember = await newMember.guild.members.fetch(newMember.user.id) ?? null
+    const fetchedMember = await getters.getCache(client, newMember.guild, "members", newMember.user.id)
     if (!fetchedMember) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch '${newMember.user.tag}' [${newMember.id}] from '${newMember.guild.name}' [${newMember.guild.id}]`)
       return [result, messages]
@@ -47,7 +47,7 @@ module.exports = async (client, newMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = await client.channels.fetch(guildChannels[log_type])
+    const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
 
     if (!logChannel) {
       messages.push(`${client.profile.emojis.fail} Log channel not found or is not text-based.`)

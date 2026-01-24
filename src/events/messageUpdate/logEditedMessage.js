@@ -11,6 +11,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -104,14 +105,14 @@ module.exports = async (client, oldMessage, newMessage) => {
   }
   let logChannel = null
   try {
-    logChannel = await client.channels.fetch(guildChannels[log_type])
+    logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
   } catch (error) {
     messages.push(`${client.profile.emojis.fail} Log channel not found.`)
     return [result, messages]
   }
 
   let editor = newMessage.author
-  let editMember = await newMessage.guild.members.fetch(editor.id)
+  let editMember = await getters.getCache(client, newMessage.guild, "members", editor.id)
   if (editMember) {
     editor = editMember
   }

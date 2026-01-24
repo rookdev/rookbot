@@ -341,7 +341,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (roleID != 0) {
       // If we've got a role, try to find it
       roleID = roleID.replace(/[<#@&!>]/g, '')
-      roleObject = await interaction?.guild?.roles.fetch(roleID)
+      roleObject = await this.getCache(client, interaction.guild, "roles", roleID)
       if (!roleObject) {
         this.error = true
         console.log(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)

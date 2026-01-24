@@ -64,7 +64,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
     // Get Guild ID
     const guildID = coptions["guild-id"] ?? interaction?.guild?.id
     // Get Guild
-    const guild = await client.guilds.fetch(guildID)
+    const guild = await this.getCache(client, client, "guilds", guildID)
     if (!guild) {
       this.error = true
       this.props.description = `Guild [${guildiD}] not found`

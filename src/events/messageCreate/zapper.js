@@ -27,6 +27,7 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -73,10 +74,10 @@ module.exports = async (client, message) => {
   let emoji = ""
 
   const targetUserId = message.author.id
-  const targetUser = await client.users.fetch(targetUserId)
+  const targetUser = await getters.getCache(client, client, "users", targetUserId)
 
   // Get the guild member (to fetch nickname if present)
-  const guildMember = await message.guild.members.fetch(targetUserId)
+  const guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
   const user = guildMember?.user ?? targetUser
 
   // Get list of roles

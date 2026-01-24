@@ -4,6 +4,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const getters = require('../../utils/guild/getters')
 
 module.exports = class BotNicknameCommand extends BotDevCommand {
   constructor(client) {
@@ -67,7 +68,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
       // Get Guild ID
       let guildID = interaction.guild.id
       // Get Guild
-      let guild = await client.guilds.fetch(guildID)
+      let guild = await getters.getCache(client, client, "guilds", guildID)
       if (!guild) {
         // Bail if Guild not found
         this.error = true
@@ -79,11 +80,12 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
 
       // Get Client Member
       // Bail if Client Member not found
-      let member = await guild.members.fetch(client.user.id).catch(err => {
+      let member = await getters.getCache(client, client.guild, "members", client.user.id)
+      if (!member) {
         this.error = true
         this.props.description = `Fetch error [${client.user.id}]: ${err}`
         return !this.error
-      })
+      }
 
       // Bail if Client Member not found
       if(!member || !member.user) {

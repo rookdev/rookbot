@@ -37,6 +37,7 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -135,7 +136,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await interaction.guild.roles.fetch(addRole)
+        addRole = await getters.getCache(client, interaction.guild, "roles", addRole)
       } else {
         // Search for the Role object by Role Name
         addRole = await this.getCache(interaction.client, interaction.guild, "roles", addRole)
@@ -180,7 +181,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await interaction.guild.roles.fetch(remRole)
+        remRole = await getters.getCache(client, interaction.guild, "roles", remRole)
       } else {
         // Search for the Role object by Role Name
         remRole = await this.getCache(interaction.client, interaction.guild, "roles", remRole)
@@ -479,7 +480,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await interaction.guild.members.fetch(targetUserId)
+    const guildMember = await getters.getCache(client, interaction.guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
 
     // Check Editable

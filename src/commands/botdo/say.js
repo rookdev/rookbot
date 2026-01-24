@@ -28,6 +28,7 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
@@ -144,7 +145,7 @@ module.exports = class SayCommand extends ModCommand {
     // Try to locate message
     let [ _, guildID, channelID, messageID ] = matches
 
-    const guild = await client.guilds.fetch(guildID)
+    const guild = await getters.getCache(client, client, "guilds", guildID)
     // Guild not found
     if (!guild) {
       this.error = true
@@ -152,7 +153,7 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    const channel = await guild.channels.fetch(channelID)
+    const channel = await getters.getCache(client, guild, "channels", channelID)
     // Channel not found
     if (!channel) {
       this.error = true
@@ -160,15 +161,12 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    message = await channel.messages.fetch(messageID)
+    message = await getters.getCache(client, channel, "messages", messageID)
     // Message not found
     if (!message) {
       this.error = true
       this.props.description = `Couldn't load Message ID '${messageID}'`
       return false
-    }
-    if (message.partial) {
-      message = await message.fetch()
     }
 
     return message

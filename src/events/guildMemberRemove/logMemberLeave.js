@@ -11,6 +11,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -40,7 +41,7 @@ module.exports = async (client, oldMember) => {
     if (log_check in guildChannels) {
       log_type = log_check
     }
-    const logChannel = await client.channels.fetch(guildChannels[log_type])
+    const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
 
     if (!logChannel) {
       messages.push(`${client.profile.emojis.fail} Log channel not found or is not text-based.`)

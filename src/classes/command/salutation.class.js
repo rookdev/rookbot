@@ -12,6 +12,7 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const shell = require('shelljs')                // Run shell commands
 const fs = require('fs')                        // Filesystem manipulation
@@ -396,7 +397,7 @@ class SalutationCommand extends RookCommand {
           }
         }
 
-        let guild = await client.guilds.fetch(guildID)
+        let guild = await getters.getCache(client, client, "guilds", guildID)
         let channel = null
 
         let channelIDs = await dbFuncs.getDB(
@@ -420,7 +421,7 @@ class SalutationCommand extends RookCommand {
             // console.log(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             if (channelID) {
               // console.log(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
-              channel = await guild?.channels.fetch(channelID)
+              channel = await getters.getCache(client, guild, "channels", channelID)
             } else {
               // console.log(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
               channel = await guild?.channels?.cache?.find(

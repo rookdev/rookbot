@@ -122,7 +122,7 @@ module.exports = class SearchCommand extends ModCommand {
     }
 
     try {
-      targetUser = await client.users.fetch(targetUserId)
+      targetUser = await this.getCache(client, client, "users", targetUserId)
     } catch (error) {
       props.mod.error = true
       props.mod.description = "User not found."

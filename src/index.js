@@ -10,6 +10,7 @@ const eventHandler = require('./handlers/eventHandler')
 const { program } = require('commander')    // Commander for CLI management
 const AsciiTable = require('ascii-table')   // Pretty-print in console
 const PACKAGE = require("../package.json")  // Node Package data
+const getters = require('./utils/guild/getters')
 const emojis = require('./dbs/emojis.json') // Global Emojis
 
 async function callCommands(commandNames) {
@@ -43,7 +44,7 @@ async function callCommands(commandNames) {
             let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
             let channelID = channelIDs["bot-salutations"]
             if (client.guild) {
-              let channel = await client.guild.channels.fetch(channelID)
+              let channel = await getters.getCache(client, client.guild, "channels", channelID)
               if (channel) {
                 // @ts-ignore
                 await channel?.send(props)
@@ -54,7 +55,7 @@ async function callCommands(commandNames) {
             let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
             let channelID = channelIDs["bot-salutations"]
             if (client.guild) {
-              let channel = await client.guild.channels.fetch(channelID)
+              let channel = await getters.getCache(client, client.guild, "channels", channelID)
               if (channel) {
                 // @ts-ignore
                 await channel?.send(props)
@@ -127,8 +128,10 @@ const client = new RookClient(
       IntentsBitField.Flags.MessageContent
     ],
     partials: [
+      Partials.GuildMember,
       Partials.Message,
-      Partials.Reaction
+      Partials.Reaction,
+      Partials.User
     ],
     // Allow bot to mention roles
     allowedMentions: { parse: ["roles"] }

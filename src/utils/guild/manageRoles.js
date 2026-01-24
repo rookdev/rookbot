@@ -81,7 +81,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     return [result, messages]
   }
 
-  let guildMember = await message.guild.members.fetch(user.id)
+  let guildMember = await getters.getCache(client, message.guild, "members", user.id)
   if (mode == "add") {
     guildMember.roles.add(role)
     // if admin, cycle through reactions on this post
@@ -99,8 +99,6 @@ const manageRoles = async (client, reaction, user, mode="add") => {
       if (await guildMember.roles.cache.some(r=>ADMIN_ROLES.includes(r.name))) {
         // We're an Admin
         // messages.push("   We're an Admin!")
-        let guildMembers = await message.guild.members
-        let guildRoles = await message.guild.roles
         for (let [rName, thisReaction] of await message.reactions.cache) {
           // Cycle through reactions
           if (rName.length > 10) {
@@ -110,7 +108,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
           for (let [uName, thisUser] of await thisReaction.users.cache) {
             // Cycle through users
             // messages.push(`     Us: ${thisUser.tag}`)
-            let thisMember = await guildMembers.fetch(thisUser.id)
+            let thisMember = await getters.getCache(client, message.guild, "members", thisUser.id)
             if (thisMember) {
               // If this user doesn't have this role
               let thisRole = rrs[message.id][rName]
