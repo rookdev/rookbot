@@ -394,6 +394,8 @@ module.exports = class MentionCommand extends RookCommand {
 
             specs.highest = await targetMember.roles.highest
             specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
+            specs.guildTag = targetMember?.user?.primaryGuild
+            // https://cdn.discordapp.com/guild-tag-badges/<guild_id>/<badge_hash>.png
 
             if (specs?.highest) {
               let numRoles = await guild.roles.fetch()
@@ -565,6 +567,15 @@ module.exports = class MentionCommand extends RookCommand {
 
       this.props.fields.push(
         [
+          //
+          {
+            name: "Guild Tag",
+            value: specs?.guildTag?.tag
+          },
+          {
+            name: "Guild Badge",
+            value: specs?.guildTag?.badge
+          },
           // Parent Name
           {
             name: "Parent Name",

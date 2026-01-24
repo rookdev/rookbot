@@ -178,7 +178,7 @@ module.exports = async (client, oldPresence, newPresence) => {
       "channels"
     )
     if (!guildChannels) {
-      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
       return [result, messages]
     }
 

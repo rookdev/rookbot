@@ -2,7 +2,7 @@
 // Set up env vars
 require('@dotenvx/dotenvx').config()
 // Get Intents bitfields, Partials
-const { IntentsBitField, Partials } = require('discord.js')
+const { GatewayIntentBits, IntentsBitField, Partials } = require('discord.js')
 // Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
 // Event Handler
@@ -119,13 +119,13 @@ const client = new RookClient(
      *  MessageContent
      */
     intents: [
-      IntentsBitField.Flags.Guilds,
-      IntentsBitField.Flags.GuildMembers,
-      IntentsBitField.Flags.GuildMessageReactions,
-      IntentsBitField.Flags.GuildMessages,
-      IntentsBitField.Flags.GuildPresences,
-      IntentsBitField.Flags.GuildVoiceStates,
-      IntentsBitField.Flags.MessageContent
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildPresences,
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.MessageContent
     ],
     partials: [
       Partials.GuildMember,
