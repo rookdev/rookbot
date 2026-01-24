@@ -86,9 +86,7 @@ module.exports = class MMMInfoCommand extends RookCommand {
         for (let [pName, pData] of Object.entries(episode.players)) {
           let trophies = ""
           for (let trophy of pData.eligible) {
-            let emoji = interaction.guild.emojis.cache.find(
-              e => (e.name === `mmm${trophy}`) || (e.name === `:mmm${trophy}:`)
-            )
+            let emoji = await this.getCache(client, interaction.guild, "emojis", `mmm${trophy}`)
             trophies += `${emoji}`
           }
           this.props.description.push(

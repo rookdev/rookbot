@@ -2,6 +2,7 @@
 
 const scheduleNicknameChange = require('../../utils/guild/scheduleNicknameChange')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const getters = require('../../utils/guild/getters')
 const path = require('path')
 const fs = require('fs')
 
@@ -51,9 +52,7 @@ module.exports = async (client) => {
       // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
-      let guild = await client.guilds.cache.find(
-        g => g.id === guildID
-      )
+      let guild = await getters.getCache(client, client, "guilds", guildID)
       if (!guild) {
         continue
       }

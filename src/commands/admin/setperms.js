@@ -155,7 +155,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
     this.props.description = []
 
     if (channelID) {
-      channel = await interaction.guild.channels.cache.get(channelID)
+      channel = await this.getCache(client, interaction.guild, "channels", channelID)
       setMode = "channel"
     }
 
@@ -167,7 +167,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
     if (roleID.indexOf("@everyone") > -1) {
       role = await interaction.guild.roles.everyone
     } else {
-      role = await interaction.guild.roles.cache.get(roleID)
+      role = await this.getCache(client, interaction.guild, "roles", roleID)
     }
 
     if (role) {
@@ -200,7 +200,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
       this.props.description.push(`In: ${channel} [${inlineCode(channel.id)}]`)
       if (channel.permissionsLocked) {
         this.props.description.push(`Channel Perms Synced for ${channel}: 🔁`)
-        channel = await interaction.guild.channels.cache.get(channel.parentId)
+        channel = await this.getCache(client, interaction.guild, "channels", channel.parentId)
         this.props.description.push(`Loading Category Instead: ${channel} [${inlineCode(channel.id)}]`)
       }
 
@@ -208,7 +208,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
       let isEveryone = false
       // Cycle through roles that have existing permissions settings
       for (let [oID, oData] of channel.permissionOverwrites.cache) {
-        let role = await interaction.guild.roles.cache.get(oID)
+        let role = await this.getCache(client, interaction.guild, "roles", oID)
         if (coptions["role-id"]) {
           isEveryone = (coptions["role-id"].indexOf("@everyone") > -1) && (role.name.indexOf("@everyone") > -1)
         }
@@ -348,7 +348,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
             for (let applyRole of rList) {
               this.props.description.push(`${this.profile.emojis.success}Role Profile '${inlineCode(rGroup)}' exists for '${inlineCode('@' + applyRole)}'`)
               if (profileToApply.indexOf("stack") > -1) {
-                let thisRole = await interaction.guild.roles.cache.find(r=>r.name==applyRole)
+                let thisRole = await this.getCache(client, interaction.guild, "roles", applyRole)
                 await this.apply_profile(
                   rGroup,
                   profileToApply,

@@ -3,6 +3,7 @@
 const { Client } = require('discord.js')              // Get Discord Client
 const getProfile = require('../../utils/client/getProfile')  // Get loaded Profile
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * @class
@@ -44,7 +45,7 @@ class RookClient extends Client {
 
   async init() {
     // Set the Guild
-    this.guild = await this.guilds.cache.get(this.guildID)
+    this.guild = await getters.getCache(this, this, "guilds", this.guildID)
   }
 }
 

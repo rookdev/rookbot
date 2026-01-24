@@ -3,6 +3,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 const areCommandsDifferent = require('../../utils/client/areCommandsDifferent')
 const getLocalCommands = require('../../utils/client/getLocalCommands')
+const getters = require('../../utils/guild/getters')
 const fs = require('fs/promises')
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
@@ -199,7 +200,7 @@ module.exports = async (client) => {
     let commandsManager = null
 
     if (isDevelopment) {
-      const testGuild = client.guilds.cache.get(testGuildID)
+      const testGuild = await getters.getCache(client, client, "guilds", testGuildID)
       if (!testGuild) {
         messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
         return [result, messages]

@@ -45,33 +45,33 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     for (let [msgID, msgData] of Object.entries(rrs)) {
       this.props = {}
       this.props.description = []
-      for (let [emojiName, roleData] of Object.entries(msgData)) {
-        // Title
-        if (emojiName == "#title") {
-          this.props.title = { text: roleData }
-        } else if (emojiName == "#description") {
-          // Description
-          this.props.description.push(roleData)
-          this.props.description.push("")
-        } else if (!emojiName.includes("#")) {
-          // Emoji : { Role, Description }
-          let roleName = roleData
-          let roleDesc = ""
-          if (typeof roleData != "string") {
-            roleDesc = roleData["description"] ?? ""
-            roleName = roleData["role"] ?? ""
+      if (msgID.indexOf("#") > -1) {
+        continue 
+      } else {
+        for (let [emojiName, roleData] of Object.entries(msgData)) {
+          // Title
+          if (emojiName == "#title") {
+            this.props.title = { text: roleData }
+          } else if (emojiName == "#description") {
+            // Description
+            this.props.description.push(roleData)
+            this.props.description.push("")
+          } else if (!emojiName.includes("#")) {
+            // Emoji : { Role, Description }
+            let roleName = roleData
+            let roleDesc = ""
+            if (typeof roleData != "string") {
+              roleDesc = roleData["description"] ?? ""
+              roleName = roleData["role"] ?? ""
+            }
+            // Emoji : Role
+            let emoji = await this.getCache(client, interaction.guild, "emojis", emojiName)
+            let role = await this.getCache(client, interaction.guild, "roles", roleName)
+            if (!emoji) {
+              emoji = emojiName
+            }
+            this.props.description.push(`${emoji}: ${role} ${roleDesc}`)
           }
-          // Emoji : Role
-          let emoji = interaction.guild.emojis.cache.find(
-            e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
-          )
-          let role = interaction.guild.roles.cache.find(
-            r => r.name === roleName
-          )
-          if (!emoji) {
-            emoji = emojiName
-          }
-          this.props.description.push(`${emoji}: ${role} ${roleDesc}`)
         }
       }
       if (!interaction.deferred && !interaction.replied) {
@@ -87,9 +87,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
         }
 
         // Emoji : Role
-        let emoji = interaction.guild.emojis.cache.find(
-          e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
-        )
+        let emoji = await this.getCache(client, interaction.guild, "emojis", emojiName)
         if (!emoji) {
           emoji = emojiName
         }

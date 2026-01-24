@@ -153,9 +153,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
         if (commandObject) {
           let username = batchLine
           if (username != "") {
-            let targetMember = await interaction.guild.members.cache.find(
-              m => m.user.tag === username
-            )
+            let targetMember = await this.getCache(client, guild, "members", username)
             if (targetMember) {
               bOptions["target-id"] = targetMember.user.id
               bOptions["bypass"] = true

@@ -2,6 +2,7 @@ const { MessageReaction, User } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * Logs edited messages from the server.
@@ -50,9 +51,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
         continue
       }
 
-      let emoji = await message.guild.emojis.cache.find(
-        e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
-      )
+      let emoji = await getters.getCache(client, message.guild, "emojis", emojiName)
 
       if (!emoji) {
         emoji = emojiName
@@ -76,9 +75,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
       roleName = roleName["role"]
     }
   }
-  let role = message.guild.roles.cache.find(
-    r => r.name === roleName
-  )
+  let role = await getters.getCache(client, message.guild, "roles", roleName)
 
   if(!role) {
     return [result, messages]
@@ -121,9 +118,9 @@ const manageRoles = async (client, reaction, user, mode="add") => {
                 thisRole = thisRole["role"]
               }
               // messages.push(`      Ro: ${thisRole}`)
-              thisRole = await guildRoles.cache.find(r=>r.name == thisRole)
+              thisRole = await getters.getCache(client, message.guild, "roles", thisRole)
               if (thisRole) {
-                if (! await thisMember.roles.cache.some(r=>r.name == thisRole.name)) {
+                if (! await getters.getCache(client, thisMember, "roles", thisRole.name)) {
                   thisMember.roles.add(thisRole)
                 }
               }

@@ -59,11 +59,12 @@ module.exports = async (client, oldPresence, newPresence) => {
       if (activity) {
         if ([
           ActivityType.Streaming,
-          ActivityType.Watching
+          // ActivityType.Watching
         ].indexOf(activity?.type) > -1) {
           let oldActivity = {
             name: activity?.name,
-            type: activity?.type,
+            typeID: activity?.type,
+            type: activity?.type ? ActivityType[activity.type] : "",
             url: activity?.url,
             details: activity?.details,
             state: activity?.state,
@@ -83,11 +84,12 @@ module.exports = async (client, oldPresence, newPresence) => {
       if (activity) {
         if ([
           ActivityType.Streaming,
-          ActivityType.Watching
+          // ActivityType.Watching
         ].indexOf(activity?.type) > -1) {
           let newActivity = {
             name: activity?.name,
-            type: activity?.type,
+            typeID: activity?.type,
+            type: activity?.type ? ActivityType[activity.type] : "",
             url: activity?.url,
             details: activity?.details,
             state: activity?.state,

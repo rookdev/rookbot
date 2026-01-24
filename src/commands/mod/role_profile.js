@@ -105,9 +105,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
       return false
     }
 
-    const member = await guild.members.cache.find(
-      m => m.id === targetUserId
-    )
+    const member = await this.getCache(client, guild, "members", targetUserId)
 
     if (!member) {
       this.error = true
@@ -164,9 +162,11 @@ module.exports = class RoleProfileCommand extends ModCommand {
       }
       let newRoles = []
       for (let roleName of roles) {
-        newRoles.push(await interaction.guild.roles.cache.find(
-          role => role.name === roleName
-        ).id)
+        newRoles.push(
+          await this.getCache(
+            client, interaction.guild, "roles", roleName
+          ).id
+        )
       }
       console.log(`Setting ${JSON.stringify(newRoles)}`)
       success = await member.roles.set(newRoles)

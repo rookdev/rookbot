@@ -346,15 +346,9 @@ module.exports = class SayCommand extends ModCommand {
       channel = channel.replace(/[<#@&!>]/g, '')
     }
 
-    // Calculate channel
-    if (numFuncs.myIsNumeric(channel)) {
-      if (["number", "string"].includes(typeof channel)) {
-        channel = await interaction.guild.channels.fetch(channel)
-      }
-    } else {
-      channel = await interaction.guild.channels.cache.find(
-        c => c.name === channel
-      )
+    if (!channel) {
+      // Calculate channel
+      channel = await this.getCache(client, interaction.guild, "channels", channel)
     }
 
     if (!channel) {
@@ -558,9 +552,7 @@ module.exports = class SayCommand extends ModCommand {
       if (srcMessage?.reactions) {
         // console.log("Source Message has reactions!")
         for (let [emojiName, reaction] of srcMessage.reactions.cache) {
-          let emoji = srcMessage.guild.emojis.cache.find(
-            e => (e.name === emojiName) || (e.name === `:${emojiName}:`)
-          )
+          let emoji = await this.getCache(client, srcMessage.guild, "emojis", emojiName)
           if (!emoji) {
             emoji = emojiName
           }

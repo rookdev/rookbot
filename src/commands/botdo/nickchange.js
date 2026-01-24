@@ -77,7 +77,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     }
 
     // Get this guild
-    const guild = await client.guilds.fetch(guildID)
+    const guild = await this.getCache(client, client, "guilds", guildID)
     if (!guild) {
       // Bail if no Guild
       this.error = true
@@ -94,9 +94,7 @@ module.exports = class NickChangeCommand extends RookCommand {
 
     // Try getting from cache
     if (!member) {
-      member = await guild.members.cache.find(
-        m => m.id === targetUserId
-      )
+      member = await this.getCache(client, interaction.guild, "members", targetUserId)
     }
 
     // Try force-fetching

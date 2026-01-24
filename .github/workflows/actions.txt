@@ -2,7 +2,7 @@
 | ./.github/workflows/release.yml |
 ├------------------------------------------------------------------- 
 | actions/checkout                        	v6.0.1    	v6.0.1 |
-| actions/setup-python                    	v6.1.0    	v6.1.0 |
+| actions/setup-python                    	v6.1.0    	v6.2.0 |
 └------------------------------------------------------------------- 
 
 ┌------------------------------┐
@@ -14,7 +14,7 @@
 | actions/checkout                        	v6.0.1    	v6.0.1 |
 | actions/deploy-pages                    	v4.0.5    	v4.0.5 |
 | actions/download-artifact               	v7.0.0    	v7.0.0 |
-| actions/setup-python                    	v6.1.0    	v6.1.0 |
+| actions/setup-python                    	v6.1.0    	v6.2.0 |
 | actions/upload-pages-artifact           	v4.0.0    	v4.0.0 |
 └------------------------------------------------------------------- 
 
@@ -23,14 +23,14 @@
 ├------------------------------------------------------------------- 
 | ./.github/actions/install               	N/A       	 |
 | actions/checkout                        	v6.0.1    	v6.0.1 |
-| actions/setup-node                      	v6.1.0    	v6.1.0 |
-| actions/setup-python                    	v6.1.0    	v6.1.0 |
+| actions/setup-node                      	v6.1.0    	v6.2.0 |
+| actions/setup-python                    	v6.1.0    	v6.2.0 |
 └------------------------------------------------------------------- 
 
 ┌--------------------------------------┐
 | ./.github/actions/install/action.yml |
 ├------------------------------------------------------------------- 
-| actions/setup-python                    	v6.1.0    	v6.1.0 |
+| actions/setup-python                    	v6.1.0    	v6.2.0 |
 | actions/upload-artifact                 	v6.0.0    	v6.0.0 |
 └------------------------------------------------------------------- 
 
@@ -39,3 +39,9 @@
 ├------------------------------------------------------------------- 
 | mad9000/actions-find-and-replace-string 	5         	5 |
 └------------------------------------------------------------------- 
+
+┌----------┐
+| Outdated |
+├----------┴
+| actions/setup-python                    	v6.1.0    	v6.2.0     |
+| actions/setup-node                      	v6.1.0    	v6.2.0     |

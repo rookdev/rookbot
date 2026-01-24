@@ -12,6 +12,7 @@ const { setValue } = require("../../utils/primitives/globalFuncs")
 const stringFuncs = require("../../utils/primitives/stringFuncs")
 const numFuncs = require("../../utils/primitives/numFuncs")
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 
 class RookCommand {
@@ -202,51 +203,26 @@ class RookCommand {
     return canMod
   }
 
+  async getCache(client, parent, cacheType, cacheTest) {
+    // getCache(client, guild,   "channels", ["bot-testing"])
+    // getCache(client, guild,   "channels", ["<channel_id>"])
+    // getCache(client, guild,   "emojis",   ["<emoji_id>"])
+    // getCache(client, guild,   "members",  ["<member_id>"])
+    // getCache(client, guild,   "roles",    ["Admin"])
+    // getCache(client, guild,   "roles",    ["<role_id>"])
+    // getCache(client, member,  "roles",    ["Admin"])
+    // getCache(client, member,  "roles":    ["<role_id>"])
+
+    return await getters.getCache(client, parent, cacheType, cacheTest)
+  }
+
   async getChannel(client, interaction, channelTypes) {
-    channelTypes = channelTypes ?? [ this.channelName ]
-
-    if (typeof channelTypes != "object") {
-      channelTypes = [ channelTypes ]
-    }
-
-    let guild = interaction?.guild ?? client.guild
-    let guildID = guild?.id
-    let channel = null
-
-    let channelIDs = await dbFuncs.getDB(
-      guildID,
-      "channels"
+    return await this.getCache(
+      client,
+      interaction?.guild,
+      "channels",
+      channelTypes
     )
-
-    if (!channelIDs) {
-      console.log(`Channel IDs not found for '${guild.name}' [${guild.id}]`)
-    }
-
-    for (let channelID of channelTypes) {
-      if (channel) {
-        continue
-      }
-
-      if (channelIDs) {
-        // If requested Channel ID is present, set it
-        if (Object.keys(channelIDs).includes(channelID)) {
-          channelID = channelIDs[channelID]
-        }
-      }
-
-      // If it's a number
-      if (numFuncs.myIsNumeric(channelID)) {
-        // Search for Channel object by ChannelID
-        channel = await guild?.channels.fetch(channelID)
-      } else if (typeof channelID == "string") {
-        // Search for Channel object ny Channel Name
-        channel = await guild?.channels.cache.find(
-          c => c.name === channelID
-        )
-      }
-    }
-
-    return channel
   }
 
   // FIXME: NYI

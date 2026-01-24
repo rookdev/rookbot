@@ -10,6 +10,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 const fs = require('fs')      // Filesystem manipulation
 
@@ -103,9 +104,7 @@ module.exports = async (client, newMember) => {
       ]
     ]
 
-    if (newMember.roles.cache.find(
-      r => r.name === "Member"
-    )) {
+    if (await getters.getCache(client, newMember, "roles", "Member")) {
       logFields.push(
         [
           {

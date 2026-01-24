@@ -1,6 +1,7 @@
 const { inlineCode, italic } = require('discord.js')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../primitives/randFuncs') // Random Functions
+const getters = require('../../utils/guild/getters')
 
 // Main function to compare commands
 module.exports = (client, member) => {
@@ -176,7 +177,7 @@ async function changeNickname(client, member) {
   // Get Guild ID
   let guildID = member.guild.id
   // Get Guild Data
-  let guildData = client.guilds.cache.get(guildID)
+  let guildData = await getters.getCache(client, client, "guilds", guildID)
 
   // Get Client User from This Guild
   clientMember = guildData.members.me

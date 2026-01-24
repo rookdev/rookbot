@@ -4,6 +4,7 @@ const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * @param {RookClient} client
@@ -33,9 +34,7 @@ module.exports = async (client, oldMember, newMember) => {
       return [false, []]
     }
 
-    let boostRole = await newMember.guild.roles.cache.find(
-      r => r.name === roleNames.booster[0]
-    )
+    let boostRole = await getters.getCache(client, newMember.guild, "roles", roleNames.booster[0])
     if (!boostRole) {
       return [false, []]
     }
@@ -52,9 +51,7 @@ module.exports = async (client, oldMember, newMember) => {
   let hasBoost = await newMember.roles.cache.has(boostRoleID)
 
   if ((!hadBoost) && hasBoost) {
-    let heartContainerEmoji = newMember.guild.emojis.cache.find(
-      e => e.name === "heartcontainer"
-    )
+    let heartContainerEmoji = await getters.getCache(client, newMember.guild, "emojis", "heartcontainer")
     let msg = {
       name: newMember.displayName,
       avatar: newMember.displayAvatarURL({ size: 128 }),

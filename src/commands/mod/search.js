@@ -130,9 +130,7 @@ module.exports = class SearchCommand extends ModCommand {
       return !props.mod.error
     }
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await interaction.guild.members.cache.find(
-      m => m.id === targetUserId
-    )
+    const guildMember = await this.getCache(client, interaction.guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
 
     let foundLogs = {}

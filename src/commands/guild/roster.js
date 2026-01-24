@@ -72,9 +72,7 @@ module.exports = class RosterCommand extends RookCommand {
     }
 
     // Get profile for this Guild
-    const guild = await client.guilds.cache.find(
-      g => g.id === guildID
-    )
+    const guild = await this.getCache(client, client, "guilds", guildID)
     if (!guild) {
       this.error = true
       this.props.description = `${this.profile.emojis.fail} Couldn't load Guild ID ${inlineCode(guildID)}`
@@ -144,9 +142,7 @@ module.exports = class RosterCommand extends RookCommand {
           // Cycle through users
           for (let username of sData.users) {
             // Try to get the Guild Member
-            let member = await guild.members.cache.find(
-              g => g.user.username === username
-            )
+            let member = await this.getCache(client, interaction.guild, "members", username)
             if (!member) {
               let query = await guild.members.fetch(
                 {

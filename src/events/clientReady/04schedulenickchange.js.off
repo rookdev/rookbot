@@ -3,6 +3,7 @@
 const scheduleNicknameChange = require('../../utils/guild/scheduleNicknameChange')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
+const getters = require('../../utils/guild/getters')
 const path = require('path')
 
 // natSort
@@ -73,15 +74,7 @@ module.exports = async (client) => {
     for(let guildFile of guildFiles) {
       let guildID = guildFile.split(path.sep).slice(-1)
       // Find the guild
-      let guild = await client.guilds.cache.get(guildID)
-      if (!guild) {
-        guild = await client.guilds.cache.find(
-          g => g.id === guildID
-        )
-      }
-      if (!guild) {
-        guild = await client.guilds.fetch(guildID)
-      }
+      let guild = await getters.getCache(client, client, "guilds", guildID)
       if (!guild) {
         messages.push(`${client.profile.emojis.fail} Failed to load guild [${guildID}]`)
         continue
@@ -89,15 +82,7 @@ module.exports = async (client) => {
 
       console.log("Finding User Member!")
       // Get the guild member
-      let member = await guild.members.cache.get(userID)
-      if (!member) {
-        member = await guild.members.cache.find(
-          u => u.id === userID
-        )
-      }
-      if (!member) {
-        member = await guild.members.cache.fetch(userID)
-      }
+      let member = await getters.getCache(client, guild, "members", userID)
       if (!member) {
         messages.push(`${client.profile.emojis.fail} Failed to load guild members [${guildID}]`)
         continue

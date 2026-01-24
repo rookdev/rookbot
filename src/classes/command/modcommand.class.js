@@ -138,9 +138,7 @@ class ModCommand extends AdminCommand {
         addRole = await interaction.guild.roles.fetch(addRole)
       } else {
         // Search for the Role object by Role Name
-        addRole = await interaction.guild.roles.cache.find(
-          role => role.name === addRole
-        )
+        addRole = await this.getCache(interaction.client, interaction.guild, "roles", addRole)
       }
       // Add the Role
       // @ts-ignore
@@ -149,7 +147,7 @@ class ModCommand extends AdminCommand {
         (addRole != 0)
       ) {
         try {
-          let hasRole = await user.roles.cache.get(addRole.id)
+          let hasRole = await this.getCache(interaction.client, user, "roles", addRole.id)
           if (!hasRole) {
             // console.log(`Adding Role: ${user.displayName} [${addRole.id}]`)
             await user.roles.add(addRole.id)
@@ -185,9 +183,7 @@ class ModCommand extends AdminCommand {
         remRole = await interaction.guild.roles.fetch(remRole)
       } else {
         // Search for the Role object by Role Name
-        remRole = await interaction.guild.roles.cache.find(
-          role => role.name === remRole
-        )
+        remRole = await this.getCache(interaction.client, interaction.guild, "roles", remRole)
       }
       // Remove the Role
       // @ts-ignore
@@ -196,7 +192,7 @@ class ModCommand extends AdminCommand {
         (remRole != 0)
       ) {
         try {
-          let hasRole = await user.roles.cache.get(remRole.id)
+          let hasRole = await this.getCache(interaction.client, user, "roles", remRole.id)
           if (hasRole) {
             // console.log(`Removing Role: ${user.displayName} [${remRole.id}]`)
             await user.roles.remove(remRole.id)
