@@ -12,5 +12,14 @@
   ],
   "muted": [
     "Penalty Box"
+  ],
+  "owner": [
+    "Streamer & Owner"
+  ],
+  "streaming-member": [
+    "Streaming"
+  ],
+  "streaming-owner": [
+    "Live"
   ]
 }

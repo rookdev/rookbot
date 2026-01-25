@@ -1,24 +1,17 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const sortKeysRecursive = require('sort-keys-recursive');
 const globalFuncs = require('../utils/primitives/globalFuncs')
 const fileFuncs = require('../utils/fs/fileFuncs')
+const dbFuncs = require('../utils/db/dbFuncs')
 const util = require('util')
-const uri = process.env.MONGODB_URL;
 const fs = require('fs');
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
 async function run() {
+  let client = null
   try {
+    client = dbFuncs.createClient()
+
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    await client.connect()
     // Send a ping to confirm a successful connection
     let db_name = "db"
     let coll_name = "all"
@@ -29,6 +22,17 @@ async function run() {
     console.log(`DB: ${db_name}`)
 
     let diffs = []
+
+    let outputDir = fileFuncs.getAPath(
+      [
+        "src",
+        "mongodb",
+        "output"
+      ]
+    )
+    if (fs.existsSync(outputDir)) {
+      fs.rmSync(outputDir, { recursive: true, force: true })
+    }
 
     // Read All
     if (coll_name == "all") {
@@ -45,9 +49,7 @@ async function run() {
             console.log(`   ${doc._gname}`)
             let guildDir = fileFuncs.getAPath(
               [
-                "src",
-                "mongodb",
-                "output",
+                outputDir,
                 "lastpull",
                 guildID
               ]
@@ -130,7 +132,7 @@ async function run() {
                 } else {
                   check = "✅"
                 }
-                console.log(`    ${check}${key}`)
+                console.log(`    ${check} ${key}`)
               }
             }
           }
@@ -152,6 +154,6 @@ async function run() {
 
 console.log("")
 console.log("---")
-console.log("MongoDB Main:")
+console.log("MongoDB Compare:")
 
 run().catch(console.dir);

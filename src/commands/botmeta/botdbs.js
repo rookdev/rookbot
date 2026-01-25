@@ -71,9 +71,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
                 this.props.description.push(
-                  inlineCode(k),
-                  `<#${v}>`,
-                  codeBlock(v)
+                  inlineCode(k) + `: <#${v}>`
                 )
               }
             }
@@ -107,11 +105,13 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             }
           } else if (filename.includes("roles")) {
             for (let [rGroup, rList] of Object.entries(thisDB)) {
-              this.props.description.push(rGroup.boldUnderline())
-              for (let rName of rList) {
-                this.props.description.push(inlineCode(`@${rName}`))
+              if (!rGroup.includes("#")) {
+                this.props.description.push(rGroup.boldUnderline())
+                for (let rName of rList) {
+                  this.props.description.push(inlineCode(`@${rName}`))
+                }
+                this.props.description.push("")
               }
-              this.props.description.push("")
             }
           } else if (filename.includes("visages")) {
             for (let [vKey, vData] of Object.entries(thisDB)) {
@@ -138,14 +138,21 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           guild.id
         ]
       )
-      let fileList = fs.readdirSync(guildPath).filter(
-        f => f.endsWith(".json")
-      )
+      let fileList = null
+
+      fileList = await dbFuncs.getDB(guild.id, "", "fs")
+      this.props.description.push("Filesystem")
       this.props.description.push(
-        codeBlock(
-          fileList.join("\n")
-        )
+        codeBlock(fileList.join("\n"))
       )
+      this.props.description.push("\n")
+
+      fileList = await dbFuncs.getDB(guild.id, "", "mongodb")
+      this.props.description.push("MongoDB")
+      this.props.description.push(
+        codeBlock(fileList.join("\n"))
+      )
+      this.props.description.push("\n")
     }
 
     return !this.error

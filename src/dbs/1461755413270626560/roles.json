@@ -25,5 +25,14 @@
   ],
   "muted": [
     "Muted"
+  ],
+  "owner": [
+    "Admin"
+  ],
+  "streaming-member": [
+    "Streaming"
+  ],
+  "streaming-owner": [
+    "Live"
   ]
 }

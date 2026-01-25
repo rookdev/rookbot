@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fileFuncs = require('../fs/fileFuncs')
+const fs = require('fs')
 
 function createClient() {
   // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -20,7 +21,13 @@ async function getDB(cName, dName, source="mongodb") {
     if (cName) {
       path.push(cName)
     }
-    return fileFuncs.getAFile(path, `${dName}.json`)
+    if (dName) {
+      return fileFuncs.getAFile(path, `${dName}.json`)
+    } else {
+      return fs.readdirSync(fileFuncs.getAPath(path)).filter(
+        f => f.endsWith(".json")
+      )
+    }
   } else if (source == "mongodb") {
     let success = false
     
@@ -32,19 +39,24 @@ async function getDB(cName, dName, source="mongodb") {
       await client.connect()
       // Send a ping to confirm a successful connection
       let db_name = "db"
+      let db = client.db(db_name)
+
       let coll_name = cName
       let rec_name = dName
 
-      let db = client.db(db_name)
       if (db) {
         let coll = db.collection(coll_name)
-          if (coll) {
+        if (coll) {
           let docs = await coll.find().toArray()
           if (docs) {
             let gName = ""
-            for (let doc of docs) {
+            for await (let doc of docs) {
               gName = doc._gname
-              rec = doc[rec_name]
+              if (rec_name) {
+                rec = doc[rec_name]
+              } else {
+                rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
+              }
             }
             if (rec) {
               console.log(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)

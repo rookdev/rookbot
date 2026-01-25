@@ -53,12 +53,17 @@ async function getAURL(url, format=null) {
   }
 }
 
-function getAFile(directory=[], filename="") {
+function getAFile(directory=[], filename="", format="") {
   let filepath = getAPath(directory, filename)
   if (fs.existsSync(filepath)) {
+    let basefilename = filepath.split("/").at(-1)
+    let filext = format ?? basefilename.split(".").at(-1)
     if (
-      filepath.endsWith(".json") ||
-      filepath.endsWith(".js")
+      (
+        filepath.endsWith(".json") ||
+        filepath.endsWith(".js")
+      ) &&
+      (format == "")
     ) {
       return require(
         filepath

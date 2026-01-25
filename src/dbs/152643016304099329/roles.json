@@ -11,5 +11,11 @@
   ],
   "muted": [
     "Muted"
+  ],
+  "owner": [
+    "Some Guy"
+  ],
+  "streaming-member": [
+    "Streaming"
   ]
 }
