@@ -499,10 +499,8 @@ module.exports = class MentionCommand extends RookCommand {
             if (specs?.roleIcon) {
               targetAvatar = specs.roleIcon
             } else if (specs?.clan?.badge) {
-              targetAvatar = `https://cdn.discordapp.com`
-              targetAvatar += `/guild-tag-badges`
-              targetAvatar += `/${specs.clan.identityGuildId}`
-              targetAvatar += `/${specs.clan.badge}.png`
+            console.log(`${this.props.entities.target.name}: ${this.props.entities.target.avatar}`)
+              targetAvatar = targetMember.user.guildTagBadgeURL({ size: 128 })
             }
             this.props.entities = {
               target: {
@@ -514,7 +512,6 @@ module.exports = class MentionCommand extends RookCommand {
                 tag:    targetMember.user.tag
               }
             }
-            console.log(`${this.props.entities.target.name}: ${this.props.entities.target.avatar}`)
             this.props.image = {
               image: targetMember.displayAvatarURL({ size: Math.pow(2, 8) })
             }

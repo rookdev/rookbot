@@ -21,10 +21,13 @@ module.exports = async (client, oldPresence, newPresence) => {
   let result = false
   let messages = []
 
-  let hadStreaming = false
-  let hasStreaming = false
+  let wasStreaming = false
+  let isStreaming = false
   let oldStream = null
   let newStream = null
+  let sendAlert = false
+  let sendDebug = false
+  let roles = {}
 
   let checkStreaming = false
   let showDebug = false
@@ -73,7 +76,7 @@ module.exports = async (client, oldPresence, newPresence) => {
           }
           oldStream = oldActivity.createdTimestamp
           oldActivities.push(oldActivity)
-          hadStreaming = true
+          wasStreaming = true
           showDebug = true
         }
       }
@@ -98,7 +101,7 @@ module.exports = async (client, oldPresence, newPresence) => {
           }
           newStream = newActivity.createdTimestamp
           newActivities.push(newActivity)
-          hasStreaming = true
+          isStreaming = true
           showDebug = true
         }
       }
@@ -111,8 +114,12 @@ module.exports = async (client, oldPresence, newPresence) => {
       thisPresence.newActivities = newActivities
     }
     if (showDebug) {
-      console.log(thisPresence)
+      messages.push(thisPresence)
     }
+  }
+
+  if (!wasStreaming && !isStreaming) {
+    return [result, messages]
   }
 
   let foundActivity = null
@@ -126,9 +133,93 @@ module.exports = async (client, oldPresence, newPresence) => {
     }
   }
 
+  let stoppedStreaming = wasStreaming && !isStreaming
+  const guildRoles = await dbFuncs.getDB(
+    guildID,
+    "roles"
+  )
+  if (stoppedStreaming && guildRoles) {
+    if (!roles?.removed) {
+      roles.removed = []
+    }
+    // Check owner
+    let OWNER_ROLES = guildRoles["owner"] ?? null
+    if (OWNER_ROLES) {
+      let hasOwner = await member.roles.cache.some(r=>OWNER_ROLES.includes(r.name))
+      if (hasOwner) {
+        sendDebug = true
+        // Check owner streaming
+        let OWNER_STREAMING_ROLES = guildRoles["streaming-owner"] ?? null
+        if (OWNER_STREAMING_ROLES) {
+          if (await member.roles.cache.some(r=>OWNER_STREAMING_ROLES.includes(r.name))) {
+            for (let roleName of OWNER_STREAMING_ROLES) {
+              let role = await getters.getCache(client, oldPresence.guild, "roles", roleName)
+              roles.removed.push(roleName)
+              await member.roles.remove(role)
+            }
+          }
+        }
+      }
+    }
+
+    // Check member streaming
+    let STREAMING_ROLES = guildRoles["streaming-member"] ?? null
+    if (STREAMING_ROLES) {
+      let isStreamer = await member.roles.cache.some(r=>STREAMING_ROLES.includes(r.name))
+      if (isStreamer) {
+        sendDebug = true
+        for (let roleName of STREAMING_ROLES) {
+          let role = await getters.getCache(client, oldPresence.guild, "roles", roleName)
+          roles.removed.push(roleName)
+          await member.roles.remove(role)
+        }
+      }
+    }
+  }
+  if (!wasStreaming && isStreaming) {
+    // Check owner
+    if (!roles?.added) {
+      roles.added = []
+    }
+    let OWNER_ROLES = guildRoles["owner"] ?? null
+    if (OWNER_ROLES) {
+      let hasOwner = await member.roles.cache.some(r=>OWNER_ROLES.includes(r.name))
+      if (hasOwner) {
+        sendAlert = true
+        // Check owner streaming
+        let OWNER_STREAMING_ROLES = guildRoles["streaming-owner"] ?? null
+        if (OWNER_STREAMING_ROLES) {
+          for (let roleName of OWNER_STREAMING_ROLES) {
+            let role = await getters.getCache(client, newPresence.guild, "roles", roleName)
+            roles.added.push(roleName)
+            await member.roles.add(role)
+          }
+        }
+      }
+    }
+    // Check member streaming
+    let STREAMING_ROLES = guildRoles["streaming-member"] ?? null
+    let STREAMER_ROLES = guildRoles["stream-team"] ?? null
+    if (STREAMING_ROLES) {
+      let isStreamer = true
+      if (STREAMER_ROLES) {
+        isStreamer = false
+        isStreamer = await member.roles.cache.some(r=>STREAMER_ROLES.includes(r.name))
+      }
+      if (isStreamer) {
+        sendAlert = true
+        for (let roleName of STREAMING_ROLES) {
+          let role = await getters.getCache(client, newPresence.guild, "roles", roleName)
+          roles.added.push(roleName)
+          await member.roles.add(role)
+        }
+      }
+    }
+  }
+ 
   if (
-    (!hadStreaming) &&
-    hasStreaming &&
+    (!wasStreaming) &&
+    isStreaming &&
     foundActivity
   ) {
     const guild = await newPresence.guild
@@ -143,68 +234,72 @@ module.exports = async (client, oldPresence, newPresence) => {
       return [result, messages]
     }
 
-    let props = {
-      title: {
-        text: "🔴Go Live!🔴"
-      },
-      playerTypes: {
-        user: "guild",
-        target: "target"
-      },
-      players: {
-        user: {
-          name: member.guild.name,
-          avatar: member.guild.iconURL({ size: 128 })
+    if (sendAlert) {
+      let props = {
+        title: {
+          text: "🔴Go Live!🔴"
         },
-        target: {
-          name: member.displayName,
-          avatar: member.displayAvatarURL({ size: 128 })
+        playerTypes: {
+          user: "guild",
+          target: "target"
+        },
+        players: {
+          user: {
+            name: member.guild.name,
+            avatar: member.guild.iconURL({ size: 128 })
+          },
+          target: {
+            name: member.displayName,
+            avatar: member.displayAvatarURL({ size: 128 })
+          }
         }
       }
-    }
-    props.description = []
-    props.description.push(`${member} has started streaming!`)
-    props.description.push(bold(foundActivity.name))
-    if (foundActivity.details) {
-      props.description.push(italic(foundActivity.details))
-    }
-    props.description.push(`Watch them online ${hyperlink('here',foundActivity.url)}!`)
+      props.description = []
+      props.description.push(`${member} has started streaming!`)
+      props.description.push(bold(foundActivity.name))
+      if (foundActivity.details) {
+        props.description.push(italic(foundActivity.details))
+      }
+      props.description.push(`Watch them online ${hyperlink('here',foundActivity.url)}!`)
 
-    let embed = new RookEmbed(client, props)
+      let embed = new RookEmbed(client, props)
 
-    let guildID = member.guild.id
-    const guildChannels = await dbFuncs.getDB(
-      guildID,
-      "channels"
-    )
-    if (!guildChannels) {
-      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
-      return [result, messages]
-    }
-
-    let destChannelID = guildChannels["stream-alerts"]
-
-    if (!destChannelID) {
-      messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${member.guild.name}' [${member.guild.id}]`)
-      return [result, messages]
-    }
-
-    let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
-    if (!destChannel) { return [false, []] }
-
-    let this_package = { embeds: [ embed ] }
-    result = await destChannel.send(this_package)
-
-    messages.push(
-      "🔴 " +
-      JSON.stringify(
-        {
-          guild: member.guild.name,
-          member: member.user.tag,
-          url: foundActivity.url
-        }
+      let guildID = member.guild.id
+      const guildChannels = await dbFuncs.getDB(
+        guildID,
+        "channels"
       )
-    )
+      if (!guildChannels) {
+        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
+        return [result, messages]
+      }
+
+      let destChannelID = guildChannels["stream-alerts"]
+
+      if (!destChannelID) {
+        messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${member.guild.name}' [${member.guild.id}]`)
+        return [result, messages]
+      }
+
+      let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
+      if (!destChannel) { return [false, []] }
+
+      let this_package = { embeds: [ embed ] }
+      result = await destChannel.send(this_package)
+    }
+
+    if (sendDebug) {
+      messages.push(
+        "🔴 " +
+        JSON.stringify(
+          {
+            guild: member.guild.name,
+            member: member.user.tag,
+            url: foundActivity.url
+          }
+        )
+      )
+    }
   }
 
   return [result, messages]
