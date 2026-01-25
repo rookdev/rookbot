@@ -125,7 +125,7 @@ module.exports = class PurgeCommand extends ModCommand {
           },
           fields: [
             [
-              { name: "Channel",    value: channel },
+              { name: "Channel",    value: [`${channel}`, `${inlineCode(channel.id)}`] },
               { name: "Purged By",  value: [interaction.user, `${inlineCode(interaction.user.id)}`]},
               { name: "Amount",     value: deletedMessages.size }
             ]

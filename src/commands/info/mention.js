@@ -394,8 +394,7 @@ module.exports = class MentionCommand extends RookCommand {
 
             specs.highest = await targetMember.roles.highest
             specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
-            specs.guildTag = targetMember?.user?.primaryGuild
-            // https://cdn.discordapp.com/guild-tag-badges/<guild_id>/<badge_hash>.png
+            specs.clan = targetMember?.user?.primaryGuild
 
             if (specs?.highest) {
               let numRoles = await guild.roles.fetch()
@@ -496,16 +495,26 @@ module.exports = class MentionCommand extends RookCommand {
               user: "target",
               target: "target"
             }
+            let targetAvatar = targetMember.displayAvatarURL({ size: 128 })
+            if (specs?.roleIcon) {
+              targetAvatar = specs.roleIcon
+            } else if (specs?.clan?.badge) {
+              targetAvatar = `https://cdn.discordapp.com`
+              targetAvatar += `/guild-tag-badges`
+              targetAvatar += `/${specs.clan.identityGuildId}`
+              targetAvatar += `/${specs.clan.badge}.png`
+            }
             this.props.entities = {
               target: {
                 type:   "target",
                 id:     targetId,
                 name:   targetMember.displayName,
                 url:    "http://example.com/target",
-                avatar: specs?.roleIcon ?? targetMember.displayAvatarURL({ size: 128 }),
+                avatar: targetAvatar,
                 tag:    targetMember.user.tag
               }
             }
+            console.log(`${this.props.entities.target.name}: ${this.props.entities.target.avatar}`)
             this.props.image = {
               image: targetMember.displayAvatarURL({ size: Math.pow(2, 8) })
             }
@@ -570,11 +579,7 @@ module.exports = class MentionCommand extends RookCommand {
           //
           {
             name: "Guild Tag",
-            value: specs?.guildTag?.tag
-          },
-          {
-            name: "Guild Badge",
-            value: specs?.guildTag?.badge
+            value: specs?.clan?.tag
           },
           // Parent Name
           {

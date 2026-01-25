@@ -58,7 +58,7 @@ module.exports = async (client, message) => {
   )
 
   if (!channelIDs) {
-    console.log(`Channel IDs not found for '${message.guild.name}' [${message.guild.id}]`)
+    messages.push(`Channel IDs not found for '${message.guild.name}' [${message.guild.id}]`)
     return [result, messages]
   }
 

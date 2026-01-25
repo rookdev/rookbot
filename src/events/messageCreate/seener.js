@@ -63,7 +63,7 @@ module.exports = async (client, message) => {
   try {
     targetUser = await getters.getCache(client, client, "users", targetUserId)
   } catch(err) {
-    console.log(`No user found for seener [${message.author.id}]`)
+    // messages.push(`No user found for seener [${message.author.id}]`)
     return [result, messages]
   }
 
@@ -72,7 +72,7 @@ module.exports = async (client, message) => {
   try {
     guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
   } catch(err) {
-    console.log(`No guild member found for seener [${message.author.id}]`)
+    messages.push(`No guild member found for seener [${message.author.id}]`)
     return [result, messages]
   }
 
