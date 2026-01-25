@@ -499,7 +499,6 @@ module.exports = class MentionCommand extends RookCommand {
             if (specs?.roleIcon) {
               targetAvatar = specs.roleIcon
             } else if (specs?.clan?.badge) {
-            console.log(`${this.props.entities.target.name}: ${this.props.entities.target.avatar}`)
               targetAvatar = targetMember.user.guildTagBadgeURL({ size: 128 })
             }
             this.props.entities = {
@@ -576,7 +575,7 @@ module.exports = class MentionCommand extends RookCommand {
           //
           {
             name: "Guild Tag",
-            value: specs?.clan?.tag
+            value: specs?.clan?.tag ? codeBlock(specs?.clan?.tag) : ""
           },
           // Parent Name
           {
