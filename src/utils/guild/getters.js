@@ -130,6 +130,9 @@ async function getCache(client, parent, cacheType, cacheTest) {
       case "users":
         ret = await collection.fetch({ user: ret.id, force: true }).first()
         break
+      case "emojis":
+        ret = cacheTest[0]
+        break
     }
   }
 

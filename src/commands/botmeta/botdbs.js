@@ -1,12 +1,21 @@
 // @ts-nocheck
 
 // Command Option Types
-const { ApplicationCommandOptionType, inlineCode, codeBlock, hyperlink } = require('discord.js')
+const {
+  ApplicationCommandOptionType,
+  inlineCode,
+  codeBlock,
+  hyperlink,
+  italic,
+  underline,
+  roleMention
+} = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const numFuncs = require('../../utils/primitives/numFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const fs = require('fs')
 
@@ -68,6 +77,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
         )
         if (thisDB) {
           if (filename.includes("channels")) {
+            // channels
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
                 this.props.description.push(
@@ -76,20 +86,22 @@ module.exports = class BotDBsCommand extends BotDevCommand {
               }
             }
           } else if (filename.includes("meta")) {
+            // meta
             this.props.description.push(
               codeBlock(JSON.stringify(thisDB))
             )
           } else if (filename.includes("roleIDs")) {
+            // roleIDs
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
                 this.props.description.push(
-                  inlineCode(k),
-                  `<@&${v}>`,
+                  inlineCode(k) + ": " +`<@&${v}>`,
                   codeBlock(v)
                 )
               }
             }
           } else if (filename.includes("roleProfiles")) {
+            // roleProfiles
             for (let [pName, pData] of Object.entries(thisDB)) {
               this.props.description.push(pName.boldUnderline())
               if (pData?.add) {
@@ -104,23 +116,62 @@ module.exports = class BotDBsCommand extends BotDevCommand {
               this.props.description.push("")
             }
           } else if (filename.includes("roles")) {
+            // roles
             for (let [rGroup, rList] of Object.entries(thisDB)) {
               if (!rGroup.includes("#")) {
-                this.props.description.push(rGroup.boldUnderline())
+                let roles = []
                 for (let rName of rList) {
-                  this.props.description.push(inlineCode(`@${rName}`))
+                  let role = await this.getCache(client, interaction.guild, "roles", rName)
+                  roles.push(`${role}`)
                 }
+                this.props.description.push(rGroup.boldUnderline() + ": " + roles.join(", "))
+              }
+            }
+          } else if (filename.includes("rrs")) {
+            // rrs
+            for (let [rrKey, rrData] of Object.entries(thisDB)) {
+              if(!rrKey.includes("#")) {
+                this.props.description.push(rrKey.boldUnderline())
+                this.props.description.push(
+                  underline(rrData["#title"]) + ": " +
+                  italic(rrData["#description"])
+                )
+                let rrList = []
+                for (let [rrEmoji, rrRole] of Object.entries(rrData)) {
+                  if (!rrEmoji.includes("#")) {
+                    let desc = ""
+                    if (typeof rrRole == "object") {
+                      desc = rrRole?.description
+                      rrRole = rrRole?.role
+                    }
+                    let emoji = await this.getCache(client, interaction.guild, "emojis", rrEmoji)
+                    if (rrRole) {
+                      rrRole = await this.getCache(client, interaction.guild, "roles", rrRole)
+                    } else {
+                      rrRole = inlineCode(`@${rrRole}`)
+                    }
+                    let rStr = `${emoji}: ${rrRole}`
+                    if (desc != "") {
+                      rStr += `: ${desc}`
+                    }
+                    rrList.push(rStr)
+                  }
+                }
+                this.props.description.push(rrList.join("\n"))
                 this.props.description.push("")
               }
             }
           } else if (filename.includes("visages")) {
+            // visages
             for (let [vKey, vData] of Object.entries(thisDB)) {
-              this.props.description.push(vData.name)
-              this.props.description.push(`Key: ${inlineCode(vKey)}`)
-              this.props.description.push(`Avatar: ${hyperlink('Link',vData.avatar)}`)
-              this.props.description.push("")
+              if (!vKey.includes("#")) {
+                this.props.description.push(`${inlineCode(vKey)}: ${vData.name}`)
+                this.props.description.push(`Avatar: ${hyperlink('Link',vData.avatar)}`)
+                this.props.description.push("")
+              }
             }
           } else {
+            // else
             let lines = []
             for (let [k, v] of Object.entries(thisDB)) {
               lines.push(`${k}: ${JSON.stringify(v)}`)
