@@ -81,10 +81,13 @@ module.exports = async (client, message) => {
   const user = guildMember?.user ?? targetUser
 
   // Get list of roles
-  let ROLES = await dbFuncs.getDB(
+  let ROLES = null
+  let dbRes = await dbFuncs.getDB(
     message.guild.id,
     "roles"
   )
+  ROLES = dbRes[0]
+  messages = dbRes[1]
  
   // If it's an admin or mod
   if (

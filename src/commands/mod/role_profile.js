@@ -80,10 +80,12 @@ module.exports = class RoleProfileCommand extends ModCommand {
     // Get Role Profile
     const profileName = coptions["profile"] ?? ""
 
-    let roleProfiles = await dbFuncs.getDB(
+    let dbRes = await dbFuncs.getDB(
       guildID,
       "roleProfiles"
     )
+    let roleProfiles = dbRes[0]
+    let messages = dbRes[1]
 
     if (!roleProfiles) {
       this.error = true
@@ -187,5 +189,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
         success = await member.setNickname(newName)
       }
     }
+
+    console.log(messages)
   }
 }

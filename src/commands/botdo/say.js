@@ -174,10 +174,15 @@ module.exports = class SayCommand extends ModCommand {
 
   async getRookhook(interaction) {
     // Get Guild Metadata
-    let guildMetadata = await dbFuncs.getDB(
-      interaction?.guild?.id,
+    // DB
+    let dbRes = await dbFuncs.getDB(
+      interaction.guild.id,
       "meta"
     )
+    let guildMetadata = dbRes[0]
+    let messages = dbRes[1]
+    // /DB
+
     let rookhook = null // Bucket for rookhook
     let rookhookID = 0  // Bucket for rookhook ID
     let webhooks = null // Bucket for Guild Webhooks
@@ -234,12 +239,12 @@ module.exports = class SayCommand extends ModCommand {
       }
     }
 
-    return rookhook
+    return [rookhook, messages]
   }
 
   async setVisage(interaction, visage, channel) {
     // console.log("We're selecting a visage!")
-    let rookhook = await this.getRookhook(interaction) // Bucket for rookhook
+    let rookhook, messages = await this.getRookhook(interaction) // Bucket for rookhook
     let visages = null  // Bucket for visages
 
     if (!interaction?.guild) {
@@ -266,10 +271,12 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
     } else {
-      visages = await dbFuncs.getDB(
+      let dbRes = await dbFuncs.getDB(
         interaction.guild.id,
         "visages"
       )
+      visages = dbRes[0]
+      messages = dbRes[1]
     }
 
     if (!visages) {
@@ -303,7 +310,7 @@ module.exports = class SayCommand extends ModCommand {
       await wait(1 * 1000)
     }
     // console.log("We've selected a visage!")
-    return [rookhook, visages]
+    return [rookhook, visages, messages]
   }
 
   async action(client, interaction, coptions={}, independent=false) {
@@ -326,6 +333,8 @@ module.exports = class SayCommand extends ModCommand {
     let rookhook = null     // Bucket for rookhook webhook
     let srcMessage = null   // Bucket for source message
     let destMessage = null  // Bucket for destination message
+
+    let messages = []
 
     // If only 'message'
     //  Say, Edit, Clone
@@ -381,7 +390,7 @@ module.exports = class SayCommand extends ModCommand {
 
     // If we're using a visage
     if (visage) {
-      [rookhook, visages] = await this.setVisage(interaction, visage, channel)
+      rookhook, visages, messages = await this.setVisage(interaction, visage, channel)
     }
 
     // Result
@@ -465,7 +474,7 @@ module.exports = class SayCommand extends ModCommand {
               `Posted by ${destMessage.author} [${inlineCode(destMessage.author.id)}]`,
               destMessageURL
             ]
-            rookhook = await this.getRookhook(interaction)
+            rookhook, messages = await this.getRookhook(interaction)
             if (rookhook && destMessage.author.id == rookhook.id) {
               visage = true
             } else {

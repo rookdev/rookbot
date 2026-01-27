@@ -52,13 +52,18 @@ class BotDevCommand extends AdminCommand {
 
   // Build the response
   async build(client, interaction, coptions={}) {
+    let messages = []
     console.log(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
-      this.ROLES = await dbFuncs.getDB(
+      // DB
+      let dbRes = await dbFuncs.getDB(
         interaction.guild.id,
         "roles"
       )
+      this.ROLES = dbRes[0]
+      messages = dbRes[1]
+      // /DB
 
       if (this.ROLES && this.ROLES.length > 0) {
         // Get BotDev roles

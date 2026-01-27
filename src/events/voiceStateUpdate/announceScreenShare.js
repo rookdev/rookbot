@@ -49,10 +49,16 @@ module.exports = async (client, oldState, newState) => {
 
   let guildID = member.guild.id
 
-  const guildRoles = await dbFuncs.getDB(
+  let guildRoles = {}
+
+  // DB
+  let dbRes = await dbFuncs.getDB(
     guildID,
     "roles"
   )
+  guildRoles = dbRes[0]
+  messages = dbRes[1]
+  // /DB
 
   const channelID = await newState.channelId
   // if (!channelID) {
@@ -198,7 +204,8 @@ module.exports = async (client, oldState, newState) => {
       }
       let embed = new RookEmbed(client, props)
 
-      const guildChannels = await dbFuncs.getDB(
+      let guildChannels = null
+      [guildChannels, messages] = await dbFuncs.getDB(
         guildID,
         "channels"
       )

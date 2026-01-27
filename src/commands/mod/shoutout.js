@@ -4,9 +4,11 @@
 const { inlineCode, hyperlink, userMention, ApplicationCommandOptionType } = require('discord.js')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
+const SayCommand = require('../../commands/botdo/say')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const randFuncs = require('../../utils/primitives/randFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class ShoutoutCommand extends ModCommand {
@@ -48,11 +50,31 @@ module.exports = class ShoutoutCommand extends ModCommand {
     let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
     let mention = userMention(targetId)
 
-    let content = `Check out ${mention} ${hyperlink('here', streamURL)}!`
+    let content = `Check out ${mention} ${hyperlink('here', streamURL)} !`
+    let dbRes = await dbFuncs.getDB(interaction.guild.id, "visages")
+    let visages = dbRes[0]
+    let messages = dbRes[1]
+    let visageName = ""
+    let visage = null
+    if (Object.keys(visages).includes("scuff")) {
+      visageName = "scuff"
+    } else {
+      visageName = Object.keys(visages)[0]
+    }
+    visage = visages[visageName]
 
-    await interaction.channel.send(
+    if (visage.quips) {
+      content += " " + randFuncs.randPick(visage.quips)
+    }
+
+    let sayCmd = new SayCommand(client)
+    sayCmd.null = true
+    let result = await sayCmd.build(
+      client,
+      interaction,
       {
-        content: content
+        message: content,
+        "visage-name": visageName
       }
     )
 

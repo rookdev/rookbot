@@ -13,12 +13,15 @@ async function selectName(newChannel) {
   let oldName = newChannel.name
   let newName = newChannel.name
 
-  let messages = []
-
-  let namesDB = await dbFuncs.getDB(
+  // DB
+  let dbRes = await dbFuncs.getDB(
     newChannel.guild.id,
     "voiceChannelNames"
   )
+  let namesDB = dbRes[0]
+  let messages = dbRes[1]
+  // /DB
+
   if (!namesDB) {
     messages.push(`No voice channel names found for '${newChannel.guild.name}' (ID ${newChannel.guild.id})`)
     return [newName, messages]
@@ -69,7 +72,7 @@ async function selectName(newChannel) {
     if ((oldName == newName) || (newName.length > 32)) {
       messages.push(`${client.profile.emojis.warning} Attempted to change '${member.user.tag}' in '${member.guild.name}' to: '${newNickname}' [${newNickname.length}]`)
       let newMessages = []
-      [newName, newMessages] = await selectName(newChannel)
+      newName, newMessages = await selectName(newChannel)
       messages = messages.concat(newMessages)
     }
   }
@@ -96,7 +99,7 @@ module.exports = async (client, newChannel) => {
   }
 
   let oldName = newChannel.name
-  let [newName, newMessages] = await selectName(newChannel)
+  let newName, newMessages = await selectName(newChannel)
   messages = messages.concat(newMessages)
 
   if ((newName != "") && (newName != newChannel.name)) {

@@ -308,11 +308,18 @@ module.exports = class SetPermsCommand extends AdminCommand {
     }
 
     if (profileToApply) {
+      let messages = []
       this.props.description.push("---")
-      guildRoles = await dbFuncs.getDB(
+
+      // DB
+      let dbRes = await dbFuncs.getDB(
         interaction.guild.id,
         "roles"
       )
+      guildRoles = dbRes[0]
+      messages = dbRes[1]
+      // /DB
+
       this.props.description.push(`${this.profile.emojis.dev}Loading Role Profile: '${inlineCode(profileToApply)}'`)
       // If it's an override profile
       if (profileToApply.indexOf("override") > -1) {

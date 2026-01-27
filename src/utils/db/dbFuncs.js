@@ -16,17 +16,21 @@ function createClient() {
 }
 
 async function getDB(cName, dName, source="mongodb") {
+  let messages = []
   if (source == "fs") {
     let path = [ "src", "dbs" ]
     if (cName) {
       path.push(cName)
     }
     if (dName) {
-      return fileFuncs.getAFile(path, `${dName}.json`)
+      let gName = ""
+      messages.push(`💾FS: '${gName}' [${cName}]: ${dName}`)
+      return [fileFuncs.getAFile(path, `${dName}.json`), messages]
     } else {
-      return fs.readdirSync(fileFuncs.getAPath(path)).filter(
+      let fileList = fs.readdirSync(fileFuncs.getAPath(path)).filter(
         f => f.endsWith(".json")
       )
+      return [fileList, messages]
     }
   } else if (source == "mongodb") {
     let success = false
@@ -59,7 +63,7 @@ async function getDB(cName, dName, source="mongodb") {
               }
             }
             if (rec) {
-              console.log(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)
+              messages.push(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)
               success = true
             }
           }
@@ -74,12 +78,12 @@ async function getDB(cName, dName, source="mongodb") {
       if (!success) {
         return await getDB(cName, dName, "fs")
       } else {
-        return rec
+        return [rec, messages]
       }
     }
   }
 
-  return false
+  return false, []
 }
 
 module.exports = {

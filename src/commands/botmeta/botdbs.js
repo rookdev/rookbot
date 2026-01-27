@@ -49,6 +49,8 @@ module.exports = class BotDBsCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    let messages = []
+    let fileList = []
     this.props.playerTypes = {
       user: "caller",
       target: "bot"
@@ -71,10 +73,16 @@ module.exports = class BotDBsCommand extends BotDevCommand {
     this.props.description = []
     if (db_type != "") {
       for (let filename of [db_type]) {
-        let thisDB = await dbFuncs.getDB(
+        let thisDB = null
+        // DB
+        let dbRes = await dbFuncs.getDB(
           guild.id,
           filename
         )
+        thisDB = dbRes[0]
+        messages = dbRes[1]
+        // /DB
+
         if (thisDB) {
           if (filename.includes("channels")) {
             // channels
@@ -189,21 +197,24 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           guild.id
         ]
       )
-      let fileList = null
 
-      fileList = await dbFuncs.getDB(guild.id, "", "fs")
+      let dbRes = await dbFuncs.getDB(guild.id, "", "fs")
+      fileList = dbRes[0]
+      messages = dbRes[1]
       this.props.description.push("Filesystem")
       this.props.description.push(
         codeBlock(fileList.join("\n"))
       )
-      this.props.description.push("\n")
+      this.props.description.push("")
 
-      fileList = await dbFuncs.getDB(guild.id, "", "mongodb")
+      dbRes = await dbFuncs.getDB(guild.id, "", "mongodb")
+      fileList = dbRes[0]
+      messages = dbRes[1]
       this.props.description.push("MongoDB")
       this.props.description.push(
         codeBlock(fileList.join("\n"))
       )
-      this.props.description.push("\n")
+      this.props.description.push("")
     }
 
     return !this.error

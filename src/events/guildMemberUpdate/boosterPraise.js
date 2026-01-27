@@ -17,10 +17,14 @@ module.exports = async (client, oldMember, newMember) => {
 
   let boostRoleID = newMember.guild.roles.premiumSubscriberRole?.id
   if (!boostRoleID) {
-    let roleNames = await dbFuncs.getDB(
+    // DB
+    let dbRes = await dbFuncs.getDB(
       newMember.guild.id,
       "roles"
     )
+    let roleNames = dbRes[0]
+    let messages = dbRes[1]
+    // /DB
 
     if (!roleNames) {
       return [false, []]
@@ -98,7 +102,8 @@ module.exports = async (client, oldMember, newMember) => {
 
     // Fetch the log channel using its ID
     const guildID = newMember.guild.id
-    const guildChannels = await dbFuncs.getDB(
+    let guildChannels = null
+    [guildChannels, messages] = await dbFuncs.getDB(
       guildID,
       "channels"
     )

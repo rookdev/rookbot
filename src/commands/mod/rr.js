@@ -28,13 +28,19 @@ module.exports = class ReactionRolesCommand extends ModCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    let messages = []
     let guild = interaction.guild
 
-    let rrs = await dbFuncs.getDB(
+    // DB
+    let rrs = null
+    let messages = []
+    let dbRes = await dbFuncs.getDB(
       guild.id,
       "rrs"
     )
+    rrs = dbRes[0]
+    messages = dbRes[1]
+    // /DB
+
     if (!rrs) {
       messages.push(`${this.profile.emojis.warning} Reaction Roles not found for '${guild.name}' [${inlineCode(guild.id)}]`)
       this.error = true

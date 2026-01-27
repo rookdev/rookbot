@@ -943,13 +943,18 @@ class ModCommand extends AdminCommand {
   }
 
   async build(client, interaction, coptions={}) {
+    let messages = []
     console.log(`/${this.name}: Mod Build`)
 
     // Get list of roles
-    this.ROLES = await dbFuncs.getDB(
+    // DB
+    let dbRes = await dbFuncs.getDB(
       interaction.guild.id,
       "roles"
     )
+    this.ROLES = dbRes[0]
+    messages = dbRes[1]
+    // /DB
 
     if (
       (

@@ -89,10 +89,17 @@ module.exports = async (client, oldMessage, newMessage) => {
 
   // Fetch the log channel using its ID
   const guildID = newMessage.guild?.id
-  const guildChannels = await dbFuncs.getDB(
+  let guildChannels = null
+
+  // DB
+  let dbRes = await dbFuncs.getDB(
     guildID,
     "channels"
   )
+  guildChannels = dbRes[0]
+  messages = dbRes[1]
+  // /DB
+
   if (!guildChannels) {
     messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMessage.guild.name}' [${newMessage.guild.id}]`)
     return [result, messages]

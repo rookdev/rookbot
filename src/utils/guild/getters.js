@@ -33,6 +33,7 @@ async function searchCache(cacheType, collection, cacheID) {
   return ret
 }
 async function getCache(client, parent, cacheType, cacheTest) {
+  let messages = []
   if (!parent) {
     return null
   }
@@ -93,10 +94,13 @@ async function getCache(client, parent, cacheType, cacheTest) {
   }
 
   if (!ret) {
-    cacheIDs = await dbFuncs.getDB(
+    let dbRes = await dbFuncs.getDB(
       guildID,
       cacheType
     )
+    cacheIDs = dbRes[0]
+    messages = dbRes[1]
+
     if (!cacheIDs) {
       if (![
         "emojis",

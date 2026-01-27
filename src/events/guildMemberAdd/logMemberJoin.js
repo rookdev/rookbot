@@ -22,6 +22,7 @@ const fs = require('fs')      // Filesystem manipulation
 module.exports = async (client, newMember) => {
   let result = false
   let messages = []
+  let guildChannels = null
 
   try {
     // Ensure the member's data is fully fetched
@@ -33,10 +34,16 @@ module.exports = async (client, newMember) => {
 
     // Fetch the log channel using the fetchedMember's guild ID
     const guildID = fetchedMember.guild.id
-    const guildChannels = await dbFuncs.getDB(
+
+    // DB
+    let dbRes = await dbFuncs.getDB(
       guildID,
       "channels"
     )
+    guildChannels = dbRes[0]
+    messages = dbRes[1]
+    // /DB
+
     if (!guildChannels) {
       messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
       return [result, messages]

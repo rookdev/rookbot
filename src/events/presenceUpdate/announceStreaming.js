@@ -133,11 +133,20 @@ module.exports = async (client, oldPresence, newPresence) => {
     }
   }
 
+  let guildID = newPresence.guild.id
+
   let stoppedStreaming = wasStreaming && !isStreaming
-  const guildRoles = await dbFuncs.getDB(
+  let guildRoles = null
+
+  // DB
+  let dbRes = await dbFuncs.getDB(
     guildID,
     "roles"
   )
+  guildRoles = dbRes[0]
+  messages = dbRes[1]
+  // /DB
+
   if (stoppedStreaming && guildRoles) {
     if (!roles?.removed) {
       roles.removed = []
@@ -264,11 +273,17 @@ module.exports = async (client, oldPresence, newPresence) => {
 
       let embed = new RookEmbed(client, props)
 
-      let guildID = member.guild.id
-      const guildChannels = await dbFuncs.getDB(
+      let guildChannels = null
+
+      // DB
+      let dbRes = await dbFuncs.getDB(
         guildID,
         "channels"
       )
+      guildChannels = dbRes[0]
+      messages = dbRes[0]
+      // /DB
+
       if (!guildChannels) {
         messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
         return [result, messages]

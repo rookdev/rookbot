@@ -60,11 +60,15 @@ module.exports = class WikiCommand extends RookCommand {
 
 
     let guild = interaction?.guild
+    let interwikiFile = null
+    let messages = []
     if (guild) {
-      let interwikiFile = await dbFuncs.getDB(
+      let dbRes = await dbFuncs.getDB(
         guild.id,
         "interwiki"
       )
+      interwikiFile = dbRes[0]
+      messages = dbRes[1]
       if (interwikiFile) {
         interwikiDB = interwikiFile
       }

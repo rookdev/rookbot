@@ -36,6 +36,7 @@ class SalutationCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
+    let messages = []
     // Mode, default to "boot"
     let mode          = coptions?.mode ?? "boot"
     // Label for On/Offline
@@ -400,10 +401,16 @@ class SalutationCommand extends RookCommand {
         let guild = await getters.getCache(client, client, "guilds", guildID)
         let channel = null
 
-        let channelIDs = await dbFuncs.getDB(
+        let channelIDs = {}
+        // DB
+        let dbRes = await dbFuncs.getDB(
           guildID,
           "channels"
         )
+        channelIDs = dbRes[0]
+        messages = dbRes[1]
+        // /DB
+
         // Find the Guild Channel to send the embed to
         if (!channelIDs) {
           // console.log(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)

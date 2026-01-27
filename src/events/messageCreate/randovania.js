@@ -58,10 +58,16 @@ module.exports = async (client, message) => {
     return [result, messages]
   }
 
-  let channelIDs = await dbFuncs.getDB(
+  let channelIDs = null
+
+  // DB
+  let dbRes = await dbFuncs.getDB(
     message.guild.id,
     "channels"
   )
+  channelIDs = dbRes[0]
+  messages = dbRes[1]
+  // /DB
 
   if (!channelIDs) {
     messages.push(`Channel IDs not found for '${message.guild.name}' [${message.guild.id}]`)

@@ -321,10 +321,15 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Construct the content for the channel message
     // Get the Pinger role
     let roleObject = null
-    let roleIDs = await dbFuncs.getDB(
-      interaction?.guild?.id,
+    // DB
+    let dbRes = await dbFuncs.getDB(
+      interaction.guild.id,
       "roleIDs"
     )
+    let roleIDs = dbRes[0]
+    let messages = dbRes[1]
+    // /DB
+
     if (roleIDs) {
       // If no role, try the one listed in the guild DB
       if (roleID == 0) {

@@ -49,14 +49,21 @@ module.exports = class EmitCommand extends AdminCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    let messages = []
     let eventName = coptions["event-name"]
     let args = []
 
     if (eventName == "channelCreate") {
-      let voiceChannelNames = await dbFuncs.getDB(
+      let voiceChannelNames = null
+      // DB
+      let dbRes = await dbFuncs.getDB(
         interaction.guild.id,
         "voiceChannelNames"
       )
+      voiceChannelNames = dbRes[0]
+      messages = dbRes[1]
+      // /DB
+
       let channel = {
         name: "Old Name",
         guild: { name: interaction.guild.name, id: interaction.guild.id },

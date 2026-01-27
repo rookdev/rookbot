@@ -12,7 +12,6 @@ const getters = require('../../utils/guild/getters')
  */
 const manageRoles = async (client, reaction, user, mode="add") => {
   let result = false
-  let messages = []
 
   if (reaction.partial) {
     reaction = await reaction.fetch()
@@ -25,10 +24,15 @@ const manageRoles = async (client, reaction, user, mode="add") => {
 
   let guild = message.guild
 
-  let rrs = await dbFuncs.getDB(
+  // DB
+  let dbRes = await dbFuncs.getDB(
     guild.id,
     "rrs"
   )
+  let rrs = dbRes[0]
+  let messages = dbRes[1]
+  // /DB
+
   if (!rrs) {
     messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
     return [result, messages]
@@ -88,7 +92,8 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     //  for each reaction, cycle through users who reacted
     //   for each user, assign the role, just in case
     // Get list of roles
-    rolesDB = await dbFuncs.getDB(
+    let rolesDB = {}
+    [rolesDB, messages] = await dbFuncs.getDB(
       guild.id,
       "roles"
     )
