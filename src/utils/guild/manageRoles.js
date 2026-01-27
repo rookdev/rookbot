@@ -93,10 +93,12 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     //   for each user, assign the role, just in case
     // Get list of roles
     let rolesDB = {}
-    [rolesDB, messages] = await dbFuncs.getDB(
+    let dbRes = await dbFuncs.getDB(
       guild.id,
       "roles"
     )
+    rolesDB = dbRes[0]
+    messages = dbRes[1]
 
     if (rolesDB) {
       // Get Admin roles

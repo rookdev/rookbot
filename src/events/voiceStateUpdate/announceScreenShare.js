@@ -205,10 +205,13 @@ module.exports = async (client, oldState, newState) => {
       let embed = new RookEmbed(client, props)
 
       let guildChannels = null
-      [guildChannels, messages] = await dbFuncs.getDB(
+      let dbRes = await dbFuncs.getDB(
         guildID,
         "channels"
       )
+      guildChannels = dbRes[0]
+      messages = dbRes[1]
+
       if (!guildChannels) {
         messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
         return [result, messages]
