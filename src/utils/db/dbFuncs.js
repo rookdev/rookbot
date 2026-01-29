@@ -5,14 +5,18 @@ const fs = require('fs')
 function createClient() {
   // Create a MongoClient with a MongoClientOptions object to set the Stable API version
   const uri = process.env.MONGODB_URL
-  const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    }
-  })
-  return client
+  if (uri) {
+    const client = new MongoClient(uri, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+      }
+    })
+    return client
+  } else {
+    return null
+  }
 }
 
 async function getDB(cName, dName, source="mongodb") {
@@ -38,40 +42,42 @@ async function getDB(cName, dName, source="mongodb") {
     const client = createClient()
     let rec = null
 
-    try {
-      // Connect the client to the server	(optional starting in v4.7)
-      await client.connect()
-      // Send a ping to confirm a successful connection
-      let db_name = "db"
-      let db = client.db(db_name)
+    if (client) {
+      try {
+        // Connect the client to the server	(optional starting in v4.7)
+        await client.connect()
+        // Send a ping to confirm a successful connection
+        let db_name = "db"
+        let db = client.db(db_name)
 
-      let coll_name = cName
-      let rec_name = dName
+        let coll_name = cName
+        let rec_name = dName
 
-      if (db) {
-        let coll = db.collection(coll_name)
-        if (coll) {
-          let docs = await coll.find().toArray()
-          if (docs) {
-            let gName = ""
-            for await (let doc of docs) {
-              gName = doc._gname
-              if (rec_name) {
-                rec = doc[rec_name]
-              } else {
-                rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
+        if (db) {
+          let coll = db.collection(coll_name)
+          if (coll) {
+            let docs = await coll.find().toArray()
+            if (docs) {
+              let gName = ""
+              for await (let doc of docs) {
+                gName = doc._gname
+                if (rec_name) {
+                  rec = doc[rec_name]
+                } else {
+                  rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
+                }
               }
-            }
-            if (rec) {
-              messages.push(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)
-              success = true
+              if (rec) {
+                messages.push(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)
+                success = true
+              }
             }
           }
         }
+      } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close()
       }
-    } finally {
-      // Ensures that the client will close when you finish/error
-      await client.close()
     }
 
     if (source == "mongodb") {
