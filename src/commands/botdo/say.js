@@ -276,7 +276,8 @@ module.exports = class SayCommand extends ModCommand {
         "visages"
       )
       visages = dbRes[0]
-      messages = dbRes[1]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
     }
 
     if (!visages) {

@@ -50,6 +50,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
 
   async action(client, interaction, coptions) {
     let messages = []
+    let newMessages = []
     let fileList = []
     this.props.playerTypes = {
       user: "caller",
@@ -80,7 +81,8 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           filename
         )
         thisDB = dbRes[0]
-        messages = dbRes[1]
+        newMessages = dbRes[1]
+        messages = messages.concat(newMessages)
         // /DB
 
         if (thisDB) {
@@ -200,7 +202,9 @@ module.exports = class BotDBsCommand extends BotDevCommand {
 
       let dbRes = await dbFuncs.getDB(guild.id, "", "fs")
       fileList = dbRes[0]
-      messages = dbRes[1]
+      newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
+
       this.props.description.push("Filesystem")
       this.props.description.push(
         codeBlock(fileList.join("\n"))
@@ -209,7 +213,8 @@ module.exports = class BotDBsCommand extends BotDevCommand {
 
       dbRes = await dbFuncs.getDB(guild.id, "", "mongodb")
       fileList = dbRes[0]
-      messages = dbRes[1]
+      newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       this.props.description.push("MongoDB")
       this.props.description.push(
         codeBlock(fileList.join("\n"))

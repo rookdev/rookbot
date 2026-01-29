@@ -73,7 +73,7 @@ module.exports = class DBCommand extends BotDevCommand {
     console_output.push(
       ("\n" + codeBlock(db_check))
     )
-    this.props.description = console_output
+    this.content = console_output
 
     return !this.error
   }

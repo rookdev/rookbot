@@ -99,7 +99,7 @@ module.exports = async (client, newChannel) => {
   }
 
   let oldName = newChannel.name
-  let newName, newMessages = await selectName(newChannel)
+  let [newName, newMessages] = await selectName(newChannel)
   messages = messages.concat(newMessages)
 
   if ((newName != "") && (newName != newChannel.name)) {

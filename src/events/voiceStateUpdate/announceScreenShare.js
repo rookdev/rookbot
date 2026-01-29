@@ -49,17 +49,6 @@ module.exports = async (client, oldState, newState) => {
 
   let guildID = member.guild.id
 
-  let guildRoles = {}
-
-  // DB
-  let dbRes = await dbFuncs.getDB(
-    guildID,
-    "roles"
-  )
-  guildRoles = dbRes[0]
-  messages = dbRes[1]
-  // /DB
-
   const channelID = await newState.channelId
   // if (!channelID) {
   //   messages.push(`${client.profile.emojis.fail} No Channel ID`)
@@ -85,17 +74,29 @@ module.exports = async (client, oldState, newState) => {
   let stoppedStreaming = wasStreaming && !isStreaming
   let disconnectedVoice = wasStreaming && isStreaming && !newState?.channelId
 
+  let guildRoles = null
+
   if (
     (
       stoppedStreaming ||
       disconnectedVoice
-    ) &&
-    guildRoles
+    )
   ) {
     if (!roles?.removed) {
       roles.removed = []
     }
     // Check owner
+    if (!guildRoles) {
+      // DB
+      let dbRes = await dbFuncs.getDB(
+        guildID,
+        "roles"
+      )
+      guildRoles = dbRes[0]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
+      // /DB
+    }
     let OWNER_ROLES = guildRoles["owner"] ?? null
     if (OWNER_ROLES) {
       let hasOwner = await member.roles.cache.some(r=>OWNER_ROLES.includes(r.name))
@@ -142,6 +143,17 @@ module.exports = async (client, oldState, newState) => {
     // Check owner
     if (!roles?.added) {
       roles.added = []
+    }
+    if (!guildRoles) {
+      // DB
+      let dbRes = await dbFuncs.getDB(
+        guildID,
+        "roles"
+      )
+      guildRoles = dbRes[0]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
+      // /DB
     }
     let OWNER_ROLES = guildRoles["owner"] ?? null
     if (OWNER_ROLES) {
@@ -210,7 +222,8 @@ module.exports = async (client, oldState, newState) => {
         "channels"
       )
       guildChannels = dbRes[0]
-      messages = dbRes[1]
+      newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
 
       if (!guildChannels) {
         messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)

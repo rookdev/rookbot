@@ -46,7 +46,7 @@ module.exports = async (client, oldMember, newMember) => {
       // messages.push(`${client.profile.emojis.warning} No Activities for '${newMember.user.tag}' [${newMember.id}]`)
       return [result, messages]
     }
-    for (let activity in newActivities) {
+    for (let activity of newActivities) {
       if (activity?.url && activity.url != "") {
         stream_url = activity.url
       }
@@ -74,7 +74,7 @@ module.exports = async (client, oldMember, newMember) => {
       },
       description: [
         `${newMember} has gone live!`,
-        `Watch the stream ${hyperlink('on the web', stream_url)}!`
+        `Watch the stream ${hyperlink('on the web', stream_url)} !`
       ],
       playerTypes: {
         user: "guild",
@@ -102,7 +102,8 @@ module.exports = async (client, oldMember, newMember) => {
       "channels"
     )
     guildChannels = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
     // /DB
 
     if (!guildChannels) {

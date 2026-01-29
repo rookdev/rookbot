@@ -944,7 +944,7 @@ class ModCommand extends AdminCommand {
 
   async build(client, interaction, coptions={}) {
     let messages = []
-    console.log(`/${this.name}: Mod Build`)
+    messages.push(`/${this.name}: Mod Build`)
 
     // Get list of roles
     // DB
@@ -953,7 +953,8 @@ class ModCommand extends AdminCommand {
       "roles"
     )
     this.ROLES = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
     // /DB
 
     if (
@@ -999,6 +1000,8 @@ class ModCommand extends AdminCommand {
         }
       }
     }
+
+    console.log(messages.join("\n"))
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)

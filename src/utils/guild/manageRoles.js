@@ -98,7 +98,8 @@ const manageRoles = async (client, reaction, user, mode="add") => {
       "roles"
     )
     rolesDB = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
 
     if (rolesDB) {
       // Get Admin roles

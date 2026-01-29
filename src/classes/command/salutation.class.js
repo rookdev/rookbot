@@ -408,7 +408,8 @@ class SalutationCommand extends RookCommand {
           "channels"
         )
         channelIDs = dbRes[0]
-        messages = dbRes[1]
+        let newMessages = dbRes[1]
+        messages = messages.concat(newMessages)
         // /DB
 
         // Find the Guild Channel to send the embed to

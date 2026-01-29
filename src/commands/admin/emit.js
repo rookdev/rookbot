@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Formatters: userMention
-const { userMention, ApplicationCommandOptionType, ChannelType, ActivityType } = require('discord.js')
+const { userMention, ApplicationCommandOptionType, ChannelType, ActivityType, InviteType } = require('discord.js')
 // AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
 const dbFuncs = require('../../utils/db/dbFuncs')
@@ -54,6 +54,8 @@ module.exports = class EmitCommand extends AdminCommand {
     let args = []
 
     if (eventName == "channelCreate") {
+      // channelCreate
+      //  editVoiceChannel
       let voiceChannelNames = null
       // DB
       let dbRes = await dbFuncs.getDB(
@@ -61,7 +63,8 @@ module.exports = class EmitCommand extends AdminCommand {
         "voiceChannelNames"
       )
       voiceChannelNames = dbRes[0]
-      messages = dbRes[1]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       // /DB
 
       let channel = {
@@ -83,19 +86,56 @@ module.exports = class EmitCommand extends AdminCommand {
         "guildMemberUpdate"
       ].includes(eventName)
     ) {
+      // guildMemberAdd
+      //  logMemberJoin
+      // guildMemberRemove
+      //  logMemberLeave
+      // guildMemberUpdate
+      //  announceGoLive
+      //  boostePraise
+      //  logNameChange
       let member = await interaction.guild.members.me
       args.push(member)
 
       if (eventName == "guildMemberUpdate") {
+        member.presence.activities.push(
+          {
+            url: "http://example.com/stream"
+          }
+        )
         member.nickname = "New Name"
         args.push(member)
       }
+    } else if (eventName == "inviteCreate") {
+      // inviteCreate
+      //  logCreatedInvite
+      args.push(
+        {
+          channelId: interaction.channelId,
+          code: "iddqd",
+          createdAt: 0,
+          expiresAt: 0,
+          guild: interaction.guild,
+          inviterId: interaction.user.id,
+          maxAge: 0,
+          maxUses: 0,
+          memberCount: 0,
+          presenceCount: 0,
+          temporary: true,
+          type: InviteType.Guild,
+          url: "http://example.com/inviteURL",
+          uses: 0
+        }
+      )
     } else if (
       [
         "messageReactionAdd",
         "messageReactionRemove"
       ].includes(eventName)
     ) {
+      // messageReactionAdd
+      // messageReactionRemove
+      //  rr
       let reaction = {
         message: {
           guild: interaction.guild,
@@ -110,6 +150,17 @@ module.exports = class EmitCommand extends AdminCommand {
 
       args.push(reaction)
       args.push(user)
+    } else if (eventName == "messageCreate") {
+      let message = {
+        content: "Content",
+        guild: interaction.guild,
+        channel: interaction.channel,
+        url: "http://example.com/message",
+        author: interaction.guild.members.me
+      }
+      // message.author.id = 0
+
+      args.push(message)
     } else if (eventName == "messageUpdate") {
       let message = {
         content: "Old Content",
@@ -118,6 +169,7 @@ module.exports = class EmitCommand extends AdminCommand {
         url: "http://example.com/message",
         author: interaction.guild.members.me
       }
+      // message.author.id = 0
 
       args.push(message)
 

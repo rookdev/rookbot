@@ -317,7 +317,8 @@ module.exports = class SetPermsCommand extends AdminCommand {
         "roles"
       )
       guildRoles = dbRes[0]
-      messages = dbRes[1]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       // /DB
 
       this.props.description.push(`${this.profile.emojis.dev}Loading Role Profile: '${inlineCode(profileToApply)}'`)

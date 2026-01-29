@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Command Option Types, Formatters: bold, italic, userMention, roleMention
-const { ApplicationCommandOptionType, bold, italic, inlineCode, userMention, roleMention } = require('discord.js')
+const { ApplicationCommandOptionType, bold, italic, inlineCode, userMention, roleMention, hyperlink } = require('discord.js')
 const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const autodetectRando = require('../../utils/rando/autodetectRando')
@@ -399,6 +399,27 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       ""  // A blank space, baby
     )
 
+    // Setup
+    let setupLink = ""
+    if (interaction.guild.name.indexOf("ZDoI") > -1) {
+      let setupLinks = {
+        "m3maprando": "https://discord.com/channels/1450159772622913628/1465896350465130546/1465896350465130546",
+        "z3m3": "https://discord.com/channels/1450159772622913628/1465896350465130546/1465896350465130546"
+      }
+      if (Object.keys(setupLinks).indexOf(randomizer) > -1) {
+        setupLink = setupLinks[randomizer]
+      }
+    }
+    if (setupLink != "") {
+      this.props.description.push(
+        hyperlink(
+          bold("Setup Help"),
+          setupLink
+        ),
+        "" // A blank space, baby
+      )
+    }
+
     // Group Name
     this.props.description.push(
       bold('Group Name'),
@@ -417,7 +438,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Start Game Reminder
     this.props.description.push(
-      'Start Game Reminder'.boldUnderline(),
+      bold('Start Game Reminder'),
       'Please wait on the Start Game with everyone until the game begins.',
       ""  // A blank space, baby
     )

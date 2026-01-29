@@ -35,7 +35,8 @@ module.exports = async (client, oldMember) => {
       "channels"
     )
     guildChannels = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
     // /DB
 
     if (!guildChannels) {

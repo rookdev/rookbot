@@ -60,7 +60,8 @@ module.exports = async (client, message) => {
     "channels"
   )
   channelIDs = dbRes[0]
-  messages = dbRes[1]
+  let newMessages = dbRes[1]
+  messages = messages.concat(newMessages)
   // /DB
 
   if (!channelIDs) {

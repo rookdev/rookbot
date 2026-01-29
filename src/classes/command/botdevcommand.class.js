@@ -53,7 +53,7 @@ class BotDevCommand extends AdminCommand {
   // Build the response
   async build(client, interaction, coptions={}) {
     let messages = []
-    console.log(`/${this.name}: BotDev Build`)
+    messages.push(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
       // DB
@@ -62,7 +62,8 @@ class BotDevCommand extends AdminCommand {
         "roles"
       )
       this.ROLES = dbRes[0]
-      messages = dbRes[1]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       // /DB
 
       if (this.ROLES && this.ROLES.length > 0) {
@@ -98,6 +99,8 @@ class BotDevCommand extends AdminCommand {
         }
       }
     }
+
+    console.log(messages.join("\n"))
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)

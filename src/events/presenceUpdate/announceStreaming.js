@@ -114,7 +114,7 @@ module.exports = async (client, oldPresence, newPresence) => {
       thisPresence.newActivities = newActivities
     }
     if (showDebug) {
-      messages.push(thisPresence)
+      // messages.push(JSON.stringify(thisPresence))
     }
   }
 
@@ -138,22 +138,24 @@ module.exports = async (client, oldPresence, newPresence) => {
   let stoppedStreaming = wasStreaming && !isStreaming
   let guildRoles = null
 
-  // DB
-  let dbRes = await dbFuncs.getDB(
-    guildID,
-    "roles"
-  )
-  guildRoles = dbRes[0]
-  messages = dbRes[1]
-  // /DB
-
-  let member = getters.getCache(client, newPresence.guild, "members", newPresence.user.id)
+  let member = await getters.getCache(client, newPresence.guild, "members", newPresence.user.id)
 
   if (stoppedStreaming && guildRoles) {
     if (!roles?.removed) {
       roles.removed = []
     }
     // Check owner
+    if (!guildRoles) {
+      // DB
+      let dbRes = await dbFuncs.getDB(
+        guildID,
+        "roles"
+      )
+      guildRoles = dbRes[0]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
+      // /DB
+    }
     let OWNER_ROLES = guildRoles["owner"] ?? null
     if (OWNER_ROLES) {
       let hasOwner = await member.roles.cache.some(r=>OWNER_ROLES.includes(r.name))
@@ -191,6 +193,17 @@ module.exports = async (client, oldPresence, newPresence) => {
     // Check owner
     if (!roles?.added) {
       roles.added = []
+    }
+    if (!guildRoles) {
+      // DB
+      let dbRes = await dbFuncs.getDB(
+        guildID,
+        "roles"
+      )
+      guildRoles = dbRes[0]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
+      // /DB
     }
     let OWNER_ROLES = guildRoles["owner"] ?? null
     if (OWNER_ROLES) {

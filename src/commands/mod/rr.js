@@ -38,7 +38,8 @@ module.exports = class ReactionRolesCommand extends ModCommand {
       "rrs"
     )
     rrs = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
     // /DB
 
     if (!rrs) {

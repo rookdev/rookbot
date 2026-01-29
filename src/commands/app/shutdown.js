@@ -9,6 +9,7 @@ const UptimeCommand = require('../../commands/botmeta/uptime')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const unready = require('../../events/unready/exit')  // unreadyEvent
+const shell = require('shelljs')
 
 // Multiple messages
 
@@ -42,7 +43,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
 
   // declare props: import('../../types/embed').EmbedProps
 
-  async execute(client, interaction, coptions={}, independent=false) {
+  async action(client, interaction, coptions={}) {
     let restart = coptions["restart"] ?? false
     this.props.playerTypes = {
       user: "caller",
@@ -82,7 +83,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
             if (procItem.name == "run") {
               // Log that we're restarting
               action = "Restarting"
-              console.log(`!!! RESTART`)
+              console.log(`!!! RESTART PM2`)
               // Restart by disconnecting
               pm2.restart(procItem.name, (err, proc) => {
                 pm2.disconnect()
@@ -109,25 +110,38 @@ module.exports = class ShutdownCommand extends BotDevCommand {
 
       // Post action taking place
       let this_embed = await new RookEmbed(client, this.props)
-      await interaction?.reply({ embeds: [ this_embed ] })
+      await interaction?.channel?.send({ embeds: [ this_embed ] })
       this.null = true
 
       // Call UptimeCommand
       let command = await new UptimeCommand(client)
       await command.execute(client, interaction)
 
-      // Run unreadyEvent
-      await unready(client, interaction)
-
       if (restart) {
-        // shell:
-        // node ./crun.js --loadoptions
+        console.log(`!!! RESTART SERVICE`)
+        let rook = "minrook"
+        let cmd = `sudo systemctl restart ${rook}-`
+        if (this.DEV) {
+          cmd += "dev"
+        } else {
+          cmd += "prod"
+        }
+        cmd += ".service"
+        try {
+          let result = shell.exec(cmd)
+          result = result.stdout.trim()
+          console.log(result)
+        } catch (err) {
+          console.log(err.stack)
+        }
+      } else {
+        // Run unreadyEvent
+        await unready(client, interaction)
+        // Alert with SHUTDOWN action
+        console.log(`!!! SHUTDOWN`)
+        // Exit with exit code 1337
+        process.exit(1337)
       }
-
-      // Alert with SHUTDOWN action
-      console.log(`!!! SHUTDOWN`)
-      // Exit with exit code 1337
-      process.exit(1337)
     }
 
     return true

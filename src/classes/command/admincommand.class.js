@@ -52,7 +52,7 @@ class AdminCommand extends RookCommand {
   // Build the response
   async build(client, interaction, coptions={}) {
     let messages = []
-    console.log(`/${this.name}: Admin Build`)
+    messages.push(`/${this.name}: Admin Build`)
     if (interaction) {
       // Get list of roles
       // DB
@@ -61,7 +61,8 @@ class AdminCommand extends RookCommand {
         "roles"
       )
       this.ROLES = dbRes[0]
-      messages = dbRes[1]
+      let newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       // /DB
 
       if (this.ROLES && this.ROLES.length > 0) {
@@ -97,6 +98,8 @@ class AdminCommand extends RookCommand {
         }
       }
     }
+
+    console.log(messages.join("\n"))
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)

@@ -87,8 +87,9 @@ module.exports = async (client, message) => {
     "roles"
   )
   ROLES = dbRes[0]
-  messages = dbRes[1]
- 
+  let newMessages = dbRes[1]
+  messages = messages.concat(newMessages)
+  
   // If it's an admin or mod
   if (
     ROLES &&

@@ -99,7 +99,8 @@ async function getCache(client, parent, cacheType, cacheTest) {
       cacheType
     )
     cacheIDs = dbRes[0]
-    messages = dbRes[1]
+    let newMessages = dbRes[1]
+    messages = messages.concat(newMessages)
 
     if (!cacheIDs) {
       if (![

@@ -62,13 +62,15 @@ module.exports = class WikiCommand extends RookCommand {
     let guild = interaction?.guild
     let interwikiFile = null
     let messages = []
+    let newMessages = []
     if (guild) {
       let dbRes = await dbFuncs.getDB(
         guild.id,
         "interwiki"
       )
       interwikiFile = dbRes[0]
-      messages = dbRes[1]
+      newMessages = dbRes[1]
+      messages = messages.concat(newMessages)
       if (interwikiFile) {
         interwikiDB = interwikiFile
       }
