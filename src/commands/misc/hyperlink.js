@@ -70,7 +70,7 @@ module.exports = class HyperlinkCommand extends RookCommand {
       return false
     }
 
-    // console.log(
+    // this.messages.push(
     //   {
     //     href: href,
     //     text: text

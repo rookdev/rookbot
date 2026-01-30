@@ -171,14 +171,14 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (scheduledTime) {
       let scheduledDateTime = null
       if (numFuncs.myIsNumeric(scheduledTime)) {
-        // console.log(`Numeric: ${scheduledTime}`)
+        // this.messages.push(`Numeric: ${scheduledTime}`)
         scheduledDateTime = moment.utc(parseInt(scheduledTime))
       } else {
-        // console.log(`Not Numeric: ${scheduledTime}`)
+        // this.messages.push(`Not Numeric: ${scheduledTime}`)
         let hammerTimePattern = /\<t\:([\d]+)\:[^\>]\>/
         let matches = scheduledTime.match(hammerTimePattern)
         if (matches) {
-          // console.log(matches)
+          // this.messages.push(matches)
           scheduledTime = matches[1]
           let platoError = (scheduledTime + "").length - 10
           let adjustedStamp = scheduledTime
@@ -295,7 +295,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       }
     }
 
-    // console.log(
+    // this.messages.push(
     //   textPieces,
     //   gotPiece
     // )
@@ -334,10 +334,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // If no role, try the one listed in the guild DB
       if (roleID == 0) {
         if (roleIDs[randomizer]) {
-          console.log(`Found Game-Specific Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
+          this.messages.push(`Found Game-Specific Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
           roleID = roleIDs[randomizer]
         } else if (roleIDs["pingable-multiplayer-role"]) {
-          console.log(`Found Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
+          this.messages.push(`Found Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
           roleID = roleIDs["pingable-multiplayer-role"]
         }          
       }
@@ -349,19 +349,19 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       roleObject = await this.getCache(client, interaction.guild, "roles", roleID)
       if (!roleObject) {
         this.error = true
-        console.log(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)
+        this.messages.push(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)
         this.props.description = `Role doesn't exist in ${italic(interaction?.guild?.name)} with ID of '${roleID}'.`
         return false
       } else {
-        console.log(`Role Found`)
+        this.messages.push(`Role Found`)
       }
     }
 
     // Build the Pinger
     if (roleObject && (roleID != 0)) {
-      console.log("Do Ping")
+      this.messages.push("Do Ping")
       this.content = roleMention(roleID)
-      console.log(`Role Ping: On`)
+      this.messages.push(`Role Ping: On`)
       this.props.description.push(`🔔${roleMention(roleID)}`)
     }
 

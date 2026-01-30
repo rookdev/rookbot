@@ -31,6 +31,7 @@ class RookCommand {
     this.permissions      = setValue(comprops.permissions, 0)
     this.botPermissions   = setValue(comprops.botPermissions, this.permissions)
     this.userPermissions  = setValue(comprops.userPermissions, this.permissions)
+    this.messages         = []
     this.errors           = require('../../dbs/errors.json')
     this.wide             = setValue(comprops.wide, false)
 
@@ -98,7 +99,7 @@ class RookCommand {
         }
         msg = `${this.profile.emojis.fail} No member given.`
         this.props.description = msg
-        console.log(msg)
+        this.messages.push(msg)
       }
       return false
     }
@@ -112,7 +113,7 @@ class RookCommand {
         }
         msg = `${this.profile.emojis.fail} No guild found for ${member}.`
         this.props.description = msg
-        console.log(msg)
+        this.messages.push(msg)
       }
       return false
     }
@@ -233,7 +234,7 @@ class RookCommand {
   }
 
   async action(client, interaction, coptions) {
-    console.log(`/${this.name}: Action`)
+    this.messages.push(`/${this.name}: Rook Action`)
 
     if (! this.DEV) {
       // Do the thing
@@ -249,7 +250,7 @@ class RookCommand {
     if (this.testPageNum > 0) {
       buildMsg += `: Page ${this.testPageNum}`
     }
-    console.log(buildMsg)
+    this.messages.push(buildMsg)
 
     // If we don't have an error yet,
     //  Process canned option values into sent option values
@@ -275,7 +276,7 @@ class RookCommand {
     // If we've got options sent, print them
     if (coptions && Object.keys(coptions).length > 0) {
       let Table = new AsciiTable(
-        `/${this.name} : Build Options`,
+        `/${this.name}: Rook Build Options`,
         {}
       )
         .setBorder('|','-','•','•')
@@ -286,7 +287,7 @@ class RookCommand {
       for (let [oName, oVal] of Object.entries(coptions)) {
         Table.addRow(oName, oVal)
       }
-      console.log(Table.toString())
+      this.messages.push(Table.toString())
     }
 
     // Run the action
@@ -318,7 +319,7 @@ class RookCommand {
       if (this.ephemeral) {
         deferMsg += " [Ephemeral]"
       }
-      console.log(deferMsg)
+      this.messages.push(deferMsg)
       let intOptions = {}
       if (this.ephemeral) {
         intOptions = { flags: MessageFlags.Ephemeral }
@@ -347,45 +348,43 @@ class RookCommand {
     if (hasDeferred && canEdit) {
       try {
         if (!isEphemeral) {
-          console.log(`/${this.name}: Editing Corporeal Reply`)
-          await interaction.editReply(this_package)
-          handle_result = true
+          this.messages.push(`/${this.name}: Editing Corporeal Reply`)
         } else {
-          console.log(`/${this.name}: Editing Ephemeral Reply`)
-          await interaction.editReply(this_package)
-          handle_result = true
+          this.messages.push(`/${this.name}: Editing Ephemeral Reply`)
         }
+        await interaction.editReply(this_package)
+        handle_result = true
       } catch(e) {
-        // console.log(e)
+        // this.messages.push(e)
         // handle_result = false
       }
       handle_result = true
     } else if (!hasReply && canReply) {
       // reply if edited "thinking"
-      console.log(`/${this.name}: Posting Reply`)
+      this.messages.push(`/${this.name}: Posting Reply`)
       try {
         await interaction.reply(this_package)
         handle_result = true
       } catch(e) {
-        // console.log(e)
+        // this.messages.push(e)
         handle_result = false
       }
     } else if (hasReply && canFollowUp) {
       // followup if already replied
-      console.log(`/${this.name}: Posting Follow-Up`)
+      this.messages.push(`/${this.name}: Posting Follow-Up`)
       try {
         await interaction.follwUp(this_package)
         handle_result = true
       } catch(e) {
-        // console.log(e)
+        // this.messages.push(e)
         handle_result = false
       }
     }
 
     if (!handle_result && isEphemeral) {
       // send followup and delete reply
-      console.log(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
-      console.log(this_package)
+      this.messages.push(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
+      this.messages.push(this_package)
       await interaction.followUp(this_package)
       await interaction.deleteReply()
       handle_result = true
@@ -395,7 +394,7 @@ class RookCommand {
   }
 
   async print_it(client, interaction, pages) {
-    console.log(`/${this.name}: Print it...`)
+    this.messages.push(`/${this.name}: Print it...`)
 
     // If no page, set to built Embed Properties
     if (!pages || (pages.length == 0)) {
@@ -518,7 +517,7 @@ class RookCommand {
 
         // If it's Ephemeral, all need to be Ephemeral
         if (page?.ephemeral && page.ephemeral) {
-          // console.log(`/${this.name}: Page ${i} is Ephemeral`)
+          // this.messages.push(`/${this.name}: Page ${i} is Ephemeral`)
           this.ephemeral = true
         }
 
@@ -537,7 +536,7 @@ class RookCommand {
         msg += "..."
         let title = page?.caption?.text ?? page?.title?.text ?? ""
         msg += `[${title}]`
-        console.log(msg)
+        this.messages.push(msg)
         i += 1
       }
 
@@ -551,12 +550,13 @@ class RookCommand {
   }
 
   async ship_it(interaction, independent=false, hasDeferred=false) {
-    console.log(`/${this.name}: ...and Ship it!`)
+    this.messages.push(`/${this.name}: ...and Ship it!`)
 
     // Base package is just the pages
     let this_package = { embeds: this.pages }
     // If we've got Message Content, set it
     if (this.content && this.content != "") {
+      this.messages.push(`/${this.name}: ...with more Content!`)
       this_package.content = this.content
     }
 
@@ -564,7 +564,7 @@ class RookCommand {
     if (this.pages.length > 1) {
       // We're only paginating Embed objects
       // We're setting the footer to include the page number
-      console.log(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
+      this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
       let these_pagination = await new Pagination(interaction)
       // Set to all users for control
       these_pagination.setAuthorizedUsers([])
@@ -616,11 +616,11 @@ class RookCommand {
     let send_result = false
     if (!interaction_result) {
       try {
-        console.log(`/${this.name}: Posting Independent`)
+        this.messages.push(`/${this.name}: Posting Independent`)
         await this.channel.send(this_package)
         send_result = true
       } catch(e) {
-        // console.log(e)
+        // this.messages.push(e)
         send_result = false
       }
     }
@@ -629,11 +629,11 @@ class RookCommand {
   }
 
   async send(client, interaction, pages, independent=false, hasDeferred=false) {
-    console.log(`/${this.name}: Full Send it!`)
+    this.messages.push(`/${this.name}: Full Send it!`)
 
     // Print it!
     let printResult = await this.print_it(client, interaction, pages)
-    // if (printResult) { console.log(`/${this.name}: Printed!`) }
+    // if (printResult) { this.messages.push(`/${this.name}: Printed!`) }
 
     // Ship it!
     let shipResult = await this.ship_it(
@@ -641,9 +641,16 @@ class RookCommand {
       independent,
       hasDeferred
     )
-    // if (shipResult) { console.log(`/${this.name}: Shipped!`) }
+    // if (shipResult) { this.messages.push(`/${this.name}: Shipped!`) }
 
     return printResult && shipResult
+  }
+
+  async printMessages() {
+    this.messages = this.messages.filter(item => item !== "")
+    if (this.messages.length) {
+      console.log(this.messages.join("\n"))
+    }
   }
 
   async execute(client, interaction, coptions, independent=false) {
@@ -659,7 +666,7 @@ class RookCommand {
     // Local
     now.local()
     dateTable.addRow(now.format())
-    console.log(dateTable.toString())
+    this.messages.push(dateTable.toString())
 
     let Table = new AsciiTable("", {})
       .setHeading(
@@ -713,12 +720,12 @@ class RookCommand {
         )
       }
     }
-    console.log(Table.toString())
+    this.messages.push(Table.toString())
 
     // Options sent at Execution time
     if (coptions && Object.keys(coptions).length > 0) {
       Table = new AsciiTable(
-        `/${this.name} : Execute Options`,
+        `/${this.name}: Rook Execute Options`,
         {}
       )
         .setHeading(
@@ -728,10 +735,10 @@ class RookCommand {
       for (let [oName, oVal] of Object.entries(coptions)) {
         Table.addRow(oName, oVal)
       }
-      console.log(Table.toString())
+      this.messages.push(Table.toString())
     }
 
-    console.log(`/${this.name}: Execute`)
+    this.messages.push(`/${this.name}: Rook Execute`)
 
     // If there's no channel defined, try to get it
     if (!this.channel) {
@@ -759,7 +766,9 @@ class RookCommand {
       )
     }
 
-    console.log("")
+    this.messages.push("")
+
+    this.printMessages()
 
     return buildResult && sendResult && !this.error
   }
@@ -770,7 +779,7 @@ class RookCommand {
       this.channel = await this.getChannel(client)
     }
 
-    console.log(`/${this.name}: Test`)
+    this.messages.push(`/${this.name}: Rook Test`)
     let execResult = false
 
     // If we've got test options defined
@@ -781,9 +790,9 @@ class RookCommand {
       let testBooks = this.testIndependent  // Many Books
 
       if (testBook) {
-        console.log(`/${this.name}: Test One Book with ${this.testOptions.length} Pages`)
+        this.messages.push(`/${this.name}: Test One Book with ${this.testOptions.length} Pages`)
       } else if (testBooks) {
-        console.log(`/${this.name}: Test ${this.testOptions.length} Books`)
+        this.messages.push(`/${this.name}: Test ${this.testOptions.length} Books`)
       }
       // Cycle through test options
       for (let thisTest of this.testOptions) {
@@ -839,7 +848,7 @@ class RookCommand {
             pages
           )
         } catch(e) {
-          console.log(e)
+          this.messages.push(e)
         }
       }
 
@@ -849,7 +858,9 @@ class RookCommand {
       execResult = await this.execute(client, interaction)
     }
 
-    console.log(''.padEnd(50, "*"))
+    this.messages.push(''.padEnd(50, "*"))
+
+    this.printMessages()
 
     return execResult && !this.error
   }

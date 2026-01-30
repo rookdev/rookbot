@@ -73,7 +73,7 @@ module.exports = async (client, oldMember, newMember) => {
       `Thank you for boosting! ${heartContainerEmoji}`
     ]
 
-    // console.log(
+    // messages.push(
     //   `${newMember.displayName} is boosting '${newMember.guild.name}'!`,
     //   msg
     // )

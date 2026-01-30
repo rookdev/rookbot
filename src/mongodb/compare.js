@@ -39,14 +39,16 @@ async function run() {
       for await (let collMeta of collList) {
         if (collMeta.name != "index") {
           let guildID = collMeta.name
-          console.log(` Coll: ${guildID}`)
+          let docLine = ""
+          docLine += `C:${guildID};`
           let coll = db.collection(guildID)
           let docs = await coll.find().toArray()
           for (let doc of docs) {
             // doc is data structure of JSON document
             doc = sortKeysRecursive(JSON.parse(JSON.stringify(doc)))
-            console.log(`  Doc: ${doc._id}`)
-            console.log(`   ${doc._gname}`)
+            docLine += `D:${doc._id};`
+            docLine += `G:${doc._gname}`
+            console.log(docLine)
             let guildDir = fileFuncs.getAPath(
               [
                 outputDir,
@@ -78,6 +80,7 @@ async function run() {
               ),
               JSON.stringify(doc)
             )
+            let results = {}
             for (let key of Object.keys(doc)) {
               if (!key.startsWith("_")) {
                 // Compare sorted result to /src/dbs
@@ -132,9 +135,16 @@ async function run() {
                 } else {
                   check = "✅"
                 }
-                console.log(`    ${check} ${key}`)
+                if (!results[check]) {
+                  results[check] = []
+                }
+                results[check].push(key)
               }
             }
+            for (let [check, cData] of Object.entries(results)) {
+              console.log(`${check}: ${cData.join(', ')}`)
+            }
+            console.log("\n")
           }
         }
       }

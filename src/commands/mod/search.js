@@ -154,7 +154,7 @@ module.exports = class SearchCommand extends ModCommand {
         return
       }
 
-      console.log(logFile)
+      this.messages.push(logFile)
 
       let logLines = logFile.split("\n")
       for(let line of logLines) {

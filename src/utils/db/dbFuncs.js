@@ -64,6 +64,7 @@ async function getDB(cName, dName, source="mongodb") {
                 if (rec_name) {
                   rec = doc[rec_name]
                 } else {
+                  dName = "<list>"
                   rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
                 }
               }

@@ -28,27 +28,27 @@ module.exports = async (client, message) => {
   // Reasons to bail
   // If no message
   if (! message) {
-    // console.log("No Message")
+    // messages.push("No Message")
     return [result, messages]
   }
   // If no guild
   if (! message.guild) {
-    // console.log("No Guild")
+    // messages.push("No Guild")
     return [result, messages]
   }
   // If no channel
   if (! message.channel) {
-    // console.log("No Channel")
+    // messages.push("No Channel")
     return [result, messages]
   }
 
   if (message.author.id == client.user.id) {
-    // console.log("It's the Bot")
+    // messages.push("It's the Bot")
     return [result, messages]
   }
 
   if (message.attachments.size < 1) {
-    // console.log("No attachments!")
+    // messages.push("No attachments!")
     return [result, messages]
   }
 
@@ -73,14 +73,14 @@ module.exports = async (client, message) => {
   let channelName = "bot-testing"
   let channelID   = channelIDs[channelName]
   if (message.channel.id != channelID) {
-    // console.log("Not target Channel ID!")
+    // messages.push("Not target Channel ID!")
     return [result, messages]
   }
 
   for (let [attachmentID, aData] of message.attachments) {
     if (aData.name.toLowerCase().includes("yaml") || aData.name.toLowerCase().includes("yml")) {
-      // console.log(aData)
-      // console.log(aData.name + ": " + aData.url)
+      // messages.push(aData)
+      // messages.push(aData.name + ": " + aData.url)
       let aYaml = await fileFuncs.getAURL(aData.url)
 
       let yamlFields = [

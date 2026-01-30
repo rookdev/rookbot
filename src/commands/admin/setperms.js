@@ -135,9 +135,9 @@ module.exports = class SetPermsCommand extends AdminCommand {
       try {
         await role.setPermissions(perms)
       } catch (error) {
-        console.log(`Error setting permissions for @${role.name} [${profileToApply}]`)
+        this.messages.push(`Error setting permissions for @${role.name} [${profileToApply}]`)
       }
-      // console.log(`@${role.name} ${perms}`)
+      // this.messages.push(`@${role.name} ${perms}`)
     }
   }
 
@@ -178,7 +178,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
         setMode = "roleInChannel"
       }
     } else {
-      console.log(`Role '${roleID}' not found!`)
+      this.messages.push(`Role '${roleID}' not found!`)
     }
 
     let roleChannelPerms = {}
@@ -308,7 +308,6 @@ module.exports = class SetPermsCommand extends AdminCommand {
     }
 
     if (profileToApply) {
-      let messages = []
       this.props.description.push("---")
 
       // DB
@@ -317,8 +316,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
         "roles"
       )
       guildRoles = dbRes[0]
-      let newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
       // /DB
 
       this.props.description.push(`${this.profile.emojis.dev}Loading Role Profile: '${inlineCode(profileToApply)}'`)

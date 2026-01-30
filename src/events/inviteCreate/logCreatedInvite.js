@@ -14,65 +14,67 @@ module.exports = async (client, invite) => {
   let result = null
   let messages = []
 
-  console.log(
-    [
-      {
-        name: "Channel",
-        value: invite.channelId
-      },
-      {
-        name: "Code",
-        value: invite.code
-      },
-      {
-        name: "Created At",
-        value: invite.createdAt
-      },
-      {
-        name: "Expires At",
-        value: invite.expiresAt
-      },
-      {
-        name: "Guild",
-        value: invite.guild.name
-      },
-      {
-        name: "Inviter",
-        value: invite.inviterId
-      },
-      {
-        name: "Max Age",
-        value: invite?.maxAge
-      },
-      {
-        name: "Max Uses",
-        value: invite?.maxUses
-      },
-      {
-        name: "Member Count",
-        value: invite?.memberCount
-      },
-      {
-        name: "Presence Count",
-        value: invite?.presenceCount
-      },
-      {
-        name: "Temp Membership",
-        value: invite?.temporary
-      },
-      {
-        name: "Invite Type",
-        value: InviteType[invite.type]
-      },
-      {
-        name: "Invite URL",
-        value: invite.url
-      },
-      {
-        name: "Uses",
-        value: invite?.uses
-      }
-    ]
+  messages.push(
+    JSON.stringify(
+      [
+        {
+          name: "Channel",
+          value: invite.channelId
+        },
+        {
+          name: "Code",
+          value: invite.code
+        },
+        {
+          name: "Created At",
+          value: invite.createdAt
+        },
+        {
+          name: "Expires At",
+          value: invite.expiresAt
+        },
+        {
+          name: "Guild",
+          value: invite?.guild?.name
+        },
+        {
+          name: "Inviter",
+          value: invite.inviterId
+        },
+        {
+          name: "Max Age",
+          value: invite?.maxAge
+        },
+        {
+          name: "Max Uses",
+          value: invite?.maxUses
+        },
+        {
+          name: "Member Count",
+          value: invite?.memberCount
+        },
+        {
+          name: "Presence Count",
+          value: invite?.presenceCount
+        },
+        {
+          name: "Temp Membership",
+          value: invite?.temporary
+        },
+        {
+          name: "Invite Type",
+          value: InviteType[invite.type]
+        },
+        {
+          name: "Invite URL",
+          value: invite.url
+        },
+        {
+          name: "Uses",
+          value: invite?.uses
+        }
+      ]
+    )
   )
 
   return [result, messages]

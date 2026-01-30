@@ -38,17 +38,17 @@ module.exports = async (client, message) => {
   // Reasons to bail
   // If no message
   if (! message) {
-    // console.log("No Message")
+    // messages.push("No Message")
     return [result, messages]
   }
   // If no guild
   if (! message.guild) {
-    // console.log("No Guild")
+    // messages.push("No Guild")
     return [result, messages]
   }
   // If no channel
   if (! message.channel) {
-    // console.log("No Channel")
+    // messages.push("No Channel")
     return [result, messages]
   }
 
@@ -57,17 +57,17 @@ module.exports = async (client, message) => {
   let zapChannel = await banCmd.getChannel(client, message, [ "zapper" ])
   // If no Zap Channel defined
   if (! zapChannel) {
-    // console.log("No Zap Channel defined")
+    // messages.push("No Zap Channel defined")
     return [result, messages]
   }
   // If it's not the zapper channel
   if (message.channel.id != zapChannel?.id) {
-    // console.log(`Not Zapper Channel [Msg: ${message.channel.name}/${message.channel.id}; Zapper: ${zapChannel?.id}]`)
+    // messages.push(`Not Zapper Channel [Msg: ${message.channel.name}/${message.channel.id}; Zapper: ${zapChannel?.id}]`)
     return [result, messages]
   }
   // If it's the bot
   if (message.author.id == client.user.id) {
-    // console.log("It's the Bot")
+    // messages.push("It's the Bot")
     return [result, messages]
   }
 
@@ -103,7 +103,7 @@ module.exports = async (client, message) => {
 
     // Bail if we don't have intended Approved Roles data
     if (!APPROVED_ROLES) {
-      // console.log("Couldn't get Roles List")
+      // messages.push("Couldn't get Roles List")
       // do nothing
     }
 
@@ -113,7 +113,7 @@ module.exports = async (client, message) => {
         r => APPROVED_ROLES.includes(r.name)
       )
     ) {
-      // console.log("It's an Admin or Mod")
+      // messages.push("It's an Admin or Mod")
       return [result, messages]
     }
   }

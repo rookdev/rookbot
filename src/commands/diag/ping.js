@@ -32,7 +32,7 @@ module.exports = class PingCommand extends RookCommand {
       target: "caller"
     }
 
-    console.log(`/${this.name}: Action`)
+    this.messages.push(`/${this.name}: Ping Action`)
 
     // Get Reply object
     const reply = await interaction?.fetchReply()

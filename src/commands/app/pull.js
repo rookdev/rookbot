@@ -59,7 +59,7 @@ module.exports = class PullCommand extends BotDevCommand {
         let selectedBranch = coptions["branch"] ?? "main"
         shell.exec(`git checkout ${selectedBranch}`)
       } catch(err) {
-        console.log(err.stack)
+        this.messages.push(err.stack)
       }
     }
 
@@ -76,7 +76,7 @@ module.exports = class PullCommand extends BotDevCommand {
         BRANCH = "heroku"
       }
     } catch (err) {
-      console.log(err)
+      this.messages.push(err)
     }
 
     // Get Current commit ID
@@ -93,7 +93,7 @@ module.exports = class PullCommand extends BotDevCommand {
         COMMITS.current = matches[1]
       }
     } catch (err) {
-      console.log(err.stack)
+      this.messages.push(err.stack)
     }
 
     if (!this.DEV) {
@@ -101,7 +101,7 @@ module.exports = class PullCommand extends BotDevCommand {
       try {
         shell.exec("git pull origin")
       } catch(err) {
-        console.log(err.stack)
+        this.messages.push(err.stack)
       }
     }
 
@@ -125,7 +125,7 @@ module.exports = class PullCommand extends BotDevCommand {
         COMMITS.prev = COMMITS.prev[1]
       }
     } catch (err) {
-      console.log(err.stack)
+      this.messages.push(err.stack)
     }
 
     // Get Client User
@@ -177,7 +177,7 @@ module.exports = class PullCommand extends BotDevCommand {
       ""
     )
 
-    // console.log(console_output)
+    // this.messages.push(console_output)
 
     /*
 

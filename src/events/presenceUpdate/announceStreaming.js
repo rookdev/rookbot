@@ -167,8 +167,10 @@ module.exports = async (client, oldPresence, newPresence) => {
           if (await member.roles.cache.some(r=>OWNER_STREAMING_ROLES.includes(r.name))) {
             for (let roleName of OWNER_STREAMING_ROLES) {
               let role = await getters.getCache(client, oldPresence.guild, "roles", roleName)
-              roles.removed.push(roleName)
-              await member.roles.remove(role)
+              if (role) {
+                roles.removed.push(roleName)
+                await member.roles.remove(role)
+              }
             }
           }
         }
@@ -183,8 +185,10 @@ module.exports = async (client, oldPresence, newPresence) => {
         sendDebug = true
         for (let roleName of STREAMING_ROLES) {
           let role = await getters.getCache(client, oldPresence.guild, "roles", roleName)
-          roles.removed.push(roleName)
-          await member.roles.remove(role)
+          if (role) {
+            roles.removed.push(roleName)
+            await member.roles.remove(role)
+          }
         }
       }
     }
@@ -215,8 +219,10 @@ module.exports = async (client, oldPresence, newPresence) => {
         if (OWNER_STREAMING_ROLES) {
           for (let roleName of OWNER_STREAMING_ROLES) {
             let role = await getters.getCache(client, newPresence.guild, "roles", roleName)
-            roles.added.push(roleName)
-            await member.roles.add(role)
+            if (role) {
+              roles.added.push(roleName)
+              await member.roles.add(role)
+            }
           }
         }
       }
@@ -234,8 +240,10 @@ module.exports = async (client, oldPresence, newPresence) => {
         sendAlert = true
         for (let roleName of STREAMING_ROLES) {
           let role = await getters.getCache(client, newPresence.guild, "roles", roleName)
-          roles.added.push(roleName)
-          await member.roles.add(role)
+          if (role) {
+            roles.added.push(roleName)
+            await member.roles.add(role)
+          }
         }
       }
     }
@@ -325,7 +333,8 @@ module.exports = async (client, oldPresence, newPresence) => {
           {
             guild: member.guild.name,
             member: member.user.tag,
-            url: foundActivity.url
+            url: foundActivity.url,
+            roles: roles
           }
         )
       )

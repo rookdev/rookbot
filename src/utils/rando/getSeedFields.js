@@ -10,6 +10,7 @@ const emojis = require('../../dbs/emojis.json')
 const moment = require('moment')
 
 module.exports = async (hashID, gameID="z3r") => {
+  let messages = []
   let fields = [
     [
       {
@@ -98,7 +99,7 @@ module.exports = async (hashID, gameID="z3r") => {
         try {
           slugID = decode(hashID).replaceAll("-",'')
         } catch (e) {
-          console.log(
+          messages.push(
             [
               sData["url"],
               hashID,
@@ -144,7 +145,7 @@ module.exports = async (hashID, gameID="z3r") => {
       let itemValue = null
       if (typeof itemCell["value"] != "string") {
         for (let sKey of itemCell["value"]) {
-          // console.log(sKey,itemName,itemValue)
+          // messages.push(sKey,itemName,itemValue)
           if (!itemValue) {
             itemValue = sources[sKey]
           } else {
@@ -248,7 +249,7 @@ module.exports = async (hashID, gameID="z3r") => {
           ]
           if (sources.settings?.opentower) {
             let tower = sources.settings.opentower
-            console.log(`${gameID} Tower: ${tower}`)
+            // messages.push(`${gameID} Tower: ${tower}`)
             if (typeof tower == "string") {
               tower = nums.indexOf(
                 tower.replace(
@@ -260,7 +261,7 @@ module.exports = async (hashID, gameID="z3r") => {
           }
           if (sources.settings?.ganonvulnerable) {
             let ganon = sources.settings.ganonvulnerable
-            console.log(`${gameID} Ganon: ${ganon}`)
+            // messages.push(`${gameID} Ganon: ${ganon}`)
             if (typeof ganon == "string") {
               ganon = nums.indexOf(
                 ganon.replace(
@@ -272,7 +273,7 @@ module.exports = async (hashID, gameID="z3r") => {
           }
           if (sources.settings?.opentourian) {
             let tourian = sources.settings.opentourian
-            console.log(`${gameID} Tourian: ${tourian}`)
+            // messages.push(`${gameID} Tourian: ${tourian}`)
             if (typeof tourian == "string") {
               tourian = nums.indexOf(
                 tourian.replace(
@@ -382,6 +383,11 @@ module.exports = async (hashID, gameID="z3r") => {
       }
     }
     fields.push(fieldRow) 
+  }
+
+  messages = messages.filter(item => item !== "")
+  if (messages.length) {
+    console.log(messages.join("\n"))
   }
   
   return fields

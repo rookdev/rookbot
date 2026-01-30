@@ -50,7 +50,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
 
       // Return if couldn't find it
       if (!commandObject) {
-        console.log(`Couldn't find /${commandName}`)
+        this.messages.push(`Couldn't find /${commandName}`)
         this.error = true
         this.props.description = `Couldn't find /${commandName}`
         return !this.error
@@ -62,7 +62,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
           // If we're missing one, abort
           // @ts-ignore
           if (!interaction?.member?.permissions.has(permission)) {
-            console.log(`/${commandName} attempted without proper user perms`)
+            this.messages.push(`/${commandName} attempted without proper user perms`)
             let intOptions = {
               content: `${this.profile.emojis.user} User is missing permissions.`,
               flags: MessageFlags.Ephemeral
@@ -81,7 +81,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
           if (bot) {
             // If we're missing one, abort
             if (!bot.permissions.has(permission)) {
-              console.log(`/${commandName} attempted without proper bot perms`)
+              this.messages.push(`/${commandName} attempted without proper bot perms`)
               let intOptions = {
                 content: `${this.profile.emojis.bot} Bot is missing permissions.`,
                 flags: MessageFlags.Ephemeral
@@ -95,13 +95,13 @@ module.exports = class BatchModCommand extends BotDevCommand {
       }
       return commandObject
     } catch(error) {
-      console.log(`There was an error running this command: ${error.stack}`)
+      this.messages.push(`There was an error running this command: ${error.stack}`)
       return false
     }
   }
 
   async action(client, interaction, coptions={}) {
-    console.log(`/${this.name}: Action`)
+    this.messages.push(`/${this.name}: BatchMod Action`)
 
     // Get Local Commands
     const localCommands = getLocalCommands(client)
@@ -124,8 +124,8 @@ module.exports = class BatchModCommand extends BotDevCommand {
       let bOptions = JSON.parse(batchLines.shift())
       let commandObject = await this.find_command(interaction, localCommands, commandName)
       // Run the mod function
-      console.log(`/${this.name}/${commandObject.name}`)
-      console.log(" " + JSON.stringify(bOptions))
+      this.messages.push(`/${this.name}/${commandObject.name}`)
+      this.messages.push(" " + JSON.stringify(bOptions))
       for (let batchLine of batchLines) {
         batchLine = batchLine.trim()
         // Get JSON params
@@ -133,9 +133,9 @@ module.exports = class BatchModCommand extends BotDevCommand {
         if (getParams) {
           commandObject = await this.find_command(interaction, localCommands, commandName)
           bOptions = JSON.parse(batchLine)
-          console.log(" ")
-          console.log(`/${this.name}/${commandObject.name}`)
-          console.log(" " + JSON.stringify(bOptions))
+          this.messages.push(" ")
+          this.messages.push(`/${this.name}/${commandObject.name}`)
+          this.messages.push(" " + JSON.stringify(bOptions))
           getParams = false
         }
         // Get new Command name
@@ -157,7 +157,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
             if (targetMember) {
               bOptions["target-id"] = targetMember.user.id
               bOptions["bypass"] = true
-              console.log(`  ${username}`)
+              this.messages.push(`  ${username}`)
               await commandObject.action(client, interaction, bOptions)
             }
             // Wait half a second after submitting action
@@ -166,7 +166,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
         }
       }
     } catch (error) {
-      console.log(`There was an error running this command: ${error.stack}`)
+      this.messages.push(`There was an error running this command: ${error.stack}`)
     }
     this.null = true
 

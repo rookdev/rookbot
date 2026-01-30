@@ -111,7 +111,7 @@ module.exports = class PurgeCommand extends ModCommand {
           embeds: [ embeds.public ]
         }
       )
-      console.log(`/${this.name}: ModPost`)
+      this.messages.push(`/${this.name}: ModPost`)
     }
 
     // Log the event
@@ -137,7 +137,7 @@ module.exports = class PurgeCommand extends ModCommand {
             embeds: [ embeds.log ]
           }
         )
-        console.log(`/${this.name}: LogPost`)
+        this.messages.push(`/${this.name}: LogPost`)
       }
     }
 
@@ -161,14 +161,14 @@ module.exports = class PurgeCommand extends ModCommand {
     ]
 
     fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
-    console.log(`/${this.name}: LogFile`)
+    this.messages.push(`/${this.name}: LogFile`)
 
     // If error, report error to Mod
     if (!success) {
       // Reply to Mod if error for ACTION
       this.ephemeral = true
       let msg = `There was an error when Purging`
-      console.log(msg)
+      this.messages.push(msg)
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true

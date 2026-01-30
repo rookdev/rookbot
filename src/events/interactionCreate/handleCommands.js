@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { MessageFlags } = require('discord.js')
+const { MessageFlags, inlineCode } = require('discord.js')
 const getLocalCommands = require('../../utils/client/getLocalCommands')
 
 module.exports = async (client, interaction) => {
@@ -38,6 +38,11 @@ module.exports = async (client, interaction) => {
       }
       if (!commandObject) {
         messages.push(`${client.profile.emojis.fail} No command object found`)
+        interaction.reply(
+          {
+            content: `${inlineCode('/' + interaction.commandName)} not found!`,
+          }
+        )
         return [result, messages]
       }
     }
@@ -51,7 +56,6 @@ module.exports = async (client, interaction) => {
           roleUserIDs.push(userID)
         }
       }
-      console.log(roleName,roleUserNames,roleUserIDs)
       if (!roleUserIDs.includes(interaction.member.id)) {
         let content = `${client.profile.emojis.fail} Only BotDevs are allowed to run this command.`
         let intOptions = {
@@ -115,6 +119,7 @@ module.exports = async (client, interaction) => {
       }
     }
 
+    messages = messages.filter(item => item !== "")
     if (messages.length) {
       console.log(
         messages.map(

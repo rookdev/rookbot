@@ -40,12 +40,11 @@ module.exports = class InstallCommand extends BotDevCommand {
     let node_install = null
     try {
       node_install = shell.exec(
-        "npm i",
-        { silent: true }
+        "npm i"
       )
       node_install = node_install.stdout.trim()
     } catch (err) {
-      console.log(err.stack)
+      this.messages.push(err.stack)
     }
 
     // Get Client User
@@ -56,49 +55,24 @@ module.exports = class InstallCommand extends BotDevCommand {
       "---"
     ]
 
-    let ci_data = fileFuncs.getAFile(
-      [
-        "resources",
-        "app",
-        "meta",
-        "manifests"
-      ],
-      "ci.json"
-    )
-    if (!ci_data) {
-      this.error = true
-      this.props.description = `CI Data not found!`
-      return false
-    }
-
-    let git_info = ci_data.common.common.repo
-    git_info.root = `https://github.com/${git_info.username}/${git_info.repository}`
-
     // Print Name & Version number
     console_output.push(
       "Installing " +
       (user ? user.username : "") +
       ` v${this.profile.PACKAGE.version}!`
     )
-    this.props.title = {
-      text: "💿 " + console_output[1],
-      url: git_info.root
-    }
-
-    // console.log(console_output)
-
-    /*
-
-    console_output[1] = ---
-    console_output[2] = Installing Message
-    console_output[3] = Output from npm i
-
-    */
 
     console_output.push(
       ("\n" + codeBlock(node_install))
     )
-    this.props.description = console_output
+ 
+    
+    await interaction.editReply(
+      {
+        content: console_output.join("\n")
+      }
+    )
+    this.null = true
 
     return !this.error
   }

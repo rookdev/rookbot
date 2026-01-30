@@ -37,22 +37,22 @@ module.exports = async (client, message) => {
   // Reasons to bail
   // If no message
   if (! message) {
-    // console.log("No Message")
+    // messages.push("No Message")
     return [result, messages]
   }
   // If no guild
   if (! message.guild) {
-    // console.log("No Guild")
+    // messages.push("No Guild")
     return [result, messages]
   }
   // If no channel
   if (! message.channel) {
-    // console.log("No Channel")
+    // messages.push("No Channel")
     return [result, messages]
   }
 
   if (message.author.id == client.user.id) {
-    // console.log("It's the Bot")
+    // messages.push("It's the Bot")
     return [result, messages]
   }
 
@@ -107,23 +107,23 @@ module.exports = async (client, message) => {
     guildIDStr
   ]
 
-  // console.log(logEntry)
+  // messages.push(logEntry)
 
   let entries = fileFuncs.getAFile(logFilePath)
   if (entries) {
-    // console.log("We've got entries!")
+    // messages.push("We've got entries!")
     if (entries.includes(userIDStr + guildIDStr)) {
-      // console.log("We've got a user!")
+      // messages.push("We've got a user!")
       let userIdx = entries.indexOf(userIDStr + guildIDStr)
       if (userIdx) {
-        // console.log(`First instance is at: ${userIdx}`)
+        // messages.push(`First instance is at: ${userIdx}`)
         let recordNumber = -1
         recordNumber = Math.ceil(userIdx / 192)
         if (recordNumber > 0) {
           recordNumber -= 1
-          // console.log(`User is at: ${recordNumber}!`)
+          // messages.push(`User is at: ${recordNumber}!`)
           entries = entries.split("\n")
-          // console.log(entries[recordNumber])
+          // messages.push(entries[recordNumber])
           entries[recordNumber] = ""
           entries = entries.filter(
             item => item.trim() != ""

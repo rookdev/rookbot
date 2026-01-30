@@ -8,6 +8,7 @@ module.exports = async (client) => {
   let guildInfo     = ""
   let offlineMoment = moment.utc()
   let offlineTime   = timeFormat(offlineMoment.format("x"), { showSeconds: true })
+  let messages = []
 
   if (client?.guild) {
     if (client?.guild?.name) {
@@ -18,5 +19,7 @@ module.exports = async (client) => {
       guildInfo += `)`
     }
   }
-  console.log(`RATE LIMITED: ${client.user.tag}${guildInfo} at ${offlineTime}`)
+  messages.push(`RATE LIMITED: ${client.user.tag}${guildInfo} at ${offlineTime}`)
+
+  return [true, messages]
 }

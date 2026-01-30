@@ -39,6 +39,8 @@ module.exports = class GuildStatusCommand extends RookCommand {
       return false
     }
 
+    let guild = interaction.guild
+
     // Set EmbedPlayerTypes to Bot|Guild
     this.props.playerTypes = {
       user: "bot",
@@ -55,32 +57,43 @@ module.exports = class GuildStatusCommand extends RookCommand {
       serverBoostEmoji = "⭐"
     }
 
-    this.props.title.text = `Guild Status for ${interaction.guild.name}`
+    this.props.title.text = `Guild Status for ${guild.name}`
+    this.props.description = []
+
+    if (guild.description) {
+      this.props.description.push(
+        bold("Description"),
+        codeBlock(guild.description)
+      )
+    }
+
     // List Guild Features
-    if (interaction.guild.features.length > 0) {
-      this.props.description = ""
-      this.props.description += bold("Features") + "\n"
-      this.props.description += codeBlock(interaction.guild.features.sort().join(", "))
+    if (guild.features.length > 0) {
+      this.props.description.push(
+        bold("Features"),
+        codeBlock(guild.features.sort().join(", "))
+      )
     }
 
     // Creation DateTime
-    let createdDateTime = moment.utc(interaction.guild.createdTimestamp)
-    this.props.description += "\n\n"
-    this.props.description += bold("Created") + "\n"
-    this.props.description += timeFormat(createdDateTime.format("x"), { with: "relative" })
+    let createdDateTime = moment.utc(guild.createdTimestamp)
+    this.props.description.push(
+      bold("Created"),
+      timeFormat(createdDateTime.format("x"), { with: "relative" })
+    )
 
     this.props.fields = []
 
-    if (interaction?.guild?.ownerId && interaction.guild.ownerId != "undefined") {
-      // console.log(`Guild Owner: ${interaction.guild.ownerId}`)
+    if (guild?.ownerId && guild.ownerId != "undefined") {
+      // this.messages.push(`Guild Owner: ${guild.ownerId}`)
       this.props.fields.push(
         [
           // Owner
           {
             name: "Owner",
             value: [
-              userMention(interaction.guild.ownerId),
-              `[${inlineCode(interaction.guild.ownerId)}]`
+              userMention(guild.ownerId),
+              `[${inlineCode(guild.ownerId)}]`
             ]
           }
         ]
@@ -88,19 +101,19 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     // Vanity URL
-    if (interaction?.guild?.vanityURLCode && interaction.guild.vanityURLCode != "") {
-      let vanityURL = `https://discord.gg/${interaction.guild.vanityURLCode}`
+    if (guild?.vanityURLCode && guild.vanityURLCode != "") {
+      let vanityURL = `https://discord.gg/${guild.vanityURLCode}`
       this.props.fields.push(
         [
           {
             name: "Vanity URL",
-            value: `[${interaction.guild.vanityURLCode}](${vanityURL})`
+            value: `[${guild.vanityURLCode}](${vanityURL})`
           }
         ]
       )
     }
 
-    let members = await interaction.guild.members.fetch()
+    let members = await guild.members.fetch()
     let numMembers = members.size
     let numBots = members.filter(member => member.user.bot).size
     this.props.fields.push(
@@ -125,24 +138,54 @@ module.exports = class GuildStatusCommand extends RookCommand {
         // Server Level
         {
           name: "Server Level",
-          value: interaction.guild.premiumTier == 0 ? `${interaction.guild.premiumTier}` : `${serverBoostEmoji}`.repeat(interaction.guild.premiumTier)
+          value: guild.premiumTier == 0 ? `${guild.premiumTier}` : `${serverBoostEmoji}`.repeat(guild.premiumTier)
         },
         // Server Boosters
         {
           name: "Server Boosters",
-          value: interaction?.guild?.premiumSubscriptionCount
+          value: guild?.premiumSubscriptionCount
         }
       ],
       [
         // Partnered
         {
           name: "Partnered",
-          value: interaction.guild.partnered ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: guild.partnered ? this.profile.emojis.check : this.profile.emojis.nocheck
         },
         // Verified
         {
           name: "Verified",
-          value: interaction.guild.verified ? this.profile.emojis.check : this.profile.emojis.nocheck
+          value: guild.verified ? this.profile.emojis.check : this.profile.emojis.nocheck
+        }
+      ]
+    )
+    this.props.fields.push(
+      [
+        {
+          name: "Public Updates Channel",
+          value: guild.publicUpdateChannel ? `${guild.publicUpdateChannel}` : ""
+        },
+        {
+          name: "Rules Channel",
+          value: guild.rulesChannel ? `${guild.rulesChannel}` : ""
+        },
+        {
+          name: "Safety Alerts Channel",
+          value: guild.safetyAlertsChannel ? `${guild.safetyAlertsChannel}` : ""
+        }
+      ],
+      [
+        {
+          name: "System Channel",
+          value: guild.systemChannel ? `${guild.systemChannel}` : ""
+        },
+        {
+          name: "Widget Channel",
+          value: guild.widgetChannel ? `${guild.widgetChannel}` : ""
+        },
+        {
+          name: "Widget Enabled?",
+          value: (guild?.widgetEnabled && (guild.widgetEnabled != "null")) ? this.profile.emojis.nocheck : this.profile.emojis.check
         }
       ]
     )

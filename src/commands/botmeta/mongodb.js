@@ -48,21 +48,14 @@ module.exports = class MongoDBCommand extends BotDevCommand {
     // Get DB Type
     let mode = coptions["mode"] ?? "ping"
 
-    let guild = interaction.guild
-
-    this.props.title = {
-      text: `MongoDB for ${guild.name}`
-    }
-
     let mongodb_crun = null
     try {
       mongodb_crun = shell.exec(
-        `node ./src/mongodb/crun.js -m ${mode}`,
-        { silent: true }
+        `node ./src/mongodb/crun.js -m ${mode}`
       )
       mongodb_crun = mongodb_crun.stdout.trim()
     } catch (err) {
-      console.log(err.stack)
+      this.messages.push(err.stack)
     }
 
     // Bucket for console output
@@ -73,7 +66,18 @@ module.exports = class MongoDBCommand extends BotDevCommand {
     console_output.push(
       ("\n" + codeBlock(mongodb_crun))
     )
-    this.props.description = console_output
+
+    let len = console_output.join("\n").length
+    if (len < 2000) {
+      await interaction.editReply(
+        {
+          content: console_output.join("\n")
+        }
+      )
+      this.null = true
+    } else {
+      this.props.description = console_output
+    }
 
     return !this.error
   }

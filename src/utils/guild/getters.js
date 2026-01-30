@@ -71,7 +71,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
     return null
   }
 
-  if (typeof cacheTest != "object") {
+  if (typeof cacheTest !== "object") {
     cacheTest = [ cacheTest ]
   }
 
@@ -99,8 +99,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
       cacheType
     )
     cacheIDs = dbRes[0]
-    let newMessages = dbRes[1]
-    messages = messages.concat(newMessages)
+    messages.push(...dbRes[1])
 
     if (!cacheIDs) {
       if (![
@@ -110,7 +109,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
         "messages",
         "users"
       ].includes(cacheType)) {
-        console.log(`${cacheType.ucfirst()} IDs not found for '${guild.name}' [${guild.id}]`)
+        messages.push(`${cacheType.ucfirst()} IDs not found for '${guild.name}' [${guild.id}]`)
       }
     } else {
       for (let cacheID of cacheTest) {

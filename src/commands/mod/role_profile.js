@@ -129,7 +129,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
         addRoles = [ addRoles ]
       }
       for (let role of addRoles) {
-        console.log(`Adding '${role}'`)
+        this.messages.push(`Adding '${role}'`)
         success = await this.add_role(
           interaction,
           member,
@@ -146,7 +146,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
         removeRoles = [ removeRoles ]
       }
       for (let role of removeRoles) {
-        console.log(`Removing '${role}'`)
+        this.messages.push(`Removing '${role}'`)
         success = await this.remove_role(
           interaction,
           member,
@@ -170,7 +170,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
           ).id
         )
       }
-      console.log(`Setting ${JSON.stringify(newRoles)}`)
+      this.messages.push(`Setting ${JSON.stringify(newRoles)}`)
       success = await member.roles.set(newRoles)
     }
 
@@ -178,18 +178,16 @@ module.exports = class RoleProfileCommand extends ModCommand {
       if (!member.displayName.includes(roleProfile.prefix)) {
         let oldName = member.displayName
         let splitter = roleProfile.prefix.trim()
-        console.log(splitter)
+        this.messages.push(splitter)
         splitter = splitter.substring(splitter.length - 1).trim()
-        console.log(splitter)
+        this.messages.push(splitter)
         if (oldName.includes(splitter)) {
           oldName = oldName.substring(oldName.indexOf(splitter) + 1).trim()
         }
         let newName = `${roleProfile.prefix}${oldName}`
-        console.log(`Updating '${oldName}' to '${newName}'`)
+        this.messages.push(`Updating '${oldName}' to '${newName}'`)
         success = await member.setNickname(newName)
       }
     }
-
-    console.log(messages)
   }
 }

@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Formatters: userMention
-const { userMention, ApplicationCommandOptionType, ChannelType, ActivityType, InviteType } = require('discord.js')
+const { userMention, inlineCode, codeBlock, ApplicationCommandOptionType, ChannelType, ActivityType, InviteType } = require('discord.js')
 // AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
 const dbFuncs = require('../../utils/db/dbFuncs')
@@ -49,9 +49,9 @@ module.exports = class EmitCommand extends AdminCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    let messages = []
     let eventName = coptions["event-name"]
     let args = []
+    this.props.description = []
 
     if (eventName == "channelCreate") {
       // channelCreate
@@ -63,8 +63,7 @@ module.exports = class EmitCommand extends AdminCommand {
         "voiceChannelNames"
       )
       voiceChannelNames = dbRes[0]
-      let newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
       // /DB
 
       let channel = {
@@ -161,6 +160,8 @@ module.exports = class EmitCommand extends AdminCommand {
       // message.author.id = 0
 
       args.push(message)
+    } else if (eventName == "messageDelete") {
+      args.push(interaction)
     } else if (eventName == "messageUpdate") {
       let message = {
         content: "Old Content",
@@ -212,6 +213,20 @@ module.exports = class EmitCommand extends AdminCommand {
 
       voiceState.streaming = true
       args.push(voiceState)
+    }
+
+    this.props.description.push(inlineCode(eventName))
+    if (![
+      "inviteCreate",
+      "messageCreate",
+      "messageDelete",
+      "messageReactionAdd",
+      "messageReactionRemove",
+      "messageUpdate",
+      "presenceUpdate",
+      "voiceStateUpdate"
+    ].includes(eventName)) {
+      this.props.description.push(codeBlock(JSON.stringify(args)))
     }
 
     client.emit(eventName, ...args)

@@ -238,7 +238,7 @@ async function changeNickname(client, member) {
       // `🟥${italic(guildData.name)}: ` +
       `${client.profile.emojis.fail} ${clientMember} failed to change target nickname. Error: ${italic(error.message)}`
     )
-    // console.log(
+    // messages.push(
     //   {
     //     guild: guildData.name,
     //     guildID: guildID,

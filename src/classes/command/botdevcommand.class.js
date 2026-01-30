@@ -4,6 +4,7 @@
 const { PermissionFlagsBits } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('../command/admincommand.class')
+const AsciiTable = require('ascii-table')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -52,8 +53,7 @@ class BotDevCommand extends AdminCommand {
 
   // Build the response
   async build(client, interaction, coptions={}) {
-    let messages = []
-    messages.push(`/${this.name}: BotDev Build`)
+    this.messages.push(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
       // DB
@@ -62,8 +62,7 @@ class BotDevCommand extends AdminCommand {
         "roles"
       )
       this.ROLES = dbRes[0]
-      let newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
       // /DB
 
       if (this.ROLES && this.ROLES.length > 0) {
@@ -88,11 +87,12 @@ class BotDevCommand extends AdminCommand {
       }
     }
 
-    // Process canned option values into sent option values
+    // If we don't have an error yet,
+    //  Process canned option values into sent option values
     if (!(this.error)) {
       for (let option of this.options) {
         if ((!(coptions.hasOwnProperty(option.name)))) {
-          let thisOption = interaction?.options.get(option.name)
+          let thisOption = interaction?.options?.get(option.name)
           if (thisOption) {
             coptions[option.name] = thisOption.value
           }
@@ -100,7 +100,30 @@ class BotDevCommand extends AdminCommand {
       }
     }
 
-    console.log(messages.join("\n"))
+    if (this.defaultOptions) {
+      for (let [optName, optVal] of Object.entries(this.defaultOptions)) {
+        if ((!(coptions.hasOwnProperty(optName)))) {
+          coptions[optName] = optVal
+        }
+      }
+    }
+
+    // If we've got options sent, print them
+    if (coptions && Object.keys(coptions).length > 0) {
+      let Table = new AsciiTable(
+        `/${this.name}: BotDev Build Options`,
+        {}
+      )
+        .setBorder('|','-','•','•')
+        .setHeading(
+          "Option",
+          "Value"
+        )
+      for (let [oName, oVal] of Object.entries(coptions)) {
+        Table.addRow(oName, oVal)
+      }
+      this.messages.push(Table.toString())
+    }
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)

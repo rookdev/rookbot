@@ -186,7 +186,7 @@ module.exports = class BotActivityCommand extends BotDevCommand {
           "New Message",
           desc.substr(desc.indexOf(':') + 1).trim() + " " + activityOptions.name
         )
-        console.log(Table.toString())
+        this.messages.push(Table.toString())
       }
       desc += " "
 

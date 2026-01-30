@@ -32,7 +32,7 @@ if (bin.includes("WinGet") || uname.stdout.trim().includes("MINGW")) {
 let envs = "" // Bucket for env vars to pass to dotenvx
 let args = [] // Bucket for CLI arguments to pass to run.js
 
-let mode = options.mode ?? "ping"
+let mode = options?.mode && !["crun","run"].includes(options.mode) ? options.mode : "ping"
 
 envs += `-f ./env/db/.env.mongodb `
 

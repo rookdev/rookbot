@@ -32,6 +32,7 @@ const { AdminCommand } = require('./admincommand.class')
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/formatters/timeConversion')
+const AsciiTable = require('ascii-table')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -93,7 +94,7 @@ class ModCommand extends AdminCommand {
     reason
   ) {
 
-    console.log("Adjust Roles:",user.displayName,roles)
+    this.messages.push("Adjust Roles:",user.displayName,roles)
 
     // Bail if we don't have a User object
     if (!user) {
@@ -150,12 +151,12 @@ class ModCommand extends AdminCommand {
         try {
           let hasRole = await this.getCache(interaction.client, user, "roles", addRole.id)
           if (!hasRole) {
-            // console.log(`Adding Role: ${user.displayName} [${addRole.id}]`)
+            // this.messages.push(`Adding Role: ${user.displayName} [${addRole.id}]`)
             await user.roles.add(addRole.id)
           }
           success = true
         } catch(e) {
-          console.log(e)
+          this.messages.push(e)
           success = false
         }
       }
@@ -195,12 +196,12 @@ class ModCommand extends AdminCommand {
         try {
           let hasRole = await this.getCache(interaction.client, user, "roles", remRole.id)
           if (hasRole) {
-            // console.log(`Removing Role: ${user.displayName} [${remRole.id}]`)
+            // this.messages.push(`Removing Role: ${user.displayName} [${remRole.id}]`)
             await user.roles.remove(remRole.id)
           }
           success = true
         } catch(e) {
-          console.log(e)
+          this.messages.push(e)
           success = false
         }
       }
@@ -617,7 +618,7 @@ class ModCommand extends AdminCommand {
         }
         this.null = true
         this.props.null = true
-        console.log(`/${this.name}: ModPost`)
+        this.messages.push(`/${this.name}: ModPost`)
       }
 
       if (success && (!this.DEV || true)) {
@@ -661,7 +662,7 @@ class ModCommand extends AdminCommand {
             //   }
             // )
           }
-          // console.log(`/${this.name}: DM Post`)
+          // this.messages.push(`/${this.name}: DM Post`)
 
           // Reply to Mod for DM about ACTION
           this.ephemeral = true
@@ -701,12 +702,12 @@ class ModCommand extends AdminCommand {
                 flags: MessageFlags.Ephemeral
               }
             )
-            console.log(`/${this.name}: YouPost`)
+            this.messages.push(`/${this.name}: YouPost`)
           }
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
-          console.log(`${this.profile.emojis.fail} Failed to DM user: ${dmError.message}`)
+          this.messages.push(`${this.profile.emojis.fail} Failed to DM user: ${dmError.message}`)
           props.mod = {
             color: this.profile.colors.error,
             title: { text: "[YouPost] Error" },
@@ -873,9 +874,9 @@ class ModCommand extends AdminCommand {
               embeds: [ embeds.log ]
             }
           )
-          console.log(`/${this.name}: LogPost`)
+          this.messages.push(`/${this.name}: LogPost`)
         } else {
-          console.log(`${this.profile.emojis.fail} Logs channel not found.`)
+          this.messages.push(`${this.profile.emojis.fail} Logs channel not found.`)
         }
 
         // LogFile for ACTION
@@ -911,7 +912,7 @@ class ModCommand extends AdminCommand {
           '--------------------------------'
         )
         fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
-        console.log(`/${this.name}: LogFile`)
+        this.messages.push(`/${this.name}: LogFile`)
       }
     } catch (error) {
       lastingError = error
@@ -925,7 +926,7 @@ class ModCommand extends AdminCommand {
       if (lastingError) {
         msg += `: ${lastingError.stack}`
       }
-      console.log(msg)
+      this.messages.push(msg)
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true
@@ -943,8 +944,7 @@ class ModCommand extends AdminCommand {
   }
 
   async build(client, interaction, coptions={}) {
-    let messages = []
-    messages.push(`/${this.name}: Mod Build`)
+    this.messages.push(`/${this.name}: Mod Build`)
 
     // Get list of roles
     // DB
@@ -953,8 +953,7 @@ class ModCommand extends AdminCommand {
       "roles"
     )
     this.ROLES = dbRes[0]
-    let newMessages = dbRes[1]
-    messages = messages.concat(newMessages)
+    this.messages.push(...dbRes[1])
     // /DB
 
     if (
@@ -987,21 +986,43 @@ class ModCommand extends AdminCommand {
       }
     }
 
-    // Process canned option values into sent option values
+    // If we don't have an error yet,
+    //  Process canned option values into sent option values
     if (!(this.error)) {
-      if (interaction?.options) {
-        for (let option of this.options) {
-          if ((!(coptions.hasOwnProperty(option.name)))) {
-            let thisOption = interaction.options.get(option.name)
-            if (thisOption) {
-              coptions[option.name] = thisOption.value
-            }
+      for (let option of this.options) {
+        if ((!(coptions.hasOwnProperty(option.name)))) {
+          let thisOption = interaction?.options?.get(option.name)
+          if (thisOption) {
+            coptions[option.name] = thisOption.value
           }
         }
       }
     }
 
-    console.log(messages.join("\n"))
+    if (this.defaultOptions) {
+      for (let [optName, optVal] of Object.entries(this.defaultOptions)) {
+        if ((!(coptions.hasOwnProperty(optName)))) {
+          coptions[optName] = optVal
+        }
+      }
+    }
+
+    // If we've got options sent, print them
+    if (coptions && Object.keys(coptions).length > 0) {
+      let Table = new AsciiTable(
+        `/${this.name}: Mod Build Options`,
+        {}
+      )
+        .setBorder('|','-','•','•')
+        .setHeading(
+          "Option",
+          "Value"
+        )
+      for (let [oName, oVal] of Object.entries(coptions)) {
+        Table.addRow(oName, oVal)
+      }
+      this.messages.push(Table.toString())
+    }
 
     // Run the action
     let actionResult = await this.action(client, interaction, coptions)

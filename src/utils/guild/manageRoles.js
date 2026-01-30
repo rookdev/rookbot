@@ -12,6 +12,7 @@ const getters = require('../../utils/guild/getters')
  */
 const manageRoles = async (client, reaction, user, mode="add") => {
   let result = false
+  let messages = []
 
   if (reaction.partial) {
     reaction = await reaction.fetch()
@@ -30,11 +31,11 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     "rrs"
   )
   let rrs = dbRes[0]
-  let messages = dbRes[1]
+  // messages = dbRes[1]
   // /DB
 
   if (!rrs) {
-    messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
+    // messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
     return [result, messages]
   }
 
@@ -46,7 +47,6 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     messages.push(`${client.profile.emojis.warning}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.no}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}`)
     return [result, messages]
   }
-  messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}`)
 
   if (!reaction.me) {
     await reaction.react()
@@ -84,6 +84,8 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   if(!role) {
     return [result, messages]
   }
+
+  messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}/@${role.name}`)
 
   let guildMember = await getters.getCache(client, message.guild, "members", user.id)
   if (mode == "add") {

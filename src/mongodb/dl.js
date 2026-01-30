@@ -7,8 +7,7 @@ async function run() {
   try {
     let mode = "compare"
     mongodb_compare = shell.exec(
-      `node ./src/mongodb/crun.js -m ${mode}`,
-      { silent: true }
+      `node ./src/mongodb/crun.js -m ${mode}`
     )
     mongodb_compare = mongodb_compare.stdout.trim()
   } catch (err) {

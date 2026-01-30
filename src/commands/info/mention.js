@@ -145,7 +145,7 @@ module.exports = class MentionCommand extends RookCommand {
     // Get Target ID
     let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
-    // console.log(
+    // this.messages.push(
     //   [
     //     `/mention: Input`,
     //     `Input:    ${targetInput}`,
@@ -181,7 +181,7 @@ module.exports = class MentionCommand extends RookCommand {
       targetId = targetId.substring(targetId.indexOf(':', 2) + 1)
     }
 
-    // console.log(
+    // this.messages.push(
     //   `CalcType: ${targetType}`
     // )
 
@@ -367,7 +367,7 @@ module.exports = class MentionCommand extends RookCommand {
           try {
             targetMember = await this.getCache(client, guild, "members", targetId)
           } catch(err) {
-            // console.log(err)
+            // this.messages.push(err)
           }
           if (targetMember) {
             if (!targetMember?.user) {
@@ -433,17 +433,17 @@ module.exports = class MentionCommand extends RookCommand {
             let guildIDStr = `G:${guild.name}:[${guild.id}]`
             let entries = fileFuncs.getAFile(logFilePath)
             if (entries) {
-              // console.log("We've got entries!")
+              // this.messages.push("We've got entries!")
               if (entries.includes(userIDStr + guildIDStr)) {
-                // console.log("We've got a user!")
+                // this.messages.push("We've got a user!")
                 let userIdx = entries.indexOf(userIDStr + guildIDStr)
                 if (userIdx) {
-                  // console.log(`First instance is at: ${userIdx}`)
+                  // this.messages.push(`First instance is at: ${userIdx}`)
                   let recordNumber = -1
                   recordNumber = Math.ceil(userIdx / 192)
                   if (recordNumber > 0) {
                     recordNumber -= 1
-                    // console.log(`User is at: ${recordNumber}!`)
+                    // this.messages.push(`User is at: ${recordNumber}!`)
                     entries = entries.split("\n")
                     let record = entries[recordNumber]
 
@@ -475,7 +475,7 @@ module.exports = class MentionCommand extends RookCommand {
 
                     if (!specs.online || true) {
                       if (seenTime) {
-                        // console.log(seenTime)
+                        // this.messages.push(seenTime)
                         specs.seenStr = timeFormat(moment.utc(seenTime[1]), { with: "relative" })
                       }
                     }
@@ -530,7 +530,7 @@ module.exports = class MentionCommand extends RookCommand {
       return false
     }
 
-    // console.log(
+    // this.messages.push(
     //   [
     //     `Output:   ${targetMention}`,
     //     ""

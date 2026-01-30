@@ -54,7 +54,7 @@ module.exports = class ExitCommand extends BotDevCommand {
     }
 
     // Log who called Exit
-    console.log(`!!! Bot Exit by: ${interaction.member.user.tag} !!!`)
+    this.messages.push(`!!! Bot Exit by: ${interaction.member.user.tag} !!!`)
     this.props.description = `Exiting ${userMention(client.user.id)}`
 
     // Call UptimeCommand
@@ -65,7 +65,8 @@ module.exports = class ExitCommand extends BotDevCommand {
     await unready(client, interaction)
 
     // Alert with EXIT action
-    console.log(`!!! EXIT`)
+    this.messages.push(`!!! EXIT`)
+    console.log(this.messages.join("\n"))
     // Exit with exit code 1337
     process.exit(1337)
     return true

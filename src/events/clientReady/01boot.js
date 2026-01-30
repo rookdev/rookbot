@@ -9,7 +9,7 @@ module.exports = async (client) => {
 
   let GLOBALS = client.profile
 
-  console.log(JSON.stringify(emojis))
+  messages.push(JSON.stringify(emojis))
 
   // Optional: Delete commands if enabled in the profile
   if (GLOBALS.deleteCommands) {

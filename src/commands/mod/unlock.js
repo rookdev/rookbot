@@ -71,7 +71,7 @@ module.exports = class UnlockCommand extends ModCommand {
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
-      console.log(`/${this.name}: ModPost`)
+      this.messages.push(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
       const logs = await this.getChannel(client, interaction, [ "logging-unlock", "logging" ])
@@ -88,15 +88,15 @@ module.exports = class UnlockCommand extends ModCommand {
         }
         const embed = new RookEmbed(client, props)
         logs.send({ embeds: [ embed ] })
-        console.log(`/${this.name}: LogPost`)
+        this.messages.push(`/${this.name}: LogPost`)
       } else {
-        console.log("Logs channel not found.")
+        this.messages.push("Logs channel not found.")
       }
 
       // Complete the interaction with a private success message
       this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold('unlocked')}!`
     } catch (error) {
-      console.log(`There was an error when unlocking the channel: ${error.stack}`)
+      this.messages.push(`There was an error when unlocking the channel: ${error.stack}`)
       this.error = true
       this.ephemeral = true
       this.props.description = `I couldn't unlock <#${channel.id}>.`

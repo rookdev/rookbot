@@ -40,7 +40,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    console.log(`/${this.name}: Action`)
+    this.messages.push(`/${this.name}: TestSuite Action`)
 
     // Get Local Commands
     const localCommands = getLocalCommands(client)
@@ -55,7 +55,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
 
       // Return if couldn't find it
       if (!commandObject) {
-        console.log(`Couldn't find /${commandName}`)
+        this.messages.push(`Couldn't find /${commandName}`)
         this.error = true
         this.props.description = `Couldn't find /${commandName}`
         return !this.error
@@ -67,7 +67,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
           // If we're missing one, abort
           // @ts-ignore
           if (!interaction?.member?.permissions.has(permission)) {
-            console.log(`/${commandName} attempted without proper user perms`)
+            this.messages.push(`/${commandName} attempted without proper user perms`)
             let intOptions = {
               content: `${this.profile.emojis.user} User is missing permissions.`,
               flags: MessageFlags.Ephemeral
@@ -86,7 +86,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
           if (bot) {
             // If we're missing one, abort
             if (!bot.permissions.has(permission)) {
-              console.log(`/${commandName} attempted without proper bot perms`)
+              this.messages.push(`/${commandName} attempted without proper bot perms`)
               let intOptions = {
                 content: `${this.profile.emojis.bot} Bot is missing permissions.`,
                 flags: MessageFlags.Ephemeral
@@ -100,10 +100,10 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
       }
 
       // Run the test function
-      console.log(`/${this.name}/${commandObject.name}`)
+      this.messages.push(`/${this.name}/${commandObject.name}`)
       await commandObject.test(client, interaction)
     } catch (error) {
-      console.log(`There was an error running this command: ${error.stack}`)
+      this.messages.push(`There was an error running this command: ${error.stack}`)
     }
     this.null = true
 

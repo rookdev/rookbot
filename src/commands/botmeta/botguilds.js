@@ -102,11 +102,11 @@ module.exports = class BotGuildsCommand extends RookCommand {
       sorted[bot.joinedTimestamp] = thisGuild
     }
 
-    console.log("")
-    console.log("---")
+    this.messages.push("")
+    this.messages.push("---")
 
     let plural = "server".pluralize(Object.keys(sorted).length)
-    console.log(`${client.user.username}#${client.user.discriminator} (ID:${client.user.id}) is on ${Object.keys(sorted).length} ${plural}!`)
+    this.messages.push(`${client.user.username}#${client.user.discriminator} (ID:${client.user.id}) is on ${Object.keys(sorted).length} ${plural}!`)
 
     const Table = new AsciiTable("", {})
       .setBorder('|','-','•','•')
@@ -132,7 +132,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
         )
       }
     }
-    console.log(Table.toString())
+    this.messages.push(Table.toString())
 
     return !this.error
   }

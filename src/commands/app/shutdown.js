@@ -56,7 +56,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
     let action = "Shutting Down"
 
     // Log who called Shutdown
-    console.log(`!!! Bot Shutdown by: ${interaction?.member?.user?.username} !!!`)
+    this.messages.push(`!!! Bot Shutdown by: ${interaction?.member?.user?.username} !!!`)
 
     // Try pm2
     let processed_pm2 = false
@@ -66,8 +66,9 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       // Connect to pm2
       pm2.connect(function(err) {
         if (err) {
-          console.log(`${this.profile.emojis.bad}PM2: Error Connecting!`)
-          console.log(err)
+          this.messages.push(`${this.profile.emojis.bad}PM2: Error Connecting!`)
+          this.messages.push(err)
+          console.log(this.messages.join("\n"))
           process.exit(2)
         }
 
@@ -83,7 +84,8 @@ module.exports = class ShutdownCommand extends BotDevCommand {
             if (procItem.name == "run") {
               // Log that we're restarting
               action = "Restarting"
-              console.log(`!!! RESTART PM2`)
+              this.messages.push(`!!! RESTART PM2`)
+              console.log(this.messages.join("\n"))
               // Restart by disconnecting
               pm2.restart(procItem.name, (err, proc) => {
                 pm2.disconnect()
@@ -95,12 +97,12 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       })
     } catch (err) {
       // pm2 not found
-      console.log(`${this.profile.emojis.warning}PM2: No PM2!`)
+      this.messages.push(`${this.profile.emojis.warning}PM2: No PM2!`)
     }
 
     // pm2 didn't work
     if (!processed_pm2) {
-      console.log(`${this.profile.emojis.warning}/${this.name}: Skipping PM2!`)
+      this.messages.push(`${this.profile.emojis.warning}/${this.name}: Skipping PM2!`)
       this.props.playerTypes = {
         user: "bot",
         target: "guild"
@@ -118,7 +120,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       await command.execute(client, interaction)
 
       if (restart) {
-        console.log(`!!! RESTART SERVICE`)
+        this.messages.push(`!!! RESTART SERVICE`)
         let rook = "minrook"
         let cmd = `sudo systemctl restart ${rook}-`
         if (this.DEV) {
@@ -128,17 +130,20 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         }
         cmd += ".service"
         try {
+          this.messages.push(cmd)
+          console.log(this.messages.join("\n"))
           let result = shell.exec(cmd)
           result = result.stdout.trim()
-          console.log(result)
+          this.messages.push(result)
         } catch (err) {
-          console.log(err.stack)
+          this.messages.push(err.stack)
         }
       } else {
         // Run unreadyEvent
         await unready(client, interaction)
         // Alert with SHUTDOWN action
-        console.log(`!!! SHUTDOWN`)
+        this.messages.push(`!!! SHUTDOWN`)
+        console.log(this.messages.join("\n"))
         // Exit with exit code 1337
         process.exit(1337)
       }

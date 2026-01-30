@@ -44,7 +44,7 @@ module.exports = async (client, oldMember, newMember) => {
     }).catch(console.error)
 
     if (fetchedLogs) {
-      // console.log("Logs Fetched!")
+      // messages.push("Logs Fetched!")
     }
 
     const auditEntry = await fetchedLogs?.entries.find(
@@ -57,12 +57,12 @@ module.exports = async (client, oldMember, newMember) => {
 
     let auditMoment = moment.utc()
     if (auditEntry) {
-      // console.log("Log Entry Found!")
+      // messages.push("Log Entry Found!")
       if (auditEntry?.createdTimestamp) {
         auditMoment = moment.utc(auditEntry.createdTimestamp)
       }
     } else {
-      // console.log(fetchedLogs)
+      // messages.push(fetchedLogs)
     }
 
     // If entry exists, grab the user that updated the guild member and display username + tag, if none, display 'Unknown'.
@@ -198,8 +198,7 @@ module.exports = async (client, oldMember, newMember) => {
       "channels"
     )
     guildChannels = dbRes[0]
-    let newMessages = dbRes[1]
-    messages = messages.concat(newMessages)
+    messages.push(...dbRes[1])
     // /DB
 
     if (!guildChannels) {

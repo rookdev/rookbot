@@ -69,8 +69,8 @@ module.exports = class WikiCommand extends RookCommand {
         "interwiki"
       )
       interwikiFile = dbRes[0]
-      newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
+
       if (interwikiFile) {
         interwikiDB = interwikiFile
       }

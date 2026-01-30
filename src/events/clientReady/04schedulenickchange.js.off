@@ -80,14 +80,14 @@ module.exports = async (client) => {
         continue
       }
 
-      console.log("Finding User Member!")
+      messages.push("Finding User Member!")
       // Get the guild member
       let member = await getters.getCache(client, guild, "members", userID)
       if (!member) {
         messages.push(`${client.profile.emojis.fail} Failed to load guild members [${guildID}]`)
         continue
       }
-      console.log("Found User Member!")
+      messages.push("Found User Member!")
 
       // If guild owner, bail
       if (member.guild.ownerId === member.id) {
@@ -95,12 +95,12 @@ module.exports = async (client) => {
         continue
       }
 
-      console.log("Finding Client Member!")
+      messages.push("Finding Client Member!")
       // Get the client member
       const clientMember  = guild.members.me
       const clientPos     = await clientMember.roles.highest.position
       const memberPos     = await member.roles.highest.position
-      console.log("Found Client Member!")
+      messages.push("Found Client Member!")
 
       // If member is at or over bot, bail
       if ((clientMember.id !== member.id) && (memberPos >= clientPos)) {

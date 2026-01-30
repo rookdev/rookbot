@@ -99,7 +99,7 @@ module.exports = class SayCommand extends ModCommand {
     let payload = {}
 
     if (typeof message === "object") {
-      // console.log(message)
+      // this.messages.push(message)
       for (let property of ["content","embeds","poll","files"]) {
         if (message[property]) {
           payload[property] = message[property]
@@ -125,12 +125,12 @@ module.exports = class SayCommand extends ModCommand {
     let message = null
 
     if (!client) {
-      // console.log("No client sent")
+      // this.messages.push("No client sent")
       return false
     }
 
     if (!messageURL || (messageURL == "")) {
-      // console.log("No message URL sent")
+      // this.messages.push("No message URL sent")
       return false
     }
 
@@ -180,7 +180,7 @@ module.exports = class SayCommand extends ModCommand {
       "meta"
     )
     let guildMetadata = dbRes[0]
-    let messages = dbRes[1]
+    this.messages.push(dbRes[1])
     // /DB
 
     let rookhook = null // Bucket for rookhook
@@ -239,12 +239,12 @@ module.exports = class SayCommand extends ModCommand {
       }
     }
 
-    return [rookhook, messages]
+    return rookhook
   }
 
   async setVisage(interaction, visage, channel) {
-    // console.log("We're selecting a visage!")
-    let rookhook, messages = await this.getRookhook(interaction) // Bucket for rookhook
+    // this.messages.push("We're selecting a visage!")
+    let rookhook = await this.getRookhook(interaction)
     let visages = null  // Bucket for visages
 
     if (!interaction?.guild) {
@@ -276,8 +276,7 @@ module.exports = class SayCommand extends ModCommand {
         "visages"
       )
       visages = dbRes[0]
-      let newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
     }
 
     if (!visages) {
@@ -310,8 +309,8 @@ module.exports = class SayCommand extends ModCommand {
       // Wait a second after editing the webhook
       await wait(1 * 1000)
     }
-    // console.log("We've selected a visage!")
-    return [rookhook, visages, messages]
+    // this.messages.push("We've selected a visage!")
+    return [rookhook, visages]
   }
 
   async action(client, interaction, coptions={}, independent=false) {
@@ -352,9 +351,6 @@ module.exports = class SayCommand extends ModCommand {
 
     if (typeof channel === "string") {
       channel = channel.replace(/[<#@&!>]/g, '')
-    }
-
-    if (!channel) {
       // Calculate channel
       channel = await this.getCache(client, interaction.guild, "channels", channel)
     }
@@ -387,11 +383,13 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    // console.log("We've got a valid channel!")
+    // this.messages.push("We've got a valid channel!")
 
     // If we're using a visage
     if (visage) {
-      rookhook, visages, messages = await this.setVisage(interaction, visage, channel)
+      let visageRes = await this.setVisage(interaction, visage, channel)
+      rookhook = visageRes[0]
+      visages = visageRes[1]
     }
 
     // Result
@@ -399,14 +397,14 @@ module.exports = class SayCommand extends ModCommand {
 
     // No Message
     if ((message == "") && !sourceMessageURL && !attachment) {
-      // console.log("No message sent!")
+      // this.messages.push("No message sent!")
       this.error = true
       this.props.description = "No message content sent"
       return false
     }
     // Message too long
     if (message.length > 1024) {
-      // console.log("Message too long!")
+      // this.messages.push("Message too long!")
       this.error = true
       this.props.description = `Message too long [${message.length}]`
       return false
@@ -414,7 +412,7 @@ module.exports = class SayCommand extends ModCommand {
 
     if (["say","edit"].indexOf(mode) > -1) {
       // Say/Edit Mode
-      // console.log(`${mode.ucfirst()}: Startup!`)
+      this.messages.push(`${mode.ucfirst()}: Startup!`)
 
       // Source Checks
       if (["clone"].indexOf(mode) > -1) {
@@ -444,7 +442,7 @@ module.exports = class SayCommand extends ModCommand {
       } else {
         mode = "say"
       }
-      // console.log(`${mode.ucfirst()}: Detected`)
+      this.messages.push(`${mode.ucfirst()}: Detected`)
 
       // Destination Checks
       if (["edit","clone"].indexOf(mode) > -1) {
@@ -475,7 +473,7 @@ module.exports = class SayCommand extends ModCommand {
               `Posted by ${destMessage.author} [${inlineCode(destMessage.author.id)}]`,
               destMessageURL
             ]
-            rookhook, messages = await this.getRookhook(interaction)
+            rookhook = await this.getRookhook(interaction)
             if (rookhook && destMessage.author.id == rookhook.id) {
               visage = true
             } else {
@@ -494,10 +492,10 @@ module.exports = class SayCommand extends ModCommand {
 
       // If rookhook, use hook
       if (visage && rookhook) {
-        // console.log(`${mode.ucfirst()}: rookhook`)
+        this.messages.push(`${mode.ucfirst()}: rookhook - ${visage}`)
         channel = rookhook.channel
       } else {
-        // console.log(`${mode.ucfirst()}: Message`)
+        this.messages.push(`${mode.ucfirst()}: Message`)
       }
 
       let this_package = {
@@ -511,10 +509,10 @@ module.exports = class SayCommand extends ModCommand {
           this_package.content = srcMessage.content
         }
       }
-      // console.log(`Message: [${this_package.content}]`)
       if (message && message != "") {
         this_package = message
       }
+      this.messages.push(`Message: [${JSON.stringify(this_package)}]`)
 
       message = await this.buildPayload(
         channel,
@@ -530,7 +528,7 @@ module.exports = class SayCommand extends ModCommand {
       } else {
         mode = "say"
       }
-      // console.log(`${mode.ucfirst()}: Decided`)
+      this.messages.push(`${mode.ucfirst()}: Decided`)
 
       if (visage && rookhook) {
         // Use Rookhook
@@ -558,13 +556,13 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
       if (srcMessage?.reactions) {
-        // console.log("Source Message has reactions!")
+        // this.messages.push("Source Message has reactions!")
         for (let [emojiName, reaction] of srcMessage.reactions.cache) {
           let emoji = await this.getCache(client, srcMessage.guild, "emojis", emojiName)
           if (!emoji) {
             emoji = emojiName
           }
-          // console.log(emoji)
+          // this.messages.push(emoji)
           let reacted = await destMessage?.reactions?.resolve(emoji)?.me
           if (!reacted) {
             await destMessage.react(emoji)
@@ -583,7 +581,7 @@ module.exports = class SayCommand extends ModCommand {
         )
 
         if (!rookhookEdit) {
-          // console.log("Couldn't reset rookhook!")
+          // this.messages.push("Couldn't reset rookhook!")
         }
       }
     }

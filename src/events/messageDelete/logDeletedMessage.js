@@ -23,6 +23,11 @@ module.exports = async (client, deletedMessage) => {
   let result = false
   let messages = []
 
+  if (!deletedMessage) {
+    // messages.push("No message!")
+    return [result, messages]
+  }
+
   // If the message is partial, fetch the full message (if possible)
   if (deletedMessage.partial) {
     try {
@@ -38,7 +43,7 @@ module.exports = async (client, deletedMessage) => {
   }
 
   // Fetch the log channel using the deletedMessage's guild ID
-  const guildID = deletedMessage.guild?.id ?? 0
+  const guildID = deletedMessage?.guild?.id ?? 0
   let guildChannels = null
   // DB
   let dbRes = await dbFuncs.getDB(
@@ -46,8 +51,7 @@ module.exports = async (client, deletedMessage) => {
     "channels"
   )
   guildChannels = dbRes[0]
-  let newMessages = dbRes[1]
-  messages = messages.concat(newMessages)
+  messages.push(...dbRes[1])
   // /DB
 
   if (!guildChannels) {
@@ -80,7 +84,7 @@ module.exports = async (client, deletedMessage) => {
   }).catch(console.error)
 
   if (fetchedLogs) {
-    // console.log("Logs Fetched!")
+    // messages.push("Logs Fetched!")
   }
 
   const auditEntry = await fetchedLogs?.entries.find(
@@ -93,9 +97,9 @@ module.exports = async (client, deletedMessage) => {
   )
 
   if (auditEntry) {
-    // console.log("Log Entry Found!")
+    // messages.push("Log Entry Found!")
   } else {
-    // console.log(fetchedLogs)
+    // messages.push(fetchedLogs)
   }
 
   // If entry exists, grab the user that deleted the message and display username + tag, if none, display 'Unknown'.

@@ -81,9 +81,9 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           filename
         )
         thisDB = dbRes[0]
-        newMessages = dbRes[1]
-        messages = messages.concat(newMessages)
+        this.messages.push(...dbRes[1])
         // /DB
+        this.props.title.text += `: ${filename}`
 
         if (thisDB) {
           if (filename.includes("channels")) {
@@ -132,7 +132,11 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 let roles = []
                 for (let rName of rList) {
                   let role = await this.getCache(client, interaction.guild, "roles", rName)
-                  roles.push(`${role}`)
+                  if (role) {
+                    roles.push(`${role}`)
+                  } else {
+                    roles.push(inlineCode(`@${rName}`))
+                  }
                 }
                 this.props.description.push(rGroup.boldUnderline() + ": " + roles.join(", "))
               }
@@ -180,6 +184,22 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 this.props.description.push("")
               }
             }
+          } else if (filename.includes("voiceChannelNames")) {
+            // voiceChannelNames
+            for (let [vKey, vData] of Object.entries(thisDB)) {
+              if (!vKey.includes("#")) {
+                let line = vKey.ucfirst() + ": "
+                if (vKey == "mode") {
+                  line += vData.ucfirst()
+                } else if (vKey == "categories") {
+                  vData = vData.map(c => `<#${c}>`)
+                  line += vData.join(", ")
+                } else {
+                  line += codeBlock(JSON.stringify(vData))
+                }
+                this.props.description.push(line)
+              }
+            }
           } else {
             // else
             let lines = []
@@ -202,8 +222,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
 
       let dbRes = await dbFuncs.getDB(guild.id, "", "fs")
       fileList = dbRes[0]
-      newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
 
       this.props.description.push("Filesystem")
       this.props.description.push(
@@ -213,8 +232,8 @@ module.exports = class BotDBsCommand extends BotDevCommand {
 
       dbRes = await dbFuncs.getDB(guild.id, "", "mongodb")
       fileList = dbRes[0]
-      newMessages = dbRes[1]
-      messages = messages.concat(newMessages)
+      this.messages.push(...dbRes[1])
+
       this.props.description.push("MongoDB")
       this.props.description.push(
         codeBlock(fileList.join("\n"))

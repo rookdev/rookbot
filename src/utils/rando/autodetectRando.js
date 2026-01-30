@@ -4,6 +4,7 @@ module.exports = async (hashID) => {
   let gameID = null
   let autodetect = false
   let autodetected = false
+  let messages = []
 
   if (
     hashID != "" &&
@@ -44,7 +45,7 @@ module.exports = async (hashID) => {
             }
             gameID = filenameParts[filenameParts.length - 1]
             gameID = gameID.substring(0, gameID.indexOf("."))
-            // console.log(filename,randoData.rando.permalink,thisPattern,gameID)
+            // messages.push(filename,randoData.rando.permalink,thisPattern,gameID)
             autodetected = true
             break
           }
@@ -63,15 +64,16 @@ module.exports = async (hashID) => {
 
   if (autodetect && !autodetected) {
     // failed autodetect
-    console.log("Failed Autodetect!")
+    messages.push("Failed Autodetect!")
   } else if (autodetect && autodetected) {
     // succeeded autodetect
-    console.log("Succeeded Autodetect!")
-    // console.log(hashID,gameID)
+    messages.push("Succeeded Autodetect!")
+    // messages.push(hashID,gameID)
   } else {
     // received explicit reference
-    console.log("Got Explicit Reference!")
+    messages.push("Got Explicit Reference!")
   }
+  // console.log(messages.join("\n"))
   
   return [gameID, hashID]
 }

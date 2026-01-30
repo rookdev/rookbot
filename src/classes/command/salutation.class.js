@@ -118,7 +118,7 @@ class SalutationCommand extends RookCommand {
         BRANCH = "heroku"
       }
     } catch (err) {
-      console.log(err)
+      this.messages.push(err)
     }
 
     // Get Commit
@@ -139,7 +139,7 @@ class SalutationCommand extends RookCommand {
         }
       }
     } catch (err) {
-      console.log(err)
+      this.messages.push(err)
     }
 
     // Get Client User
@@ -361,7 +361,7 @@ class SalutationCommand extends RookCommand {
     )
 
     // Print to console
-    console.log(console_output.join("\n"))
+    this.messages.push(console_output.join("\n"))
 
     // If we've got guilds
     if (client?.guilds) {
@@ -408,13 +408,12 @@ class SalutationCommand extends RookCommand {
           "channels"
         )
         channelIDs = dbRes[0]
-        let newMessages = dbRes[1]
-        messages = messages.concat(newMessages)
+        this.messages.push(...dbRes[1])
         // /DB
 
         // Find the Guild Channel to send the embed to
         if (!channelIDs) {
-          // console.log(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
+          // this.messages.push(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
         }
 
         for (let channelName of [
@@ -426,18 +425,18 @@ class SalutationCommand extends RookCommand {
         ]) {
           if (!channel) {
             let channelID = channelIDs[channelName]
-            // console.log(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+            // this.messages.push(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             if (channelID) {
-              // console.log(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
+              // this.messages.push(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
               channel = await getters.getCache(client, guild, "channels", channelID)
             } else {
-              // console.log(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              // this.messages.push(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
               channel = await guild?.channels?.cache?.find(
                 c => c.name === channelName
               )
             }
             if (channel) {
-              console.log(`Loaded   '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              this.messages.push(`Loaded   '${channelName}' of '${guild?.name}' [${guild?.id}]`)
             }
           }
         }
@@ -517,7 +516,8 @@ class SalutationCommand extends RookCommand {
     } else if (mode == "exit") {
       // If we're exiting
       //  Alert with GOODBYE action
-      console.log(`!!! GOODBYE`)
+      this.messages.push(`!!! GOODBYE`)
+      this.printMessages()
       // Exit with exit code 1339
       process.exit(1339)
     }

@@ -60,7 +60,7 @@ module.exports = class TimeCommand extends RookCommand {
       tmp = (labelParts[0] + ":").padEnd(5, ' ') + " "
       tmp += dateTimeParts[0].padStart(10, ' ') + " "
       tmp += dateTimeParts[1]
-      console.log(tmp)
+      this.messages.push(tmp)
       this.props.description += tmp + "\n"
     }
     this.props.description = codeBlock(this.props.description)
@@ -68,7 +68,7 @@ module.exports = class TimeCommand extends RookCommand {
     this.props.description += "\n"
     let tmp = `Local: ` + timeFormat(now)
     this.props.description += tmp
-    console.log(tmp)
+    this.messages.push(tmp)
 
     return !this.error
   }

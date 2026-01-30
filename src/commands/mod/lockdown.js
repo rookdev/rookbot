@@ -113,7 +113,7 @@ module.exports = class LockdownCommand extends ModCommand {
             processedChannels.push(channel.id) // Log successful channel IDs
           })
           .catch(
-            error => console.log(`Failed for ${channel.id}: ${error.message}`)
+            error => this.messages.push(`Failed for ${channel.id}: ${error.message}`)
           )
       )
 
@@ -150,7 +150,7 @@ module.exports = class LockdownCommand extends ModCommand {
         logs.send({ embeds: [embed] })
       }
     } else {
-      console.log("Logs channel not found.")
+      this.messages.push("Logs channel not found.")
     }
 
     this.props.description = (this.DEV ? "DEV: " : "") + `All channels have been ${bold(action + 'ed')} successfully! (${processedCount}/${channels.size} processed)`

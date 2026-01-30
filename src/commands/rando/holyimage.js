@@ -51,7 +51,7 @@ module.exports = class HolyImageCommand extends RookCommand {
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"     // Get Game ID
     let slugID = coptions['slug-id'] ?? "verify"  // Get Slug ID
-    // console.log(gameID,slugID)
+    // this.messages.push(gameID,slugID)
 
     // Get Game Names
     let gameNames = await fileFuncs.getAURL(
@@ -76,7 +76,7 @@ module.exports = class HolyImageCommand extends RookCommand {
       ) {
         // If this Image matches the one we want...
 
-        // console.log(
+        // this.messages.push(
         //   this_image.title,
         //   this_image.slug,
         //   this_image?.aliases ? this_image.aliases : []
