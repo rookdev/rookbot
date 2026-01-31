@@ -1,11 +1,12 @@
 // @ts-nocheck
 
 // Audit Log Events, Guild Member, Formatters: inlineCode, userMention
-const { AuditLogEvent, GuildMember, inlineCode, userMention } = require('discord.js')
+const { AuditLogEvent, GuildMember, inlineCode } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -103,8 +104,10 @@ module.exports = async (client, oldMember, newMember) => {
         // User being Edited
         {
           name: 'User',
-          value: userMention(newMember.user.id) + " " +
-            `[${inlineCode(newMember.user.id)}]`
+          value: mentionFuncs.userMention(
+            newMember.user.id,
+            { showID: true }
+          )
         }
       ]
     )
@@ -118,8 +121,10 @@ module.exports = async (client, oldMember, newMember) => {
         [
           {
             name: 'Updater',
-            value: userMention(updater.id) + " " +
-              `[${inlineCode(updater.id)}]`
+            value: mentionFuncs.userMention(
+              updater.id,
+              { showID: true }
+            )
           }
         ]
       )
@@ -147,10 +152,11 @@ module.exports = async (client, oldMember, newMember) => {
         // What Guild did this happen in?
         {
           name: 'Guild',
-          value: [
+          value: mentionFuncs.guildMention(
             newMember.guild.name,
-            `[${inlineCode(newMember.guild.id)}]`
-          ]
+            newMember.guild.id,
+            { showID: true }
+          )
         }
       ],
       [

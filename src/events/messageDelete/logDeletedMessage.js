@@ -6,6 +6,7 @@ const { AuditLogEvent, Message, inlineCode, italic, userMention } = require('dis
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -159,8 +160,12 @@ module.exports = async (client, deletedMessage) => {
       // Who wrote this?
       {
         name: 'Author',
-        value: userMention(deletedMessage.author.id) + " " +
-          `[${inlineCode(deletedMessage.author.id)}]`
+        value: mentionFuncs.userMention(
+          deletedMessage.author.id,
+          {
+            showID: true
+          }
+        )
       }
     ]
   )
@@ -174,8 +179,12 @@ module.exports = async (client, deletedMessage) => {
       [
         {
           name: 'Deleter',
-          value: userMention(deleter.id) + " " +
-            `[${inlineCode(deleter.id)}]`
+          value: mentionFuncs.userMention(
+            deleter.id,
+            {
+              showID: true
+            }
+          )
         }
       ]
     )
@@ -203,26 +212,35 @@ module.exports = async (client, deletedMessage) => {
       // Guild Info
       {
         name: 'Guild',
-        value: [
+        value: mentionFuncs.guildMention(
           deletedMessage.guild.name,
-          `[${inlineCode(deletedMessage.guild.id)}]`
-        ]
+          deletedMessage.guild.id,
+          {
+            showID: true
+          }
+        )
       },
       // Channel Link
       {
         name: 'Channel',
-        value: [
-          `<#${deletedMessage.channel.id}>`,
-          `[${inlineCode(deletedMessage.channel.id)}]`
-        ]
+        value: mentionFuncs.channelMention(
+          deletedMessage.channel.id,
+          {
+            showID: true
+          }
+        )
       }
     ],
     [
       // Message Link
       {
         name: 'Message',
-        value: deletedMessage.url + " " +
-          `[${inlineCode(deletedMessage.id)}]`
+        value: mentionFuncs.messageMention(
+          deletedMessage.url,
+          {
+            showID: true
+          }
+        )
       }
     ],
     [

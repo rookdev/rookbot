@@ -1,11 +1,12 @@
 // @ts-nocheck
 
 // Guild Member, Formatters: inlineCode, userMention
-const { GuildMember, inlineCode, userMention } = require('discord.js')
+const { GuildMember, inlineCode, userMention, hyperlink } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -70,7 +71,7 @@ module.exports = async (client, newMember) => {
         {
           name: 'Joined At',
           value: joinedDateTime
-            ? timeFormat(joinedDateTime.format("x")) + " (" + timeFormat(joinedDateTime.format("x"), { relative: true }) + ")"
+            ? `${timeFormat(joinedDateTime.format("x"), { with: "relative" })}`
             : 'Unknown' // Handle cases where joinedAt is null
         }
       ],
@@ -88,26 +89,28 @@ module.exports = async (client, newMember) => {
         // Hyperlink in case the Mention doesn't load
         {
           name: 'Member Joined',
-          value: `[${fetchedMember.user.tag}]` +
-            `(https://discord.com/users/${fetchedMember.user.id})` + " " +
-            `[${inlineCode(fetchedMember.user.id)}]`
+          value: hyperlink(
+            fetchedMember.user.tag,
+            "https://discord.com/users/${fetchedMember.user.id}"
+          )
         }
       ],
       [
         // Who Joined?
         {
           name: "Member Link",
-          value: userMention(fetchedMember.user.id)
+          value: mentionFuncs.userMention(fetchedMember.user.id, { showID: true })
         }
       ],
       [
         // Joined what Guild?
         {
           name: 'Guild',
-          value: [
+          value: mentionFuncs.guildMention(
             fetchedMember.guild.name,
-            `[${inlineCode(fetchedMember.guild.id)}]`
-          ]
+            fetchedMember.guild.id,
+            { showID: true }
+          )
         }
       ]
     ]

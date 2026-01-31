@@ -1,12 +1,13 @@
 // @ts-nocheck
 
 // Guild Member, Formatters: inlineCode, userMention
-const { GuildMember, inlineCode, userMention } = require('discord.js')
+const { GuildMember, inlineCode, userMention, hyperlink } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const timeConversion = require('../../utils/formatters/timeConversion')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -126,26 +127,30 @@ module.exports = async (client, oldMember) => {
           // Hyperlink in case Mention doesn't load
           {
             name: 'Member Left',
-            value: `[${oldMember.user.tag}]` +
-              `(https://discord.com/users/${oldMember.user.id})` + " " +
-              `[${inlineCode(oldMember.user.id)}]`
+            value: hyperlink(
+              oldMember.user.tag,
+              `https://discord.com/users/${oldMember.user.id}`
+            )
           }
         ],
         [
           // Who Left?
           {
             name: "Member Link",
-            value: userMention(oldMember.user.id)
+            value: mentionFuncs.userMention(oldMember.user.id, { showID: true })
           }
         ],
         [
           // Left what Guild?
           {
             name: 'Guild',
-            value: [
+            value: mentionFuncs.guildMention(
               oldMember.guild.name,
-              `[${inlineCode(oldMember.guild.id)}]`
-            ]
+              oldMember.guild.id,
+              {
+                showID: true
+              }
+            )
           }
         ]
       ]

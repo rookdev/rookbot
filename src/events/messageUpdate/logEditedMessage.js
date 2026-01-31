@@ -1,12 +1,13 @@
 // @ts-nocheck
 
 // Formatters: inlineCode, italic, userMention
-const { inlineCode, italic, userMention } = require('discord.js')
+const { inlineCode, italic } = require('discord.js')
 const SeedMetaCommand = require('../../commands/rando/seedmeta')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -152,34 +153,39 @@ module.exports = async (client, oldMessage, newMessage) => {
         // Who wrote it?
         {
           name: 'Author',
-          value: userMention(newMessage.author.id) + " " +
-            `[${inlineCode(newMessage.author.id)}]`
+          value: mentionFuncs.userMention(
+            newMessage.author.id,
+            { showID: true }
+          )
         }
       ],
       [
         // Guild Info
         {
           name: 'Guild',
-          value: [
+          value: mentionFuncs.guildMention(
             newMessage.guild.name,
-            `[${inlineCode(newMessage.guild.id)}]`
-          ]
+            newMessage.guild.id,
+            { showID: true }
+          )
         },
         // Channel Link
         {
           name: 'Channel',
-          value: [
-            `<#${newMessage.channel.id}>`,
-            `[${inlineCode(newMessage.channel.id)}]`
-          ]
+          value: mentionFuncs.channelMention(
+            newMessage.channel.id,
+            { showID: true }
+          )
         }
       ],
       [
         // Message Link
         {
           name: 'Message',
-          value: newMessage.url + " " +
-            `[${inlineCode(newMessage.id)}]`
+          value: mentionFuncs.messageMention(
+            newMessage.url,
+            { showID: true }
+          )
         }
       ],
       [

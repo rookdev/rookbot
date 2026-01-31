@@ -23,8 +23,7 @@ const {
   codeBlock,
   inlineCode,
   bold,
-  italic,
-  userMention
+  italic
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('./admincommand.class')
@@ -32,6 +31,7 @@ const { AdminCommand } = require('./admincommand.class')
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/formatters/timeConversion')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const AsciiTable = require('ascii-table')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
@@ -314,9 +314,9 @@ class ModCommand extends AdminCommand {
         roles,
         reason
       ) || false
-      this.props.description = `${this.profile.emojis.prod} ${userMention(user.id)} has been ${voice}d`
+      this.props.description = `${this.profile.emojis.prod} ${mentionFuncs.userMention(user.id)} has been ${voice}d`
     } else {
-      this.props.description = `${this.profile.emojis.dev} ${userMention(user.id)} ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
+      this.props.description = `${this.profile.emojis.dev} ${mentionFuncs.userMention(user.id)} ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
     }
 
     return success
@@ -601,7 +601,7 @@ class ModCommand extends AdminCommand {
           `User ${bold(targetUserName)} has been ${bold(tenses.past)}`,
           "(" +
           // `ID: ${inlineCode(targetUserId)}; ` +  // Don't add userID to ModPost
-          (role != "" ? `Role: ${role}; Reason: ` : "") +
+          (role != "" ? `Role: ${mentionFuncs.roleMention(role)}; Reason: ` : "") +
           // (durationStr != "" ? `Duration: ${durationStr}; Reason: ` : "") +
           reason +
           ")"
@@ -686,7 +686,7 @@ class ModCommand extends AdminCommand {
           }
           // Do link user
           props.mod.description = [
-            `${this.profile.emojis.check} User ${userMention(targetUserId)} successfully ${bold(tenses.past)} via DMs!`,
+            `${this.profile.emojis.check} User ${mentionFuncs.userMention(targetUserId)} successfully ${bold(tenses.past)} via DMs!`,
           ]
           props.mod.description.push(
             "",
@@ -762,26 +762,29 @@ class ModCommand extends AdminCommand {
               // Who'd what happen to?
               {
                 name: 'User ' + tenses.past.ucfirst(),
-                value: [
-                  targetUser,
-                  `[${inlineCode(targetUserId)}]`
-                ]
+                value: mentionFuncs.userMention(
+                  targetUserId,
+                  { showID: true }
+                )
               },
               // Whodunnit?
               {
                 name: tenses.past.ucfirst() + ' By',
-                value: [
-                  interaction?.user,
-                  `[${inlineCode(interaction?.user?.id)}]`
-                ]
+                value: mentionFuncs.userMention(
+                  interaction.user.id,
+                  { showID: true }
+                )
               }
             ],
             [
               // Guild Info
               {
                 name: 'Guild',
-                value: interaction.guild.name + "\n" +
-                  `[${inlineCode(interaction.guild.id)}]`
+                value: mentionFuncs.guildMention(
+                  interaction.guild.name,
+                  interaction.guild.id,
+                  { showID: true }
+                )
               }
             ]
           )
@@ -821,7 +824,7 @@ class ModCommand extends AdminCommand {
                 // Role
                 {
                   name: 'Role',
-                  value: role
+                  value: mentionFuncs.roleMention(role, { showID: true })
                 }
               ]
             )
