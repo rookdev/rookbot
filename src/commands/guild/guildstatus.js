@@ -1,9 +1,10 @@
 // @ts-nocheck
 
 // Formatters: codeBlock, inlineCode, bold, userMention
-const { codeBlock, inlineCode, bold, userMention } = require('discord.js')
+const { codeBlock, inlineCode, bold, hyperlink } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const moment = require('moment')
@@ -48,7 +49,9 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     let serverBoostEmojiName = "serverboost2"
-    let serverBoostEmoji = await this.getEmoji(client, interaction, serverBoostEmojiName)
+    let dbRes = await this.getCache(client, interaction.guild, "emojis", serverBoostEmojiName)
+    let serverBoostEmoji = dbRes[0]
+    this.messages.push(...dbRes[1])
     if (
       !(serverBoostEmoji) ||
       (serverBoostEmoji == serverBoostEmojiName) ||
@@ -91,10 +94,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
           // Owner
           {
             name: "Owner",
-            value: [
-              userMention(guild.ownerId),
-              `[${inlineCode(guild.ownerId)}]`
-            ]
+            value: mentionFuncs.userMention(guild.ownerId, { showID: true })
           }
         ]
       )
@@ -107,7 +107,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
         [
           {
             name: "Vanity URL",
-            value: `[${guild.vanityURLCode}](${vanityURL})`
+            value: hyperlink(guild.vanityURLCode, vanityURL)
           }
         ]
       )

@@ -4,6 +4,7 @@
 const { ApplicationCommandOptionType, inlineCode, bold, italic } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
@@ -83,7 +84,7 @@ module.exports = class RosterCommand extends RookCommand {
     const guildSet = guildIDs[guildID]?.set
     if (!guildSet) {
       this.error = true
-      this.props.description = `Couldn't load Guild Set for ${italic(guild.name)} [${inlineCode(guild.id)}]`
+      this.props.description = `Couldn't load Guild Set for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
       return false
     }
 

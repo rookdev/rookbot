@@ -3,6 +3,7 @@
 const { ApplicationCommandOptionType, userMention, italic } = require("discord.js")
 // AdminCommand
 const { AdminCommand } = require("../../classes/command/admincommand.class")
+const mentionFuncs = require('../../utils/formatters/mentions')
 
 module.exports = class SlapCommand extends AdminCommand {
   constructor(client) {
@@ -63,7 +64,7 @@ module.exports = class SlapCommand extends AdminCommand {
     // Get Target ID
     let targetId      = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
-    this.props.description = italic(`${interaction.user} slaps ${userMention(targetId)} around ${distance} with ${item}`)
+    this.props.description = italic(`${interaction.user} slaps ${mentionFuncs.userMention(targetId)} around ${distance} with ${item}`)
 
     return !this.error
   }

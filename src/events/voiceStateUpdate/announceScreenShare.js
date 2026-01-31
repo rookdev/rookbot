@@ -7,6 +7,7 @@ const { VoiceState, inlineCode, italic } = require('discord.js')
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
@@ -226,7 +227,7 @@ module.exports = async (client, oldState, newState) => {
       messages = messages.concat(newMessages)
 
       if (!guildChannels) {
-        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(fetchedMember.guild.name, fetchedMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
         return [result, messages]
       }
 
@@ -236,7 +237,7 @@ module.exports = async (client, oldState, newState) => {
       ]
 
       if (globalFuncs.empty(destChannelID)) {
-        messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${member.guild.name}' [${member.guild.id}]`)
+        messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for ${mentionFuncs.guildMention(fetchedMember.guild.name, fetchedMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
         return [result, messages]
       }
 

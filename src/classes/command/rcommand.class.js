@@ -9,6 +9,7 @@ const AsciiTable = require('ascii-table')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 
 const { setValue } = require("../../utils/primitives/globalFuncs")
+const mentionFuncs = require('../../utils/formatters/mentions')
 const stringFuncs = require("../../utils/primitives/stringFuncs")
 const numFuncs = require("../../utils/primitives/numFuncs")
 const dbFuncs = require('../../utils/db/dbFuncs')
@@ -131,7 +132,7 @@ class RookCommand {
         }
         msg = [
           `${this.profile.emojis.fail} Bot can't manage user.`,
-          `${this.profile.emojis.fail} ${member} is Owner of ${italic(member.guild.name)}.`
+          `${this.profile.emojis.fail} ${member} is Owner of ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`
         ]
         this.props.description = msg
       }
@@ -146,7 +147,7 @@ class RookCommand {
           user: "bot",
           target: "bot"
         }
-        msg = `${this.profile.emojis.fail} Bot not found in ${italic(member.guild.name)}.`
+        msg = `${this.profile.emojis.fail} Bot not found in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`
         this.props.description = msg
       }
       return false
@@ -224,13 +225,6 @@ class RookCommand {
       "channels",
       channelTypes
     )
-  }
-
-  // FIXME: NYI
-  async getEmoji(client, interaction, emojiKey) {
-    let emoji = `[${emojiKey}]`
-
-    return emoji
   }
 
   async action(client, interaction, coptions) {

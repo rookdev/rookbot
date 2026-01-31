@@ -6,6 +6,7 @@ const SeedMetaCommand = require('./seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const autodetectRando = require('../../utils/rando/autodetectRando')
 const getSeedFields = require('../../utils/rando/getSeedFields')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs')
@@ -334,10 +335,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // If no role, try the one listed in the guild DB
       if (roleID == 0) {
         if (roleIDs[randomizer]) {
-          this.messages.push(`Found Game-Specific Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
+          this.messages.push(`Found Game-Specific Pingable Role ID for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs[randomizer]
         } else if (roleIDs["pingable-multiplayer-role"]) {
-          this.messages.push(`Found Pingable Role ID [${interaction.guild.id}] for '${interaction.guild.name}'`)
+          this.messages.push(`Found Pingable Role ID for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs["pingable-multiplayer-role"]
         }          
       }

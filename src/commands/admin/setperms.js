@@ -10,6 +10,7 @@ const {
 } = require('discord.js')
 // AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -171,8 +172,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
     }
 
     if (role) {
-      mention = roleMention(role.id)
-      this.props.description.push(`Scanning Perms for: ${mention} [${inlineCode(role.id)}]`)
+      this.props.description.push(`Scanning Perms for: ${mentionFuncs.roleMention(role.id, { showID: true })}`)
       setMode = "role"
       if (channel) {
         setMode = "roleInChannel"
@@ -197,11 +197,11 @@ module.exports = class SetPermsCommand extends AdminCommand {
       if (Object.keys(roleChannelPerms["chanPerms"]).includes(profileToApply)) {
         permsByRoleID["permsProfile"] = roleChannelPerms["chanPerms"][profileToApply]["profiles"]
       }
-      this.props.description.push(`In: ${channel} [${inlineCode(channel.id)}]`)
+      this.props.description.push(`In: ${mentionFuncs.channelMention(channel.id, { showID: true })}`)
       if (channel.permissionsLocked) {
         this.props.description.push(`Channel Perms Synced for ${channel}: 🔁`)
         channel = await this.getCache(client, interaction.guild, "channels", channel.parentId)
-        this.props.description.push(`Loading Category Instead: ${channel} [${inlineCode(channel.id)}]`)
+        this.props.description.push(`Loading Category Instead: ${mentionFuncs.channelMention(channel.id, { showID: true })}`)
       }
 
       let foundPermsForRole = false
@@ -234,7 +234,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
         }
         if (printPerms || isEveryone) {
           this.props.description.push("---")
-          this.props.description.push(`Role ID: ${role} [${inlineCode(oID)}]`)
+          this.props.description.push(`Role ID: ${mentionFuncs.roleMention(role.id, { showID: true })}`)
         }
         if (oData.allow) {
           perms.byCat.allow = oData.allow.toArray()
@@ -289,9 +289,9 @@ module.exports = class SetPermsCommand extends AdminCommand {
         permsByRoleID["permsProfile"] = roleChannelPerms["rolePerms"][profileToApply]["profiles"]
       }
       this.props.description.push(
-        `In: ${interaction.guild.name} [${inlineCode(interaction.guild.id)}]`,
+        `In: ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true })}`,
         "---",
-        `Role ID: ${role} [${inlineCode(role.id)}]`
+        `Role ID: ${mentionFuncs.roleMention(role.id, { showID: true })}`
       )
       let perms = role.permissions.toArray()
       for (let perm of perms) {

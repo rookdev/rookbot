@@ -17,7 +17,7 @@ const {
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
-
+const mentionFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -65,7 +65,7 @@ module.exports = async (client, message) => {
   // /DB
 
   if (!channelIDs) {
-    messages.push(`Channel IDs not found for '${message.guild.name}' [${message.guild.id}]`)
+    messages.push(`Channel IDs not found for ${mentionFuncs.guildMention(message.guild.name, message.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 

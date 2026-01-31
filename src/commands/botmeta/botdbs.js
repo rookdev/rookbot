@@ -13,6 +13,7 @@ const {
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
+const mentionFuncs = require('../../utils/formatters/mentions')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
@@ -91,7 +92,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
                 this.props.description.push(
-                  inlineCode(k) + `: <#${v}>`
+                  inlineCode(k) + `: ` + mentionFuncs.channelMention(v)
                 )
               }
             }
@@ -105,7 +106,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
                 this.props.description.push(
-                  inlineCode(k) + ": " +`<@&${v}>`,
+                  inlineCode(k) + `: ` + mentionFuncs.roleMention(v),
                   codeBlock(v)
                 )
               }
@@ -192,7 +193,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 if (vKey == "mode") {
                   line += vData.ucfirst()
                 } else if (vKey == "categories") {
-                  vData = vData.map(c => `<#${c}>`)
+                  vData = vData.map(c => mentionFuncs.channelMention(c))
                   line += vData.join(", ")
                 } else {
                   line += codeBlock(JSON.stringify(vData))

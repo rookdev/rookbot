@@ -19,6 +19,7 @@ const {
   userMention
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const strtotime = require('locutus/php/datetime/strtotime')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -279,19 +280,21 @@ module.exports = class SearchCommand extends ModCommand {
             "User"
           ]) {
             if(field_name.includes(userType)) {
-              field_value = `${userMention(this_ids[userType])} [${inlineCode(this_ids[userType])}]`
+              field_value = `${mentionFuncs.userMention(this_ids[userType], { showID: true })}`
             }
           }
           if (field_name.includes("Channel")) {
-            field_value = `<#${this_ids['Channel']}>` + " " +
-              `[${inlineCode(this_ids['Channel'])}]`
+            field_value = mentionFuncs.channelMention(this_ids['Channel'], { showID: true })
           } else if (field_name.includes("Message")) {
             field_name = "Message"
-            field_value = "https://discord.com/channels"
-            field_value += `/${this_ids['Guild']}`
-            field_value += `/${this_ids['Channel']}`
-            field_value += `/${this_ids['Message ID']}`
-            field_value += ` [${inlineCode(this_ids['Message ID'])}]`
+            field_value = mentionFuncs.messageMention(
+              {
+                guildId: this_ids['Guild'],
+                channelId: this_ids['Channel'],
+                messageId: this_ids['Message ID']
+              },
+              { showID: true }
+            )
           }
           this_props.fields?.push(
             [

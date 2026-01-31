@@ -1,4 +1,5 @@
 const { inlineCode, italic } = require('discord.js')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../primitives/randFuncs') // Random Functions
 const getters = require('../../utils/guild/getters')
@@ -166,7 +167,7 @@ async function changeNickname(client, member) {
 
   if (member.guild.ownerId === member.id) {
     success = false
-    messages.push(`Can't adjust nickname. ${member} is Guild Owner of ${italic(member.guild.name)} [${inlineCode(member.guild.id)}].`)
+    messages.push(`Can't adjust nickname. ${member} is Guild Owner of ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
 
     return {
       success: success,
@@ -185,7 +186,7 @@ async function changeNickname(client, member) {
   const clientPos = await clientMember.roles.highest.position
   if ((clientMember.id !== member.id) && (memberPos >= clientPos)) {
     success = false
-    messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
+    messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
 
     return {
       success: success,
@@ -193,7 +194,7 @@ async function changeNickname(client, member) {
     }
   }
 
-  messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${italic(guildData.name)} [${inlineCode(guildID)}].`)
+  messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
 
   let oldNickname = member.displayName
   let [newNickname, newMessages] = await selectMember(member)

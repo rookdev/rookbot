@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const moment = require('moment')
@@ -11,13 +12,9 @@ module.exports = async (client) => {
   let messages = []
 
   if (client?.guild) {
-    if (client?.guild?.name) {
-      guildInfo += ` (${client.guild.name}`
-      if (client?.guild?.id) {
-        guildInfo += ` [${client.guild.id}]`
-      }
-      guildInfo += `)`
-    }
+    guildInfo += " ("
+    guildInfo += mentionFuncs.guildMention(client.guild.name, client.guild.id, { showID: true, textOnly: true, oneLine: true })
+    guildInfo += ")"
   }
   messages.push(`PROCESS EXITED: ${client.user.tag}${guildInfo} at ${offlineTime}`)
 

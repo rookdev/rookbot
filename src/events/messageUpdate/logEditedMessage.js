@@ -103,7 +103,7 @@ module.exports = async (client, oldMessage, newMessage) => {
   // /DB
 
   if (!guildChannels) {
-    messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${newMessage.guild.name}' [${newMessage.guild.id}]`)
+    messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(newMessage.guild.name, newMessage.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 

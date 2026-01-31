@@ -135,14 +135,14 @@ module.exports = class LockdownCommand extends ModCommand {
                 name: `Public Channels ${action}ed`,
                 value:
                   processedChannels.length > 0
-                    ? processedChannels.map(id => `<#${id}>`).join('\n')
+                    ? processedChannels.map(id => mentionFuncs.channelMention(id)).join('\n')
                     : 'No channels were processed.',
               }
             ],
             [
               {
                 name: `Action Performed By`,
-                value: [interaction.user, `[${interaction.user.id}]`],
+                value: mentionFuncs.userMention(interaction.user.id, { showID: true })
               }
             ]
           ]

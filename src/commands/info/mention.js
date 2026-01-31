@@ -24,8 +24,9 @@ const {
 } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-const fileFuncs = require('../../utils/fs/fileFuncs')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const timeFormat = require('../../utils/formatters/timeFormat')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 
 module.exports = class MentionCommand extends RookCommand {
@@ -200,7 +201,7 @@ module.exports = class MentionCommand extends RookCommand {
     switch(targetType) {
       // Channel
       case "channel":
-        targetMention = `<#${targetId}>`
+        targetMention = mentionFuncs.channelMention(targetId)
         if (guild) {
           let channel = null
           try {
@@ -296,7 +297,7 @@ module.exports = class MentionCommand extends RookCommand {
                 )
                 : this.profile.emojis.nocheck
             }
-            targetMention = `<:${specs.name}:${targetId}>`
+            targetMention = mentionFuncs.emojiMention(specs.name, targetId)
             if (emoji?.createdTimestamp) {
               specs.creationStr = timeFormat(emoji?.createdTimestamp, { with: "relative" })
             }
@@ -319,7 +320,7 @@ module.exports = class MentionCommand extends RookCommand {
         break
       // Role
       case "role":
-        targetMention = roleMention(targetId)
+        targetMention = mentionFuncs.roleMention(targetId)
         if (guild) {
           let role = await this.getCache(client, guild, "roles", targetId)
           if (role) {
@@ -361,7 +362,7 @@ module.exports = class MentionCommand extends RookCommand {
         break
       // User
       case "user":
-        targetMention = userMention(targetId)
+        targetMention = mentionFuncs.userMention(targetId)
         if (guild) {
           // Get Guild Member
           try {

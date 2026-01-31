@@ -21,6 +21,7 @@ const {
   userMention
 } = require('discord.js')
 
+const mentionFuncs = require('../../utils/formatters/mentions')
 const PingCommand = require('../../commands/diag/ping')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
@@ -63,7 +64,7 @@ module.exports = async (client, message) => {
   try {
     targetUser = await getters.getCache(client, client, "users", targetUserId)
   } catch(err) {
-    // messages.push(`No user found for seener [${message.author.id}]`)
+    // messages.push(`No user found for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 
@@ -72,7 +73,7 @@ module.exports = async (client, message) => {
   try {
     guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
   } catch(err) {
-    messages.push(`No guild member found for seener [${message.author.id}]`)
+    messages.push(`No guild member found for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 

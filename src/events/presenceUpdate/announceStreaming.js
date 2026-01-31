@@ -7,6 +7,7 @@ const { Presence, ActivityType, inlineCode, bold, italic, hyperlink } = require(
 const { RookClient } = require('../../classes/objects/rclient.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
@@ -308,14 +309,14 @@ module.exports = async (client, oldPresence, newPresence) => {
       // /DB
 
       if (!guildChannels) {
-        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${member.guild.name}' [${member.guild.id}]`)
+        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
         return [result, messages]
       }
 
       let destChannelID = guildChannels["stream-alerts"]
 
       if (!destChannelID) {
-        messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for '${member.guild.name}' [${member.guild.id}]`)
+        messages.push(`${client.profile.emojis.fail} Stream Alerts channel not found for ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
         return [result, messages]
       }
 

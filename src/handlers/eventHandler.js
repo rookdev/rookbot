@@ -50,47 +50,52 @@ module.exports = (client) => {
           continue
         }
 
-        // Include event script
-        const eventFunction = require(eventFile)
-        // Run event script
-        if (false) {
-          console.log(
-            {
-              event: eventName,
-              script: eventFile
+        let handled = false
+        let eventObject = require(eventFile)
+
+        if (eventObject) {
+          if (eventObject?.name) {
+            if (eventObject.name.includes("Event")) {
+              // Handle OOP
+              let evt = new eventObject(client)
+              let result = await evt.execute(client, ...args)
+              handled = true
             }
-          )
+          }
         }
 
-        let [result, messages] = await eventFunction(client, ...args) // Pass all arguments to the event function
+        if (!handled) {
+          // Handle inline
+          let [result, messages] = await eventObject(client, ...args) // Pass all arguments to the event function
 
-        if (messages.length) {
-          if (showDateTime && showScript && firstScript) {
-            // Print DateTime
-            let now = moment.utc()
-            let dateStamp = ""
-            now.utc()
-            dateStamp += now.format()
-            dateStamp += " | "
-            now.local()
-            dateStamp += now.format()
-            console.log(dateStamp)
-            showDateTime = false
+          if (messages.length) {
+            if (showDateTime && showScript && firstScript) {
+              // Print DateTime
+              let now = moment.utc()
+              let dateStamp = ""
+              now.utc()
+              dateStamp += now.format()
+              dateStamp += " | "
+              now.local()
+              dateStamp += now.format()
+              console.log(dateStamp)
+              showDateTime = false
+            }
+            if (showEvent && showScript && firstScript) {
+              // Print eventName
+              console.log(` Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
+              showEvent = false
+            }
+            if (showScript) {
+              // Print scriptName
+              console.log(`  Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
+            }
+            console.log(
+              messages.map(
+                m => "   " + m
+              ).join("\n")
+            )
           }
-          if (showEvent && showScript && firstScript) {
-            // Print eventName
-            console.log(` Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
-            showEvent = false
-          }
-          if (showScript) {
-            // Print scriptName
-            console.log(`  Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
-          }
-          console.log(
-            messages.map(
-              m => "   " + m
-            ).join("\n")
-          )
         }
       }
     })

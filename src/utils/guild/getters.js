@@ -1,3 +1,4 @@
+const mentionFuncs = require('../../utils/formatters/mentions')
 const numFuncs = require("../../utils/primitives/numFuncs")
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -109,7 +110,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
         "messages",
         "users"
       ].includes(cacheType)) {
-        messages.push(`${cacheType.ucfirst()} IDs not found for '${guild.name}' [${guild.id}]`)
+        messages.push(`${cacheType.ucfirst()} IDs not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`)
       }
     } else {
       for (let cacheID of cacheTest) {

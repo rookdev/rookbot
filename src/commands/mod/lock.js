@@ -6,6 +6,7 @@ const { ApplicationCommandOptionType, PermissionFlagsBits, bold, inlineCode } = 
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 
 // Multiple messages
 
@@ -58,7 +59,7 @@ module.exports = class LockCommand extends ModCommand {
       const embedProps = {
         color: this.profile.colors.bad,
         title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
-        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold('locked')}.`,
+        description: (this.DEV ? "DEV: " : "") + mentionFuncs.channelMention(channel.id) + ` has been ${bold('locked')}.`,
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
@@ -72,8 +73,8 @@ module.exports = class LockCommand extends ModCommand {
           title: { text: "[Log] Channel Locked", emoji: this.profile.emojis.lock },
           fields: [
             [
-              { name: 'Channel Locked', value: [`<#${channel.id}>`,`[${inlineCode(channel.id)}]`] },
-              { name: 'Locked By',      value: [`${interaction.user}`,`[${inlineCode(interaction.user.id)}]`] }
+              { name: 'Channel Locked', value: [mentionFuncs.channelMention(channel.id, { showID: true })] },
+              { name: 'Locked By',      value: [mentionFuncs.userMention(interaction.user.id, { showID: true })] }
             ]
           ]
         }
@@ -85,12 +86,12 @@ module.exports = class LockCommand extends ModCommand {
       }
 
       // Complete the interaction with a private success message
-      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold('locked')}!`
+      this.props.description = (this.DEV ? "DEV: " : "") + mentionFuncs.channelMention(channel.id) + ` has been successfully ${bold('locked')}!`
     } catch (error) {
       this.messages.push(`There was an error when locking the channel: ${error.stack}`)
       this.error = true
       this.ephemeral = true
-      this.props.description = `I couldn't lock <#${channel.id}>.`
+      this.props.description = `I couldn't lock ${mentionFuncs.channelMention(channel.id)}.`
       return !this.error
     }
 

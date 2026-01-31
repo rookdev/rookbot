@@ -29,7 +29,7 @@ module.exports = async (client, newMember) => {
     // Ensure the member's data is fully fetched
     const fetchedMember = await getters.getCache(client, newMember.guild, "members", newMember.user.id)
     if (!fetchedMember) {
-      messages.push(`${client.profile.emojis.fail} Failed to fetch '${newMember.user.tag}' [${newMember.id}] from '${newMember.guild.name}' [${newMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch '${newMember.user.tag}' [${newMember.id}] from ${mentionFuncs.guildMention(newMember.guild.name, newMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
       return [result, messages]
     }
 
@@ -47,7 +47,7 @@ module.exports = async (client, newMember) => {
     // /DB
 
     if (!guildChannels) {
-      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(fetchedMember.guild.name, fetchedMember.guild.id, { showID: true, oneLine: true, textOnly: True })}`)
       return [result, messages]
     }
 

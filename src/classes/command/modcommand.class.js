@@ -933,7 +933,7 @@ class ModCommand extends AdminCommand {
       props.mod.title = { text: "[YouPost]" }
       props.mod.error = true
       props.mod.ephemeral = true
-      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${targetUser} [${inlineCode(targetUserId)}].`
+      props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${mentionFuncs.userMention(targetUser.id, { showID: true })}.`
       embeds.mod = await new RookEmbed(client, props.mod)
       await this.send(
         client,
@@ -974,7 +974,7 @@ class ModCommand extends AdminCommand {
       // Bail if we don't have intended Approved Roles data
       if (!APPROVED_ROLES) {
         this.error = true
-        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for *${interaction.guild.name}* [${inlineCode(interaction.guild.id)}]`
+        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
         return false
       }
 

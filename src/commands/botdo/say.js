@@ -23,6 +23,7 @@ const {
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -197,7 +198,7 @@ module.exports = class SayCommand extends ModCommand {
     webhooks = await interaction.guild.fetchWebhooks()
     if (!webhooks) {
       this.error = true
-      this.props.description = `Couldn't load webhooks for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
+      this.props.description = `Couldn't load webhooks for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
       return false
     }
 
@@ -234,7 +235,7 @@ module.exports = class SayCommand extends ModCommand {
         )
       } catch (e) {
         this.error = true
-        this.props.description = `rookhook not found and not creatable for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
+        this.props.description = `rookhook not found and not creatable for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
         return false
       }
     }
@@ -255,7 +256,7 @@ module.exports = class SayCommand extends ModCommand {
 
     if (!rookhook) {
       this.error = true
-      this.props.description = `rookhook not found for ${italic(interaction.guild.name)} [${inlineCode(interaction.guild.id)}]`
+      this.props.description = `rookhook not found for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
       return false
     }
 
@@ -470,7 +471,7 @@ module.exports = class SayCommand extends ModCommand {
             this.error = true
             this.props.description = [
               `Destination Message not editable by ${interaction.guild.members.me}`,
-              `Posted by ${destMessage.author} [${inlineCode(destMessage.author.id)}]`,
+              `Posted by ${mentionFuncs.userMention(destMessage.author.id, { showID: true, oneLine: true })}`,
               destMessageURL
             ]
             rookhook = await this.getRookhook(interaction)
@@ -612,7 +613,7 @@ module.exports = class SayCommand extends ModCommand {
             // Whodunnit?
             {
               name: "User",
-              value: `${interaction.user} [${inlineCode(interaction.user.id)}]`
+              value: mentionFuncs.userMention(interaction.user.id, { showID: true })
             }
           ],
           [
@@ -633,27 +634,19 @@ module.exports = class SayCommand extends ModCommand {
             // Sent in what Guild?
             {
               name: "Guild",
-              value:
-                [
-                  interaction?.guild?.name,
-                  `[${inlineCode(interaction?.guild?.id)}]`
-                ]
+              value: mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true })
             },
             // Sent to what Channel?
             {
               name: "Channel",
-              value:
-                [
-                  `<#${result?.channel?.id}>`,
-                  `[${inlineCode(channel?.id)}]`
-                ]
+              value: mentionFuncs.channelMention(result.channel.id, { showID: true })
             }
           ],
           [
             // Message Link
             {
               name: "Message",
-              value: `${result.url} [${inlineCode(result?.id)}]`
+              value: mentionFuncs.messageMention(result.url, { showID: true })
             }
           ],
           [

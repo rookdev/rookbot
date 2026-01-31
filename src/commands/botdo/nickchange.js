@@ -5,6 +5,7 @@ const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode, italic  }
 const { changeNickname } = require('../../utils/guild/changeNickname')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 
 module.exports = class NickChangeCommand extends RookCommand {
   constructor(client, comprops, props) {
@@ -104,7 +105,7 @@ module.exports = class NickChangeCommand extends RookCommand {
         user: "bot",
         target: "guild"
       }
-      this.props.description = `Member not found [${inlineCode(targetUserId)}] in ${italic(guild.name)}.`
+      this.props.description = `Member not found ${mentionFuncs.userMention(targetUserId, { showID: true, oneLine: true })} in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}.`
       return false
     }
 

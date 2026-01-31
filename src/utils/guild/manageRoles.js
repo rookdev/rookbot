@@ -1,6 +1,7 @@
 const { MessageReaction, User } = require('discord.js')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
 
@@ -35,7 +36,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   // /DB
 
   if (!rrs) {
-    // messages.push(`${client.profile.emojis.fail} Reaction Roles not found for '${guild.name}' [${guild.id}]`)
+    // messages.push(`${client.profile.emojis.fail} Reaction Roles not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 

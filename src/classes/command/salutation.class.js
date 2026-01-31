@@ -8,6 +8,7 @@ const { RookCommand } = require('./rcommand.class')
 const { RookEmbed } = require('../embed/rembed.class')
 // Pretty-print time durations
 const timeConversion = require('../../utils/formatters/timeConversion')
+const mentionFuncs = require('../../utils/formatters/mentions')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -245,7 +246,7 @@ class SalutationCommand extends RookCommand {
               .replace(
                 this.profile.name,
                 this.profile?.discord?.user?.id ?
-                userMention(this.profile.discord.user.id) :
+                mentionFuncs.userMention(this.profile.discord.user.id) :
                 this.profile.name
               )
         },
@@ -353,7 +354,7 @@ class SalutationCommand extends RookCommand {
               console_output[8]
                 .replace(
                   "Bot",
-                  userMention(user.id)
+                  mentionFuncs.userMention(user.id)
                 ) :
                 console_output[8]
         }
@@ -413,7 +414,7 @@ class SalutationCommand extends RookCommand {
 
         // Find the Guild Channel to send the embed to
         if (!channelIDs) {
-          // this.messages.push(`No Channel manifest found for '${guild?.name}' [${guild?.id}]!`)
+          // this.messages.push(`No Channel manifest found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}!`)
         }
 
         for (let channelName of [
@@ -425,18 +426,18 @@ class SalutationCommand extends RookCommand {
         ]) {
           if (!channel) {
             let channelID = channelIDs[channelName]
-            // this.messages.push(`Scanning '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+            // this.messages.push(`Scanning '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly: true })}`)
             if (channelID) {
-              // this.messages.push(`Loading  '${channelID}' of '${guild?.name}' [${guild?.id}]`)
+              // this.messages.push(`Loading  '${channelID}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
               channel = await getters.getCache(client, guild, "channels", channelID)
             } else {
-              // this.messages.push(`Loading  '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              // this.messages.push(`Loading  '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
               channel = await guild?.channels?.cache?.find(
                 c => c.name === channelName
               )
             }
             if (channel) {
-              this.messages.push(`Loaded   '${channelName}' of '${guild?.name}' [${guild?.id}]`)
+              this.messages.push(`Loaded   '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
             }
           }
         }

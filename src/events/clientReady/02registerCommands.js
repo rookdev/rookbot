@@ -3,6 +3,7 @@
 const { ApplicationCommandOptionType } = require('discord.js')
 const areCommandsDifferent = require('../../utils/client/areCommandsDifferent')
 const getLocalCommands = require('../../utils/client/getLocalCommands')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const getters = require('../../utils/guild/getters')
 const fs = require('fs/promises')
 
@@ -205,7 +206,7 @@ module.exports = async (client) => {
         messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
         return [result, messages]
       }
-      messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: '${testGuild.name}' [${testGuildID}]`)
+      messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: ${mentionFuncs.guildMention(testGuild.name, testGuildID, { showID: true, textOnly: true, oneLine: true })}`)
       commandsManager = testGuild.commands
     } else {
       messages.push(`${client.profile.emojis.prodText} Running in production mode. Registering Global Commands.`)

@@ -1,4 +1,5 @@
 const { changeNickname } = require('../guild/changeNickname')  // Import the changeNickname function
+const mentionFuncs = require('../formatters/mentions')
 const schedule = require('node-schedule')
 
 // Schedule nickname change
@@ -39,7 +40,7 @@ function scheduleNicknameChange(client, member) {
     }
   })
 
-  messages.push(`${client.profile.emojis.check}v Yes scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'.`)
+  messages.push(`${client.profile.emojis.check}v Yes scheduled nickname changes for '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name)}.`)
 
   return [result, messages]
 }

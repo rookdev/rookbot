@@ -4,8 +4,9 @@
 const { ApplicationCommandOptionType, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
-// Use Discord HammerTime
+const mentionFuncs = require('../../utils/formatters/mentions')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
+// Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
 const getters = require('../../utils/guild/getters')
@@ -124,8 +125,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
           .addRow("Tier",tier)
           .addRow("")
         this.props.description.push(
-          bold(`Guild:`) + ` ${guildData.guild.name} [${inlineCode(guildData.guild.id)}]`,
-          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${userMention(guildData.owner.id)}]`,
+          bold(`Guild:`) + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
+          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
           bold(`Added:`) + ` ${guildData.addedHammertime}`,
           bold(`Tier:`) + ` ${tier}`,
           ""

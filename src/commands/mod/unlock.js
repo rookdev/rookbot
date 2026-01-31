@@ -17,6 +17,7 @@ const {
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 
 // Multiple messages
 
@@ -67,7 +68,7 @@ module.exports = class UnlockCommand extends ModCommand {
       const embedProps = {
         color: this.profile.colors.success,
         title: { text: '[ModPost] Channel Unlocked!', emoji: this.profile.emojis.success },
-        description: (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been ${bold('unlocked')}.`,
+        description: (this.DEV ? "DEV: " : "") + mentionFuncs.channelMention(channel.id) + ` has been ${bold('unlocked')}.`,
       }
       const embed = new RookEmbed(client, embedProps)
       channel.send({ embeds: [ embed ] })
@@ -81,8 +82,8 @@ module.exports = class UnlockCommand extends ModCommand {
           title: { text: "[Log] Channel Unlocked", emoji: this.profile.emojis.unlock },
           fields: [
             [
-              { name: 'Channel Unlocked', value: [`<#${channel.id}>`, `[${channel.id}]`] },
-              { name: 'Unlocked By',      value: [interaction.user, `[${interaction.user.id}]`] }
+              { name: 'Channel Unlocked', value: [mentionFuncs.channelMention(channel.id, { showID: true })] },
+              { name: 'Unlocked By',      value: [mentionFuncs.userMention(interaction.user.id, { showID: true })] }
             ]
           ]
         }
@@ -94,12 +95,12 @@ module.exports = class UnlockCommand extends ModCommand {
       }
 
       // Complete the interaction with a private success message
-      this.props.description = (this.DEV ? "DEV: " : "") + `<#${channel.id}> has been successfully ${bold('unlocked')}!`
+      this.props.description = (this.DEV ? "DEV: " : "") + mentionFuncs.channelMention(channel.id) + ` has been successfully ${bold('unlocked')}!`
     } catch (error) {
       this.messages.push(`There was an error when unlocking the channel: ${error.stack}`)
       this.error = true
       this.ephemeral = true
-      this.props.description = `I couldn't unlock <#${channel.id}>.`
+      this.props.description = `I couldn't unlock ${mentionFuncs.channelMention(channel.id)}.`
     }
 
     return true

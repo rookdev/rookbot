@@ -21,6 +21,7 @@ const {
   userMention
 } = require('discord.js')
 
+const mentionFuncs = require('../../utils/formatters/mentions')
 const BanCommand = require('../../commands/mod/ban')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
@@ -139,10 +140,7 @@ module.exports = async (client, message) => {
       [
         {
           name: 'User ' + "Banned",
-          value: [
-            targetUser,
-            `[${inlineCode(targetUserId)}]`
-          ]
+          value: mentionFuncs.userMention(targetUserId, { showID: true })
         }
       ]
     )

@@ -6,6 +6,7 @@ const { inlineCode } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const memberFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -42,7 +43,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     // /DB
 
     if (!rrs) {
-      messages.push(`${this.profile.emojis.warning} Reaction Roles not found for '${guild.name}' [${inlineCode(guild.id)}]`)
+      messages.push(`${this.profile.emojis.warning} Reaction Roles not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`)
       this.error = true
       this.props.description = messages
       return false

@@ -8,6 +8,7 @@ const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const UptimeCommand = require('../../commands/botmeta/uptime')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const unready = require('../../events/unready/exit')  // unreadyEvent
 const shell = require('shelljs')
 
@@ -108,7 +109,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         target: "guild"
       }
 
-      this.props.description = `${action} ${userMention(client.user?.id)}`
+      this.props.description = `${action} ${mentionFuncs.userMention(client.user?.id)}`
 
       // Post action taking place
       let this_embed = await new RookEmbed(client, this.props)

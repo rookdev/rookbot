@@ -6,6 +6,7 @@ const { userMention } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
 const UptimeCommand = require('../../commands/botmeta/uptime')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const unready = require('../../events/unready/exit')  // unreadyEvent
 
 // Multiple messages
@@ -55,7 +56,7 @@ module.exports = class ExitCommand extends BotDevCommand {
 
     // Log who called Exit
     this.messages.push(`!!! Bot Exit by: ${interaction.member.user.tag} !!!`)
-    this.props.description = `Exiting ${userMention(client.user.id)}`
+    this.props.description = `Exiting ${mentionFuncs.userMention(client.user.id)}`
 
     // Call UptimeCommand
     let uptime = await new UptimeCommand(client)

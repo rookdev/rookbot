@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 const scheduleNicknameChange = require('../../utils/guild/scheduleNicknameChange')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const getters = require('../../utils/guild/getters')
 const path = require('path')
@@ -62,7 +63,7 @@ module.exports = async (client) => {
         const member = await getters.getCache(client, guild, "members", userID)
         // If guild owner, bail
         if (member.guild.ownerId === member.id) {
-          messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is server owner.`)
+          messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name)}. '${member.user.tag}' is server owner.`)
           continue
         }
 
@@ -89,7 +90,7 @@ module.exports = async (client) => {
             } else if (relation == "=") {
               relation = "equal to"
             }
-            msg += `  scheduled nickname changes for '${member.user.tag}' in '${member.guild.name}'. '${member.user.tag}' is ${relation} '${clientMember.displayName}'.`
+            msg += `  scheduled nickname changes for '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name)}. '${member.user.tag}' is ${relation} '${clientMember.displayName}'.`
             messages.push(msg)
             continue
           }

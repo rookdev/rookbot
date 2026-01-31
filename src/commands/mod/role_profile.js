@@ -5,6 +5,7 @@ const {
   inlineCode
 } = require('discord.js')
 const { ModCommand } = require('../../classes/command/modcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
 module.exports = class RoleProfileCommand extends ModCommand {
@@ -89,13 +90,13 @@ module.exports = class RoleProfileCommand extends ModCommand {
 
     if (!roleProfiles) {
       this.error = true
-      this.props.description = `Role Profiles not found for '${guild.name}' [${inlineCode(guild.id)}]`
+      this.props.description = `Role Profiles not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
       return false
     }
 
     if (roleProfiles.length <= 0) {
       this.error = true
-      this.props.description `Role Profiles for '${guild.name}' [${inlineCode(guild.id)}] too short`
+      this.props.description `Role Profiles for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })} too short`
       return false
     }
 
@@ -103,7 +104,7 @@ module.exports = class RoleProfileCommand extends ModCommand {
 
     if (!roleProfile) {
       this.error = true
-      this.props.description = `Role Profile '${profileName}' not found for '${guild.name}' [${inlineCode(guild.id)}]`
+      this.props.description = `Role Profile '${profileName}' not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
       return false
     }
 
@@ -111,12 +112,12 @@ module.exports = class RoleProfileCommand extends ModCommand {
 
     if (!member) {
       this.error = true
-      this.props.description = `Member [${inlineCode(targetUserId)}] not found in '${guild.name}' [${inlineCode(guild.id)}]`
+      this.props.description = `Member [${inlineCode(targetUserId)}] not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
       return false
     }
 
     this.props.description = [
-      `Applying '${profileName}' for '${guild.name}' [${inlineCode(guild.id)}] to ${member} [${inlineCode(targetUserId)}]`,
+      `Applying '${profileName}' for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })} to ${mentionFuncs.userMention(member.id, { showID: true })}`,
       codeBlock(JSON.stringify(roleProfiles[profileName]))
     ]
     let success = false

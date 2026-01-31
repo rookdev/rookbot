@@ -65,22 +65,6 @@ declare class RookCommand {
   : Promise<TextBasedChannel>
 
   /**
-   * Get specified Server Emoji
-   *
-   * @param client      - Client Object
-   * @param interaction - Interaction that called this command
-   * @param emojiKey    - Emoji Key to search for
-   *
-   * @returns Promise<string>
-   */
-  getEmoji(
-    client: RookClient,
-    interaction?: ChatInputCommandInteraction,
-    emojiKey?: string
-  )
-  : Promise<string>
-
-  /**
    * Do the thing!
    *
    * @param client      - Client Object

@@ -56,7 +56,7 @@ module.exports = async (client, deletedMessage) => {
   // /DB
 
   if (!guildChannels) {
-    messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for '${fetchedMember.guild.name}' [${fetchedMember.guild.id}]`)
+    messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(fetchedMember.guild.name, fetchedMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 
