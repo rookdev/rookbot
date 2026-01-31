@@ -146,7 +146,7 @@ module.exports = class SayCommand extends ModCommand {
     // Try to locate message
     let [ _, guildID, channelID, messageID ] = matches
 
-    const guild = await getters.getCache(client, client, "guilds", guildID)
+    const guild = await this.getCache(client, client, "guilds", guildID)
     // Guild not found
     if (!guild) {
       this.error = true
@@ -154,7 +154,7 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    const channel = await getters.getCache(client, guild, "channels", channelID)
+    const channel = await this.getCache(client, guild, "channels", channelID)
     // Channel not found
     if (!channel) {
       this.error = true
@@ -162,7 +162,7 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    message = await getters.getCache(client, channel, "messages", messageID)
+    message = await this.getCache(client, channel, "messages", messageID)
     // Message not found
     if (!message) {
       this.error = true

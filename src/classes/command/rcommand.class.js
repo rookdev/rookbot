@@ -698,7 +698,7 @@ class RookCommand {
     if (interaction) {
       // Permissions Required
       if (this.userPermissions) {
-        let member = await getters.getCache(client, interaction.guild, "members", interaction.user.id)
+        let member = await this.getCache(client, interaction.guild, "members", interaction.user.id)
         Table.addRow(
           "User Permissions",
           this.userPermissions,

@@ -68,7 +68,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
       // Get Guild ID
       let guildID = interaction.guild.id
       // Get Guild
-      let guild = await getters.getCache(client, client, "guilds", guildID)
+      let guild = await this.getCache(client, client, "guilds", guildID)
       if (!guild) {
         // Bail if Guild not found
         this.error = true
@@ -80,7 +80,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
 
       // Get Client Member
       // Bail if Client Member not found
-      let member = await getters.getCache(client, interaction.guild, "members", client.user.id)
+      let member = await this.getCache(client, interaction.guild, "members", client.user.id)
       if (!member) {
         this.error = true
         this.props.description = `Fetch error [${client.user.id}]: ${err}`

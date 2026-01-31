@@ -83,7 +83,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
         owner = owner.user
       }
       // Get Guild Bot
-      let bot = await getters.getCache(client, guildData, "members", client.user.id)
+      let bot = await this.getCache(client, guildData, "members", client.user.id)
       let botJoinedDateTime = moment.utc(bot.joinedTimestamp)
       // Get Guild Data
       let thisGuild = {}

@@ -137,7 +137,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await getters.getCache(client, interaction.guild, "roles", addRole)
+        addRole = await this.getCache(client, interaction.guild, "roles", addRole)
       } else {
         // Search for the Role object by Role Name
         addRole = await this.getCache(interaction.client, interaction.guild, "roles", addRole)
@@ -182,7 +182,7 @@ class ModCommand extends AdminCommand {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await getters.getCache(client, interaction.guild, "roles", remRole)
+        remRole = await this.getCache(client, interaction.guild, "roles", remRole)
       } else {
         // Search for the Role object by Role Name
         remRole = await this.getCache(interaction.client, interaction.guild, "roles", remRole)
@@ -481,7 +481,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await getters.getCache(client, interaction.guild, "members", targetUserId)
+    const guildMember = await this.getCache(client, interaction.guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
 
     // Check Editable
