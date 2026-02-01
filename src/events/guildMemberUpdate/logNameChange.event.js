@@ -124,7 +124,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
     } else {
       let clientMember = newMember.guild.members.me
       if (clientMember) {
-        players.user = {
+        logPlayers.user = {
           name: clientMember.displayName,
           avatar: clientMember.displayAvatarURL({ size: 128 })
         }
