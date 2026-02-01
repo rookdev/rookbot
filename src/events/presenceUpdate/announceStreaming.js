@@ -141,7 +141,7 @@ module.exports = async (client, oldPresence, newPresence) => {
 
   let member = await getters.getCache(client, newPresence.guild, "members", newPresence.user.id)
 
-  if (stoppedStreaming && guildRoles) {
+  if (stoppedStreaming) {
     if (!roles?.removed) {
       roles.removed = []
     }
