@@ -206,9 +206,8 @@ class EventScript {
     this.messages = this.messages.filter(item => item !== "")
     this.messages = this.messages.map(m => "   " + m)
 
-    this.messages.unshift(...preamble)
-
     if (this.messages.length) {
+      this.messages.unshift(...preamble)
       console.log(this.messages.join("\n"))
     }
   }
