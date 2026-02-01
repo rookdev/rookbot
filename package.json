@@ -39,6 +39,7 @@
     "locutus": "^2.0.38",
     "mathjs": "^15.1.0",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
     "mongodb": "^7.0.0",
     "mongoose": "^9.1.5",
     "ms": "^2.1.3",

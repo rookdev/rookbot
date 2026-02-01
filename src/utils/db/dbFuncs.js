@@ -28,7 +28,7 @@ async function getDB(cName, dName, source="mongodb") {
     }
     if (dName) {
       let gName = ""
-      messages.push(`💾FS: '${gName}' [${cName}]: ${dName}`)
+      messages.push(`💾 FS: '${gName}' [${cName}]: ${dName}`)
       return [fileFuncs.getAFile(path, `${dName}.json`), messages]
     } else {
       let fileList = fs.readdirSync(fileFuncs.getAPath(path)).filter(
@@ -69,7 +69,7 @@ async function getDB(cName, dName, source="mongodb") {
                 }
               }
               if (rec) {
-                messages.push(`💿MongoDB: '${gName}' [${cName}]: ${dName}`)
+                messages.push(`💿 MongoDB: '${gName}' [${cName}]: ${dName}`)
                 success = true
               }
             }

@@ -167,7 +167,7 @@ async function changeNickname(client, member) {
 
   if (member.guild.ownerId === member.id) {
     success = false
-    messages.push(`Can't adjust nickname. ${member} is Guild Owner of ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
+    messages.push(`Can't adjust nickname. ${member} is Guild Owner of ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`)
 
     return {
       success: success,
@@ -186,7 +186,7 @@ async function changeNickname(client, member) {
   const clientPos = await clientMember.roles.highest.position
   if ((clientMember.id !== member.id) && (memberPos >= clientPos)) {
     success = false
-    messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
+    messages.push(`${client.profile.emojis.fail} Can't adjust nickname. Role position of ${member} is greater than or equal to ${clientMember} in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`)
 
     return {
       success: success,
@@ -194,7 +194,7 @@ async function changeNickname(client, member) {
     }
   }
 
-  messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true, textOnly: true })}.`)
+  messages.push(`${client.profile.emojis.check} ${clientMember} changing nickname of '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`)
 
   let oldNickname = member.displayName
   let [newNickname, newMessages] = await selectMember(member)
