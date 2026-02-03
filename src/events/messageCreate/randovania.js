@@ -53,7 +53,7 @@ module.exports = async (client, message) => {
     return [result, messages]
   }
 
-  if (message.attachments.size < 1) {
+  if (message?.attachments?.size <= 0) {
     // messages.push("No attachments!")
     return [result, messages]
   }
