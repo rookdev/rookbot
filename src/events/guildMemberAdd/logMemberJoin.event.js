@@ -106,7 +106,7 @@ module.exports = class LogMemberJoinEvent extends EventScript {
         [
           {
             name: "Member Role?",
-            value: newMember.roles.cache.map(r => r.name).includes("Member")
+            value: await newMember.roles.cache.map(r => r.name).includes("Member")
               ? client.profile.emojis.check
               : client.profile.emojis.nocheck
           }

@@ -684,7 +684,9 @@ module.exports = class SayCommand extends ModCommand {
 
       // Edit reply to Mod
       embeds.mod = new RookEmbed(client, props.mod)
-      await interaction.editReply({ embeds: [ embeds.mod ] })
+      if (typeof interaction.editReply === "function") {
+        await interaction.editReply({ embeds: [ embeds.mod ] })
+      }
 
       // Save the ghost message to a log file
       const logFilePath = fileFuncs.getAPath(

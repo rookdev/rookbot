@@ -28,19 +28,23 @@ module.exports = async (client, oldMember, newMember) => {
     // /DB
 
     if (!roleNames) {
+      console.log("No Role Names!")
       return [false, []]
     }
 
     let boostRoleNames = roleNames?.booster
     if (!boostRoleNames) {
+      console.log("No Boost Role Names!")
       return [false, []]
     }
     if (boostRoleNames.length < 1) {
+      console.log("No Boost Role Names!")
       return [false, []]
     }
 
     let boostRole = await getters.getCache(client, newMember.guild, "roles", roleNames.booster[0])
     if (!boostRole) {
+      console.log("No Boost Role!")
       return [false, []]
     }
 
@@ -56,79 +60,93 @@ module.exports = async (client, oldMember, newMember) => {
   let hasBoost = await newMember.roles.cache.has(boostRoleID)
 
   if ((!hadBoost) && hasBoost) {
-    let heartContainerEmoji = await getters.getCache(client, newMember.guild, "emojis", "heartcontainer")
+    let boostEmojiName = "heartcontainer"
+    let heartContainerEmoji = await getters.getCache(client, newMember.guild, "emojis", boostEmojiName)
+    if (heartContainerEmoji == boostEmojiName) {
+      heartContainerEmoji = "<3"
+    }
+    let msg = {
+      name: newMember.displayName,
+      avatar: await newMember.displayAvatarURL({ size: 128 }),
+      guild: {
+        name: newMember.guild.name,
+        boosts: newMember.guild.premiumSubscriptionCount
+      },
+      msg: [
+        `${bold(newMember.guild.name)} currently has ${bold(newMember.guild.boosts)} boosts!`,
+        "",
+        `Thank you for boosting!`
+      ]
+    }
     if (heartContainerEmoji) {
-      let msg = {
-        name: newMember.displayName,
-        avatar: newMember.displayAvatarURL({ size: 128 }),
-        guild: {
-          name: newMember.guild.name,
-          boosts: newMember.guild.premiumSubscriptionCount
+      if (heartContainerEmoji?.imageURL) {
+        msg.footer = { image: heartContainerEmoji?.imageURL({ size: 128 })}
+      }
+      msg.msg[2] += ` ${heartContainerEmoji}`
+    }
+
+    // messages.push(
+    //   `${newMember.displayName} is boosting '${newMember.guild.name}'!`,
+    //   msg
+    // )
+
+    let userEntity = {
+      name: msg.name,
+      avatar: msg.avatar
+    }
+    let debug = {
+      guild: newMember.guild.name,
+      member: newMember.displayName,
+      action: "boost",
+      level: newMember.guild.premiumTier,
+      boosts: newMember.guild.premiumSubscriptionCount
+    }
+    messages.push("💗" + JSON.stringify(debug))
+    let embed = new RookEmbed(
+      client,
+      {
+        title: { text: "<NONE>" },
+        color: "#f47fff",
+        description: msg.msg,
+        playerTypes: { user: "user", target: "target" },
+        players: {
+          user: userEntity,
+          target: userEntity
         },
         footer: {
-          image: heartContainerEmoji?.imageURL({ size: 128 })
+          text: `${msg.name} Boosted the server :)`,
+          image: msg?.footer?.image
         }
       }
-      msg.msg = [
-        `${bold(msg.guild.name)} currently has ${bold(msg.guild.boosts)} boosts!`,
-        "",
-        `Thank you for boosting! ${heartContainerEmoji}`
-      ]
+    )
 
-      // messages.push(
-      //   `${newMember.displayName} is boosting '${newMember.guild.name}'!`,
-      //   msg
-      // )
+    // Fetch the log channel using its ID
+    const guildID = newMember.guild.id
+    let dbRes = await dbFuncs.getDB(
+      guildID,
+      "channels"
+    )
+    let guildChannels = dbRes[0]
+    messages.push(...dbRes[1])
+    if (!guildChannels) {
+      messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(newMember.guild.name, newMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
+      return [result, messages]
+    }
 
-      let userEntity = {
-        name: msg.name,
-        avatar: msg.avatar
-      }
-      let embed = new RookEmbed(
-        client,
-        {
-          title: { text: "<NONE>" },
-          color: "#f47fff",
-          description: msg.msg,
-          playerTypes: { user: "user", target: "target" },
-          players: {
-            user: userEntity,
-            target: userEntity
-          },
-          footer: {
-            text: `${msg.name} Boosted the server :)`,
-            image: msg.footer.image
-          }
-        }
-      )
+    let log_type = "logging"
+    let log_check = "logging-boosts"
+    if (log_check in guildChannels) {
+      log_type = log_check
+    }
+    const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
 
-      // Fetch the log channel using its ID
-      const guildID = newMember.guild.id
-      let guildChannels = null
-      [guildChannels, messages] = await dbFuncs.getDB(
-        guildID,
-        "channels"
-      )
-      if (!guildChannels) {
-        messages.push(`${client.profile.emojis.fail} Failed to fetch Guild Channels for ${mentionFuncs.guildMention(newMember.guild.name, newMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
-        return [result, messages]
-      }
-
-      let log_type = "logging"
-      let log_check = "logging-boosts"
-      if (log_check in guildChannels) {
-        log_type = log_check
-      }
-      const logChannel = await getters.getCache(client, client, "channels", guildChannels[log_type])
-
-      // Send the embed to the log channel, if found and valid
-      if (logChannel) {
-        // @ts-ignore
-        result = await logChannel.send({ embeds: [ embed.toJSON() ] })
-      } else {
-        messages.push(`${client.profile.emojis.warning} Log channel not found.`)
-        return [result, messages]
-      }
+    // Send the embed to the log channel, if found and valid
+    if (logChannel) {
+      // @ts-ignore
+      result = await logChannel.send({ embeds: [ embed.toJSON() ] })
+    } else {
+      messages.push(`${client.profile.emojis.warning} Log channel not found.`)
+      return [result, messages]
     }
   }
 

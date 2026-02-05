@@ -78,7 +78,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
     let logPlayers = {
       target: {
         name: newMember.displayName,
-        avatar: newMember.displayAvatarURL({ size: 128 })
+        avatar: await newMember.displayAvatarURL({ size: 128 })
       }
     }
 

@@ -318,7 +318,7 @@ class RookCommand {
       if (this.ephemeral) {
         intOptions = { flags: MessageFlags.Ephemeral }
       }
-      await interaction.deferReply(intOptions)
+      // await interaction.deferReply(intOptions)
       hasDeferred = true
     }
 
@@ -367,7 +367,7 @@ class RookCommand {
       // followup if already replied
       this.messages.push(`/${this.name}: Posting Follow-Up`)
       try {
-        await interaction.follwUp(this_package)
+        await interaction.followUp(this_package)
         handle_result = true
       } catch(e) {
         // this.messages.push(e)
@@ -375,10 +375,9 @@ class RookCommand {
       }
     }
 
-    if (!handle_result && isEphemeral) {
+    if (!handle_result && isEphemeral && canFollowUp) {
       // send followup and delete reply
       this.messages.push(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
-      this.messages.push(this_package)
       await interaction.followUp(this_package)
       await interaction.deleteReply()
       handle_result = true
@@ -736,7 +735,7 @@ class RookCommand {
 
     // If there's no channel defined, try to get it
     if (!this.channel) {
-      this.channel = await this.getChannel(client)
+      this.channel = await this.getChannel(client, interaction, this.channelName)
     }
 
     // See if we need to defer reply
@@ -770,7 +769,7 @@ class RookCommand {
   async test(client, interaction) {
     // If there's no channel defined, try to get it
     if (!this.channel) {
-      this.channel = await this.getChannel(client)
+      this.channel = await this.getChannel(client, interaction, this.channelName)
     }
 
     this.messages.push(`/${this.name}: Rook Test`)

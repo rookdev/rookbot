@@ -51,7 +51,9 @@ module.exports = class EmitCommand extends AdminCommand {
   async action(client, interaction, coptions={}) {
     let eventName = coptions["event-name"]
     let args = []
-    this.props.description = []
+    this.props.description = [
+      inlineCode(eventName)
+    ]
 
     if (eventName == "channelCreate") {
       // channelCreate
@@ -93,17 +95,71 @@ module.exports = class EmitCommand extends AdminCommand {
       //  announceGoLive
       //  boostePraise
       //  logNameChange
-      let member = await interaction.guild.members.me
-      args.push(member)
+      let oldMember = await interaction.guild.members.me.toJSON()
+      if (!oldMember?.presence) {
+        oldMember.presence = {}
+      }
+      if (!oldMember?.presence?.activities) {
+        oldMember.presence.activities = [
+          {}
+        ]
+      }
+      if (!oldMember?.guild) {
+        oldMember.guild = interaction.guild
+      }
+      if (!oldMember?.guild?.roles) {
+        oldMember.guild.roles = {}
+      }
+      if (!oldMember?.guild?.roles?.cache) {
+        oldMember.guild.roles.cache = {
+          roles: [
+            {
+              name: "Server Booster",
+              id: 1,
+            }
+          ],
+          find: async () => {
+            return {
+              id: 0
+            }
+          }
+        }        
+      }
+      if (!oldMember?.roles) {
+        oldMember.roles = {}
+      }
+      if (!oldMember?.roles?.cache) {
+        oldMember.roles.cache = {
+          moo: 1,
+          has: () => { return false }
+        }
+      }
+      args.push(oldMember)
 
       if (eventName == "guildMemberUpdate") {
-        member.presence.activities.push(
-          {
-            url: "http://example.com/stream"
+        let newMember = JSON.parse(JSON.stringify(oldMember))
+        newMember.guild = interaction.guild
+        newMember.guild.roles.cache.find = async () => {
+          return {
+            id: 1
           }
-        )
-        member.nickname = "New Name"
-        args.push(member)
+        }
+        newMember.roles.cache = {
+          has: async (rID) => {
+            return rID = 1
+          }
+        }
+
+        // announceStreaming
+        newMember.presence.activities[0] = { url: "http://example.com/stream" }
+        // boosterPraise
+        // logNameChange
+        newMember.displayAvatarURL = async () => {
+          return await interaction.guild.members.me.displayAvatarURL({ size: 128 })
+        }
+        newMember.nickname = "New Name"
+        newMember.user = interaction.guild.members.me.user
+        args.push(newMember)
       }
     } else if (eventName == "inviteCreate") {
       // inviteCreate
@@ -215,9 +271,11 @@ module.exports = class EmitCommand extends AdminCommand {
       args.push(voiceState)
     }
 
-    this.props.description.push(inlineCode(eventName))
+    await client.emit(eventName, ...args)
+
     if (![
       "inviteCreate",
+      "guildMemberUpdate",
       "messageCreate",
       "messageDelete",
       "messageReactionAdd",
@@ -228,7 +286,5 @@ module.exports = class EmitCommand extends AdminCommand {
     ].includes(eventName)) {
       this.props.description.push(codeBlock(JSON.stringify(args)))
     }
-
-    client.emit(eventName, ...args)
   }
 }
