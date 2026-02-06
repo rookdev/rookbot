@@ -318,7 +318,9 @@ class RookCommand {
       if (this.ephemeral) {
         intOptions = { flags: MessageFlags.Ephemeral }
       }
-      // await interaction.deferReply(intOptions)
+      if (interaction?.id) {
+        await interaction.deferReply(intOptions)
+      }
       hasDeferred = true
     }
 
@@ -339,7 +341,7 @@ class RookCommand {
     let handle_result = false
 
     // editReply "thinking" if first reply
-    if (hasDeferred && canEdit) {
+    if (hasDeferred && canEdit && interaction?.id) {
       try {
         if (!isEphemeral) {
           this.messages.push(`/${this.name}: Editing Corporeal Reply`)
@@ -375,11 +377,17 @@ class RookCommand {
       }
     }
 
-    if (!handle_result && isEphemeral && canFollowUp) {
+    if (!handle_result && isEphemeral && canFollowUp && interaction?.id) {
       // send followup and delete reply
       this.messages.push(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
       await interaction.followUp(this_package)
       await interaction.deleteReply()
+      handle_result = true
+    }
+
+    if (!handle_result) {
+      this.messages.push(`/${this.name}: Sending Ethereally`)
+      await interaction.channel.send(this_package)
       handle_result = true
     }
 

@@ -1022,7 +1022,9 @@ class ModCommand extends AdminCommand {
           "Value"
         )
       for (let [oName, oVal] of Object.entries(coptions)) {
-        Table.addRow(oName, oVal)
+        if (oVal) {
+          Table.addRow(oName, oVal)
+        }
       }
       this.messages.push(Table.toString())
     }

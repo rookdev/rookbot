@@ -1,8 +1,10 @@
 // @ts-nocheck
-const { ChatInputCommandInteraction } = require('discord.js')
+const { FakeInteraction } = require('../../classes/objects/finteraction.class')
+const SayCommand = require('../../commands/botdo/say')
 const schedule = require('node-schedule')
 
-const SayCommand = require('../../commands/botdo/say')
+
+const TESTING = false
 
 // Set it for midnight Pacific Time,
 //  which is superior to Eastern Palace Time
@@ -30,32 +32,28 @@ async function runFire(client) {
     if (guild) {
       // Get Say Command Object
       let sayCmd = new SayCommand(client)
+
       // Create Dummy Interaction object
-      let interaction = new ChatInputCommandInteraction(
-        client,
+      let channelId = ""
+      if (TESTING) {
+        channelId = "1461760186682310788" // bot-testing
+      } else {
+        channelId = "1450518001383243837" // multiworld-general
+      }
+      let fakeInteraction = new FakeInteraction(
         {
-          type: 2,
-          user: guild.members.me,
-          entitlements: [],
-          data: sayCmd
+          client:     client,
+          guild:      guild,
+          channelId:  channelId,
+          cmd:        sayCmd
         }
       )
 
       // Create Args
       let args = {
-        message: "Hello everyone, this is your daily dose of <:firerod:1450186094288175285>.",
-        "visage-name": "heat-miser"
-      }
-      let channelID = "1450518001383243837"
-      let fakeInteraction = {
-        ...interaction,
-        ...{
-          channelId: channelID,
-          guildId: guild.id,
-          guild: guild,
-          channel: await guild.channels.fetch(channelID),
-          member: guild.members.me
-        }
+        message:        "Hello everyone, this is your daily dose of <:firerod:1450186094288175285>.",
+        channel:        channelId,
+        "visage-name":  "heat-miser"
       }
 
       // Execute Say Command Object
@@ -79,6 +77,12 @@ module.exports = async (client) => {
   let results = await scheduleFire(client)
   result = results[0]
   messages.push(...results[1])
+
+  if (TESTING) {
+    results = await runFire(client)
+    result = results[0]
+    messages.push(...results[1])
+  }
 
   return [result, messages]
 }
