@@ -330,9 +330,9 @@ class RookCommand {
   async handle_interaction(interaction, this_package, hasDeferred=false) {
     let isEphemeral = this_package.ephemeral
     let hasReply    = interaction?.replied
-    let canEdit     = typeof interaction?.editReply === "function"
-    let canReply    = typeof interaction?.reply === "function"
-    let canFollowUp = typeof interaction?.followUp === "function"
+    let canEdit     = interaction?.id && typeof interaction?.editReply === "function"
+    let canReply    = interaction?.id && typeof interaction?.reply === "function"
+    let canFollowUp = interaction?.id && typeof interaction?.followUp === "function"
 
     if (!hasDeferred) {
       hasDeferred = interaction?.deferred || await this.handle_deferrment(interaction)
@@ -362,7 +362,7 @@ class RookCommand {
         await interaction.reply(this_package)
         handle_result = true
       } catch(e) {
-        // this.messages.push(e)
+        // this.messages.push(e.stack)
         handle_result = false
       }
     } else if (hasReply && canFollowUp) {
@@ -372,7 +372,7 @@ class RookCommand {
         await interaction.followUp(this_package)
         handle_result = true
       } catch(e) {
-        // this.messages.push(e)
+        // this.messages.push(e.stack)
         handle_result = false
       }
     }

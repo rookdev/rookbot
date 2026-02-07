@@ -36,7 +36,7 @@ async function runFire(client) {
       // Create Dummy Interaction object
       let channelId = ""
       if (TESTING) {
-        channelId = "1461760186682310788" // bot-testing
+        channelId = "1450624094306566236" // bot-testing
       } else {
         channelId = "1450518001383243837" // multiworld-general
       }

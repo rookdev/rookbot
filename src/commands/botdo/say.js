@@ -12,6 +12,7 @@
  */
 const {
   ApplicationCommandOptionType,
+  DiscordjsErrorCodes,
   PermissionFlagsBits,
   MessageFlags,
   Webhook,
@@ -685,7 +686,15 @@ module.exports = class SayCommand extends ModCommand {
       // Edit reply to Mod
       embeds.mod = new RookEmbed(client, props.mod)
       if (typeof interaction.editReply === "function") {
-        await interaction.editReply({ embeds: [ embeds.mod ] })
+        try {
+          await interaction.editReply({ embeds: [ embeds.mod ] })
+        } catch(err) {
+          if (`${err}`.includes("InteractionNotReplied")) {
+            // do nothing
+          } else {
+            this.messages.push(err.stack)
+          }
+        }
       }
 
       // Save the ghost message to a log file
