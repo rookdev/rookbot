@@ -9,7 +9,7 @@ const UptimeCommand = require('../../commands/botmeta/uptime')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
-const unready = require('../../events/unready/exit')  // unreadyEvent
+const clientUnready = require('../../events/clientUnready/exit')  // unreadyEvent
 const shell = require('shelljs')
 
 // Multiple messages
@@ -141,7 +141,7 @@ module.exports = class ShutdownCommand extends BotDevCommand {
         }
       } else {
         // Run unreadyEvent
-        await unready(client, interaction)
+        await clientUnready(client, interaction)
         // Alert with SHUTDOWN action
         this.messages.push(`!!! SHUTDOWN`)
         console.log(this.messages.join("\n"))

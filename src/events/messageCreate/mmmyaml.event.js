@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { Message, codeBlock } = require('discord.js')
+const { Message, inlineCode } = require('discord.js')
 const { FileReaderEvent } = require('../../classes/event/filereader.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
@@ -11,13 +11,13 @@ const getters = require('../../utils/guild/getters')
 
 /**
  * @class
- * @this {TxtFileEvent}
+ * @this {MMMYamlEvent}
  * @public
  */
-module.exports = class TxtFileEvent extends FileReaderEvent {
+module.exports = class MMMYamlEvent extends FileReaderEvent {
   constructor(client) {
     let evtprops = {
-      filexts:      [ "txt" ],
+      filexts:      [ "yaml", "yml" ],
       channelName:  "bot-testing",
       moo: ""
     }
@@ -59,11 +59,27 @@ module.exports = class TxtFileEvent extends FileReaderEvent {
             }
           )
         )
-        let txt = await fileFuncs.getAURL(aData.url)
+        let aYaml = await fileFuncs.getAURL(aData.url, "yaml")
 
+        let fields = [
+          [
+            {
+              name: "Player",
+              value: aYaml["name"]
+            },
+            {
+              name: "Game",
+              value: aYaml["game"]
+            }
+          ]
+        ]
         let props = {
-          title: { text: aData.name },
-          description: codeBlock(txt)
+          title: {
+            text: "YAML Parser",
+            emoji: "📝"
+          },
+          description: inlineCode(aData.name),
+          fields: fields
         }
 
         let embed = new RookEmbed(client, props)

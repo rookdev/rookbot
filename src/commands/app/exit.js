@@ -7,7 +7,7 @@ const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
 const UptimeCommand = require('../../commands/botmeta/uptime')
 const mentionFuncs = require('../../utils/formatters/mentions')
-const unready = require('../../events/unready/exit')  // unreadyEvent
+const clientUnready = require('../../events/clientUnready/exit')  // unreadyEvent
 
 // Multiple messages
 
@@ -63,7 +63,7 @@ module.exports = class ExitCommand extends BotDevCommand {
     await uptime.execute(client, interaction)
 
     // Run unreadyEvent
-    await unready(client, interaction)
+    await clientUnready(client, interaction)
 
     // Alert with EXIT action
     this.messages.push(`!!! EXIT`)

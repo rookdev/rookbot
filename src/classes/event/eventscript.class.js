@@ -128,8 +128,8 @@ class EventScript {
   }
 
   async action(client, args) {
-    // this.messages.push(`/${this.name}: Event Action`)
-    // this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
+    this.messages.push(`/${this.name}: Event Action`)
+    this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
   }
 
   async print_it(client, pages) {
@@ -212,9 +212,15 @@ class EventScript {
     }
   }
 
+  async build(client, ...args) {
+    // this.messages.push(`/${this.name}: Event Build`)
+    let action_result = await this.action(client, ...args)
+    return action_result
+  }
+
   async execute(client, ...args) {
     // this.messages.push(`/${this.name}: Event Execute`)
-    await this.action(client, ...args)
+    let build_result = await this.build(client, ...args)
     this.printMessages()
   }
 
