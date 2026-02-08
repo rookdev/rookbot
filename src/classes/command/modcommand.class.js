@@ -343,24 +343,6 @@ class ModCommand extends AdminCommand {
   }
 
   async action(client, interaction, coptions) {
-    // FIXME: Temporary hack to not allow on Live Server
-    //  Except Minnie because she knows what she's doing
-    if (interaction) {
-      if (interaction?.guild.id) {
-        if (
-          ([
-            "1282788953052676177",  // DoI Main
-            "365162015280594944",   // Trident Esports Main
-          ].includes(interaction.guild.id)) &&
-          (interaction.user.username != "matrethewey")
-        ) {
-          this.error = true
-          this.props.description = `${this.profile.emojis.fail} /${this.name} not ready for Live Server yet.`
-          return false
-        }
-      }
-    }
-
     let lastingError
 
     // Get Guild ID
@@ -388,10 +370,10 @@ class ModCommand extends AdminCommand {
     )
 
     let props = {
-      public: {},
-      dm:     {},
-      mod:    {},
-      log:    {}
+      public: { null: true },
+      dm:     { null: true },
+      mod:    { null: true },
+      log:    { null: true }
     }
     let embeds = {}
 
@@ -483,9 +465,6 @@ class ModCommand extends AdminCommand {
     // Get the guild member (to fetch nickname if present)
     const guildMember = await this.getCache(client, interaction.guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
-
-    // Check Editable
-    let editable = this.botCanEdit(client, guildMember)
 
     // Attempt to ACTION the user
     let success = false
@@ -616,8 +595,6 @@ class ModCommand extends AdminCommand {
             }
           )
         }
-        this.null = true
-        this.props.null = true
         this.messages.push(`/${this.name}: ModPost`)
       }
 
@@ -640,18 +617,16 @@ class ModCommand extends AdminCommand {
           ) {
             dm_desc = dm_desc.replace(" from ", " by staff in ")
           }
-          props.dm = {
-            color: this.profile.colors.warning,
-            title: {
+          props.dm.color = this.profile.colors.warning
+          props.dm.title = {
               emoji: this.profile.emojis.warn,
               text: (this.DEV ? "[DM] " : "") + pretty_name
-            },
-            playerTypes: {
+          }
+          props.dm.playerTypes = {
               user: "bot",
               target: "guild"
-            },
-            description: dm_desc
           }
+          props.dm.desc = dm_desc
           printResult = await this.print_it(client, interaction, [ props.dm ])
           embeds.dm = this.pages[0]
           this.pages = []
@@ -666,24 +641,22 @@ class ModCommand extends AdminCommand {
 
           // Reply to Mod for DM about ACTION
           this.ephemeral = true
-          props.mod = {
-            color: this.profile.colors.success,
-            title: {
-              emoji: this.profile.emojis.good,
-              text: "[YouPost] Success!"
-            },
-            playerTypes: {
-              user: "bot",
-              target: "target"
-            },
-            entities: {
-              target: {
-                name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: 128 })
-              }
-            },
-            ephemeral: true
+          props.mod.color = this.profile.colors.success
+          props.mod.title = {
+            emoji: this.profile.emojis.good,
+            text: "[YouPost] Success!"
           }
+          props.mod.playerTypes = {
+            user: "bot",
+            target: "target"
+          }
+          props.mod.entities = {
+            target: {
+              name: targetUser.displayName,
+              avatar: targetUser.displayAvatarURL({ size: 128 })
+            }
+          }
+          props.mod.ephemeral = true
           // Do link user
           props.mod.description = [
             `${this.profile.emojis.check} User ${mentionFuncs.userMention(targetUserId)} successfully ${bold(tenses.past)} via DMs!`,
@@ -708,15 +681,13 @@ class ModCommand extends AdminCommand {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
           this.messages.push(`${this.profile.emojis.fail} Failed to DM user: ${dmError.message}`)
-          props.mod = {
-            color: this.profile.colors.error,
-            title: { text: "[YouPost] Error" },
-            description: [
-              `${this.profile.emojis.fail} I couldn't send the DM to the user [${targetUserId}].`,
-              `They might have DMs disabled.`
-            ],
-            ephemeral: true
-          }
+          props.mod.color = this.profile.colors.error
+          props.mod.title = { text: "[YouPost] Error" }
+          props.mod.description = [
+            `${this.profile.emojis.fail} I couldn't send the DM to the user [${targetUserId}].`,
+            `They might have DMs disabled.`
+          ]
+          props.mod.ephemeral = true
           printResult = await this.print_it(client, interaction, [ props.mod ])
           embeds.mod = this.pages[0]
           this.pages = []
@@ -771,7 +742,7 @@ class ModCommand extends AdminCommand {
               {
                 name: tenses.past.ucfirst() + ' By',
                 value: mentionFuncs.userMention(
-                  interaction.user.id,
+                  interaction?.user?.id,
                   { showID: true }
                 )
               }
@@ -850,24 +821,22 @@ class ModCommand extends AdminCommand {
             ]
           )
 
-          props.log = {
-            color: this.name == "unban" ? this.profile.colors.good : this.profile.colors.bad,
-            title: {
-              emoji: emoji,
-              text: "[Log] User " + tenses.past.ucfirst()
-            },
-            playerTypes: {
-              user: "caller",
-              target: "target"
-            },
-            entities: {
-              target: {
-                name: targetUser.displayName,
-                avatar: targetUser.displayAvatarURL({ size: 128 })
-              }
-            },
-            fields: logFields
+          props.log.color = this.name == "unban" ? this.profile.colors.good : this.profile.colors.bad
+          props.log.title = {
+            emoji: emoji,
+            text: "[Log] User " + tenses.past.ucfirst()
           }
+          props.log.playerTypes = {
+            user: "caller",
+            target: "target"
+          }
+          props.log.entities = {
+            target: {
+              name: targetUser.displayName,
+              avatar: targetUser.displayAvatarURL({ size: 128 })
+            }
+          }
+          props.log.fields = logFields
 
           printResult = await this.print_it(client, interaction, [ props.log ])
           embeds.log = this.pages[0]

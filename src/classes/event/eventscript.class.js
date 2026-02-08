@@ -128,7 +128,7 @@ class EventScript {
   }
 
   async action(client, args) {
-    this.messages.push(`/${this.name}: Event Action`)
+    // this.messages.push(`/${this.name}: Event Action`)
     this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
   }
 

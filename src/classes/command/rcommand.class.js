@@ -702,7 +702,10 @@ class RookCommand {
         interaction?.user?.id
       )
 
-    if (interaction) {
+    if (
+      interaction &&
+      !(coptions.hasOwnProperty("bypass"))
+    ) {
       // Permissions Required
       if (this.userPermissions) {
         let member = await this.getCache(client, interaction.guild, "members", interaction.user.id)

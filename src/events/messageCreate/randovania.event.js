@@ -18,6 +18,7 @@ module.exports = class RandovaniaYamlEvent extends FileReaderEvent {
   constructor(client) {
     let evtprops = {
       filexts:      [ "rdvgame", "rdvpreset" ],
+      // channelName:  "multiworld-scheduling",
       channelName:  "bot-testing",
       moo: ""
     }

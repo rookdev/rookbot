@@ -18,6 +18,7 @@ module.exports = class MMMYamlEvent extends FileReaderEvent {
   constructor(client) {
     let evtprops = {
       filexts:      [ "yaml", "yml" ],
+      // channelName:  "multiworld-scheduling",
       channelName:  "bot-testing",
       moo: ""
     }
