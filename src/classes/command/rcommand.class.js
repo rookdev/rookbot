@@ -619,7 +619,7 @@ class RookCommand {
     let send_result = false
     if (!interaction_result) {
       try {
-        this.messages.push(`/${this.name}: Posting Independent`)
+        this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${this.channel.guild.name}'`)
         await this.channel.send(this_package)
         send_result = true
       } catch(e) {
