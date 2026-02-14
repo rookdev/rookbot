@@ -704,7 +704,7 @@ class RookCommand {
 
     if (
       interaction &&
-      !(coptions.hasOwnProperty("bypass"))
+      !(coptions?.bypass)
     ) {
       // Permissions Required
       if (this.userPermissions) {
