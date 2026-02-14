@@ -441,7 +441,7 @@ class RookCommand {
         }
 
         // If we've got an Interaction
-        if (interaction) {
+        if (interaction?.id) {
           // Get Guild version of Client User
           let clientMember = interaction.guild?.members.me
           // Get Guild version of Caller
@@ -605,7 +605,7 @@ class RookCommand {
     // Handle the interaction
     //  Send it if interaction exists and not forced to be independent
     let interaction_result = false
-    if (interaction && !independent) {
+    if (interaction?.id && !independent) {
       interaction_result = await this.handle_interaction(
         interaction,
         this_package,
@@ -682,7 +682,7 @@ class RookCommand {
       // Guild it was in
       .addRow(
         "Guild",
-        interaction?.member?.guild?.name,
+        interaction?.guild?.name,
         interaction?.guildId
       )
       // Channel it was in
@@ -694,7 +694,7 @@ class RookCommand {
       // Interaction associated with it
       .addRow(
         "Interaction",
-        interaction ? this.profile.emojis.check : this.profile.emojis.nocheck,
+        interaction?.id ? this.profile.emojis.check : this.profile.emojis.nocheck,
         interaction?.id
       )
       // Whodunnit?
