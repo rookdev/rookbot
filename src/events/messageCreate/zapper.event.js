@@ -169,7 +169,7 @@ module.exports = class ZapperEvent extends EventScript {
       ],
       [
         {
-          name: "Member Joined",
+          name: "Member Zapped",
           value: hyperlink(
             guildMember.user.tag,
             `https://discord.com/users/${guildMember.user.id}`
@@ -178,7 +178,7 @@ module.exports = class ZapperEvent extends EventScript {
       ],
       [
         {
-          name: "Member Link",
+          name: "Member Mention",
           value: mentionFuncs.userMention(
             guildMember.user.id,
             { showID: true }

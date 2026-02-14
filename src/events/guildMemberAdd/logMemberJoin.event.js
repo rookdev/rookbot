@@ -86,7 +86,7 @@ module.exports = class LogMemberJoinEvent extends EventScript {
         ],
         [
           {
-            name: "Member Link",
+            name: "Member Mention",
             value: mentionFuncs.userMention(
               newMember.user.id,
               { showID: true }

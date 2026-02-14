@@ -120,6 +120,7 @@ const client = new RookClient(
      */
     intents: [
       GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildInvites,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildMessages,

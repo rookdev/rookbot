@@ -117,7 +117,7 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
         ],
         [
           {
-            name: "Member Link",
+            name: "Member Mention",
             value: mentionFuncs.userMention(
               oldMember.user.id,
               { showID: true }

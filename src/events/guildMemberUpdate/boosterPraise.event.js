@@ -46,7 +46,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
         "roles"
       )
       let roleNames = dbRes[0]
-      this.messages.push(...dbRes[1])
+      // this.messages.push(...dbRes[1])
 
       if (!roleNames) {
         this.messages.push("No Role Names!")
@@ -61,7 +61,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
 
       let boostRole = await getters.getCache(client, newMember.guild, "roles", roleNames.booster[0])
       if (!boostRole) {
-        this.messages.push("No Boost Role!")
+        // this.messages.push("No Boost Role!")
         return false
       }
 
