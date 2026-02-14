@@ -386,9 +386,11 @@ class RookCommand {
     }
 
     if (!handle_result) {
-      this.messages.push(`/${this.name}: Sending Ethereally`)
-      await interaction.channel.send(this_package)
-      handle_result = true
+      if (interaction?.channel) {
+        this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
+        await interaction.channel.send(this_package)
+        handle_result = true
+      }
     }
 
     return handle_result
