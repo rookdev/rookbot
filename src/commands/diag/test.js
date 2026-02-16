@@ -2,6 +2,7 @@
 
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 
 module.exports = class TestCommand extends RookCommand {
   constructor(client) {
@@ -20,15 +21,31 @@ module.exports = class TestCommand extends RookCommand {
 
   // declare props: import('../../types/embed').EmbedProps
 
-  async action(client, interaction, coptions) {
-    if (! this.DEV) {
-      // Do the thing
-      this.props.description = "Doing the thing!"
-    } else {
-      // Describe the thing
-      this.props.description = "Describing the thing!"
+  async execute(client, interaction, coptions, independent=false) {
+    this.messages.push(`/${this.name}: Command Execute`)
+    let page = {
+      title: { text: "Title" },
+      color: "#ffaf00",
+      content: "Content",
+      description: "Description",
+      fields: [
+        [
+          { name: "Name", value: "Value" }
+        ]
+      ]
     }
+    let pages = [ page ]
 
-    return !this.error
+    console.log(this.messages.join("\n"))
+
+    let rmessage = await new RookMessage(
+      client,
+      interaction,
+      {
+        // channelName: "bot-console",
+        pages: page
+      }
+    )
+    let exec_result = await rmessage.execute()
   }
 }

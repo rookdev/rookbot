@@ -22,7 +22,6 @@ class BotDevCommand extends AdminCommand {
     comprops.permissions = [ PermissionFlagsBits.Administrator ]
     // Category: BotDev
     comprops.access = comprops?.access ? comprops.access : "BotDev"
-    comprops.wide = comprops?.wide ? comprops.wide : true
 
     // Create parent object
     super(

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { ActivityType, GuildMember, hyperlink } = require('discord.js')
+const { ActivityType, GuildMember, bold, italic, hyperlink } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -145,7 +145,7 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
     if (newPresence.activities) {
       for (let activity of newPresence.activities) {
         if (activity.type == ActivityType.Streaming) {
-          if (activity.url) {
+          if (activity?.url) {
             foundActivity = activity
           }
         }
@@ -346,15 +346,17 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
       }
     }
 
-    // appended messages for debugging
-    await this.logMessages(
-      "🔴",
-      {
-        guild: member.guild.name,
-        member: member.user.tag,
-        url: foundActivity.url,
-        roles: roles
-      }
-    )
+    if (sendAlert) {
+      // appended messages for debugging
+      await this.logMessages(
+        "🔴",
+        {
+          guild: member.guild.name,
+          member: member.user.tag,
+          url: foundActivity.url,
+          roles: roles
+        }
+      )
+    }
   }
 }

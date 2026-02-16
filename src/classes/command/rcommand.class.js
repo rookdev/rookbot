@@ -34,7 +34,6 @@ class RookCommand {
     this.userPermissions  = setValue(comprops.userPermissions, this.permissions)
     this.messages         = []
     this.errors           = require('../../dbs/errors.json')
-    this.wide             = setValue(comprops.wide, false)
 
     // Initialize global properties
     this.profile = client.profile // Loaded Profile
@@ -72,11 +71,6 @@ class RookCommand {
     // Default Embed:Players to Command:Players
     if (!Object.hasOwn(this.props, "players")) {
       this.props["players"] = this.players
-    }
-
-    // Default Embed:Wide to what was sent
-    if (!Object.hasOwn(this.props, "wide")) {
-      this.props["wide"] = this.wide
     }
 
     // Initialize Embed:Entities
@@ -583,9 +577,6 @@ class RookCommand {
             if (this_footer?.icon_url && (this_footer.icon_url != "")) {
               this_footer.iconURL = this_footer.icon_url
             }
-            if (this.wide) {
-            }
-          } else if(this.wide) {
           }
           return page.setFooter(this_footer)
         }
