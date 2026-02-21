@@ -34,7 +34,9 @@ module.exports = class TestCommand extends RookCommand {
         ]
       ]
     }
-    let pages = [ page ]
+    let pages = []
+    pages.push(page)
+    pages.push(page)
 
     console.log(this.messages.map(m=>"   " + m).join("\n"))
 
@@ -43,7 +45,7 @@ module.exports = class TestCommand extends RookCommand {
       interaction,
       {
         // channelName: "bot-console",
-        pages: page
+        pages: pages
       }
     )
     let exec_result = await rmessage.execute()

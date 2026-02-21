@@ -10,7 +10,7 @@ class RookMessage {
     this.client = client
     this.interaction = interaction ?? null
 
-    this.channelName  = setValue(mprops.channelName, "bot-testing")
+    this.channelName  = setValue(mprops.channelName, "bot-console")
     this.content      = setValue(mprops.content, "")
     this.pages        = setValue(mprops.pages, [])
     this.ephemeral    = setValue(mprops.ephemeral, false)
@@ -42,10 +42,10 @@ class RookMessage {
     // Defer if needed
     if (!hasDeferred && !hasReply && canDefer) {
       let deferMsg = ""
-      // deferMsg = `/${this.name}: Deferring Reply`
+      deferMsg = `/${this.name}: Deferring Reply`
       // Note if needs to be Ephemeral
       if (this.ephemeral) {
-        // deferMsg += " [Ephemeral]"
+        deferMsg += " [Ephemeral]"
       }
       if (deferMsg != "") {
         this.messages.push(deferMsg)
@@ -55,7 +55,11 @@ class RookMessage {
         intOptions = { flags: MessageFlags.Ephemeral }
       }
       if (this.interaction?.id) {
-        await this.interaction.deferReply(intOptions)
+        try {
+          await this.interaction.deferReply(intOptions)
+        } catch (err) {
+          // do nothing
+        }
       }
       hasDeferred = true
     }
@@ -63,7 +67,7 @@ class RookMessage {
     return hasDeferred
   }
   async handle_interaction(this_package, hasDeferred=false) {
-    let isEphemeral = this_package.ephemeral
+    let isEphemeral = this_package?.ephemeral
     let hasReply    = this.interaction?.replied
     let canEdit     = this.interaction?.id && typeof this.interaction?.editReply === "function"
     let canReply    = this.interaction?.id && typeof this.interaction?.reply === "function"
@@ -83,19 +87,16 @@ class RookMessage {
         } else {
           this.messages.push(`/${this.name}: Editing Ephemeral Reply`)
         }
-        await this.interaction.editReply(this_package)
-        handle_result = true
+        handle_result = await this.interaction.editReply(this_package)
       } catch(e) {
         // this.messages.push(e)
         // handle_result = false
       }
-      handle_result = true
     } else if (!hasReply && canReply) {
       // reply if edited "thinking"
       this.messages.push(`/${this.name}: Posting Reply`)
       try {
-        await this.interaction.reply(this_package)
-        handle_result = true
+        handle_result = await this.interaction.reply(this_package)
       } catch(e) {
         // this.messages.push(e.stack)
         handle_result = false
@@ -104,8 +105,7 @@ class RookMessage {
       // followup if already replied
       this.messages.push(`/${this.name}: Posting Follow-Up`)
       try {
-        await this.interaction.followUp(this_package)
-        handle_result = true
+        handle_result = await this.interaction.followUp(this_package)
       } catch(e) {
         // this.messages.push(e.stack)
         handle_result = false
@@ -115,16 +115,20 @@ class RookMessage {
     if (!handle_result && isEphemeral && canFollowUp && interaction?.id) {
       // send followup and delete reply
       this.messages.push(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
-      await this.interaction.followUp(this_package)
+      handle_result = await this.interaction.followUp(this_package)
       await this.interaction.deleteReply()
-      handle_result = true
     }
 
     if (!handle_result) {
       if (this.interaction?.channel) {
         this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
-        await this.interaction.channel.send(this_package)
-        handle_result = true
+        try {
+          handle_result = await this.interaction.channel.send(this_package)
+        } catch (err) {
+          if (!["50035"].includes((err.code + ""))) {
+            this.messages.push(err, err.stack)
+          }
+        }
       }
     }
 
@@ -299,6 +303,8 @@ class RookMessage {
     if (this.content && this.content != "") {
       this.messages.push(`/${this.name}: ...with more Content!`)
       this_package.content = this.content
+    } else {
+      this_package.content = "** **"
     }
 
     // If we've got more than one page, paginate it
@@ -306,7 +312,7 @@ class RookMessage {
       // We're only paginating Embed objects
       // We're setting the footer to include the page number
       this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
-      let these_pagination = await new Pagination(interaction)
+      let these_pagination = await new Pagination(this.interaction)
       // Set to all users for control
       these_pagination.setAuthorizedUsers([])
       these_pagination.setEmbeds(
@@ -327,6 +333,7 @@ class RookMessage {
       )
       these_pagination.render()
       this_package = {
+        content: "** **",
         embeds: [ these_pagination ]
       }
     }
@@ -354,8 +361,7 @@ class RookMessage {
     if (!interaction_result) {
       try {
         this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${this.channel.guild.name}'`)
-        await this.channel.send(this_package)
-        send_result = true
+        send_result = await this.channel.send(this_package)
       } catch(e) {
         // this.messages.push(e)
         send_result = false
@@ -363,7 +369,7 @@ class RookMessage {
     }
 
     if (!(interaction_result || send_result)) {
-      this.messages.push(`/${this.name}: Failed to send message!`)
+      // this.messages.push(`/${this.name}: Failed to send message! Int: ${interaction_result} Snd: ${send_result}`)
       // await this.interaction.deleteReply()
     }
 

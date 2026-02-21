@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 const { MessageFlags, codeBlock, italic } = require('discord.js')            // Message Flags
+const { RookMessage } = require('../objects/rmessage.class')
 const { Pagination } = require('pagination.djs')          // Pagination
 const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
@@ -295,101 +296,6 @@ class RookCommand {
     return actionResult && !this.error
   }
 
-  async handle_deferrment(interaction) {
-    let hasDeferred = interaction?.deferred
-    let hasReply    = interaction?.replied
-    let canDefer    = typeof interaction?.deferReply === "function"
-
-    // Defer if needed
-    if (!hasDeferred && !hasReply && canDefer) {
-      let deferMsg = `/${this.name}: Deferring Reply`
-      // Note if needs to be Ephemeral
-      if (this.ephemeral) {
-        deferMsg += " [Ephemeral]"
-      }
-      this.messages.push(deferMsg)
-      let intOptions = {}
-      if (this.ephemeral) {
-        intOptions = { flags: MessageFlags.Ephemeral }
-      }
-      if (interaction?.id) {
-        await interaction.deferReply(intOptions)
-      }
-      hasDeferred = true
-    }
-
-    return hasDeferred
-  }
-
-  async handle_interaction(interaction, this_package, hasDeferred=false) {
-    let isEphemeral = this_package.ephemeral
-    let hasReply    = interaction?.replied
-    let canEdit     = interaction?.id && typeof interaction?.editReply === "function"
-    let canReply    = interaction?.id && typeof interaction?.reply === "function"
-    let canFollowUp = interaction?.id && typeof interaction?.followUp === "function"
-
-    if (!hasDeferred) {
-      hasDeferred = interaction?.deferred || await this.handle_deferrment(interaction)
-    }
-
-    let handle_result = false
-
-    // editReply "thinking" if first reply
-    if (hasDeferred && canEdit && interaction?.id) {
-      try {
-        if (!isEphemeral) {
-          this.messages.push(`/${this.name}: Editing Corporeal Reply`)
-        } else {
-          this.messages.push(`/${this.name}: Editing Ephemeral Reply`)
-        }
-        await interaction.editReply(this_package)
-        handle_result = true
-      } catch(e) {
-        // this.messages.push(e)
-        // handle_result = false
-      }
-      handle_result = true
-    } else if (!hasReply && canReply) {
-      // reply if edited "thinking"
-      this.messages.push(`/${this.name}: Posting Reply`)
-      try {
-        await interaction.reply(this_package)
-        handle_result = true
-      } catch(e) {
-        // this.messages.push(e.stack)
-        handle_result = false
-      }
-    } else if (hasReply && canFollowUp) {
-      // followup if already replied
-      this.messages.push(`/${this.name}: Posting Follow-Up`)
-      try {
-        await interaction.followUp(this_package)
-        handle_result = true
-      } catch(e) {
-        // this.messages.push(e.stack)
-        handle_result = false
-      }
-    }
-
-    if (!handle_result && isEphemeral && canFollowUp && interaction?.id) {
-      // send followup and delete reply
-      this.messages.push(`/${this.name}: Sending Ephemeral & Deleting Interaction`)
-      await interaction.followUp(this_package)
-      await interaction.deleteReply()
-      handle_result = true
-    }
-
-    if (!handle_result) {
-      if (interaction?.channel) {
-        this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
-        await interaction.channel.send(this_package)
-        handle_result = true
-      }
-    }
-
-    return handle_result
-  }
-
   async print_it(client, interaction, pages) {
     this.messages.push(`/${this.name}: Print it...`)
 
@@ -546,84 +452,18 @@ class RookCommand {
     return !this.error
   }
 
-  async ship_it(interaction, independent=false, hasDeferred=false) {
-    this.messages.push(`/${this.name}: ...and Ship it!`)
-
-    // Base package is just the pages
-    let this_package = { embeds: this.pages }
-    // If we've got Message Content, set it
-    if (this.content && this.content != "") {
-      this.messages.push(`/${this.name}: ...with more Content!`)
-      this_package.content = this.content
-    }
-
-    // If we've got more than one page, paginate it
-    if (this.pages.length > 1) {
-      // We're only paginating Embed objects
-      // We're setting the footer to include the page number
-      this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
-      let these_pagination = await new Pagination(interaction)
-      // Set to all users for control
-      these_pagination.setAuthorizedUsers([])
-      these_pagination.setEmbeds(
-        this.pages,
-        (page, index, array) => {
-          let this_footer = page.toJSON()?.footer
-          if (this_footer) {
-            if (this_footer.text) {
-              this_footer.text = ` • ${this_footer.text}`
-            }
-            this_footer.text = `Page: ${index+1}/${array.length}${this_footer.text}`
-            if (this_footer?.icon_url && (this_footer.icon_url != "")) {
-              this_footer.iconURL = this_footer.icon_url
-            }
-          }
-          return page.setFooter(this_footer)
-        }
-      )
-      these_pagination.render()
-      this_package = {
-        embeds: [ these_pagination ]
-      }
-    }
-
-    // If it's gonna be Ephemeral, set it
-    if (this.ephemeral) {
-      this_package.flags = MessageFlags.Ephemeral
-      this_package.ephemeral = true
-    }
-
-    // Handle the interaction
-    //  Send it if interaction exists and not forced to be independent
-    let interaction_result = false
-    if (interaction?.id && !independent) {
-      interaction_result = await this.handle_interaction(
-        interaction,
-        this_package,
-        hasDeferred
-      )
-    }
-
-    // If we didn't sent it earlier
-    //  We either failed to have an interaction object or
-    //   We're forcing it to be independent
-    let send_result = false
-    if (!interaction_result) {
-      try {
-        this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${this.channel.guild.name}'`)
-        await this.channel.send(this_package)
-        send_result = true
-      } catch(e) {
-        // this.messages.push(e)
-        send_result = false
-      }
-    }
-
-    return interaction_result || send_result
-  }
-
   async send(client, interaction, pages, independent=false, hasDeferred=false) {
     this.messages.push(`/${this.name}: Full Send it!`)
+    let rmessage = await new RookMessage(
+      client,
+      interaction,
+      {
+        channelName: this.channel?.id,
+        pages: pages
+      }
+    )
+    let sendResult = await rmessage.execute()
+    return sendResult
 
     // Print it!
     let printResult = await this.print_it(client, interaction, pages)
@@ -648,6 +488,15 @@ class RookCommand {
   }
 
   async execute(client, interaction, coptions, independent=false) {
+    if (interaction) {
+      if (typeof interaction.deferReply === "function") {
+        let intOptions = {}
+        if (this.ephemeral) {
+          intOptions = { flags: MessageFlags.Ephemeral }
+        }
+        await interaction.deferReply(intOptions)
+      }
+    }
     // Print data about the calling of this command
     let now = moment.utc()
     let dateTable = new AsciiTable(
@@ -739,11 +588,12 @@ class RookCommand {
 
     // If there's no channel defined, try to get it
     if (!this.channel) {
-      this.channel = await this.getChannel(client, interaction, this.channelName)
+      if (interaction) {
+        this.channel = interaction.channel
+      } else {
+        this.channel = await this.getChannel(client, interaction, this.channelName)
+      }
     }
-
-    // See if we need to defer reply
-    let hasDeferred = await this.handle_deferrment(interaction)
 
     // Pre-flight checks
     let buildResult = await this.build(client, interaction, coptions)
@@ -754,13 +604,19 @@ class RookCommand {
 
     // If we're still sending, send it
     if (doSend) {
-      sendResult = await this.send(
+      if (!this.pages.length) {
+        this.pages = [ this.props ]
+      }
+      let rmessage = await new RookMessage(
         client,
         interaction,
-        this.pages,
-        independent,
-        hasDeferred
+        {
+          channelName: this.channel?.id,
+          pages: this.pages
+        }
       )
+      let rexec = await rmessage.execute()
+      sendResult = rexec
     }
 
     this.messages.push("")
@@ -839,11 +695,14 @@ class RookCommand {
       if (testBook) {
         // If we built a Book, send it
         try {
-          execResult = await this.send(
+          let rmessage = await new RookMessage(
             client,
             interaction,
-            pages
+            {
+              pages: pages
+            }
           )
+          execResult = await rmessage.execute()
         } catch(e) {
           this.messages.push(e)
         }
