@@ -19,6 +19,7 @@ class RookClient extends Client {
   ) {
     super(args) // Create Discord Client object
 
+    this.platform     = "discord"
     // Commands
     this.commands     = {}
     // Guild Object

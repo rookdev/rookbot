@@ -95,22 +95,27 @@ module.exports = class EmitCommand extends AdminCommand {
       //  announceGoLive
       //  boostePraise
       //  logNameChange
-      let oldMember = await interaction.guild.members.me.toJSON()
-      if (!oldMember?.presence) {
+      let oldMember = await interaction.guild.members.me
+      if (!(oldMember?.presence)) {
+        console.log("Adding Member Presence")
         oldMember.presence = {}
       }
-      if (!oldMember?.presence?.activities) {
+      if (!(oldMember?.presence?.activities)) {
+        console.log("Adding Member Presence Activities")
         oldMember.presence.activities = [
           {}
         ]
       }
-      if (!oldMember?.guild) {
+      if (!(oldMember?.guild)) {
+        console.log("Adding Guild")
         oldMember.guild = interaction.guild
       }
-      if (!oldMember?.guild?.roles) {
+      if (!(oldMember?.guild?.roles)) {
+        console.log("Adding Guild Roles")
         oldMember.guild.roles = {}
       }
-      if (!oldMember?.guild?.roles?.cache) {
+      if (!(oldMember?.guild?.roles?.cache)) {
+        console.log("Adding Guild Roles Cache")
         oldMember.guild.roles.cache = {
           roles: [
             {
@@ -125,16 +130,19 @@ module.exports = class EmitCommand extends AdminCommand {
           }
         }        
       }
-      if (!oldMember?.roles) {
+      if (!(oldMember?.roles)) {
+        console.log("Adding Member Roles")
         oldMember.roles = {}
       }
-      if (!oldMember?.roles?.cache) {
+      if (!(oldMember?.roles?.cache)) {
+        console.log("Adding Member Roles Cache")
         oldMember.roles.cache = {
           moo: 1,
           has: () => { return false }
         }
       }
       args.push(oldMember)
+      // console.log(oldMember)
 
       if (eventName == "guildMemberUpdate") {
         let newMember = JSON.parse(JSON.stringify(oldMember))
@@ -150,8 +158,22 @@ module.exports = class EmitCommand extends AdminCommand {
           }
         }
 
-        // announceStreaming
+        if (!(newMember?.presence)) {
+          console.log("Adding Member Presence")
+          newMember.presence = {}
+        }
+        if (!(newMember?.presence?.activities)) {
+          console.log("Adding Member Presence Activities")
+          newMember.presence.activities = [
+            {}
+          ]
+        }
+
+        console.log(newMember)
+
+        // announceGoLive
         newMember.presence.activities[0] = { url: "http://example.com/stream" }
+
         // boosterPraise
         // logNameChange
         newMember.displayAvatarURL = async () => {
@@ -166,11 +188,13 @@ module.exports = class EmitCommand extends AdminCommand {
       //  logCreatedInvite
       args.push(
         {
+          channel: interaction.channel,
           channelId: interaction.channelId,
           code: "iddqd",
           createdAt: 0,
           expiresAt: 0,
           guild: interaction.guild,
+          inviter: interaction.user,
           inviterId: interaction.user.id,
           maxAge: 0,
           maxUses: 0,
@@ -254,9 +278,13 @@ module.exports = class EmitCommand extends AdminCommand {
 
       // Wait a second after oldPresence
       await wait(1 * 1000)
-      presence.activities[0].url = "http://example.com/stream2"
-      presence.activities[0].createdTimestamp = moment.utc().format("x")
-      args.push(presence)
+      let newPresence = JSON.parse(JSON.stringify(presence))
+      newPresence.guild = interaction.guild,
+      newPresence.user = client.user
+      newPresence.member = interaction.guild.members.me
+      newPresence.activities[0].url = "http://example.com/stream2"
+      newPresence.activities[0].createdTimestamp = moment.utc().format("x")
+      args.push(newPresence)
     } else if (eventName == "voiceStateUpdate") {
       let voiceState = {
         streaming: false,
@@ -267,8 +295,11 @@ module.exports = class EmitCommand extends AdminCommand {
 
       args.push(voiceState)
 
-      voiceState.streaming = true
-      args.push(voiceState)
+      let newVoiceState = JSON.parse(JSON.stringify(voiceState))
+      newVoiceState.streaming = true
+      newVoiceState.guild = interaction.guild
+      newVoiceState.member = interaction.guild.members.me
+      args.push(newVoiceState)
     }
 
     await client.emit(eventName, ...args)
