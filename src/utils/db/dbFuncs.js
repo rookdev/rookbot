@@ -32,7 +32,7 @@ async function getDB(cName, dName, source="mongodb") {
       return [fileFuncs.getAFile(path, `${dName}.json`), messages]
     } else {
       let fileList = fs.readdirSync(fileFuncs.getAPath(path)).filter(
-        f => f.endsWith(".json")
+        f=>f.endsWith(".json")
       )
       return [fileList, messages]
     }

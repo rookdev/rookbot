@@ -36,7 +36,7 @@ module.exports = class TestCommand extends RookCommand {
     }
     let pages = [ page ]
 
-    console.log(this.messages.join("\n"))
+    console.log(this.messages.map(m=>"   " + m).join("\n"))
 
     let rmessage = await new RookMessage(
       client,

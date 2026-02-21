@@ -115,7 +115,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
 
     let members = await guild.members.fetch()
     let numMembers = members.size
-    let numBots = members.filter(member => member.user.bot).size
+    let numBots = members.filter(member=>member.user.bot).size
     this.props.fields.push(
       [
         // Number of Members

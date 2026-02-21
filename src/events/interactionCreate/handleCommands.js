@@ -122,9 +122,7 @@ module.exports = async (client, interaction) => {
     messages = messages.filter(item => item !== "")
     if (messages.length) {
       console.log(
-        messages.map(
-          m => "   " + m
-        ).join("\n")
+        messages.map(m=>"   " + m).join("\n")
       )
       messages = []
     }

@@ -91,9 +91,7 @@ module.exports = (client) => {
               console.log(`  Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
             }
             console.log(
-              messages.map(
-                m => "   " + m
-              ).join("\n")
+              messages.map(m=>"   " + m).join("\n")
             )
           }
         }

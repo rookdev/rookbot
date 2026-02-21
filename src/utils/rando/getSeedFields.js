@@ -372,7 +372,7 @@ module.exports = async (hashID, gameID="z3r") => {
         if (randoSeedTitles[itemName]) {
           itemName = randoSeedTitles[itemName]
         } else {
-          itemName = itemName.split("_").map(x => x.ucfirst()).join(" ")
+          itemName = itemName.split("_").map(x=>x.ucfirst()).join(" ")
         }
         fieldRow.push(
           {
@@ -385,7 +385,7 @@ module.exports = async (hashID, gameID="z3r") => {
     fields.push(fieldRow) 
   }
 
-  messages = messages.filter(item => item !== "")
+  messages = messages.filter(item=>item !== "")
   if (messages.length) {
     console.log(messages.join("\n"))
   }

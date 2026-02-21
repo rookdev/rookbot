@@ -79,7 +79,7 @@ module.exports = async (client, message) => {
 
   const user = guildMember?.user ?? targetUser
 
-  let pretty_name = "Message_Stamp".split("_").map(x => x.ucfirst()).join(" ")
+  let pretty_name = "Message_Stamp".split("_").map(x=>x.ucfirst()).join(" ")
 
   // LogFile for ACTION
   const DEV = !process.env.ENV_ACTIVE.startsWith("prod")
@@ -126,9 +126,7 @@ module.exports = async (client, message) => {
           entries = entries.split("\n")
           // messages.push(entries[recordNumber])
           entries[recordNumber] = ""
-          entries = entries.filter(
-            item => item.trim() != ""
-          )
+          entries = entries.filter(item=>item.trim() != "")
           fs.writeFileSync(logFilePath, entries.join("\n"), "utf8")
           if (entries.length > 0) {
             fs.appendFileSync(logFilePath, "\n", "utf8")

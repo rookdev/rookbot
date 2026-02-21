@@ -16,8 +16,8 @@ module.exports = async (client, oldMember, newMember) => {
 
   if (oldMember.roles !== newMember.roles) {
     let eventTime = moment.utc()
-    oldRoles = await oldMember.roles.cache.map(r => r.name).join(", ")
-    newRoles = await newMember.roles.cache.map(r => r.name).join(", ")
+    oldRoles = await oldMember.roles.cache.map(r=>r.name).join(", ")
+    newRoles = await newMember.roles.cache.map(r=>r.name).join(", ")
     if (!oldRoles.includes("Member") && newRoles.includes("Member")) {
       [result, messages] = logMemberJoin(client, newMember)
     }

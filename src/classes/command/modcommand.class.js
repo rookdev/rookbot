@@ -377,7 +377,7 @@ class ModCommand extends AdminCommand {
     }
     let embeds = {}
 
-    let pretty_name = this.name.split("_").map(x => x.ucfirst()).join(" ")
+    let pretty_name = this.name.split("_").map(x=>x.ucfirst()).join(" ")
 
     // EMOJI for the action
     let emoji = ""

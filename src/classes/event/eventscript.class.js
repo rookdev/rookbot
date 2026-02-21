@@ -1,5 +1,6 @@
 // @ts-nocheck
 
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -93,7 +94,15 @@ class EventScript {
     }
 
     if (channel) {
-      await this.send(client, channel, [ props ])
+      let logMessage = await new RookMessage(
+        client,
+        null,
+        {
+          channelName: channel.id,
+          pages: props
+        }
+      )
+      await logMessage.execute()
     }
   }
 
@@ -132,62 +141,6 @@ class EventScript {
     this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
   }
 
-  async print_it(client, pages) {
-    // this.messages.push(`/${this.name}: Print it...`)
-
-    if (pages) {
-      this.pages = []
-      let i = 0
-      let msg = ""
-      msg += `/${this.name}: Printing `
-      for (let page of pages) {
-        if (true) {
-          msg += "embed   "
-          this.pages[i] = await new RookEmbed(client, page)
-        }
-        msg += ((i+1)+"").padStart(2,'0')
-        msg += '/'
-        msg += ((pages.length)+"").padStart(2,'0')
-        msg += "..."
-        let title = page?.caption?.text ?? page?.title?.text ?? ""
-        msg += `[${title}]`
-        // this.messages.push(msg)
-        i += 1
-      }
-
-      return this.pages
-    }
-
-    return !this.error
-  }
-
-  async ship_it(client, channel) {
-    // this.messages.push(`/${this.name}: ...and Ship it!`)
-
-    let this_package = { embeds: this.pages }
-
-    let send_result = false
-
-    try {
-      // this.messages.push(`/${this.name}: Posting Independent`)
-      await channel.send(this_package)
-    } catch(e) {
-      this.messages.push(e)
-      send_result = false
-    }
-
-    return send_result
-  }
-
-  async send(client, channel, pages) {
-    // this.messages.push(`/${this.name}: Event Full Send!`)
-
-    let printResult = await this.print_it(client, pages)
-    let shipResult = await this.ship_it(client, channel)
-
-    return printResult && shipResult
-  }
-
   async printMessages() {
     let now = moment.utc()
     let nowLocal = now.clone().tz('America/Los_Angeles')
@@ -203,8 +156,8 @@ class EventScript {
       ` Event: ${this.event}`,
       `  Script: ${this.name}`
     ]
-    this.messages = this.messages.filter(item => item !== "")
-    this.messages = this.messages.map(m => "   " + m)
+    this.messages = this.messages.filter(item=>item !== "")
+    this.messages = this.messages.map(m=>"   " + m)
 
     if (this.messages.length > 0) {
       this.messages.unshift(...preamble)

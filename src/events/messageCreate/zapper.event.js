@@ -198,7 +198,7 @@ module.exports = class ZapperEvent extends EventScript {
       [
         {
           name: "Member Role?",
-          value: await guildMember.roles.cache.map(r => r.name).includes("Member")
+          value: await guildMember.roles.cache.map(r=>r.name).includes("Member")
             ? client.profile.emojis.check
             : client.profile.emojis.nocheck
         }

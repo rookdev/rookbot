@@ -65,7 +65,7 @@ module.exports = class LogsCommand extends BotDevCommand {
         shellRes = shellRes.split("\n")
         let search = "]: "
         shellRes = shellRes.map(
-          line => line.substring(
+          line=>line.substring(
             line.indexOf(search) +
             search.length
           )

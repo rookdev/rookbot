@@ -193,7 +193,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 if (vKey == "mode") {
                   line += vData.ucfirst()
                 } else if (vKey == "categories") {
-                  vData = vData.map(c => mentionFuncs.channelMention(c))
+                  vData = vData.map(c=>mentionFuncs.channelMention(c))
                   line += vData.join(", ")
                 } else {
                   line += codeBlock(JSON.stringify(vData))

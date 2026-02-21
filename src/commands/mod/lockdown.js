@@ -68,7 +68,7 @@ module.exports = class LockdownCommand extends ModCommand {
     const confirm = coptions['confirm'] // Confirm
     // Filter Channels based on Text/Voice
     const channels = interaction.guild.channels.cache.filter(
-      ch => ch.isTextBased() || ch.isVoiceBased()
+      ch=>ch.isTextBased() || ch.isVoiceBased()
     )
 
     // Bail if True not sent for Confirm
@@ -135,7 +135,7 @@ module.exports = class LockdownCommand extends ModCommand {
                 name: `Public Channels ${action}ed`,
                 value:
                   processedChannels.length > 0
-                    ? processedChannels.map(id => mentionFuncs.channelMention(id)).join('\n')
+                    ? processedChannels.map(id=>mentionFuncs.channelMention(id)).join('\n')
                     : 'No channels were processed.',
               }
             ],

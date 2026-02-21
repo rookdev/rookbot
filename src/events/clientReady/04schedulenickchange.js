@@ -34,7 +34,7 @@ module.exports = async (client) => {
     )
     // Strip .json extension
     .map(
-      (fileName) => fileName.replace(".json","")
+      fileName=>fileName.replace(".json","")
     )
     // Skip first document
     .slice(1)

@@ -641,7 +641,7 @@ class RookCommand {
   }
 
   async printMessages() {
-    this.messages = this.messages.filter(item => item !== "")
+    this.messages = this.messages.filter(item=>item !== "")
     if (this.messages.length) {
       console.log(this.messages.join("\n"))
     }

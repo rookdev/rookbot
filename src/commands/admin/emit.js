@@ -97,25 +97,25 @@ module.exports = class EmitCommand extends AdminCommand {
       //  logNameChange
       let oldMember = await interaction.guild.members.me
       if (!(oldMember?.presence)) {
-        console.log("Adding Member Presence")
+        // console.log("Adding Member Presence")
         oldMember.presence = {}
       }
       if (!(oldMember?.presence?.activities)) {
-        console.log("Adding Member Presence Activities")
+        // console.log("Adding Member Presence Activities")
         oldMember.presence.activities = [
           {}
         ]
       }
       if (!(oldMember?.guild)) {
-        console.log("Adding Guild")
+        // console.log("Adding Guild")
         oldMember.guild = interaction.guild
       }
       if (!(oldMember?.guild?.roles)) {
-        console.log("Adding Guild Roles")
+        // console.log("Adding Guild Roles")
         oldMember.guild.roles = {}
       }
       if (!(oldMember?.guild?.roles?.cache)) {
-        console.log("Adding Guild Roles Cache")
+        // console.log("Adding Guild Roles Cache")
         oldMember.guild.roles.cache = {
           roles: [
             {
@@ -131,11 +131,11 @@ module.exports = class EmitCommand extends AdminCommand {
         }        
       }
       if (!(oldMember?.roles)) {
-        console.log("Adding Member Roles")
+        // console.log("Adding Member Roles")
         oldMember.roles = {}
       }
       if (!(oldMember?.roles?.cache)) {
-        console.log("Adding Member Roles Cache")
+        // console.log("Adding Member Roles Cache")
         oldMember.roles.cache = {
           moo: 1,
           has: () => { return false }
@@ -159,17 +159,17 @@ module.exports = class EmitCommand extends AdminCommand {
         }
 
         if (!(newMember?.presence)) {
-          console.log("Adding Member Presence")
+          // console.log("Adding Member Presence")
           newMember.presence = {}
         }
         if (!(newMember?.presence?.activities)) {
-          console.log("Adding Member Presence Activities")
+          // console.log("Adding Member Presence Activities")
           newMember.presence.activities = [
             {}
           ]
         }
 
-        console.log(newMember)
+        // console.log(newMember)
 
         // announceGoLive
         newMember.presence.activities[0] = { url: "http://example.com/stream" }

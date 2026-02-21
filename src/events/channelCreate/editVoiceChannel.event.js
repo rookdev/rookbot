@@ -79,7 +79,7 @@ module.exports = class EditVoiceChannelEvent extends EventScript {
         let preParts = namesDB.parts.pre
         if (randFuncs.randPick(preParts).includes("Sahasrahla")) {
           preParts = sahaNames.map(
-            s => s.ucfirst() + "'" + (s.endsWith("s") ? "" : "s")
+            s=>s.ucfirst() + "'" + (s.endsWith("s") ? "" : "s")
           )
         }
 

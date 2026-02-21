@@ -383,12 +383,8 @@ module.exports = class MentionCommand extends RookCommand {
               .sort(
                 (roleA, roleB) => roleB.position - roleA.position
               )
-              .map(
-                role => role.name
-              )
-              .filter(
-                roleName => roleName != "@everyone"
-              )
+              .map(role=>role.name)
+              .filter(roleName=>roleName != "@everyone")
             if (roles) {
               specs.roles = roles
             }
@@ -421,7 +417,7 @@ module.exports = class MentionCommand extends RookCommand {
               specs.status = targetMember.presence.status != "offline"
             }
 
-            let pretty_name = "Message_Stamp".split("_").map(x => x.ucfirst()).join(" ")
+            let pretty_name = "Message_Stamp".split("_").map(x=>x.ucfirst()).join(" ")
             let logFilePath = fileFuncs.getAPath(
               [
                 "src",
