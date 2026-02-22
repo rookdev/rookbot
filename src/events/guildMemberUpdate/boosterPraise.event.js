@@ -2,6 +2,7 @@
 
 const { GuildMember, bold } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -125,9 +126,16 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           }
         }
 
-        let embed = new RookEmbed(client, props)
         let boostChannel = await this.getChannel(client, newMember.guild, ["logging-boosts", "logging"])
-        await boostChannel.send({ embeds: [ embed ] })
+        let boostMessage = await new RookMessage(
+          client,
+          null,
+          {
+            channelName: boostChannel.id,
+            pages: [ props ]
+          }
+        )
+        await boostMessage.execute()
 
         let logFields = [
           [

@@ -2,6 +2,7 @@
 
 const { Message, codeBlock } = require('discord.js')
 const { FileReaderEvent } = require('../../classes/event/filereader.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -66,9 +67,15 @@ module.exports = class TxtFileEvent extends FileReaderEvent {
           description: codeBlock(txt)
         }
 
-        let embed = new RookEmbed(client, props)
-
-        message.channel.send({ embeds: [ embed ] })
+        let txtPost = await new RookMessage(
+          client,
+          message,
+          {
+            channelName: message.channel.id,
+            pages: [ props ]
+          }
+        )
+        await txtPost.execute()
       }
     }
   }

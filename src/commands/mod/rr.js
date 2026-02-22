@@ -2,6 +2,7 @@
 
 // Formatters: inlineCode
 const { inlineCode } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
@@ -85,8 +86,16 @@ module.exports = class ReactionRolesCommand extends ModCommand {
         await interaction.deleteReply()
       }
 
-      let embed = new RookEmbed(client, this.props)
-      let post = await interaction.channel.send({ embeds: [ embed ] })
+      let rrPost = await new RookMessage(
+        client,
+        interaction,
+        {
+          channelName: interaction.channel.id,
+          pages: [ this.props ]
+        }
+      )
+      let independent = true
+      let post = await rrPost.execute(independent)
 
       for (let emojiName of Object.keys(msgData)) {
         if (emojiName.includes("#")) {

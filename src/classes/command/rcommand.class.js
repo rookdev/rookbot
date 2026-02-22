@@ -494,7 +494,11 @@ class RookCommand {
         if (this.ephemeral) {
           intOptions = { flags: MessageFlags.Ephemeral }
         }
-        await interaction.deferReply(intOptions)
+        if (interaction?.id && interaction.id != 0) {
+          if (interaction.hasOwnProperty("deferred") && !interaction.deferred) {
+            await interaction.deferReply(intOptions)
+          }
+        }
       }
     }
     // Print data about the calling of this command

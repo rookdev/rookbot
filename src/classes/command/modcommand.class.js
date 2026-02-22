@@ -27,6 +27,7 @@ const {
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('./admincommand.class')
+const { RookMessage } = require('../objects/rmessage.class')
 // Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
@@ -585,15 +586,16 @@ class ModCommand extends AdminCommand {
           reason +
           ")"
         ]
-        printResult = await this.print_it(client, interaction, [ props.public ])
-        embeds.public = this.pages[0]
-        this.pages = []
         if (!this.null) {
-          interaction.channel.send(
+          let modPost = await new RookMessage(
+            client,
+            interaction,
             {
-              embeds: [ embeds.public ]
+              channelName: interaction.channel.id,
+              pages: [ props.public ]
             }
           )
+          await modPost.execute()
         }
         this.messages.push(`/${this.name}: ModPost`)
       }
@@ -627,10 +629,16 @@ class ModCommand extends AdminCommand {
               target: "guild"
           }
           props.dm.desc = dm_desc
-          printResult = await this.print_it(client, interaction, [ props.dm ])
-          embeds.dm = this.pages[0]
-          this.pages = []
           if (!this.DEV) {
+            let dmPost = await new RookMessage(
+              client,
+              interaction,
+              {
+                channelName: targetUser,
+                pages: [ props.dm ]
+              }
+            )
+            await dmPost.execute()
             // await targetUser.send(
             //   {
             //     embeds: [ embeds.dm ]
@@ -838,14 +846,15 @@ class ModCommand extends AdminCommand {
           }
           props.log.fields = logFields
 
-          printResult = await this.print_it(client, interaction, [ props.log ])
-          embeds.log = this.pages[0]
-          this.pages = []
-          logsChannel.send(
+          let logPost = await new RookMessage(
+            client,
+            interaction,
             {
-              embeds: [ embeds.log ]
+              channelName: logsChannel.id,
+              pages: [ props.log ]
             }
           )
+          await logPost.execute()
           this.messages.push(`/${this.name}: LogPost`)
         } else {
           this.messages.push(`${this.profile.emojis.fail} Logs channel not found.`)
@@ -903,12 +912,16 @@ class ModCommand extends AdminCommand {
       props.mod.error = true
       props.mod.ephemeral = true
       props.mod.description = `${this.profile.emojis.fail} I couldn't ${tenses.present} ${mentionFuncs.userMention(targetUser.id, { showID: true })}.`
-      embeds.mod = await new RookEmbed(client, props.mod)
-      await this.send(
+
+      let modPost = await new RookMessage(
         client,
         interaction,
-        [ embeds.mod ]
+        {
+          channelName: interaction.channel.id,
+          pages: [ props.mod ]
+        }
       )
+      await modPost.execute()
       this.null = true
     }
 

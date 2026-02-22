@@ -2,6 +2,7 @@
 
 const { Message, inlineCode } = require('discord.js')
 const { FileReaderEvent } = require('../../classes/event/filereader.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -83,9 +84,15 @@ module.exports = class MMMYamlEvent extends FileReaderEvent {
           fields: fields
         }
 
-        let embed = new RookEmbed(client, props)
-
-        message.channel.send({ embeds: [ embed ] })
+        let yamlPost = await new RookMessage(
+          client,
+          message,
+          {
+            channelName: message.channel.id,
+            pages: [ props ]
+          }
+        )
+        await yamlPost.execute()
       }
     }
   }

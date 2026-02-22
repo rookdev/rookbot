@@ -2,6 +2,7 @@
 
 // Command Option Types, Permission Flags, Formatters: inlineCode
 const { ApplicationCommandOptionType, PermissionFlagsBits, inlineCode } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -105,12 +106,15 @@ module.exports = class PurgeCommand extends ModCommand {
           `Successfully purged ${deletedMessages.size} messages in ${channel}`
         ]
       }
-      embeds.public = new RookEmbed(client, props.public)
-      interaction.channel.send(
+      let modPost = await new RookMessage(
+        client,
+        interaction,
         {
-          embeds: [ embeds.public ]
+          channelName: interaction.channel.id,
+          pages: [ props.public ]
         }
       )
+      await modPost.execute()
       this.messages.push(`/${this.name}: ModPost`)
     }
 
@@ -132,11 +136,15 @@ module.exports = class PurgeCommand extends ModCommand {
           ]
         }
         embeds.log = new RookEmbed(client, props.log)
-        logsChannel.send(
+        let logPost = await new RookMessage(
+          client,
+          interaction,
           {
-            embeds: [ embeds.log ]
+            channelName: logsChannel.id,
+            pages: [ props.log ]
           }
         )
+        await logPost.execute()
         this.messages.push(`/${this.name}: LogPost`)
       }
     }
@@ -173,12 +181,15 @@ module.exports = class PurgeCommand extends ModCommand {
       props.mod.error = true
       props.mod.ephemeral = true
       props.mod.description = `I couldn't Purge the messages.`
-      embeds.mod = await new RookEmbed(client, props.mod)
-      await this.send(
+      let youPost = await new RookMessage(
         client,
         interaction,
-        [ embeds.mod ]
+        {
+          channelName: interaction.channel.id,
+          pages: [ props.mod ]
+        }
       )
+      await youPost.execute()
       this.null = true
     }
 

@@ -4,6 +4,7 @@
 const { userMention, ApplicationCommandOptionType } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // UptimeCommand
 const UptimeCommand = require('../../commands/botmeta/uptime')
 // Base Rook Embed
@@ -112,8 +113,15 @@ module.exports = class ShutdownCommand extends BotDevCommand {
       this.props.description = `${action} ${mentionFuncs.userMention(client.user?.id)}`
 
       // Post action taking place
-      let this_embed = await new RookEmbed(client, this.props)
-      await interaction?.channel?.send({ embeds: [ this_embed ] })
+      let shMessage = await new RookMessage(
+        client,
+        interaction,
+        {
+          channelName: interaction.channel.id,
+          pages: [ this.props ]
+        }
+      )
+      await shMessage.execute()
       this.null = true
 
       // Call UptimeCommand

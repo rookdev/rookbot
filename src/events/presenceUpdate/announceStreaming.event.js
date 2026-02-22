@@ -80,6 +80,9 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
     if (!streamUpdate.wasStreaming && !streamUpdate.isStreaming) {
       return false
     }
+    if (streamUpdate.wasStreaming && streamUpdate.isStreaming) {
+      return false
+    }
 
     let foundActivity = null
     if (newPresence.activities) {
@@ -172,17 +175,19 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
       let result = await destChannel.send(this_package)
     }
 
-    console.log(streamUpdate)
+    // console.log(streamUpdate)
 
-    // appended messages for debugging
-    await this.logMessages(
-      "🔴",
-      {
-        guild: member.guild.name,
-        member: member.user.tag,
-        url: foundActivity.url,
-        roles: streamUpdate.roles
-      }
-    )
+    if (foundActivity?.url) {
+      // appended messages for debugging
+      await this.logMessages(
+        "🔴",
+        {
+          guild: member.guild.name,
+          member: member.user.tag,
+          url: foundActivity.url,
+          roles: streamUpdate.roles
+        }
+      )
+    }
   }
 }

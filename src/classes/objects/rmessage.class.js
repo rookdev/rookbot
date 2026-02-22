@@ -391,9 +391,8 @@ class RookMessage {
 
     return printResult && shipResult
   }
-  async execute() {
+  async execute(independent=false) {
     this.channel = await this.getChannel()
-    let independent = false
     if (this.interaction?.id) {
       if (this.channel.id != this.interaction.channel.id) {
         independent = true
@@ -403,6 +402,8 @@ class RookMessage {
     // if (sendResult) { this.messages.push(`/${this.name}: Sent!`) }
 
     console.log(this.messages.join("\n"))
+
+    return sendResult
   }
 }
 

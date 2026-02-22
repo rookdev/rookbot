@@ -2,6 +2,7 @@
 
 const { Message, inlineCode, hyperlink, codeBlock } = require('discord.js')
 const { FileReaderEvent } = require('../../classes/event/filereader.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -120,15 +121,23 @@ module.exports = class RandovaniaYamlEvent extends FileReaderEvent {
         embedTitle += "Randovania "
         embedTitle += (isRDVgame ? "Game": "Preset") + " "
         embedTitle += "Parser"
-        const embed = new RookEmbed(client, {
+        let embedProps = {
           title: {
             text: embedTitle,
             emoji: "📝"
           },
           fields: fields
-        })
+        }
 
-        message.channel.send({ embeds: [embed] })
+        let rdvPost = await new RookMessage(
+          client,
+          message,
+          {
+            channelName: message.channel.id,
+            pages: [ embedProps ]
+          }
+        )
+        await rdvPost.execute()
       }
     }
   }

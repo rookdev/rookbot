@@ -2,6 +2,7 @@
 
 const { Message, codeBlock } = require('discord.js')
 const { EventScript } = require('./eventscript.class')
+const { RookMessage } = require('../objects/rmessage.class')
 const { RookClient } = require('../objects/rclient.class')
 const { RookEmbed } = require('../embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -151,9 +152,15 @@ class FileReaderEvent extends EventScript {
           description: codeBlock(txt)
         }
 
-        let embed = new RookEmbed(client, props)
-
-        message.channel.send({ embeds: [ embed ] })
+        let fMessage = await new RookMessage(
+          client,
+          message,
+          {
+            channelName: message.channel.id,
+            pages: [ props ]
+          }
+        )
+        await fMessage.execute()
       }
     }
   }

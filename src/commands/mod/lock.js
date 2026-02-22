@@ -2,6 +2,7 @@
 
 // Command Option Types, Permission Flags, Formatters: bold, inlineCode
 const { ApplicationCommandOptionType, PermissionFlagsBits, bold, inlineCode } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -61,8 +62,15 @@ module.exports = class LockCommand extends ModCommand {
         title: { text: '[ModPost] Channel Locked!', emoji: '🟠' },
         description: (this.DEV ? "DEV: " : "") + mentionFuncs.channelMention(channel.id) + ` has been ${bold('locked')}.`,
       }
-      const embed = new RookEmbed(client, embedProps)
-      channel.send({ embeds: [ embed ] })
+      let modPost = await new RookMessage(
+        client,
+        interaction,
+        {
+          channelName: channel.id,
+          pages: [ embedProps ]
+        }
+      )
+      await modPost.execute()
       this.messages.push(`/${this.name}: ModPost`)
 
       // Log the action in the logs channel (private)
@@ -78,8 +86,15 @@ module.exports = class LockCommand extends ModCommand {
             ]
           ]
         }
-        const embed = new RookEmbed(client, props)
-        logs.send({ embeds: [ embed ] })
+        let logPost = await new RookMessage(
+          client,
+          interaction,
+          {
+            channelName: logs.id,
+            pages: [ props ]
+          }
+        )
+        await logPost.execute()
         this.messages.push(`/${this.name}: LogPost`)
       } else {
         this.messages.push("Logs channel not found.")

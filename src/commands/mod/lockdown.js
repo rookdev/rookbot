@@ -14,6 +14,7 @@ const {
   PermissionFlagsBits,
   bold
 } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -123,7 +124,7 @@ module.exports = class LockdownCommand extends ModCommand {
       const logs = await this.getChannel(client, interaction, [ "logging-lockdown", "logging" ])
       if (logs) {
         const capitalizedAction = action.charAt(0).toUpperCase() + action.slice(1)
-        const embed = new RookEmbed(client, {
+        let logProps = {
           color: action === 'lock' ? '#FF0000' : '#00FF00',
           title: {
             text: `[Log] Lockdown \(${capitalizedAction}\)`,
@@ -146,8 +147,16 @@ module.exports = class LockdownCommand extends ModCommand {
               }
             ]
           ]
-        })
-        logs.send({ embeds: [embed] })
+        }
+        let logPost = await new RookMessage(
+          client,
+          interaction,
+          {
+            channelName: logs.id,
+            pages: [ logProps ]
+          }
+        )
+        await logPost.execute()
       }
     } else {
       this.messages.push("Logs channel not found.")
