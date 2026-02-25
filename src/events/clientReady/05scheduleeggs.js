@@ -8,23 +8,19 @@ const TESTING = false
 
 // Set it for midnight Pacific Time,
 //  which is superior to Eastern Palace Time
-const midnightPacific = {
-  hour: 0,
-  minute: 0,
-  tz: "America/Los_Angeles"
-}
-// Set it for 9AM Pacific Time,
-//  which is superior to Eastern Palace Time
-const nineAMpacific = {
-  hour: 9,
-  minute: 0,
-  tz: "America/Los_Angeles"
-}
-
 async function scheduleFire(client) {
   let result = false
   let messages = []
-  result = schedule.scheduleJob(midnightPacific, async () => { return await runFire(client) })
+  result = schedule.scheduleJob(
+    {
+      hour:   0,
+      minute: 0,
+      tz:     "America/Los_Angeles"
+    },
+    async () => {
+      return await runFire(client)
+    }
+  )
 
   messages.push(`❤️‍🔥Scheduled Fire for Mothula.`)
   return [result, messages]
@@ -76,10 +72,22 @@ async function runFire(client) {
 
   return [result, messages]
 }
+
+// Set it for 9AM Pacific Time,
+//  which is superior to Eastern Palace Time
 async function scheduleSnow(client) {
   let result = false
   let messages = []
-  result = schedule.scheduleJob(nineAMpacific, async () => { return await runFire(client) })
+  result = schedule.scheduleJob(
+    {
+      hour:   9,
+      minute: 0,
+      tz:     "America/Los_Angeles"
+    },
+    async () => {
+      return await runSnow(client)
+    }
+  )
 
   messages.push(`🧊Scheduled Snow for Mothula.`)
   return [result, messages]

@@ -1,4 +1,5 @@
 const { ActivityType } = require("discord.js")
+const globalFuncs = require('../primitives/globalFuncs')
 const dbFuncs = require('../db/dbFuncs')
 const getters = require('./getters')
 
@@ -263,7 +264,9 @@ const detectStreaming = async (
   }
 
   if (changesDetected) {
-    // console.log(debug)
+    if (globalFuncs.empty(debug["streamer-type"])) {
+      debug["changesDetected"] = false
+    }
   }
 
   return debug
