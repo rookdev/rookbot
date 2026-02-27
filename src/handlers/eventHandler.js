@@ -1,4 +1,5 @@
 // @ts-nocheck
+const stringFuncs = require('../utils/primitives/stringFuncs')
 const fileFuncs = require('../utils/fs/fileFuncs') // Get All Files
 const moment = require('moment')
 const path = require('path')                       // Easy filepath management
@@ -82,16 +83,18 @@ module.exports = (client) => {
               showDateTime = false
             }
             if (showEvent && showScript && firstScript) {
+              // Print Platform
+              console.log(` ${client.profile.emojis[client.platform]} Platform: ${client.platform.ucfirst()}`)
               // Print eventName
-              console.log(` Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
+              console.log(`  Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
               showEvent = false
             }
             if (showScript) {
               // Print scriptName
-              console.log(`  Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
+              console.log(`   Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
             }
             console.log(
-              messages.map(m=>"   " + m).join("\n")
+              messages.map(m=>"    " + m).join("\n")
             )
           }
         }

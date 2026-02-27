@@ -21,6 +21,7 @@ class EventScript {
     this.name = setValue(evtprops.name, "unknownName")
     this.event = setValue(evtprops.event, "unknownEvent")
     this.label = setValue(evtprops.label, "unknownLabel")
+    this.platforms = setValue(evtprops.platforms, ["discord"])
     this.props = {}
     this.pages = []
     this.error = false
@@ -141,7 +142,7 @@ class EventScript {
     this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
   }
 
-  async printMessages() {
+  async printMessages(client) {
     let now = moment.utc()
     let nowLocal = now.clone().tz('America/Los_Angeles')
     let dateStamp = ""
@@ -153,11 +154,12 @@ class EventScript {
     let preamble = [
       // `/${this.name}: Event Print Messages`,
       dateStamp,
-      ` Event: ${this.event}`,
-      `  Script: ${this.name}`
+      ` ${client.profile.emojis[client.platform]} Platform: ${client.platform.ucfirst()} [${this.platforms.map(p => p.ucfirst()).join(", ")}]`,
+      `  Event: ${this.event}`,
+      `   Script: ${this.name}`
     ]
     this.messages = this.messages.filter(item=>item !== "")
-    this.messages = this.messages.map(m=>"   " + m)
+    this.messages = this.messages.map(m=>"    " + m)
 
     if (this.messages.length > 0) {
       this.messages.unshift(...preamble)
@@ -174,7 +176,7 @@ class EventScript {
   async execute(client, ...args) {
     // this.messages.push(`/${this.name}: Event Execute`)
     let build_result = await this.build(client, ...args)
-    this.printMessages()
+    this.printMessages(client)
   }
 
   async test(client) {

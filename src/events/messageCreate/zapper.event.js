@@ -208,7 +208,7 @@ module.exports = class ZapperEvent extends EventScript {
       color: client.profile.colors.bad,
       title: {
         text: "[Log] Bot Trap",
-        emoji: "🌩"
+        emoji: "⚡"
       },
       players: {
         user: {
@@ -248,7 +248,7 @@ module.exports = class ZapperEvent extends EventScript {
     )
 
     this.messages.push(
-      "🌩 " +
+      "⚡ " +
       JSON.stringify(
         {
           guild: message.guild.name,

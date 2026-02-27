@@ -29,6 +29,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/core": "^2.4.0",
+    "@discordjs/rest": "^2.6.0",
+    "@discordjs/ws": "^2.0.4",
     "@dotenvx/dotenvx": "^1.52.0",
     "ascii-table": "^0.0.9",
     "better-npm-audit": "^3.11.0",

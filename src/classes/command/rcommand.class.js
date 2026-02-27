@@ -34,6 +34,7 @@ class RookCommand {
     this.botPermissions   = setValue(comprops.botPermissions, this.permissions)
     this.userPermissions  = setValue(comprops.userPermissions, this.permissions)
     this.messages         = []
+    this.platforms        = setValue(comprops.platforms, ["discord"])
     this.errors           = require('../../dbs/errors.json')
 
     // Initialize global properties
@@ -523,6 +524,16 @@ class RookCommand {
       )
       .setAlign(2, AsciiTable.RIGHT)
       .setBorder('|','-','•','•')
+      // Platform it was on
+      .addRow(
+        "Platform",
+        client.platform.ucfirst() + " " + client.profile.emojis[client.platform]
+      )
+      // Platforms it's implemented for
+      .addRow(
+        "Platforms",
+        this.platforms.map(p => p.ucfirst()).join(", ")
+      )
       // Guild it was in
       .addRow(
         "Guild",

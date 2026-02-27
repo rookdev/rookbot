@@ -83,13 +83,16 @@ async function getCache(client, parent, cacheType, cacheTest) {
   if (!guild) {
     guild = client.guild
   }
-  let guildID = guild?.id
+  let guildID = guild?.id ?? client.guildID
   let ret = null
   let cacheIDs = null
 
   for (let cacheID of cacheTest) {
     if (ret) {
       continue
+    }
+    if (cacheID.includes("Flux:")) {
+      cacheID = cacheID.replace("Flux:","")
     }
     ret = await searchCache(cacheType, collection, cacheID)
   }

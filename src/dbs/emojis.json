@@ -28,5 +28,9 @@
   "unlock":   "🔓",
   "bot":      "🤖",
   "user":     "👤",
-  "null":     " "
+  "null":     " ",
+
+  "discord":  "💾🔌",
+  "stoat":    "🔋🔋",
+  "fluxer":   "☣️☣️"
 }

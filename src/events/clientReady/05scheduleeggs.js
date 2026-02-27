@@ -143,14 +143,14 @@ async function runSnow(client) {
 module.exports = async (client) => {
   let result = false
   let messages = []
+  let results = null
+  // results = await scheduleFire(client)
+  // result = results[0]
+  // messages.push(...results[1])
 
-  let results = await scheduleFire(client)
-  result = results[0]
-  messages.push(...results[1])
-
-  results = await scheduleSnow(client)
-  result = results[0]
-  messages.push(...results[1])
+  // results = await scheduleSnow(client)
+  // result = results[0]
+  // messages.push(...results[1])
 
   if (TESTING) {
     results = await runFire(client)

@@ -1,10 +1,15 @@
 // @ts-nocheck
 // Set up env vars
 require('@dotenvx/dotenvx').config()
+
+const { REST } = require('@discordjs/rest')
+const { WebSocketManager } = require('@discordjs/ws')
+
 // Get Intents bitfields, Partials
 const { GatewayIntentBits, IntentsBitField, Partials } = require('discord.js')
 // Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
+const { RookFClient } = require('./classes/objects/rfclient.class')
 // Event Handler
 const eventHandler = require('./handlers/eventHandler')
 const { program } = require('commander')    // Commander for CLI management
@@ -106,47 +111,93 @@ Table.addRow("Delete Commands?", deleteCommands ? emojis.check : emojis.nocheck)
 Table.addRow("Purge Commands?", purgeCommands ? emojis.check : emojis.nocheck)
 console.log(Table.toString())
 
-// Create RookClient object
-const client = new RookClient(
-  {
-    /**
-     * Intents:
-     *  Guilds
-     *  GuildMembers
-     *  GuildMessages
-     *  GuildPresences
-     *  GuildVoiceStates
-     *  MessageContent
-     */
-    intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildInvites,
-      GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildMessageReactions,
-      GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildPresences,
-      GatewayIntentBits.GuildVoiceStates,
-      GatewayIntentBits.MessageContent
-    ],
-    partials: [
-      Partials.GuildMember,
-      Partials.Message,
-      Partials.Reaction,
-      Partials.User
-    ],
-    // Allow bot to mention roles
-    allowedMentions: { parse: ["roles"] }
-  },
-  // Profile to load
-  process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
-  {
-    deleteCommands: deleteCommands,
-    purgeCommands: purgeCommands,
-    DEV: !process.env.ENV_ACTIVE.startsWith("prod")
-  }
-);
+const clientIntents = [
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildInvites,
+  GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.GuildMessageReactions,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.GuildPresences,
+  GatewayIntentBits.GuildVoiceStates,
+  GatewayIntentBits.MessageContent
+]
+const clientPartials = [
+  Partials.GuildMember,
+  Partials.Message,
+  Partials.Reaction,
+  Partials.User
+]
+const clientSettings = {
+  /**
+   * Intents:
+   *  Guilds
+   *  GuildMembers
+   *  GuildMessages
+   *  GuildPresences
+   *  GuildVoiceStates
+   *  MessageContent
+   */
+  intents: clientIntents,
+  partials: clientPartials,
+  // Allow bot to mention roles
+  allowedMentions: { parse: ["roles"] }
+};
 
 (async () => {
+  const FLUXER_TOKEN = process.env.FLUXER_TOKEN
+  if (FLUXER_TOKEN) {
+    const frest = new REST(
+      {
+        api:      "https://api.fluxer.app",
+        version:  '1'
+      }
+    ).setToken(FLUXER_TOKEN)
+
+    const fgateway = new WebSocketManager(
+      {
+        intents: 0,
+        frest,
+        FLUXER_TOKEN,
+        version: '1'
+      }
+    )
+
+    console.log("FLUXER")
+    const fclient = new RookFClient(
+      {
+        intents: clientIntents,
+        frest,
+        fgateway
+      },
+      // Profile to load
+      process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+      {
+        DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+      }
+    )
+    await fclient.init()
+    // console.log(fgateway)
+    // await fgateway.connect()
+
+    console.log("---")
+    await eventHandler(fclient)
+  }
+})();
+
+(async () => {
+  console.log("DISCORD")
+  // Create RookClient object
+  const client = new RookClient(
+    clientSettings,
+    // Profile to load
+    process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+    {
+      deleteCommands: deleteCommands,
+      purgeCommands: purgeCommands,
+      DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+    }
+  )
+
   // Log in Client Object
   await client.login(process.env.TOKEN)
 
@@ -177,4 +228,4 @@ const client = new RookClient(
     // Do this after 60 seconds
     60 * 1000)
   }
-})()
+})();

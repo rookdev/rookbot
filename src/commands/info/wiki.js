@@ -32,6 +32,7 @@ module.exports = class WikiCommand extends RookCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      platforms: ["discord", "stoat"],
       testOptions: [
       ]
     }
