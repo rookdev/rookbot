@@ -19,7 +19,7 @@ function createClient() {
   }
 }
 
-async function getDB(cName, dName, source="mongodb") {
+async function getDB(cName, dName, platform="discord", source="mongodb") {
   let messages = []
   if (source == "fs") {
     let path = [ "src", "dbs" ]
@@ -61,11 +61,13 @@ async function getDB(cName, dName, source="mongodb") {
               let gName = ""
               for await (let doc of docs) {
                 gName = doc._gname
-                if (rec_name) {
-                  rec = doc[rec_name]
-                } else {
-                  dName = "<list>"
-                  rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
+                if (doc?._platform == platform) {
+                  if (rec_name) {
+                    rec = doc[rec_name]
+                  } else {
+                    dName = "<list>"
+                    rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
+                  }
                 }
               }
               if (rec) {
@@ -83,7 +85,7 @@ async function getDB(cName, dName, source="mongodb") {
 
     if (source == "mongodb") {
       if (!success) {
-        return await getDB(cName, dName, "fs")
+        return await getDB(cName, dName, platform, "fs")
       } else {
         return [rec, messages]
       }

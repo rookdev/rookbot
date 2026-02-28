@@ -4,6 +4,10 @@
     "avatar": "https://cdn.discordapp.com/avatars/1287183074345357397/73352af994a31a6ef83b2c1147615be3.webp?size=512",
     "name": "Agahnim"
   },
+  "heat-miser": {
+    "avatar": "https://static.wikia.nocookie.net/villains/images/3/34/Mr.Heat.jpg",
+    "name": "Heat Miser"
+  },
   "link": {
     "avatar": "https://github.com/rookdev/rookbot/blob/oop-commands/src/res/media/link.png?raw=true",
     "name": "Link"
@@ -15,5 +19,9 @@
   "sa-x": {
     "avatar": "https://static.wikia.nocookie.net/metroid/images/2/23/SA-X_Closeup.PNG",
     "name": "SA-X"
+  },
+  "snow-miser": {
+    "avatar": "https://static.wikia.nocookie.net/christmasspecials/images/8/86/SnowMiser.jpg",
+    "name": "Snow Miser"
   }
 }

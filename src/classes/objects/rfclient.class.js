@@ -24,8 +24,8 @@ class RookFClient extends Client {
     // Guild Object
     this.guild        = null
     // Guild ID
-    // this.guildID      = process.env?.GUILD_ID ?? "Flux:1476765618626433235"
-    this.guildID      = "Flux:1476765618626433235"
+    // this.guildID      = process.env?.GUILD_ID ?? "1476765618626433235"
+    this.guildID      = "1476765618626433235"
     // Loaded Profile Name
     this.profileName  = profileName
     // Loaded Profile

@@ -146,7 +146,10 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             // rrs
             for (let [rrKey, rrData] of Object.entries(thisDB)) {
               if(!rrKey.includes("#")) {
-                this.props.description.push(rrKey.boldUnderline())
+                let channel = await this.getCache(client, interaction.guild, "channels", rrData["#channel"])
+                let message = await this.getCache(client, channel, "messages", rrKey)
+                // this.props.description.push(rrKey.boldUnderline())
+                this.props.description.push(message.url)
                 this.props.description.push(
                   underline(rrData["#title"]) + ": " +
                   italic(rrData["#description"])
@@ -221,7 +224,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
         ]
       )
 
-      let dbRes = await dbFuncs.getDB(guild.id, "", "fs")
+      let dbRes = await dbFuncs.getDB(guild.id, "", client.platform, "fs")
       fileList = dbRes[0]
       this.messages.push(...dbRes[1])
 
@@ -231,7 +234,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
       )
       this.props.description.push("")
 
-      dbRes = await dbFuncs.getDB(guild.id, "", "mongodb")
+      dbRes = await dbFuncs.getDB(guild.id, "", client.platform, "mongodb")
       fileList = dbRes[0]
       this.messages.push(...dbRes[1])
 

@@ -1,6 +1,7 @@
 {
   "#note": "ZDoI Randomizer Community",
   "1451694506888921108": {
+    "#channel": "1450249961072492726",
     "#description": "Alerts about the community",
     "#note": "#reaction-roles: Community Roles",
     "#title": "Community Roles",
@@ -10,6 +11,7 @@
     }
   },
   "1451694540405870666": {
+    "#channel": "1450249961072492726",
     "#description": "Alerts for multiplayer games",
     "#note": "#reaction-roles: Multiplayer Roles",
     "#title": "Multiplayer Roles",

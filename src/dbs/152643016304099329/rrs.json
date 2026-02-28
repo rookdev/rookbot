@@ -1,6 +1,7 @@
 {
   "#note": "The Guys",
   "1460103867244216504": {
+    "#channel": "704690616260624495",
     "#description": "These are roles that the Admins and Moderators of this server may use for announcements.",
     "#title": "Announcement Roles",
     "📣": {
@@ -9,6 +10,7 @@
     }
   },
   "1460104023196569772": {
+    "#channel": "704690616260624495",
     "#description": "These are roles that facilitate communication regarding when certain accounts Go Live.",
     "#title": "Streaming Roles",
     "bruh": {
@@ -17,6 +19,7 @@
     }
   },
   "1460104144294645792": {
+    "#channel": "704690616260624495",
     "#description": "These are roles that facilitate communication regarding when players of certain games are trying to put together a pre-made match.",
     "#title": "Gaming Roles",
     "👥": {
@@ -25,6 +28,7 @@
     }
   },
   "pronouns": {
+    "#channel": "704690616260624495",
     "#description": "Pronouns",
     "#title": "Pronouns",
     "pronoun_any": {

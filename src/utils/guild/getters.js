@@ -91,9 +91,6 @@ async function getCache(client, parent, cacheType, cacheTest) {
     if (ret) {
       continue
     }
-    if (cacheID.includes("Flux:")) {
-      cacheID = cacheID.replace("Flux:","")
-    }
     ret = await searchCache(cacheType, collection, cacheID)
   }
 
