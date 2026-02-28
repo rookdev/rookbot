@@ -1,0 +1,27 @@
+{
+  "#note": "Rookbot Fluxer Sandbox",
+  "admin": [
+    "Admin",
+    "castIe"
+  ],
+  "booster": [
+    "Server Booster"
+  ],
+  "botdev": [
+    "rookbot dev",
+    "rookbot steward"
+  ],
+  "member": [
+    "Member"
+  ],
+  "mod": [
+    "Lingo",
+    "Mod"
+  ],
+  "muted": [
+    "Muted"
+  ],
+  "streaming-member": [
+    "Streaming"
+  ]
+}

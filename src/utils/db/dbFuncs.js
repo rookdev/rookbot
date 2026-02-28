@@ -31,9 +31,14 @@ async function getDB(cName, dName, platform="discord", source="mongodb") {
       messages.push(`💾 FS: '${gName}' [${cName}]: ${dName}`)
       return [fileFuncs.getAFile(path, `${dName}.json`), messages]
     } else {
-      let fileList = fs.readdirSync(fileFuncs.getAPath(path)).filter(
-        f=>f.endsWith(".json")
-      )
+      let fileList = []
+      if (fs.existsSync(fileFuncs.getAPath(path))) {
+        fileList = fs.readdirSync(fileFuncs.getAPath(path)).filter(
+          f=>f.endsWith(".json")
+        )
+      } else {
+        messages.push(`${path} not found!`)
+      }
       return [fileList, messages]
     }
   } else if (source == "mongodb") {

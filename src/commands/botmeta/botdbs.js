@@ -147,9 +147,15 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             for (let [rrKey, rrData] of Object.entries(thisDB)) {
               if(!rrKey.includes("#")) {
                 let channel = await this.getCache(client, interaction.guild, "channels", rrData["#channel"])
-                let message = await this.getCache(client, channel, "messages", rrKey)
-                // this.props.description.push(rrKey.boldUnderline())
-                this.props.description.push(message.url)
+                let message = null
+                if (channel) {
+                  message = await this.getCache(client, channel, "messages", rrKey)
+                }
+                if (message?.url) {
+                  this.props.description.push(message.url)
+                } else {
+                  this.props.description.push(rrKey.boldUnderline())
+                }
                 this.props.description.push(
                   underline(rrData["#title"]) + ": " +
                   italic(rrData["#description"])

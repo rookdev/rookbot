@@ -1,0 +1,10 @@
+{
+  "#note": "Rookbot Stoat Sandbox",
+  "alttpwiki": "http://alttp-wiki.net/index.php/%s",
+  "m3-speedrun": "http://wiki.supermetroid.run/%s",
+  "metroidwiki": "http://metroid.fandom.com/wiki/%s",
+  "xfrwiki": "http://castie.ddns.net/xf_wiki/index.php/%s",
+  "z3rwiki": "http://alttp.mymm1.com/wiki/%s",
+  "zeldadungeon": "http://www.zeldadungeon.net/wiki/%s",
+  "zeldawiki": "http://zeldawiki.wiki/wiki/%s"
+}
