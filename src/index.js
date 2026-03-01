@@ -19,7 +19,7 @@ const PACKAGE = require("../package.json")  // Node Package data
 const getters = require('./utils/guild/getters')
 const emojis = require('./dbs/emojis.json') // Global Emojis
 
-async function callCommands(commandNames) {
+async function callCommands(client, commandNames) {
   if (!typeof commandNames === "object") {
     commandNames = [commandNames]
   }
@@ -228,14 +228,14 @@ if (DO_DISCORD || process.env.GITHUB_WORKFLOW) {
       console.log(process.env.GITHUB_WORKFLOW)
 
       // Run Hello
-      await callCommands("hello")
+      await callCommands(client, "hello")
 
       // Set Timeout to call Exit
       setTimeout(async () => {
         try {
           // Run Exit
           let commandNames = [ "exit" ]
-          await callCommands(commandNames)
+          await callCommands(client, commandNames)
         } catch(err) {
           console.log(err.stack)
         }
