@@ -76,6 +76,7 @@ if (!QUICK) {
 }
 
 // Handles to adjust verbosity
+let EXPERIMENTAL_SPECIFIER_RESOLUTION = true
 let TRACE_WARNINGS = false
 let TRACE_DEPRECATIONS = true
 let UNHANDLED_REJECTIONS = false
@@ -92,6 +93,9 @@ if (purge) {
 
 // Use node to run ./src/index.js with CLI args
 let command = "node "
+if (EXPERIMENTAL_SPECIFIER_RESOLUTION) {
+  command += "--experimental-specifier-resolution=node "
+}
 if (TRACE_WARNINGS) {
   command += "--trace-warnings "
 }

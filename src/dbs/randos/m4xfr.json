@@ -3,15 +3,15 @@
   "rando": {
     "player": {
       "name": "Super Metroid X-Fusion Randomizer",
-      "avatar": "https://static.wikia.nocookie.net/metroid/images/e/e9/Iceparasite.gif"
+      "avatar": "https://static.wikia.nocookie.net/metroid/images/c/ca/Fusion_Morph_Ball_sprite_%28Fusion_Suit%29.png"
     },
     "scripts": [
     ],
-    "permalink": "https://castie.ddns.net/xf_rando/seed/<hash>/",
+    "permalink": "https://mxfrando.com/seed/<hash>/",
     "fields": {
       "sources": {
         "seeddata": {
-          "url": "https://castie.ddns.net/xf_rando/seed/<hash>/data/seed.json",
+          "url": "https://mxfrando.com/seed/<hash>/data/seed.json",
           "check": "metadata"
         },
         "metadata": {
@@ -23,8 +23,8 @@
           "check": "samusSprite"
         },
         "logic": {
-          "url": "https://castie.ddns.net/xf_rando/seed/<hash>/data/logic.json",
-          "check": "startLocation"
+          "url": "https://mxfrando.com/seed/<hash>/data/logic.json",
+          "check": "timestamp"
         }
       },
       "items": [

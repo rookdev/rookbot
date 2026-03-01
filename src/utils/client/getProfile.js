@@ -4,7 +4,7 @@ const getProfile = (profileName="default") => {
   let profile = {}  // Main Profile object
   let defaults = {} // Defaults
 
-  console.log(`Searching for '${profileName}' Profile!`)
+  // console.log(`Searching for '${profileName}' Profile!`)
 
   // Get Defaults
   try {
@@ -29,10 +29,10 @@ const getProfile = (profileName="default") => {
     ) {
       profile = profile.profiles[profileName]
       profile.defaults = defaults
-      console.log(`Loaded '${profileName}' Profile!`)
+      // console.log(`Loaded '${profileName}' Profile!`)
     } else {
       profile = defaults
-      console.log("Loaded Default Profile!")
+      // console.log("Loaded Default Profile!")
     }
   } catch(err) {
     console.log("🔴getProfile: PROFILE manifest not found!")

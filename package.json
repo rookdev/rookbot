@@ -55,6 +55,8 @@
     "shelljs": "^0.10.0",
     "slugid": "^5.0.1",
     "sort-keys-recursive": "^2.1.10",
+    "stoat.js": "^7.3.6",
+    "stoatbot.js": "^0.4.6",
     "timezone": "^1.0.23"
   }
 }

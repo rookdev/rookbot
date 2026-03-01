@@ -83,11 +83,15 @@ module.exports = class WikiCommand extends RookCommand {
     let content = wikiurl
 
     this.null = true
-    await interaction.editReply(
-      {
-        content: content
-      }
-    )
+    if (typeof interaction.editReply === "function") {
+      await interaction.editReply(
+        {
+          content: content
+        }
+      )
+    } else {
+      interaction.reply(content)
+    }
 
     return false
   }

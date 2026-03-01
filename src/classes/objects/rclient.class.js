@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { Client } = require('discord.js')              // Get Discord Client
+const { Client, Events } = require('discord.js')             // Get Discord Client
 const getProfile = require('../../utils/client/getProfile')  // Get loaded Profile
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const getters = require('../../utils/guild/getters')
@@ -20,6 +20,8 @@ class RookClient extends Client {
     super(args) // Create Discord Client object
 
     this.platform     = "discord"
+    // Client Events
+    this.eventNames   = Object.values(Events)
     // Commands
     this.commands     = {}
     // Guild Object

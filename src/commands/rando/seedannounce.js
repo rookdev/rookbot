@@ -114,10 +114,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "prep-time": 60 },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "scheduled-time": "3155760000" },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "group-id": "1983" },
-        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "ping-multiplayer-role": true },
-        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "prep-time": 60 },
-        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "scheduled-time": "3155760000" },
-        { "seed-url": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/", "group-id": "1983" }
+        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "ping-multiplayer-role": true },
+        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "prep-time": 60 },
+        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "scheduled-time": "3155760000" },
+        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "group-id": "1983" }
       ]
     }
     props = props || {}

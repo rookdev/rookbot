@@ -10,6 +10,7 @@ const { GatewayIntentBits, IntentsBitField, Partials } = require('discord.js')
 // Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
 const { RookFClient } = require('./classes/objects/rfclient.class')
+const { RookSClient } = require('./classes/objects/rsclient.class')
 // Event Handler
 const eventHandler = require('./handlers/eventHandler')
 const { program } = require('commander')    // Commander for CLI management
@@ -143,89 +144,135 @@ const clientSettings = {
   allowedMentions: { parse: ["roles"] }
 };
 
-(async () => {
-  const FLUXER_TOKEN = process.env.FLUXER_TOKEN
-  if (FLUXER_TOKEN) {
-    const frest = new REST(
-      {
-        api:      "https://api.fluxer.app",
-        version:  '1'
-      }
-    ).setToken(FLUXER_TOKEN)
+const DO_FLUXER   = false
+const DO_DISCORD  = true
+const DO_STOAT    = true
 
-    const fgateway = new WebSocketManager(
-      {
-        intents: 0,
-        frest,
-        FLUXER_TOKEN,
-        version: '1'
-      }
-    )
+if (DO_FLUXER) {
+  (async () => {
+    const FLUXER_TOKEN = process.env.FLUXER_TOKEN
+    if (FLUXER_TOKEN) {
+      // console.log("FLUXER")
 
-    console.log("FLUXER")
-    const fclient = new RookFClient(
-      {
-        intents: clientIntents,
-        frest,
-        fgateway
-      },
+      const frest = new REST(
+        {
+          api:      "https://api.fluxer.app",
+          version:  '1'
+        }
+      ).setToken(FLUXER_TOKEN)
+
+      const fgateway = new WebSocketManager(
+        {
+          intents: 0,
+          frest,
+          FLUXER_TOKEN,
+          version: '1'
+        }
+      )
+
+      const fclient = new RookFClient(
+        {
+          intents: clientIntents,
+          frest,
+          fgateway
+        },
+        // Profile to load
+        process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+        {
+          DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+        }
+      )
+
+      console.log(`${fclient.profile.emojis[fclient.platform]} ${fclient.platform.toUpperCase()}`)
+
+      await fclient.init()
+      // console.log(fgateway)
+      // await fgateway.connect()
+
+      console.log("---")
+      await eventHandler(fclient)
+    }
+  })();
+}
+
+if (DO_DISCORD || process.env.GITHUB_WORKFLOW) {
+  (async () => {
+    // console.log("DISCORD")
+
+    // Create RookClient object
+    const client = new RookClient(
+      clientSettings,
       // Profile to load
       process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
       {
+        deleteCommands: deleteCommands,
+        purgeCommands: purgeCommands,
         DEV: !process.env.ENV_ACTIVE.startsWith("prod")
       }
     )
-    await fclient.init()
-    // console.log(fgateway)
-    // await fgateway.connect()
 
+    console.log(`${client.profile.emojis[client.platform]} ${client.platform.toUpperCase()}`)
+
+    // Log in Client Object
+    await client.login(process.env.TOKEN)
+
+    // Initialize Client Object
+    await client.init()
+
+    // Register Events
     console.log("---")
-    await eventHandler(fclient)
-  }
-})();
+    await eventHandler(client)
 
-(async () => {
-  console.log("DISCORD")
-  // Create RookClient object
-  const client = new RookClient(
-    clientSettings,
-    // Profile to load
-    process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
-    {
-      deleteCommands: deleteCommands,
-      purgeCommands: purgeCommands,
-      DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+    // If this is a GitHub Actions run
+    if (process.env.GITHUB_WORKFLOW) {
+      console.log(process.env.GITHUB_WORKFLOW)
+
+      // Run Hello
+      await callCommands("hello")
+
+      // Set Timeout to call Exit
+      setTimeout(async () => {
+        try {
+          // Run Exit
+          let commandNames = [ "exit" ]
+          await callCommands(commandNames)
+        } catch(err) {
+          console.log(err.stack)
+        }
+      },
+      // Do this after 60 seconds
+      60 * 1000)
     }
-  )
+  })();
+}
 
-  // Log in Client Object
-  await client.login(process.env.TOKEN)
+if (DO_STOAT) {
+  (async () => {
+    // console.log("STOAT")
+    const STOAT_TOKEN = process.env.STOAT_TOKEN
 
-  // Initialize Client Object
-  await client.init()
+    if (STOAT_TOKEN) {
+      // Create RookClient object
+      const sclient = new RookSClient(
+        clientSettings,
+        // Profile to load
+        process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+        {
+          DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+        }
+      )
 
-  // Register Events
-  console.log("---")
-  await eventHandler(client)
+      console.log(`${sclient.profile.emojis[sclient.platform]} ${sclient.platform.toUpperCase()}`)
 
-  // If this is a GitHub Actions run
-  if (process.env.GITHUB_WORKFLOW) {
-    console.log(process.env.GITHUB_WORKFLOW)
+      // Log in Client Object
+      await sclient.login(process.env.STOAT_TOKEN)
 
-    // Run Hello
-    await callCommands("hello")
+      // // Initialize Client Object
+      // await sclient.init()
 
-    // Set Timeout to call Exit
-    setTimeout(async () => {
-      try {
-        // Run Exit
-        let commandNames = [ "exit" ]
-        await callCommands(commandNames)
-      } catch(err) {
-        console.log(err.stack)
-      }
-    },
-    // Do this after 60 seconds
-    60 * 1000)
-  }
-})();
+      // Register Events
+      console.log("---")
+      await eventHandler(sclient)
+    }
+  })();
+}

@@ -58,7 +58,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         { "game-id": "z1m1z3m3",    "hash-id": "taMbuylcr1ufQm6K" },
         { "game-id": "m3maprando",  "hash-id": "wPvtmGMpc" },
         { "game-id": "sm-total",    "hash-id": "_TbXSywzRgKAMpFAoaiNLQ" },
-        { "game-id": "m4xfr",       "hash-id": "RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ" },
+        { "game-id": "m4xfr",       "hash-id": "UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ/" },
 
         { "hash-id": "https://alttpr.com/h/0yAONb6XMV" },
         { "hash-id": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA" },
@@ -66,7 +66,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
         { "hash-id": "https://quad.samus.link/seed/taMbuylcr1ufQm6K" },
         { "hash-id": "https://maprando.com/seed/wPvtmGMpc" },
         { "hash-id": "https://sm.samus.link/seed/_TbXSywzRgKAMpFAoaiNLQ" },
-        { "hash-id": "https://castie.ddns.net/xf_rando/seed/RlVTSU9OIFRVQkUgS0FQUEEgR1JBVklUWQ/" }
+        { "hash-id": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//" }
       ]
     }
     let props = {

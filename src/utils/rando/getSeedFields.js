@@ -64,7 +64,9 @@ module.exports = async (hashID, gameID="z3r") => {
     ],
     `${gameID}.json`
   )
+
   let sources = {}
+
   for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
     if (
       sData["url"].includes("[") ||
@@ -339,7 +341,8 @@ module.exports = async (hashID, gameID="z3r") => {
               itemValue = inlineCode(sources["metadata"].seed)
               break
             case "hash":
-              itemValue = inlineCode(sources["metadata"].hash4Word)
+              itemName  = "race_hash"
+              itemValue = inlineCode(sources["logic"].seedHash.join("\n"))
               break
             case "time":
               itemValue = timeFormat(moment.utc(sources["metadata"].created).format("x"), { with: "relative" })
@@ -347,19 +350,19 @@ module.exports = async (hashID, gameID="z3r") => {
             case "permalink":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://castie.ddns.net/xf_rando/seed/${hashID}/`
+                            `https://mxfrando.com/seed/${hashID}/`
                           )
               break
             case "seed_json":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/seed.json`
+                            `https://mxfrando.com/seed/${hashID}/data/seed.json`
                           )
               break
             case "logic_json":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://castie.ddns.net/xf_rando/seed/${hashID}/data/logic.json`
+                            `https://mxfrando.com/seed/${hashID}/data/logic.json`
                           )
               break
             default:
