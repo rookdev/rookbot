@@ -19,6 +19,7 @@ async function registerCommand(
   let messages = []
 
   client.commands[cmdParts.name] = command
+  messages.push(cmdParts.name)
 
   return [result, messages]
 }
@@ -35,7 +36,9 @@ module.exports = async (client) => {
 
   for (const localCommand of localCommands) {
     let cmdParts = await extractCommand(localCommand)
-    await registerCommand(client, localCommand, cmdParts)
+    let cmdRes = await registerCommand(client, localCommand, cmdParts)
+    result = cmdRes[0]
+    messages.push(...cmdRes[1])
   }
 
   return [result, messages]

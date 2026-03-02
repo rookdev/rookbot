@@ -48,7 +48,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
     let old_nickname = ""
 
     this.props.title = {
-      text: `Set ${client.user.displayName}'s Nickname`
+      text: `Set ${client.user?.displayName ?? client.user.username}'s Nickname`
     }
 
     // Default or Reset goes back to Global Name
@@ -66,7 +66,7 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
 
     try {
       // Get Guild ID
-      let guildID = interaction.guild.id
+      let guildID = interaction?.guild?.id || interaction.server.id
       // Get Guild
       let guild = await this.getCache(client, client, "guilds", guildID)
       if (!guild) {
@@ -80,10 +80,15 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
 
       // Get Client Member
       // Bail if Client Member not found
-      let member = await this.getCache(client, interaction.guild, "members", client.user.id)
+      let member = await this.getCache(
+        client,
+        interaction?.guild ?? interaction.server,
+        "members",
+        client.user.id
+      )
       if (!member) {
         this.error = true
-        this.props.description = `Fetch error [${client.user.id}]: ${err}`
+        this.props.description = `Fetch error [${client.user.id}]`
         return !this.error
       }
 

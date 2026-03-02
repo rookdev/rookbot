@@ -24,7 +24,7 @@ class RookMessage {
   async getChannel() {
     let parent = this.client
     if (this.interaction?.id) {
-      parent = this.interaction.guild
+      parent = this.interaction?.guild || this.interaction.server
     }
     return await getters.getCache(
       this.client,
@@ -123,6 +123,54 @@ class RookMessage {
       if (this.interaction?.channel) {
         this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
         try {
+          if (["stoat"].includes(this.client.platform)) {
+            let first_embed = this_package.embeds[0]
+            if (first_embed) {
+              let first_embed_props = first_embed.props
+              let stoat_content = []
+              if (first_embed_props?.title) {
+                let title = "## "
+                if (first_embed_props.title?.emoji) {
+                  title = first_embed_props.title.emoji
+                }
+                title += first_embed_props.title.text
+                title += " ##"
+                stoat_content.push(title)
+              }
+              if (first_embed_props?.description) {
+                if (typeof first_embed_props.description == "object") {
+                  stoat_content.push(first_embed_props.description.join("\n"))
+                } else {
+                  stoat_content.push(first_embed_props.description)
+                }
+              }
+              if (first_embed_props.fields) {
+                let firstRow = true
+                for (let fieldRow of first_embed_props.fields) {
+                  if (firstRow) {
+                    firstRow = false
+                  } else {
+                    stoat_content.push("\n")
+                  }
+                  for (let field of fieldRow) {
+                    // stoat_content.push(`**${field.name}** : ${field.value}`)
+                    stoat_content.push(`${field.name} : ${field.value}`)
+                  }
+                }
+              }
+              if (first_embed_props?.footer && first_embed_props?.footer?.text) {
+                stoat_content.push("---")
+                stoat_content.push(first_embed_props.footer.text)
+              }
+
+              // stoat_content.push("![Stoat](https://stoat.chat/app/assets/icon-Dt-nxoOi.ico)")
+
+              let stoat_package = {
+                content: stoat_content.join("\n")
+              }
+              this_package = stoat_package
+            }
+          }
           handle_result = await this.interaction.channel.send(this_package)
         } catch (err) {
           if (!["50035"].includes((err.code + ""))) {

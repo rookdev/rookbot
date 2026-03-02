@@ -1,4 +1,8 @@
 {
+  "setperms": {
+    "chanperms": {},
+    "roleperms": {}
+  },
   "nickchange": {
     "castiename": {
       "target-id": "1111517386588307536"

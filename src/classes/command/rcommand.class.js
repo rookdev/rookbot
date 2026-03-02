@@ -393,10 +393,10 @@ class RookCommand {
           if ((!page.entities?.guild) && (interaction?.guild)) {
             page.entities.guild = {
               type:   "guild",
-              id:     interaction.guild.id,
-              name:   interaction.guild.name,
+              id:     interaction?.guild?.id ?? interaction.server.id,
+              name:   interaction?.guild?.name ?? interaction.server.name,
               url:    "http://example.com/guild",
-              avatar: interaction.guild.iconURL({ size: 128 })
+              avatar: interaction?.guild?.iconURL({ size: 128 }) ?? interaction.server.iconURL({ size: 128 })
             }
           }
         }
@@ -559,13 +559,22 @@ class RookCommand {
         interaction?.user?.id
       )
 
+    if (["stoat"].includes(client.platform)) {
+      // console.log(interaction)
+    }
+
     if (
       interaction &&
       !(coptions?.bypass)
     ) {
       // Permissions Required
       if (this.userPermissions) {
-        let member = await this.getCache(client, interaction.guild, "members", interaction.user.id)
+        let member = await this.getCache(
+          client,
+          interaction.guild,
+          "members",
+          interaction?.user?.id ?? interaction.authorId
+        )
         Table.addRow(
           "User Permissions",
           this.userPermissions,

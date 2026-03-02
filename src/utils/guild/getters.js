@@ -5,7 +5,10 @@ const dbFuncs = require('../../utils/db/dbFuncs')
 async function searchCache(cacheType, collection, cacheID) {
   let ret = null
   // If it's a number
-  if (numFuncs.myIsNumeric(cacheID)) {
+  if (
+    (["discord"].includes(collection.client.platform) && numFuncs.myIsNumeric(cacheID)) ||
+    (["stoat"].includes(collection.client.platform) && cacheID.replaceAll(" ", "").toUpperCase() == cacheID)
+  ) {
     if (
       [
         "channels",
@@ -49,7 +52,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
     collection = await parent.emojis
   } else if (cacheType == "guilds") {
     cacheTest = cacheTest ?? null
-    collection = await client.guilds
+    collection = await client?.guilds ?? client.servers
   } else if (cacheType == "members") {
     cacheTest = cacheTest ?? null
     collection = await parent.members
@@ -79,6 +82,8 @@ async function getCache(client, parent, cacheType, cacheTest) {
   let guild = parent
   if (parent?.guild) {
     guild = parent.guild
+  } else if (parent?.server) {
+    guild = parent.server
   }
   if (!guild) {
     guild = client.guild

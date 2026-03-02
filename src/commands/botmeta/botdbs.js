@@ -61,7 +61,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
     // Get DB Type
     let db_type = coptions["database-type"] ?? ""
 
-    let guild = interaction.guild
+    let guild = interaction?.guild ?? interaction.server
 
     this.props.title = {
       text: `${guild.name}'s Setup`

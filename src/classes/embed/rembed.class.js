@@ -128,7 +128,7 @@ class RookEmbed extends EmbedBuilder {
         type:   "target",
         name:   props?.players?.target?.name && props.players.target.name.trim() != "" ? props.players.target.name.trim() : "",
         url:    props?.players?.target?.url && props.players.target.url.trim() != "" ? props.players.target.url.trim() : "http://example.com/target",
-        avatar: props?.players?.target?.avatar && props.players.target.avatar.trim() != "" ? props.players.target.avatar.trim() : ""
+        // avatar: props?.players?.target?.avatar && props.players.target.avatar.trim() != "" ? props.players.target.avatar.trim() : ""
       },
       thumbnail: {},
       author: { name: "" }
@@ -176,7 +176,7 @@ class RookEmbed extends EmbedBuilder {
 
     if (avatars.thumbnail.avatar != "") {
       // Set thumbnail
-      this.setThumbnail(avatars.thumbnail.avatar)
+      // this.setThumbnail(avatars.thumbnail.avatar)
     }
 
     // Set title

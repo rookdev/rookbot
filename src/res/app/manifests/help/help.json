@@ -1,4 +1,59 @@
 {
+  "admin": {
+    "emit": {
+      "name": "emit",
+      "category": "admin",
+      "description": "Emit event",
+      "options": [
+        {
+          "name": "event-name",
+          "description": "Event Name",
+          "required": true
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "setperms": {
+      "name": "setperms",
+      "category": "admin",
+      "description": "Manage Channel/Role Permissions",
+      "options": [
+        {
+          "name": "channel-id",
+          "description": "Channel to check"
+        },
+        {
+          "name": "role-id",
+          "description": "Role to check"
+        },
+        {
+          "name": "profile-name",
+          "description": "Profile to set"
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "chanperms": {
+      "name": "chanperms",
+      "category": "admin",
+      "description": "Set Channel Permissions",
+      "options": [],
+      "parent": "setperms",
+      "access": "Admin",
+      "segment": "local"
+    },
+    "roleperms": {
+      "name": "roleperms",
+      "category": "admin",
+      "description": "Set Role Permissions",
+      "options": [],
+      "parent": "setperms",
+      "access": "Admin",
+      "segment": "local"
+    }
+  },
   "app": {
     "exit": {
       "name": "exit",
@@ -32,6 +87,19 @@
       "access": "BotDev",
       "segment": "local"
     },
+    "logs": {
+      "name": "logs",
+      "category": "app",
+      "description": "Logs",
+      "options": [
+        {
+          "name": "mode",
+          "description": "Mode"
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
     "pull": {
       "name": "pull",
       "category": "app",
@@ -49,7 +117,12 @@
       "name": "shutdown",
       "category": "app",
       "description": "Shutdown (and restart if pm2) rookbot",
-      "options": [],
+      "options": [
+        {
+          "name": "restart",
+          "description": "Restart?"
+        }
+      ],
       "access": "BotDev",
       "segment": "local"
     },
@@ -121,10 +194,6 @@
         {
           "name": "channel",
           "description": "Channel to send message to"
-        },
-        {
-          "name": "mode",
-          "description": "Mode for BotSpeak"
         },
         {
           "name": "destination-message",
@@ -203,6 +272,19 @@
     }
   },
   "botmeta": {
+    "botdbs": {
+      "name": "botdbs",
+      "category": "botmeta",
+      "description": "Get rookbot's dbs for this guild",
+      "options": [
+        {
+          "name": "database-type",
+          "description": "Database Type"
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local"
+    },
     "botguilds": {
       "name": "botguilds",
       "category": "botmeta",
@@ -247,6 +329,19 @@
         }
       ],
       "access": "unset",
+      "segment": "local"
+    },
+    "mongodb": {
+      "name": "mongodb",
+      "category": "botmeta",
+      "description": "Manage MongoDB's dbs for this guild",
+      "options": [
+        {
+          "name": "mode",
+          "description": "Mode"
+        }
+      ],
+      "access": "BotDev",
       "segment": "local"
     },
     "uptime": {
@@ -360,6 +455,14 @@
     }
   },
   "guild": {
+    "guildcats": {
+      "name": "guildcats",
+      "category": "guild",
+      "description": "Guild Categories",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
     "guildstatus": {
       "name": "guildstatus",
       "category": "guild",
@@ -422,89 +525,25 @@
       "options": [
         {
           "name": "target-id",
-          "description": "ID of target",
-          "required": true
+          "description": "Generic Target ID"
+        },
+        {
+          "name": "mention-id",
+          "description": "Mention ID (Role/User)"
+        },
+        {
+          "name": "channel-id",
+          "description": "Channel ID"
+        },
+        {
+          "name": "emoji-id",
+          "description": "Emoji ID"
         },
         {
           "name": "target-type",
-          "description": "Mention Type"
+          "description": "Target Type"
         }
       ],
-      "access": "unset",
-      "segment": "local"
-    },
-    "channelinfo": {
-      "name": "channelinfo",
-      "category": "info",
-      "description": "Get info about a Channel",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "ID of target",
-          "required": true
-        }
-      ],
-      "parent": "mention",
-      "access": "unset",
-      "segment": "local"
-    },
-    "emojiinfo": {
-      "name": "emojiinfo",
-      "category": "info",
-      "description": "Get info about an Emoji",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "ID of target",
-          "required": true
-        }
-      ],
-      "parent": "mention",
-      "access": "unset",
-      "segment": "local"
-    },
-    "roleinfo": {
-      "name": "roleinfo",
-      "category": "info",
-      "description": "Get info about a Role",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "ID of target",
-          "required": true
-        }
-      ],
-      "parent": "mention",
-      "access": "unset",
-      "segment": "local"
-    },
-    "userinfo": {
-      "name": "userinfo",
-      "category": "info",
-      "description": "Get info about a User",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "ID of target",
-          "required": true
-        }
-      ],
-      "parent": "mention",
-      "access": "unset",
-      "segment": "local"
-    },
-    "vcinfo": {
-      "name": "vcinfo",
-      "category": "info",
-      "description": "Get info about a Voice Channel",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "ID of target",
-          "required": true
-        }
-      ],
-      "parent": "mention",
       "access": "unset",
       "segment": "local"
     },
@@ -513,6 +552,24 @@
       "category": "info",
       "description": "Time",
       "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "wiki": {
+      "name": "wiki",
+      "category": "info",
+      "description": "Links to a wikipage",
+      "options": [
+        {
+          "name": "pagename",
+          "description": "The Page Name to link to",
+          "required": true
+        },
+        {
+          "name": "wikikey",
+          "description": "The Wiki to link to"
+        }
+      ],
       "access": "unset",
       "segment": "local"
     }
@@ -580,6 +637,20 @@
         }
       ],
       "access": "Mod",
+      "segment": "local"
+    },
+    "batchmod": {
+      "name": "batchmod",
+      "category": "mod",
+      "description": "Runs a batch of Mod commands",
+      "options": [
+        {
+          "name": "batchlist",
+          "description": "A text file with a list of batch commands.",
+          "required": true
+        }
+      ],
+      "access": "BotDev",
       "segment": "local"
     },
     "kick": {
@@ -796,6 +867,25 @@
       "access": "Mod",
       "segment": "local"
     },
+    "shoutout": {
+      "name": "shoutout",
+      "category": "mod",
+      "description": "Post a Shoutout for a user.",
+      "options": [
+        {
+          "name": "target-id",
+          "description": "User to shoutout",
+          "required": true
+        },
+        {
+          "name": "stream-url",
+          "description": "Stream URL",
+          "required": true
+        }
+      ],
+      "access": "Mod",
+      "segment": "local"
+    },
     "timeout": {
       "name": "timeout",
       "category": "mod",
@@ -937,15 +1027,6 @@
       "description": "Starts a specified Randomizer Game with all necessary details",
       "options": [
         {
-          "name": "randomizer",
-          "description": "Randomizer to choose",
-          "required": true
-        },
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
           "name": "pingable-role-id",
           "description": "Role ID number to ping"
         },
@@ -966,278 +1047,6 @@
           "description": "Group ID number"
         }
       ],
-      "access": "unset",
-      "segment": "local"
-    },
-    "z3r": {
-      "name": "z3r",
-      "category": "rando",
-      "description": "Starts a Z3R Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "alttpr": {
-      "name": "alttpr",
-      "category": "rando",
-      "description": "Starts a Z3R Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "smmr": {
-      "name": "smmr",
-      "category": "rando",
-      "description": "Starts a Super Metroid Map Randomizer Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "z3m3": {
-      "name": "z3m3",
-      "category": "rando",
-      "description": "Starts a Z3M3 Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "smz3": {
-      "name": "smz3",
-      "category": "rando",
-      "description": "Starts a Z3M3 Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "varia": {
-      "name": "varia",
-      "category": "rando",
-      "description": "Starts a Super Metroid VARIA Randomizer Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "m4xfr": {
-      "name": "m4xfr",
-      "category": "rando",
-      "description": "Starts a Super Metroid X-Fusion Randomizer Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
-      "access": "unset",
-      "segment": "local"
-    },
-    "ap": {
-      "name": "ap",
-      "category": "rando",
-      "description": "Starts an Archipelago Game with all necessary details",
-      "options": [
-        {
-          "name": "ping-multiplayer-role",
-          "description": "Whether or not to ping the Multiplayer Ping role"
-        },
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "parent": "seedannounce",
       "access": "unset",
       "segment": "local"
     },

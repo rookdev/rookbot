@@ -58,7 +58,7 @@ class BotDevCommand extends AdminCommand {
       // Get list of roles
       // DB
       let dbRes = await dbFuncs.getDB(
-        interaction.guild.id,
+        interaction?.guild?.id ?? interaction.server.id,
         "roles"
       )
       this.ROLES = dbRes[0]
