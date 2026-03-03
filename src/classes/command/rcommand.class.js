@@ -304,7 +304,7 @@ class RookCommand {
   }
 
   async print_it(client, interaction, pages) {
-    this.messages.push(`/${this.name}: Print it...`)
+    this.messages.push(`/${this.name}: Print it... DEPRECATED`)
 
     // If no page, set to built Embed Properties
     if (!pages || (pages.length == 0)) {
