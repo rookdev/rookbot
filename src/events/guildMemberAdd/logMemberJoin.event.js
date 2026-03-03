@@ -36,6 +36,7 @@ module.exports = class LogMemberJoinEvent extends EventScript {
     // this.messages.push(`/${this.name}: Event Action`)
     let joinedDateTime = moment.utc(newMember.joinedTimestamp)
     let createdDateTime = moment.utc(newMember.user.createdTimestamp)
+    let guild = await this.getProp(client, newMember, "guild")
     let logProps = {
       color: client.profile.colors.good,
       title: {
@@ -44,8 +45,8 @@ module.exports = class LogMemberJoinEvent extends EventScript {
       },
       players: {
         user: {
-          name: newMember.guild.name,
-          avatar: newMember.guild.iconURL( { size: 128 } )
+          name: guild.name,
+          avatar: guild.iconURL( { size: 128 } )
         },
         target: {
           name: newMember.user.displayName,
@@ -97,8 +98,8 @@ module.exports = class LogMemberJoinEvent extends EventScript {
           {
             name: "Guild",
             value: mentionFuncs.guildMention(
-              newMember.guild.name,
-              newMember.guild.id,
+              guild.name,
+              guild.id,
               { showID: true }
             )
           }
@@ -120,14 +121,14 @@ module.exports = class LogMemberJoinEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      newMember.guild,
+      guild,
       "members",
       logProps
     )
 
     let logLines = [
       `User:  ${newMember.user.tag} (ID: ${newMember.user.id})`,
-      `Guild: ${newMember.guild.name} (ID: ${newMember.guild.id})`
+      `Guild: ${guild.name} (ID: ${guild.id})`
     ]
     // client
     // data
@@ -142,7 +143,7 @@ module.exports = class LogMemberJoinEvent extends EventScript {
     await this.logMessages(
       "👋",
       {
-        guild: newMember.guild.name,
+        guild: guild.name,
         member: newMember.user.tag,
         action: "join"
       }

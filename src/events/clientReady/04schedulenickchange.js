@@ -54,16 +54,21 @@ module.exports = async (client) => {
     for(let guildID of guilds) {
       // Find the guild
       let guild = await getters.getCache(client, client, "guilds", guildID)
-      if (!guild) {
+      if (!guild || !guild?.id) {
         continue
       }
 
       try {
         // Get the guild member
         const member = await getters.getCache(client, guild, "members", userID)
+        if (!member) {
+          messages.push(`${client.profile.emojis.fail} Member ${userID} not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}!`)
+          continue
+        }
         // If guild owner, bail
-        if (member.guild.ownerId === member.id) {
-          messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in ${mentionFuncs.guildMention(member.guild.name)}. '${member.user.tag}' is server owner.`)
+        let memberGuild = await getters.getProp(client, member, "guild")
+        if (guild?.ownerId === member.id) {
+          messages.push(`${client.profile.emojis.fail}* No  scheduled nickname changes for '${member.user.tag}' in ${mentionFuncs.guildMention(guild.name)}. '${member.user.tag}' is server owner.`)
           continue
         }
 
@@ -103,7 +108,7 @@ module.exports = async (client) => {
           messages = messages.concat(thisMessages)
         }
       } catch (error) {
-        const member = null
+        // messages = [...messages, error.stack]
       }
     }
   }

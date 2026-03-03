@@ -59,7 +59,8 @@ class FileReaderEvent extends EventScript {
       return false
     }
 
-    if (!message.guild) {
+    let guild = await this.getProp(client, message, "guild")
+    if (!guild) {
       this.message.push("No Guild")
       return false
     }
@@ -82,26 +83,26 @@ class FileReaderEvent extends EventScript {
     if (this?.channelId || this?.channelName) {
       let check = this?.channelId ?? this?.channelName ?? null
       if (check) {
-        this.channel = await getters.getCache(client, message.guild, "channels", check)
+        this.channel = await getters.getCache(client, guild, "channels", check)
         if (this.channel) {
           this.channelId = this.channel.id
         }
       }
     } else if (this?.channelSlug) {
       let dbRes = await dbFuncs.getDB(
-        message.guild.id,
+        guild.id,
         "channels"
       )      
       let channelIDs = dbRes[0]
       this.messages.push(...dbRes[1])
       if (!channelIDs) {
-        this.messages.push(`Channel IDs not found for ${mentionFuncs.guildMention(message.guild.name, message.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
+        this.messages.push(`Channel IDs not found for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}`)
       }
       this.channelId = channelIDs[this.channelSlug]
     }
 
     if (!this.channel && this.channelId) {
-      this.channel = await getters.getCache(client, message.guild, "channels", this.channelId)
+      this.channel = await getters.getCache(client, guild, "channels", this.channelId)
     }
 
     if (message.channel.id != this.channel.id) {
@@ -122,6 +123,7 @@ class FileReaderEvent extends EventScript {
   async action(client, message) {
     // this.messages.push(`/${this.name}: Event Action`)
 
+    let guild = await this.getProp(client, message, "guild")
     for (let [attachmentID, aData] of message.attachments) {
       let hasFileExt = false
       for (let filext of this.filexts) {
@@ -138,7 +140,7 @@ class FileReaderEvent extends EventScript {
           JSON.stringify(
             {
               name: message.author.tag,
-              guild: message.guild.name,
+              guild: guild.name,
               channel: message.channel.name,
               filexts: this.filexts,
               filename: aData.name

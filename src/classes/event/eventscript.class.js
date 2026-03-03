@@ -36,6 +36,10 @@ class EventScript {
     return await dbFuncs.getDB(cName, dName)
   }
 
+  async getProp(client, parent, propName) {
+    return await getters.getProp(client, parent, propName)
+  }
+
   async getChannel(client, guild, channelNames) {
     let dbRes = await this.getDB(guild.id, "channels")
     let guildChannels = dbRes[0]

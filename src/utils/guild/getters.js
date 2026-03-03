@@ -149,7 +149,29 @@ async function getCache(client, parent, cacheType, cacheTest) {
   return ret
 }
 
+async function getProp(client, parent, propName) {
+  let prop = null
+
+  if (!parent) {
+    parent = client
+  }
+  if (parent[propName]) {
+    prop = await parent[propName]
+  }
+  if (propName.indexOf("guild") > -1 && [
+    "stoat"
+  ].includes(client.platform)) {
+    propName = propName.replace("guild","server")
+    if (parent[propName]) {
+      prop = await parent[propName]
+    }
+  }
+
+  return prop
+}
+
 module.exports = {
   searchCache,
-  getCache
+  getCache,
+  getProp
 }

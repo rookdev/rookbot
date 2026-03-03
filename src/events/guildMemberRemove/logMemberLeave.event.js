@@ -35,6 +35,7 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
    */
   async action(client, oldMember) {
     // this.messages.push(`/${this.name}: Event Action`)
+    let guild = await this.getProp(client, oldMember, "guild")
     let leftDateTime = moment.utc()
     let joinedDateTime = moment.utc(oldMember.joinedTimestamp)
     let createdDateTime = moment.utc(oldMember.user.createdTimestamp)
@@ -56,8 +57,8 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
       },
       players: {
         user: {
-          name: oldMember.guild.name,
-          avatar: oldMember.guild.iconURL( { size: 128 } )
+          name: guild.name,
+          avatar: guild.iconURL( { size: 128 } )
         },
         target: {
           name: oldMember.user.displayName,
@@ -128,8 +129,8 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
           {
             name: "Guild",
             value: mentionFuncs.guildMention(
-              oldMember.guild.name,
-              oldMember.guild.id,
+              guild.name,
+              guild.id,
               { showID: true }
             )
           }
@@ -143,14 +144,14 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      oldMember.guild,
+      guild,
       "members",
       logProps
     )
 
     let logLines = [
       `User:  ${oldMember.user.tag} (ID: ${oldMember.user.id})`,
-      `Guild: ${oldMember.guild.name} (ID: ${oldMember.guild.id})`
+      `Guild: ${guild.name} (ID: ${guild.id})`
     ]
     // client
     // data
@@ -165,7 +166,7 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
     await this.logMessages(
       "🚪",
       {
-        guild: oldMember.guild.name,
+        guild: guild.name,
         member: oldMember.user.tag,
         action: "leave",
         duration: durationStr

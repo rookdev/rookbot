@@ -101,7 +101,8 @@ class RookCommand {
       return false
     }
 
-    if (!member?.guild) {
+    let guild = await getters.getProp(client, member, "guild")
+    if (!guild) {
       if (!silent) {
         this.error = true
         this.props.playerTypes = {
@@ -119,7 +120,7 @@ class RookCommand {
       return true
     }
 
-    if (member.id === member.guild.ownerId) {
+    if (member.id === guild.ownerId) {
       if (!silent) {
         this.error = true
         this.props.playerTypes = {
@@ -128,14 +129,14 @@ class RookCommand {
         }
         msg = [
           `${this.profile.emojis.fail} Bot can't manage user.`,
-          `${this.profile.emojis.fail} ${member} is Owner of ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`
+          `${this.profile.emojis.fail} ${member} is Owner of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}.`
         ]
         this.props.description = msg
       }
       return false
     }
 
-    let clientMember = member.guild.members.me
+    let clientMember = guild.members.me
     if (!clientMember) {
       if (!silent) {
         this.error = true
@@ -143,7 +144,7 @@ class RookCommand {
           user: "bot",
           target: "bot"
         }
-        msg = `${this.profile.emojis.fail} Bot not found in ${mentionFuncs.guildMention(member.guild.name, member.guild.id, { showID: true, oneLine: true })}.`
+        msg = `${this.profile.emojis.fail} Bot not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}.`
         this.props.description = msg
       }
       return false
@@ -215,12 +216,17 @@ class RookCommand {
   }
 
   async getChannel(client, interaction, channelTypes) {
+    let guild = await getters.getProp(client, interaction, "guild")
     return await this.getCache(
       client,
-      interaction?.guild,
+      guild,
       "channels",
       channelTypes
     )
+  }
+
+  async getProp(client, parent, propName) {
+    return await getters.getProp(client, parent, propName)
   }
 
   async action(client, interaction, coptions) {
@@ -341,10 +347,11 @@ class RookCommand {
           tag:    client.user.tag
         }
 
+        let guild = await getters.getProp(client, interaction, "guild")
         // If we've got an Interaction
         if (interaction?.id) {
           // Get Guild version of Client User
-          let clientMember = interaction.guild?.members.me
+          let clientMember = guild?.members.me
           // Get Guild version of Caller
           let callerMember = await interaction?.member
 
@@ -390,13 +397,13 @@ class RookCommand {
 
           // If there's no Guild Entity set yet
           //  Set it
-          if ((!page.entities?.guild) && (interaction?.guild)) {
+          if ((!page.entities?.guild) && (guild)) {
             page.entities.guild = {
               type:   "guild",
-              id:     interaction?.guild?.id ?? interaction.server.id,
-              name:   interaction?.guild?.name ?? interaction.server.name,
+              id:     guild?.id,
+              name:   guild?.name,
               url:    "http://example.com/guild",
-              avatar: interaction?.guild?.iconURL({ size: 128 }) ?? interaction.server.iconURL({ size: 128 })
+              avatar: guild?.iconURL({ size: 128 })
             }
           }
         }
@@ -516,6 +523,8 @@ class RookCommand {
     dateTable.addRow(now.format())
     this.messages.push(dateTable.toString())
 
+    let guild = await getters.getProp(client, interaction, "guild")
+
     let Table = new AsciiTable("", {})
       .setHeading(
         "",
@@ -537,8 +546,8 @@ class RookCommand {
       // Guild it was in
       .addRow(
         "Guild",
-        interaction?.guild?.name,
-        interaction?.guildId
+        guild?.name,
+        guild?.id
       )
       // Channel it was in
       .addRow(
@@ -571,7 +580,7 @@ class RookCommand {
       if (this.userPermissions) {
         let member = await this.getCache(
           client,
-          interaction.guild,
+          guild,
           "members",
           interaction?.user?.id ?? interaction.authorId
         )
@@ -582,7 +591,7 @@ class RookCommand {
         )
       }
       if (this.botPermissions) {
-        let clientMember = interaction.guild?.members.me
+        let clientMember = guild?.members.me
         Table.addRow(
           "Bot Permissions",
           this.botPermissions,

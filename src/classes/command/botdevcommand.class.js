@@ -8,6 +8,7 @@ const mentionFuncs = require('../../utils/formatters/mentions')
 const AsciiTable = require('ascii-table')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 
 /**
  * @class
@@ -57,8 +58,10 @@ class BotDevCommand extends AdminCommand {
     if (interaction) {
       // Get list of roles
       // DB
+      let guild = await getters.getProp(client, interaction, "guild")
+      let guildID = guild.id
       let dbRes = await dbFuncs.getDB(
-        interaction?.guild?.id ?? interaction.server.id,
+        guildID,
         "roles"
       )
       this.ROLES = dbRes[0]
@@ -71,7 +74,7 @@ class BotDevCommand extends AdminCommand {
         // Bail if we don't have intended Approved Roles data
         if (!APPROVED_ROLES) {
           this.error = true
-          this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
+          this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
           return !this.error
         }
 

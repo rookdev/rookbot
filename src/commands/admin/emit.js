@@ -55,13 +55,14 @@ module.exports = class EmitCommand extends AdminCommand {
       inlineCode(eventName)
     ]
 
+    let guild = await this.getProp(client, interaction, "guild")
     if (eventName == "channelCreate") {
       // channelCreate
       //  editVoiceChannel
       let voiceChannelNames = null
       // DB
       let dbRes = await dbFuncs.getDB(
-        interaction.guild.id,
+        guild.id,
         "voiceChannelNames"
       )
       voiceChannelNames = dbRes[0]
@@ -70,7 +71,7 @@ module.exports = class EmitCommand extends AdminCommand {
 
       let channel = {
         name: "Old Name",
-        guild: { name: interaction.guild.name, id: interaction.guild.id },
+        guild: { name: guild.name, id: guild.id },
         parentId: voiceChannelNames.categories[0],
         type: ChannelType.GuildVoice,
         edit: async () => { return true },
@@ -95,7 +96,7 @@ module.exports = class EmitCommand extends AdminCommand {
       //  announceGoLive
       //  boostePraise
       //  logNameChange
-      let oldMember = await interaction.guild.members.me
+      let oldMember = await guild.members.me
       if (!(oldMember?.presence)) {
         // console.log("Adding Member Presence")
         oldMember.presence = {}
@@ -106,15 +107,16 @@ module.exports = class EmitCommand extends AdminCommand {
           {}
         ]
       }
-      if (!(oldMember?.guild)) {
+      let oldMemberGuild = await this.getProp(client, oldMember, "guild")
+      if (!(oldMemberGuild)) {
         // console.log("Adding Guild")
-        oldMember.guild = interaction.guild
+        oldMember.guild = guild
       }
-      if (!(oldMember?.guild?.roles)) {
+      if (!(oldMemberGuild?.roles)) {
         // console.log("Adding Guild Roles")
         oldMember.guild.roles = {}
       }
-      if (!(oldMember?.guild?.roles?.cache)) {
+      if (!(oldMemberGuild?.roles?.cache)) {
         // console.log("Adding Guild Roles Cache")
         oldMember.guild.roles.cache = {
           roles: [
@@ -146,7 +148,7 @@ module.exports = class EmitCommand extends AdminCommand {
 
       if (eventName == "guildMemberUpdate") {
         let newMember = JSON.parse(JSON.stringify(oldMember))
-        newMember.guild = interaction.guild
+        newMember.guild = guild
         newMember.guild.roles.cache.find = async () => {
           return {
             id: 1
@@ -177,10 +179,10 @@ module.exports = class EmitCommand extends AdminCommand {
         // boosterPraise
         // logNameChange
         newMember.displayAvatarURL = async () => {
-          return await interaction.guild.members.me.displayAvatarURL({ size: 128 })
+          return await guild.members.me.displayAvatarURL({ size: 128 })
         }
         newMember.nickname = "New Name"
-        newMember.user = interaction.guild.members.me.user
+        newMember.user = guild.members.me.user
         args.push(newMember)
       }
     } else if (eventName == "inviteCreate") {
@@ -193,7 +195,7 @@ module.exports = class EmitCommand extends AdminCommand {
           code: "iddqd",
           createdAt: 0,
           expiresAt: 0,
-          guild: interaction.guild,
+          guild: guild,
           inviter: interaction.user,
           inviterId: interaction.user.id,
           maxAge: 0,
@@ -217,7 +219,7 @@ module.exports = class EmitCommand extends AdminCommand {
       //  rr
       let reaction = {
         message: {
-          guild: interaction.guild,
+          guild: guild,
           id: interaction.id
         },
         emoji: {
@@ -225,17 +227,17 @@ module.exports = class EmitCommand extends AdminCommand {
         },
         me: true
       }
-      let user = await interaction.guild.members.me
+      let user = await guild.members.me
 
       args.push(reaction)
       args.push(user)
     } else if (eventName == "messageCreate") {
       let message = {
         content: "Content",
-        guild: interaction.guild,
+        guild: guild,
         channel: interaction.channel,
         url: "http://example.com/message",
-        author: interaction.guild.members.me
+        author: guild.members.me
       }
       // message.author.id = 0
 
@@ -245,10 +247,10 @@ module.exports = class EmitCommand extends AdminCommand {
     } else if (eventName == "messageUpdate") {
       let message = {
         content: "Old Content",
-        guild: interaction.guild,
+        guild: guild,
         channel: interaction.channel,
         url: "http://example.com/message",
-        author: interaction.guild.members.me
+        author: guild.members.me
       }
       // message.author.id = 0
 
@@ -259,9 +261,9 @@ module.exports = class EmitCommand extends AdminCommand {
     } else if (eventName == "presenceUpdate") {
       let presence = {
         status: "online",
-        guild: interaction.guild,
+        guild: guild,
         userId: client.user.id,
-        user: interaction.guild.members.me,
+        user: guild.members.me,
         activities: [
           {
             name: "Twitch",
@@ -279,9 +281,9 @@ module.exports = class EmitCommand extends AdminCommand {
       // Wait a second after oldPresence
       await wait(1 * 1000)
       let newPresence = JSON.parse(JSON.stringify(presence))
-      newPresence.guild = interaction.guild,
+      newPresence.guild = guild,
       newPresence.user = client.user
-      newPresence.member = interaction.guild.members.me
+      newPresence.member = guild.members.me
       newPresence.activities[0].url = "http://example.com/stream2"
       newPresence.activities[0].createdTimestamp = moment.utc().format("x")
       args.push(newPresence)
@@ -289,16 +291,16 @@ module.exports = class EmitCommand extends AdminCommand {
       let voiceState = {
         streaming: false,
         channelId: interaction.channel.id,
-        guild: interaction.guild,
-        member: interaction.guild.members.me
+        guild: guild,
+        member: guild.members.me
       }
 
       args.push(voiceState)
 
       let newVoiceState = JSON.parse(JSON.stringify(voiceState))
       newVoiceState.streaming = true
-      newVoiceState.guild = interaction.guild
-      newVoiceState.member = interaction.guild.members.me
+      newVoiceState.guild = guild
+      newVoiceState.member = guild.members.me
       args.push(newVoiceState)
     }
 

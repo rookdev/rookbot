@@ -43,12 +43,14 @@ module.exports = class LogNameChangeEvent extends EventScript {
       return
     }
 
-    if (!newMember.guild) {
+    let guild = await this.getProp(client, oldMember, "guild")
+
+    if (!guild) {
       this.messages.push(`${client.profile.emojis.fail} GuildMemberUpdate occurred outside of a guild for ${mentionFuncs.userMention(newMember.user.id, { showID: true, oneLine: true, textOnly: true })}`)
       return
     }
 
-    const fetchedLogs = await newMember.guild.fetchAuditLogs(
+    const fetchedLogs = await guild.fetchAuditLogs(
       {
         limit: 6,
         type: AuditLogEvent.MemberUpdate
@@ -65,7 +67,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
     }
     let updater = auditEntry?.executor ?? null
     if (updater) {
-      let updaterMember = await this.getCache(client, newMember.guild, "members", updater.id)
+      let updaterMember = await this.getCache(client, guild, "members", updater.id)
       if (updaterMember) {
         updater = updaterMember
       }
@@ -122,7 +124,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
         ]
       )
     } else {
-      let clientMember = newMember.guild.members.me
+      let clientMember = guild.members.me
       if (clientMember) {
         logPlayers.user = {
           name: clientMember.displayName,
@@ -144,8 +146,8 @@ module.exports = class LogNameChangeEvent extends EventScript {
         {
           name: "Guild",
           value: mentionFuncs.guildMention(
-            newMember.guild.name,
-            newMember.guild.id,
+            guild.name,
+            guild.id,
             { showID: true }
           )
         }
@@ -180,14 +182,14 @@ module.exports = class LogNameChangeEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      newMember.guild,
+      guild,
       "names",
       logProps
     )
 
     let logLines = [
       `User:  ${newMember.user.tag} (ID: ${newMember.user.id})`,
-      `Guild: ${newMember.guild.name} (ID: ${newMember.guild.id})`
+      `Guild: ${guild.name} (ID: ${guild.id})`
     ]
     // client
     // data
@@ -202,7 +204,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
     await this.logMessages(
       "✏️",
       {
-        guild: newMember.guild.name,
+        guild: guild.name,
         member: newMember.user.tag,
         action: "edit",
         oldName: oldNick,

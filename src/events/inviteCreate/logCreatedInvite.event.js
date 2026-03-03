@@ -34,6 +34,7 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
    */
   async action(client, newInvite) {
     // this.messages.push(`/${this.name}: Event Action`)
+    let guild = await this.getProp(client, newInvite, "guild")
     let createdDateTime = moment.utc(newInvite.createdTimestamp)
     let expiresDateTime = newInvite.expiresTimestamp ? moment.utc(newInvite.expiresTimestamp) : null
     let logProps = {
@@ -43,8 +44,8 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
       },
       players: {
         user: {
-          name: newInvite.guild.name,
-          avatar: newInvite.guild.iconURL( { size: 128 } )
+          name: guild.name,
+          avatar: guild.iconURL( { size: 128 } )
         },
         target: {
           name: newInvite.inviter.displayName,
@@ -96,8 +97,8 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
           {
             name: "Guild",
             value: mentionFuncs.guildMention(
-              newInvite.guild.name,
-              newInvite.guild.id,
+              guild.name,
+              guild.id,
               { showID: true }
             )
           }
@@ -171,14 +172,14 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      newInvite.guild,
+      guild,
       "invites",
       logProps
     )
 
     let logLines = [
       `User:     ${newInvite.inviter.tag} (ID: ${newInvite.inviter.id})`,
-      `Guild:    ${newInvite.guild.name} (ID: ${newInvite.guild.id})`,
+      `Guild:    ${guild.name} (ID: ${guild.id})`,
       `Channel:  ${newInvite.channel.name} (ID: ${newInvite.channel.id})`,
       `Expires:  ${expiresDateTime}`,
       `Code:     ${newInvite.code}`,
@@ -199,7 +200,7 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
     await this.logMessages(
       "✉️",
       {
-        guild: newInvite.guild.name,
+        guild: guild.name,
         member: newInvite.inviter.tag,
         expires: expiresDateTime,
         channel: newInvite.channel.name,

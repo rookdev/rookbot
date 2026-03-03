@@ -3,8 +3,8 @@
 require('@dotenvx/dotenvx').config()
 
 const DO_FLUXER   = false
-const DO_DISCORD  = false
-const DO_STOAT    = true
+const DO_DISCORD  = true
+const DO_STOAT    = false
 
 const { REST } = require('@discordjs/rest')
 const { WebSocketManager } = require('@discordjs/ws')

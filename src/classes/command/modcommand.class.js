@@ -94,6 +94,7 @@ class ModCommand extends AdminCommand {
     roles,
     reason
   ) {
+    let guild = await getters.getProp(interaction.client, interaction, "guild")
 
     this.messages.push("Adjust Roles:",user.displayName,roles)
 
@@ -138,10 +139,10 @@ class ModCommand extends AdminCommand {
         if (matches) {
           addRole = matches[1]
         }
-        addRole = await this.getCache(client, interaction.guild, "roles", addRole)
+        addRole = await this.getCache(interaction.client, guild, "roles", addRole)
       } else {
         // Search for the Role object by Role Name
-        addRole = await this.getCache(interaction.client, interaction.guild, "roles", addRole)
+        addRole = await this.getCache(interaction.client, guild, "roles", addRole)
       }
       // Add the Role
       // @ts-ignore
@@ -183,10 +184,10 @@ class ModCommand extends AdminCommand {
         if (matches) {
           remRole = matches[1]
         }
-        remRole = await this.getCache(client, interaction.guild, "roles", remRole)
+        remRole = await this.getCache(interaction.client, guild, "roles", remRole)
       } else {
         // Search for the Role object by Role Name
-        remRole = await this.getCache(interaction.client, interaction.guild, "roles", remRole)
+        remRole = await this.getCache(interaction.client, guild, "roles", remRole)
       }
       // Remove the Role
       // @ts-ignore
@@ -347,7 +348,8 @@ class ModCommand extends AdminCommand {
     let lastingError
 
     // Get Guild ID
-    const guildID = coptions["guild-id"] ?? interaction?.guild?.id
+    let guild = await getters.getProp(client, interaction, "guild")
+    const guildID = coptions["guild-id"] ?? guild?.id
     // Get User Input
     const targetUserInput = coptions["target-id"]
     // Get Reason
@@ -464,7 +466,7 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await this.getCache(client, interaction.guild, "members", targetUserId)
+    const guildMember = await this.getCache(client, guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
 
     // Attempt to ACTION the user
@@ -502,7 +504,7 @@ class ModCommand extends AdminCommand {
               DAY = HR  * 24
               banOptions.deleteMessageSeconds = banPurgeDays * DAY
             }
-            success = await interaction.guild.members.ban(
+            success = await guild.members.ban(
               targetUserId,
               banOptions
             )
@@ -510,7 +512,7 @@ class ModCommand extends AdminCommand {
 
           // Kick
           case "kick":
-            success = await interaction.guild.members.kick(
+            success = await guild.members.kick(
               targetUserId, { reason }
             )
             break
@@ -534,7 +536,7 @@ class ModCommand extends AdminCommand {
 
           // Unban
           case "unban":
-            success = await interaction.guild.members.unban(
+            success = await guild.members.unban(
               targetUserId
             )
             break
@@ -551,7 +553,7 @@ class ModCommand extends AdminCommand {
           // Warn
           case "warn":
             success = true
-            // success = await interaction.guild.members.warn(
+            // success = await guild.members.warn(
             //   targetUserId
             // )
             break
@@ -603,7 +605,7 @@ class ModCommand extends AdminCommand {
       if (success && (!this.DEV || true)) {
         // DM post for ACTION
         try {
-          let dm_desc = `You have been ${tenses.past} from the ${interaction.guild.name} server. ` +
+          let dm_desc = `You have been ${tenses.past} from the ${guild.name} server. ` +
           `(` +
           (role != "" ? `Role: ${role}; Reason: ` : "") +
           (durationSeconds != 0 ? `Duration: ${timeConversion(durationMilliseconds)}; Until: ${timeFormat(timeoutUntil.format("x"))}; Reason: ` : "") +
@@ -760,8 +762,8 @@ class ModCommand extends AdminCommand {
               {
                 name: 'Guild',
                 value: mentionFuncs.guildMention(
-                  interaction.guild.name,
-                  interaction.guild.id,
+                  guild.name,
+                  guild.id,
                   { showID: true }
                 )
               }
@@ -873,7 +875,7 @@ class ModCommand extends AdminCommand {
           `User:     ${user.tag} (ID: ${user.id})`,
           `Actor:    ${interaction?.user?.tag} (ID: ${interaction?.user?.id})`,
           `Action:   ${tenses.past.ucfirst()}`,
-          `Guild:    ${interaction?.guild?.name} (ID: ${interaction?.guild?.id})`,
+          `Guild:    ${guild?.name} (ID: ${guild?.id})`,
         ]
         if (durationSeconds != 0) {
           logEntry.push(
@@ -933,8 +935,9 @@ class ModCommand extends AdminCommand {
 
     // Get list of roles
     // DB
+    let guild = await getters.getProp(client, interaction, "guild")
     let dbRes = await dbFuncs.getDB(
-      interaction.guild.id,
+      guild.id,
       "roles"
     )
     this.ROLES = dbRes[0]
@@ -956,7 +959,7 @@ class ModCommand extends AdminCommand {
       // Bail if we don't have intended Approved Roles data
       if (!APPROVED_ROLES) {
         this.error = true
-        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
+        this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
         return false
       }
 

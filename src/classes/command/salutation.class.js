@@ -218,22 +218,24 @@ class SalutationCommand extends RookCommand {
     let offlineMoment   = moment.utc()
 
     // Build default server info
+    let channelGuild = this?.channel ? await getters.getProp(client, this.channel, "guild") : null
+    let interactionGuild = interaction ? await getters.getProp(client, interaction, "guild") : null
     let server = {
-      name: this?.channel?.guild.name ??
-        interaction?.guild?.name ??
+      name: channelGuild?.name ??
+        interactionGuild?.name ??
         client.guild.name ??
         "?",
-      id: this?.channel?.guild.id ??
-        interaction?.guild?.id ??
+      id: channelGuild?.id ??
+        interactionGuild?.id ??
         client.guild.id ??
         process.env?.GUILD_ID,
-      avatar: this?.channel?.guild.iconURL({ size: 128 }) ??
-        interaction?.guild?.iconURL({ size: 128 }) ??
+      avatar: channelGuild?.iconURL({ size: 128 }) ??
+        interactionGuild?.iconURL({ size: 128 }) ??
         client.guild.iconURL({ size: 128 }) ??
         ""
     }
     if (server?.id) {
-      server.name = await client?.guilds.fetch(server.id)?.name ?? "?"
+      server.name = await getters.getCache(client, client, "guilds", server.id)?.name ?? "?"
     }
 
     this.props["fields"] = [
@@ -365,9 +367,10 @@ class SalutationCommand extends RookCommand {
     this.messages.push(console_output.join("\n"))
 
     // If we've got guilds
-    if (client?.guilds) {
+    let guilds = await getters.getProp(client, client, "guilds")
+    if (guilds) {
       // Cycle through guilds
-      for (let [guildID, guildData] of client.guilds.cache) {
+      for (let [guildID, guildData] of guilds.cache) {
         // Get Client User
         let clientMember = null
         if (user) {
@@ -444,7 +447,7 @@ class SalutationCommand extends RookCommand {
 
         if (interaction) {
           if (!guild) {
-            guild = await interaction.guild
+            guild = await getters.getProp(client, interaction, "guild")
           }
           if (!channel) {
             channel = await interaction.channel
@@ -469,6 +472,7 @@ class SalutationCommand extends RookCommand {
         let printResult = null
         let msg = ""
 
+        let interactionGuild = await getters.getProp(client, interaction, "guild")
         if (channel) {
           // Print this page
           printResult = await this.print_it(client, interaction, [ this.props ])
@@ -476,11 +480,12 @@ class SalutationCommand extends RookCommand {
             // Set up package
             let this_package = { embeds: this.pages }
 
+            let channelGuild = await getters.getProp(client, channel, "guild")
             if (
               channel &&
-              channel?.guild &&
-              channel?.guild?.id &&
-              interaction?.guild?.id === channel?.guild?.id
+              channelGuild &&
+              channelGuild?.id &&
+              interactionGuild?.id === channelGuild?.id
             ) {
               // Send package
               await channel.send(this_package)
@@ -498,8 +503,8 @@ class SalutationCommand extends RookCommand {
         if (
           msg != "" &&
           interaction &&
-          interaction?.guild &&
-          interaction?.guild?.id &&
+          interactionGuild &&
+          interactionGuild?.id &&
           typeof interaction.editReply === "function"
         ) {
           await interaction.editReply(

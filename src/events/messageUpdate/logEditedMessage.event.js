@@ -43,8 +43,9 @@ module.exports = class LogEditedMessageEvent extends EventScript {
       return false
     }
 
+    let guild = await this.getProp(client, newMessage, "guild")
     // Ensure the message is in a guild and not from a bot
-    if (!newMessage.guild) {
+    if (!guild) {
       this.messages.push(`${client.profile.emojis.fail} MessageUpdate occurred outside of a guild:`, newMessage)
       return false
     }
@@ -90,17 +91,17 @@ module.exports = class LogEditedMessageEvent extends EventScript {
     }
 
     // Handle cases where the old or new content is unavailable
-    const oldContent = oldMessage.content ?? italic('(Content unavailable)')
-    const newContent = newMessage.content ?? italic('(Content unavailable)')
+    const oldContent = oldMessage.cleanContent.slice(0, 1024) ?? italic('(Content unavailable)')
+    const newContent = newMessage.cleanContent.slice(0, 1024) ?? italic('(Content unavailable)')
 
     // Skip if the content hasn't changed
-    if (oldContent === newContent) {
+    if (oldMessage.content === newMessage.content) {
       // console.warn('  No content change detected.')
       return false
     }
 
     let editor = newMessage.author
-    let editMember = await getters.getCache(client, newMessage.guild, "members", editor.id)
+    let editMember = await getters.getCache(client, guild, "members", editor.id)
     if (editMember) {
       editor = editMember
     }
@@ -145,8 +146,8 @@ module.exports = class LogEditedMessageEvent extends EventScript {
           {
             name: 'Guild',
             value: mentionFuncs.guildMention(
-              newMessage.guild.name,
-              newMessage.guild.id,
+              guild.name,
+              guild.id,
               { showID: true }
             )
           },
@@ -192,14 +193,14 @@ module.exports = class LogEditedMessageEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      newMessage.guild,
+      guild,
       "messages",
       logProps
     )
 
     let logLines = [
       `Author:      ${editor.tag} (ID: ${editor.id})`,
-      `Guild:       ${newMessage.guild.name} (ID: ${newMessage.guild.id})`,
+      `Guild:       ${guild.name} (ID: ${guild.id})`,
       `Channel:     #${newMessage.channel.name} (ID: ${newMessage.channel.id})`,
       `Message ID:  ${newMessage.id}`,
       `Old Content: ${oldContent}`,
@@ -218,7 +219,7 @@ module.exports = class LogEditedMessageEvent extends EventScript {
     await this.logMessages(
       "✏️",
       {
-        guild: newMessage.guild.name,
+        guild: guild.name,
         member: editor.tag,
         channel: newMessage.channel.name,
         message: newMessage.id,

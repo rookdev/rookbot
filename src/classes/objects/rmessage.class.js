@@ -24,7 +24,7 @@ class RookMessage {
   async getChannel() {
     let parent = this.client
     if (this.interaction?.id) {
-      parent = this.interaction?.guild || this.interaction.server
+      parent = await getters.getProp(this.client, parent, "guild")
     }
     return await getters.getCache(
       this.client,
@@ -231,10 +231,12 @@ class RookMessage {
           tag:    this.client.user.tag
         }
 
+        let guild = await getters.getProp(this.client, this.interaction, "guild")
+
         // If we've got an Interaction
         if (this.interaction?.id) {
           // Get Guild version of Client User
-          let clientMember = this.interaction.guild?.members.me
+          let clientMember = guild?.members.me
           // Get Guild version of Caller
           let callerMember = await this.interaction?.member
 
@@ -280,13 +282,13 @@ class RookMessage {
 
           // If there's no Guild Entity set yet
           //  Set it
-          if ((!page.entities?.guild) && (this.interaction?.guild)) {
+          if ((!page.entities?.guild) && (guild)) {
             page.entities.guild = {
               type:   "guild",
-              id:     this.interaction.guild.id,
-              name:   this.interaction.guild.name,
+              id:     guild.id,
+              name:   guild.name,
               url:    "http://example.com/guild",
-              avatar: this.interaction.guild.iconURL({ size: 128 })
+              avatar: guild.iconURL({ size: 128 })
             }
           }
         }
@@ -408,7 +410,8 @@ class RookMessage {
     let send_result = false
     if (!interaction_result) {
       try {
-        this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${this.channel.guild.name}'`)
+        let channelGuild = await getters.getProp(this.client, this.channel, "guild")
+        this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${channelGuild.name}'`)
         send_result = await this.channel.send(this_package)
       } catch(e) {
         // this.messages.push(e)

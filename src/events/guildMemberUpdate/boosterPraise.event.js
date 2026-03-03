@@ -38,12 +38,13 @@ module.exports = class BoosterPraiseEvent extends EventScript {
   async action(client, oldMember, newMember) {
     // this.messages.push(`/${this.name}: Event Action`)
 
-    let boostRoleID = newMember.guild.roles.premiumSubscriberRole?.id
+    let guild = await this.getProp(client, newMember, "guild")
+    let boostRoleID = guild.roles.premiumSubscriberRole?.id
 
     if (!boostRoleID) {
       // DB
       let dbRes = await dbFuncs.getDB(
-        newMember.guild.id,
+        guild.id,
         "roles"
       )
       let roleNames = dbRes[0]
@@ -60,7 +61,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
         return false
       }
 
-      let boostRole = await getters.getCache(client, newMember.guild, "roles", roleNames.booster[0])
+      let boostRole = await getters.getCache(client, guild, "roles", roleNames.booster[0])
       if (!boostRole) {
         // this.messages.push("No Boost Role!")
         return false
@@ -78,7 +79,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
 
       if (!hadBoost && hasBoost) {
         let boostEmojiName = "heartcontainer"
-        let heartContainerEmoji = await getters.getCache(client, newMember.guild, "emojis", boostEmojiName)
+        let heartContainerEmoji = await getters.getCache(client, guild, "emojis", boostEmojiName)
         if (heartContainerEmoji == boostEmojiName) {
           heartContainerEmoji = "<3"
         }
@@ -86,11 +87,11 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           name: newMember.displayName,
           avatar: await newMember.displayAvatarURL({ size: 128 }),
           guild: {
-            name: newMember.guild.name,
-            boosts: newMember.guild.premiumSubscriptionCount
+            name: guild.name,
+            boosts: guild.premiumSubscriptionCount
           },
           msg: [
-            `${bold(newMember.guild.name)} currently has ${bold(newMember.guild.boosts)} boosts!`,
+            `${bold(guild.name)} currently has ${bold(guild.boosts)} boosts!`,
             "",
             `Thank you for boosting!`
           ]
@@ -126,7 +127,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           }
         }
 
-        let boostChannel = await this.getChannel(client, newMember.guild, ["logging-boosts", "logging"])
+        let boostChannel = await this.getChannel(client, guild, ["logging-boosts", "logging"])
         let boostMessage = await new RookMessage(
           client,
           null,
@@ -145,11 +146,11 @@ module.exports = class BoosterPraiseEvent extends EventScript {
             },
             {
               name: "Guild",
-              value: newMember.guild.name
+              value: guild.name
             },
             {
               name: "Boosts",
-              value: newMember.guild.premiumSubscriptionCount
+              value: guild.premiumSubscriptionCount
             }
           ]
         ]
@@ -170,7 +171,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
         // embed props
         await this.logPost(
           client,
-          newMember.guild,
+          guild,
           "boosts",
           logProps
         )
@@ -179,11 +180,11 @@ module.exports = class BoosterPraiseEvent extends EventScript {
         await this.logMessages(
           "💗",
           {
-            guild: newMember.guild.name,
+            guild: guild.name,
             member: newMember.displayName,
             action: "boost",
-            level: newMember.guild.premiumTier,
-            boosts: newMember.guild.premiumSubscriptionCount
+            level: guild.premiumTier,
+            boosts: guild.premiumSubscriptionCount
           }
         )
       }

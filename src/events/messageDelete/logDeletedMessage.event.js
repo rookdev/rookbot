@@ -58,7 +58,8 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
       return false
     }
 
-    const fetchedLogs = await deletedMessage.guild?.fetchAuditLogs(
+    let guild = await this.getProp(client, deletedMessage, "guild")
+    const fetchedLogs = await guild?.fetchAuditLogs(
       {
         limit: 6,
         type: AuditLogEvent.MessageDelete
@@ -74,7 +75,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     )
     let deleter = auditEntry?.executor ?? null
     if (deleter) {
-      let deleterMember = await getters.getCache(client, deletedMessage.guild, "members", deleter.id)
+      let deleterMember = await getters.getCache(client, guild, "members", deleter.id)
       if (deleterMember) {
         deleter = deleterMember
       }
@@ -83,7 +84,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     let deletedAuthor = deletedMessage.author
     let deletedMember = null
     try {
-      deletedMember = await getters.getCache(client, deletedMessage.guild, "members", deletedAuthor.id)
+      deletedMember = await getters.getCache(client, guild, "members", deletedAuthor.id)
     } catch (error) {
 
     }
@@ -174,8 +175,8 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
         {
           name: 'Guild',
           value: mentionFuncs.guildMention(
-            deletedMessage.guild.name,
-            deletedMessage.guild.id,
+            guild.name,
+            guild.id,
             {
               showID: true
             }
@@ -208,7 +209,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
         // Message Content
         {
           name: 'Content',
-          value: deletedMessage.content.slice(0,1024) ?? italic('No content')
+          value: deletedMessage.cleanContent.slice(0,1024) ?? italic('No content')
         }
       ]
     )
@@ -229,7 +230,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     // embed props
     await this.logPost(
       client,
-      deletedMessage.guild,
+      guild,
       "messages",
       logProps
     )
@@ -247,7 +248,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
       )
     }
     logLines.push(
-      `Guild:      ${deletedMessage.guild?.name} (ID: ${deletedMessage.guild?.id})`,
+      `Guild:      ${guild?.name} (ID: ${guild?.id})`,
       // @ts-ignore
       `Channel:    #${deletedMessage.channel.name} (ID: ${deletedMessage.channel.id})`,
       `Message ID: ${deletedMessage.id}`,
@@ -266,7 +267,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     await this.logMessages(
       "🚮",
       {
-        guild: deletedMessage.guild.name,
+        guild: guild.name,
         member: deletedMessage.author.tag,
         action: "delete",
         channel: deletedMessage.channel.name,
