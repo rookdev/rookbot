@@ -91,6 +91,10 @@ class EventScript {
     return channel
   }
 
+  async getGuild(client, parent) {
+    return await getters.getGuild(client, parent)
+  }
+
   async logPost(client, guild, logType, props) {
     let channel = await this.getChannel(client, guild, [ `logging-${logType}`, "logging" ])
 

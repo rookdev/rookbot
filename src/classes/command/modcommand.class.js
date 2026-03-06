@@ -94,7 +94,7 @@ class ModCommand extends AdminCommand {
     roles,
     reason
   ) {
-    let guild = await getters.getProp(interaction.client, interaction, "guild")
+    let guild = await this.getGuild(interaction.client, interaction)
 
     this.messages.push("Adjust Roles:",user.displayName,roles)
 
@@ -348,7 +348,7 @@ class ModCommand extends AdminCommand {
     let lastingError
 
     // Get Guild ID
-    let guild = await getters.getProp(client, interaction, "guild")
+    let guild = await this.getGuild(client, interaction)
     const guildID = coptions["guild-id"] ?? guild?.id
     // Get User Input
     const targetUserInput = coptions["target-id"]
@@ -935,7 +935,7 @@ class ModCommand extends AdminCommand {
 
     // Get list of roles
     // DB
-    let guild = await getters.getProp(client, interaction, "guild")
+    let guild = await this.getGuild(client, interaction)
     let dbRes = await dbFuncs.getDB(
       guild.id,
       "roles"

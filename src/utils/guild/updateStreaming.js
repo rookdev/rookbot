@@ -18,6 +18,9 @@ const detectStreaming = async (
   let member = null
   let roles = {}
 
+  let oldGuild = null
+  let newGuild = null
+
   let debug = {
     "event": eventName,
     "script": scriptName,
@@ -139,11 +142,13 @@ const detectStreaming = async (
       debug["new"]["member"] = newObject.member.user.tag
       // Add channel's name
       if (oldObject.channelId) {
-        let channel = await getters.getCache(client, oldObject.guild, "channels", oldObject.channelId)
+        oldGuild = await getters.getGuild(client, oldObject)
+        let channel = await getters.getCachedChannel(client, oldGuild, oldObject.channelId)
         debug["old"]["channel"] = channel?.name
       }
       if (newObject.channelId) {
-        let channel = await getters.getCache(client, newObject.guild, "channels", newObject.channelId)
+        newGuild = await getters.getGuild(client, newObject)
+        let channel = await getters.getCachedChannel(client, newGuild, newObject.channelId)
         debug["new"]["channel"] = channel?.name
       }
       debug["old"] = JSON.stringify(debug["old"])
@@ -250,7 +255,7 @@ const detectStreaming = async (
         (adding && !hasRole) ||
         (removing && hasRole)
       ) {
-        let role = await getters.getCache(client, newObject.guild, "roles", roleName)
+        let role = await getters.getCachedRole(client, newGuild, roleName)
         if (role) {
           if (adding) {
             await member.roles.add(role)

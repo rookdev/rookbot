@@ -4,7 +4,7 @@ module.exports = async (client, guildId) => {
     let applicationCommands
 
     if (guildId) {
-      const guild = getters.getCache(client, client, "guilds", guildId)
+      const guild = getters.getCachedGuild(client, guildId)
       applicationCommands = guild.commands
     } else {
       applicationCommands = await client.application.commands

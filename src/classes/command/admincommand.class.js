@@ -58,7 +58,7 @@ class AdminCommand extends RookCommand {
     if (interaction) {
       // Get list of roles
       // DB
-      let guild = await getters.getProp(client, interaction, "guild")
+      let guild = await this.getGuild(client, interaction)
       let guildID = guild.id
       let dbRes = await dbFuncs.getDB(
         guildID,

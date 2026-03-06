@@ -24,7 +24,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
     message = await message.fetch()
   }
 
-  let guild = message.guild
+  let guild = await getters.getGuild(client, message)
 
   // DB
   let dbRes = await dbFuncs.getDB(
@@ -56,7 +56,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
         continue
       }
 
-      let emoji = await getters.getCache(client, message.guild, "emojis", emojiName)
+      let emoji = await getters.getCachedEmoji(client, guild, emojiName)
 
       if (!emoji) {
         emoji = emojiName
@@ -80,7 +80,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
       roleName = roleName["role"]
     }
   }
-  let role = await getters.getCache(client, message.guild, "roles", roleName)
+  let role = await getters.getCachedRole(client, guild, roleName)
 
   if(!role) {
     return [result, messages]
@@ -88,7 +88,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
 
   messages.push(`${client.profile.emojis[mode.toLowerCase()]}: Message${client.profile.emojis.yes} Emoji${client.profile.emojis.yes}: ${message.guild.name}/${message.channel.name}/${user.username}/${reaction.emoji.name}/@${role.name}`)
 
-  let guildMember = await getters.getCache(client, message.guild, "members", user.id)
+  let guildMember = await getters.getCachedMember(client, guild, user.id)
   if (mode == "add") {
     guildMember.roles.add(role)
     // if admin, cycle through reactions on this post
@@ -119,7 +119,7 @@ const manageRoles = async (client, reaction, user, mode="add") => {
           for (let [uName, thisUser] of await thisReaction.users.cache) {
             // Cycle through users
             // messages.push(`     Us: ${thisUser.tag}`)
-            let thisMember = await getters.getCache(client, message.guild, "members", thisUser.id)
+            let thisMember = await getters.getCachedMember(client, guild, thisUser.id)
             if (thisMember) {
               // If this user doesn't have this role
               let thisRole = rrs[message.id][rName]
@@ -127,9 +127,9 @@ const manageRoles = async (client, reaction, user, mode="add") => {
                 thisRole = thisRole["role"]
               }
               // messages.push(`      Ro: ${thisRole}`)
-              thisRole = await getters.getCache(client, message.guild, "roles", thisRole)
+              thisRole = await getters.getCachedRole(client, guild, thisRole)
               if (thisRole) {
-                if (! await getters.getCache(client, thisMember, "roles", thisRole.name)) {
+                if (! await getters.getCachedRole(client, thisMember, thisRole.name)) {
                   thisMember.roles.add(thisRole)
                 }
               }

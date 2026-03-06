@@ -2,6 +2,7 @@
 
 const { VoiceState, hyperlink } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -54,7 +55,7 @@ module.exports = class AnnounceScreenShareEvent extends EventScript {
       return false
     }
 
-    const guild = await newState.guild
+    const guild = await this.getGuild(client, newState)
     const member = await newState.member
     let guildID = member.guild.id
 
@@ -73,7 +74,7 @@ module.exports = class AnnounceScreenShareEvent extends EventScript {
     let channel = null
 
     if (channelID) {
-      channel = await getters.getCache(client, newState.guild, "channels", channelID)
+      channel = await getters.getCachedChannel(client, guild, channelID)
       // if (!channel) {
       //   this.messages.push(`${client.profile.emojis.fail} No Channel`)
       //   return false
@@ -113,7 +114,6 @@ module.exports = class AnnounceScreenShareEvent extends EventScript {
           }
         }
       }
-      let embed = new RookEmbed(client, props)
 
       let guildChannels = null
       let dbRes = await dbFuncs.getDB(
@@ -138,11 +138,18 @@ module.exports = class AnnounceScreenShareEvent extends EventScript {
         return false
       }
 
-      let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
+      let destChannel = await getters.getCachedChannel(client, guild, destChannelID)
       if (!destChannel) { return false }
 
-      let this_package = { embeds: [ embed ] }
-      let result = await destChannel.send(this_package)
+      let announceMessage = await new RookMessage(
+        client,
+        null,
+        {
+          channelName: destChannel.id,
+          pages: [ props ]
+        }
+      )
+      let result = await announceMessage.execute()
     }
 
     let logMessage = JSON.parse(streamUpdate.new)

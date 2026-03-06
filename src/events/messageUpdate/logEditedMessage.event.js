@@ -101,7 +101,7 @@ module.exports = class LogEditedMessageEvent extends EventScript {
     }
 
     let editor = newMessage.author
-    let editMember = await getters.getCache(client, guild, "members", editor.id)
+    let editMember = await getters.getCachedMember(client, guild, editor.id)
     if (editMember) {
       editor = editMember
     }

@@ -218,8 +218,8 @@ class SalutationCommand extends RookCommand {
     let offlineMoment   = moment.utc()
 
     // Build default server info
-    let channelGuild = this?.channel ? await getters.getProp(client, this.channel, "guild") : null
-    let interactionGuild = interaction ? await getters.getProp(client, interaction, "guild") : null
+    let channelGuild = await this.getGuild(client, this?.channel)
+    let interactionGuild = await this.getGuild(client, this?.interaction)
     let server = {
       name: channelGuild?.name ??
         interactionGuild?.name ??
@@ -447,7 +447,7 @@ class SalutationCommand extends RookCommand {
 
         if (interaction) {
           if (!guild) {
-            guild = await getters.getProp(client, interaction, "guild")
+            guild = await this.getGuild(client, interaction)
           }
           if (!channel) {
             channel = await interaction.channel
@@ -472,7 +472,7 @@ class SalutationCommand extends RookCommand {
         let printResult = null
         let msg = ""
 
-        let interactionGuild = await getters.getProp(client, interaction, "guild")
+        let interactionGuild = await this.getGuild(client, interaction)
         if (channel) {
           // Print this page
           printResult = await this.print_it(client, interaction, [ this.props ])
@@ -480,7 +480,7 @@ class SalutationCommand extends RookCommand {
             // Set up package
             let this_package = { embeds: this.pages }
 
-            let channelGuild = await getters.getProp(client, channel, "guild")
+            let channelGuild = await this.getGuild(client, channel)
             if (
               channel &&
               channelGuild &&

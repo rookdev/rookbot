@@ -1,6 +1,7 @@
 const { MessageFlags } = require('discord.js')
 const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const { RookPlain } = require('../../classes/embed/rplain.class')
 const { SlimEmbed } = require('../../classes/embed/rslimbed.class')
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const getters = require('../../utils/guild/getters')
@@ -24,7 +25,7 @@ class RookMessage {
   async getChannel() {
     let parent = this.client
     if (this.interaction?.id) {
-      parent = await getters.getProp(this.client, parent, "guild")
+      parent = await this.getGuild(this.client, parent)
     }
     return await getters.getCache(
       this.client,
@@ -32,6 +33,14 @@ class RookMessage {
       "channels",
       this.channelName
     )
+  }
+
+  async getProp(client, parent, propName) {
+    return await getters.getProp(client, parent, propName)
+  }
+
+  async getGuild(client, parent) {
+    return await getters.getGuild(client, parent)
   }
 
   async handle_deferrment() {
@@ -231,7 +240,7 @@ class RookMessage {
           tag:    this.client.user.tag
         }
 
-        let guild = await getters.getProp(this.client, this.interaction, "guild")
+        let guild = await this.getGuild(this.client, this.interaction)
 
         // If we've got an Interaction
         if (this.interaction?.id) {
@@ -322,6 +331,9 @@ class RookMessage {
         if (page?.full && !page.full) {
           msg += "slimbed "
           this.pages[i] = await new SlimEmbed(this.client, page)
+        } else if (page?.plain && page.plain) {
+          msg += "plain   "
+          this.pages[i] = await new RookPlain(client, page)
         } else {
           msg += "embed   "
           this.pages[i] = await new RookEmbed(this.client, page)
@@ -410,7 +422,7 @@ class RookMessage {
     let send_result = false
     if (!interaction_result) {
       try {
-        let channelGuild = await getters.getProp(this.client, this.channel, "guild")
+        let channelGuild = await this.getGuild(this.client, this.channel)
         this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${channelGuild.name}'`)
         send_result = await this.channel.send(this_package)
       } catch(e) {

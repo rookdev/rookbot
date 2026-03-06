@@ -4,6 +4,7 @@ const { MessageFlags, codeBlock, italic } = require('discord.js')            // 
 const { RookMessage } = require('../objects/rmessage.class')
 const { Pagination } = require('pagination.djs')          // Pagination
 const { RookEmbed } = require('../embed/rembed.class')    // Rook Embed
+const { RookPlain } = require('../embed/rplain.class')
 const { SlimEmbed } = require('../embed/rslimbed.class')  // Rook Slim Embed
 // Pretty-print to console
 const AsciiTable = require('ascii-table')
@@ -101,7 +102,7 @@ class RookCommand {
       return false
     }
 
-    let guild = await getters.getProp(client, member, "guild")
+    let guild = await this.getGuild(client, member)
     if (!guild) {
       if (!silent) {
         this.error = true
@@ -216,7 +217,7 @@ class RookCommand {
   }
 
   async getChannel(client, interaction, channelTypes) {
-    let guild = await getters.getProp(client, interaction, "guild")
+    let guild = await this.getGuild(client, interaction)
     return await this.getCache(
       client,
       guild,
@@ -227,6 +228,10 @@ class RookCommand {
 
   async getProp(client, parent, propName) {
     return await getters.getProp(client, parent, propName)
+  }
+
+  async getGuild(client, parent) {
+    return await this.getProp(client, parent, "guild")
   }
 
   async action(client, interaction, coptions) {
@@ -347,7 +352,7 @@ class RookCommand {
           tag:    client.user.tag
         }
 
-        let guild = await getters.getProp(client, interaction, "guild")
+        let guild = await this.getGuild(client, interaction)
         // If we've got an Interaction
         if (interaction?.id) {
           // Get Guild version of Client User
@@ -437,6 +442,9 @@ class RookCommand {
         if (page?.full && !page.full) {
           msg += "slimbed "
           this.pages[i] = await new SlimEmbed(client, page)
+        } else if (page?.plain && page.plain) {
+          msg += "plain   "
+          this.pages[i] = await new RookPlain(client, page)
         } else {
           msg += "embed   "
           this.pages[i] = await new RookEmbed(client, page)
@@ -523,7 +531,7 @@ class RookCommand {
     dateTable.addRow(now.format())
     this.messages.push(dateTable.toString())
 
-    let guild = await getters.getProp(client, interaction, "guild")
+    let guild = await this.getGuild(client, interaction)
 
     let Table = new AsciiTable("", {})
       .setHeading(

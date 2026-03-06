@@ -44,7 +44,7 @@ class RookFClient extends Client {
 
   async init() {
     // Set the Guild
-    this.guild = await getters.getCache(this, this, "guilds", this.guildID)
+    this.guild = await getters.getCachedGuild(this, this.guildID)
   }
 }
 

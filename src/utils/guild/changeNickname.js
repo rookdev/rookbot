@@ -178,7 +178,7 @@ async function changeNickname(client, member) {
   // Get Guild ID
   let guildID = member.guild.id
   // Get Guild Data
-  let guildData = await getters.getCache(client, client, "guilds", guildID)
+  let guildData = await getters.getCachedGuild(client, guildID)
 
   // Get Client User from This Guild
   clientMember = guildData.members.me
@@ -223,7 +223,7 @@ async function changeNickname(client, member) {
   }
 
   // Get User from This Guild
-  let guildMember = await getters.getCache(client, guildData, "members", member.id)
+  let guildMember = await getters.getCachedMember(client, guildData, member.id)
 
   try {
     // Set new nickname

@@ -2,6 +2,7 @@
 
 const { ActivityType, GuildMember, bold, italic, hyperlink } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const updateStreaming = require('../../utils/guild/updateStreaming')
@@ -139,8 +140,6 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
       }
       props.description.push(`Watch them online ${hyperlink('here',foundActivity.url)}!`)
 
-      let embed = new RookEmbed(client, props)
-
       let guildChannels = null
 
       // DB
@@ -168,11 +167,18 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
         return false
       }
 
-      let destChannel = await getters.getCache(client, guild, "channels", destChannelID)
+      let destChannel = await getters.getCachedChannel(client, guild, destChannelID)
       if (!destChannel) { return false }
 
-      let this_package = { embeds: [ embed ] }
-      let result = await destChannel.send(this_package)
+      let announceMessage = await new RookMessage(
+        client,
+        null,
+        {
+          channelName: destChannel.id,
+          pages: [ props ]
+        }
+      )
+      let result = await announceMessage.execute()
     }
 
     // console.log(streamUpdate)

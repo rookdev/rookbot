@@ -52,7 +52,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
     collection = await parent.emojis
   } else if (cacheType == "guilds") {
     cacheTest = cacheTest ?? null
-    collection = await client?.guilds ?? client.servers
+    collection = await getProp(client, client, "guilds")
   } else if (cacheType == "members") {
     cacheTest = cacheTest ?? null
     collection = await parent.members
@@ -66,7 +66,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
     cacheTest = cacheTest ?? null
     collection = await client.users
   }
-  
+
   if (!cacheTest) {
     return null
   }
@@ -80,10 +80,8 @@ async function getCache(client, parent, cacheType, cacheTest) {
   }
 
   let guild = parent
-  if (parent?.guild) {
-    guild = parent.guild
-  } else if (parent?.server) {
-    guild = parent.server
+  if (await getGuild(client, parent)) {
+    guild = await getGuild(client, parent)
   }
   if (!guild) {
     guild = client.guild
@@ -125,7 +123,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
         if (Object.keys(cacheIDs).includes(cacheID)) {
           cacheID = cacheIDs[cacheID]
         }
-        ret = await this.searchCache(cacheType, collection, cacheID)
+        ret = await searchCache(cacheType, collection, cacheID)
       }
     }
   }
@@ -170,8 +168,45 @@ async function getProp(client, parent, propName) {
   return prop
 }
 
+async function getCachedChannel(client, guild, channelName) {
+  return await getCache(client, guild, "channels", channelName)
+}
+async function getCachedEmoji(client, guild, emojiName) {
+  return await getCache(client, guild, "emojis", emojiName)
+}
+async function getCachedGuild(client, guildName) {
+  return await getCache(client, client, "guilds", guildName)
+}
+async function getCachedGuilds(client) {
+  return await getCache(client, client, "guilds")
+}
+async function getCachedMember(client, guild, memberName) {
+  return await getCache(client, guild, "members", memberName)
+}
+async function getCachedRole(client, guild, roleName) {
+  return await getCache(client, guild, "roles", roleName)
+}
+async function getCachedUser(client, userName) {
+  return await getCache(client, client, "users", userName)
+}
+async function getCachedUsers(client) {
+  return await getCache(client, client, "users")
+}
+async function getGuild(client, parent) {
+  return await getProp(client, parent, "guild")
+}
+
 module.exports = {
   searchCache,
   getCache,
+  getCachedChannel,
+  getCachedEmoji,
+  getCachedGuild,
+  getCachedGuilds,
+  getCachedMember,
+  getCachedRole,
+  getCachedUser,
+  getCachedUsers,
+  getGuild,
   getProp
 }

@@ -62,7 +62,7 @@ module.exports = async (client, message) => {
   const targetUserId = message.author.id
   let targetUser = null
   try {
-    targetUser = await getters.getCache(client, client, "users", targetUserId)
+    targetUser = await getters.getCachedUser(client, targetUserId)
   } catch(err) {
     // messages.push(`No user found for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
@@ -71,7 +71,8 @@ module.exports = async (client, message) => {
   // Get the guild member (to fetch nickname if present)
   let guildMember = null
   try {
-    guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
+    let messageGuild = await getters.getCachedGuild(client, message.guildId)
+    guildMember = await getters.getCachedMember(client, messageGuild, targetUserId)
   } catch(err) {
     messages.push(`No guild member found for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]

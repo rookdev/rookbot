@@ -61,7 +61,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
         return false
       }
 
-      let boostRole = await getters.getCache(client, guild, "roles", roleNames.booster[0])
+      let boostRole = await getters.getCachedRole(client, guild, roleNames.booster[0])
       if (!boostRole) {
         // this.messages.push("No Boost Role!")
         return false
@@ -79,7 +79,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
 
       if (!hadBoost && hasBoost) {
         let boostEmojiName = "heartcontainer"
-        let heartContainerEmoji = await getters.getCache(client, guild, "emojis", boostEmojiName)
+        let heartContainerEmoji = await getters.getCachedEmoji(client, guild, boostEmojiName)
         if (heartContainerEmoji == boostEmojiName) {
           heartContainerEmoji = "<3"
         }

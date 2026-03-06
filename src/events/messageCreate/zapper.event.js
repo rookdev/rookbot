@@ -69,7 +69,8 @@ module.exports = class ZapperEvent extends EventScript {
 
     // Get BanCommand Command Object
     let banCmd = new BanCommand(client)
-    let zapChannel = await getters.getCache(client, message.guild, "channels", [ "zapper" ])
+    let messageGuild = await this.getGuild(client, message)
+    let zapChannel = await getters.getCachedChannel(client, messageGuild, [ "zapper" ])
     // If no Zap Channel defined
     if (! zapChannel) {
       // this.messages.push("No Zap Channel defined")
@@ -89,10 +90,10 @@ module.exports = class ZapperEvent extends EventScript {
     let emoji = ""
 
     const targetUserId = message.author.id
-    const targetUser = await getters.getCache(client, client, "users", targetUserId)
+    const targetUser = await getters.getCachedUser(targetUserId)
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await getters.getCache(client, message.guild, "members", targetUserId)
+    const guildMember = await getters.getCachedMember(client, messageGuild, targetUserId)
     const user = guildMember?.user ?? targetUser
 
     // Get list of roles

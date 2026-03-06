@@ -75,7 +75,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     )
     let deleter = auditEntry?.executor ?? null
     if (deleter) {
-      let deleterMember = await getters.getCache(client, guild, "members", deleter.id)
+      let deleterMember = await getters.getCachedMember(client, guild, deleter.id)
       if (deleterMember) {
         deleter = deleterMember
       }
@@ -84,7 +84,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     let deletedAuthor = deletedMessage.author
     let deletedMember = null
     try {
-      deletedMember = await getters.getCache(client, guild, "members", deletedAuthor.id)
+      deletedMember = await getters.getCachedMember(client, guild, deletedAuthor.id)
     } catch (error) {
 
     }

@@ -63,7 +63,6 @@ module.exports = class PurgeCommand extends ModCommand {
       mod:    {},
       log:    {}
     }
-    let embeds = {}
 
     // Amount between 1 & 100
     //  Technically, new SlashCommand interface validates this
@@ -135,7 +134,6 @@ module.exports = class PurgeCommand extends ModCommand {
             ]
           ]
         }
-        embeds.log = new RookEmbed(client, props.log)
         let logPost = await new RookMessage(
           client,
           interaction,
