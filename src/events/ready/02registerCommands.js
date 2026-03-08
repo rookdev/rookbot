@@ -1,4 +1,5 @@
 const getLocalCommands = require('../../utils/client/getLocalCommands')
+const getters = require('../../utils/guild/getters')
 
 async function extractCommand(command) {
   let {
@@ -19,7 +20,7 @@ async function registerCommand(
   let messages = []
 
   client.commands[cmdParts.name] = command
-  messages.push(cmdParts.name)
+  messages.push(` ${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
 
   return [result, messages]
 }
@@ -27,13 +28,26 @@ async function registerCommand(
 module.exports = async (client) => {
   let result = false
   let messages = []
-  // cycle through commands and add to client
-  messages.push(`Registering Commands`)
 
+  // const testGuildID = process.env.GUILD_ID
   const localCommands = await getLocalCommands(client)
+
+  let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
+  if (isDevelopment) {
+    // const testGuild = await getters.getCache(client, client, "guilds", testGuildID)
+    // if (!testGuild) {
+    //   messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
+    //   return [result, messages]
+    // }
+    // messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands to: ${mentionFuncs.guildMention(testGuild.name, testGuildID, { showID: true, textOnly: true, oneLine: true })}`)
+    messages.push(`${client.profile.emojis.devText} Running in development mode. Registering Guild Commands.`)
+  } else {
+    messages.push(`${client.profile.emojis.prodText} Running in production mode. Registering Global Commands.`)
+  }
 
   client.commands = {}
 
+  // cycle through commands and add to client
   for (const localCommand of localCommands) {
     let cmdParts = await extractCommand(localCommand)
     let cmdRes = await registerCommand(client, localCommand, cmdParts)

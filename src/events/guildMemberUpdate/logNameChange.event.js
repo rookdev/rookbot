@@ -110,7 +110,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
     if (updater) {
       logPlayers.user = {
         name: updater.displayName,
-        avatar: updater.displayAvatarURL({ size: 128 })
+        avatar: await updater.displayAvatarURL({ size: 128 })
       }
       logFields.push(
         [
@@ -128,7 +128,7 @@ module.exports = class LogNameChangeEvent extends EventScript {
       if (clientMember) {
         logPlayers.user = {
           name: clientMember.displayName,
-          avatar: clientMember.displayAvatarURL({ size: 128 })
+          avatar: await clientMember.displayAvatarURL({ size: 128 })
         }
       }
       logFields.push(

@@ -58,7 +58,8 @@ module.exports = class NickChangeCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // Get Guild ID
-    const guildID = interaction.guild.id
+    const interactionGuild = await this.getGuild(client, interaction)
+    const guildID = interactionGuild.id
     // Get User Input
     const targetUserInput = coptions["target-id"] ?? "0"
     // Extract user ID from mention (if it's a mention)
@@ -70,10 +71,11 @@ module.exports = class NickChangeCommand extends RookCommand {
       target: "target"
     }
 
+    let user = await this.getProp(client, interaction, "user")
     this.props.entities = {
       caller: {
-        name: interaction.user.displayName,
-        avatar: interaction.user.displayAvatarURL({ size: 128 })
+        name: user.displayName,
+        avatar: ["stoat"].includes(client.platform) ? await user.avatarURL : await user.displayAvatarURL({ size: 128 })
       }
     }
 
@@ -112,7 +114,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     // Set Target to command target
     this.props.entities.target = {
       name: member?.displayName,
-      avatar: member.displayAvatarURL({ size: 128 })
+      avatar: await member.displayAvatarURL({ size: 128 })
     }
 
     // Check Editable

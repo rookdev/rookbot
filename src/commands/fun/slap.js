@@ -64,7 +64,8 @@ module.exports = class SlapCommand extends AdminCommand {
     // Get Target ID
     let targetId      = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
-    this.props.description = italic(`${interaction.user} slaps ${mentionFuncs.userMention(targetId)} around ${distance} with ${item}`)
+    let user = await this.getProp(client, interaction, "user")
+    this.props.description = italic(`${user} slaps ${mentionFuncs.userMention(targetId)} around ${distance} with ${item}`)
 
     return !this.error
   }

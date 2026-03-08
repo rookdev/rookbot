@@ -67,7 +67,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     )
 
     // Get Guilds
-    let guilds = client.guilds.cache
+    let guilds = await this.getProp(client, client, "guilds")
     let locale = coptions['locale']
     if (!locale) {
       locale = "en-AU"
@@ -76,11 +76,11 @@ module.exports = class BotGuildsCommand extends RookCommand {
     let sorted = []
 
     // Cycle through guilds
-    for (let [guildID, guildData] of guilds) {
+    for (let [guildID, guildData] of guilds.cache) {
       // Get Guild Owner
-      let owner = await guildData.fetchOwner()
-      if (owner?.user) {
-        owner = owner.user
+      let owner = ["stoat"].includes(client.platform) ? await guildData.owner : await guildData.fetchOwner()
+      if (await this.getProp(client, owner, "user")) {
+        owner = await this.getProp(client, owner, "user")
       }
       // Get Guild Bot
       let bot = await this.getCache(client, guildData, "members", client.user.id)

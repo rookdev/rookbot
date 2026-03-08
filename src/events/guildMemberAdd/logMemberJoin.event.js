@@ -46,11 +46,11 @@ module.exports = class LogMemberJoinEvent extends EventScript {
       players: {
         user: {
           name: guild.name,
-          avatar: guild.iconURL( { size: 128 } )
+          avatar: await guild.iconURL( { size: 128 } )
         },
         target: {
           name: newMember.user.displayName,
-          avatar: newMember.user.displayAvatarURL( { size: 128 } )
+          avatar: await newMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [

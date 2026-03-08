@@ -18,3 +18,5 @@ class RookPlain extends SlimEmbed {
     super(client, props)
   }
 }
+
+exports.RookPlain = RookPlain

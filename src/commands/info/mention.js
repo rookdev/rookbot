@@ -329,7 +329,7 @@ module.exports = class MentionCommand extends RookCommand {
             }
             specs = {
               name: role?.name,
-              url: role?.iconURL({ size: 128 }),
+              url: await role?.iconURL({ size: 128 }),
               hoisted: role?.hoist ?
                 (
                   role.hoist ?
@@ -492,11 +492,11 @@ module.exports = class MentionCommand extends RookCommand {
               user: "target",
               target: "target"
             }
-            let targetAvatar = targetMember.displayAvatarURL({ size: 128 })
+            let targetAvatar = await targetMember.displayAvatarURL({ size: 128 })
             if (specs?.roleIcon) {
               targetAvatar = specs.roleIcon
             } else if (specs?.clan?.badge) {
-              targetAvatar = targetMember.user.guildTagBadgeURL({ size: 128 })
+              targetAvatar = await targetMember.user.guildTagBadgeURL({ size: 128 })
             }
             this.props.entities = {
               target: {
@@ -509,7 +509,7 @@ module.exports = class MentionCommand extends RookCommand {
               }
             }
             this.props.image = {
-              image: targetMember.displayAvatarURL({ size: Math.pow(2, 8) })
+              image: await targetMember.displayAvatarURL({ size: Math.pow(2, 8) })
             }
           }
         }

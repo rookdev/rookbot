@@ -6,6 +6,9 @@ async function searchCache(cacheType, collection, cacheID) {
   let ret = null
   // If it's a number
   if (
+    (collection) &&
+    (collection?.client) &&
+    (collection?.client?.platform) &&
     (["discord"].includes(collection.client.platform) && numFuncs.myIsNumeric(cacheID)) ||
     (["stoat"].includes(collection.client.platform) && cacheID.replaceAll(" ", "").toUpperCase() == cacheID)
   ) {
@@ -39,6 +42,7 @@ async function searchCache(cacheType, collection, cacheID) {
 async function getCache(client, parent, cacheType, cacheTest) {
   let messages = []
   if (!parent) {
+    console.log(`No parent: ${cacheType} : ${cacheTest}`)
     return null
   }
 
@@ -80,7 +84,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
   }
 
   let guild = parent
-  if (await getGuild(client, parent)) {
+  if (!guild) {
     guild = await getGuild(client, parent)
   }
   if (!guild) {
@@ -153,13 +157,22 @@ async function getProp(client, parent, propName) {
   if (!parent) {
     parent = client
   }
+
   if (parent[propName]) {
     prop = await parent[propName]
   }
-  if (propName.indexOf("guild") > -1 && [
-    "stoat"
-  ].includes(client.platform)) {
+
+  if (
+    (!prop) &&
+    [
+      "stoat"
+    ].includes(client.platform)) {
     propName = propName.replace("guild","server")
+    switch(propName) {
+      case "user":
+        propName = "author"
+        break
+    }
     if (parent[propName]) {
       prop = await parent[propName]
     }

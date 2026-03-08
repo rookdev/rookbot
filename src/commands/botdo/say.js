@@ -265,7 +265,7 @@ module.exports = class SayCommand extends ModCommand {
       visages = {
         "guild": {
           name: interaction.guild.name,
-          avatar: interaction.guild.iconURL({ size: 128 })
+          avatar: await interaction.guild.iconURL({ size: 128 })
         },
         "reset": {
           name: "rookbot impersonator",
@@ -674,7 +674,7 @@ module.exports = class SayCommand extends ModCommand {
         props.mod.players = {
           user: {
             name: interaction.user.displayName,
-            avatar: interaction.user.displayAvatarURL({ size: 128 })
+            avatar: await interaction.user.displayAvatarURL({ size: 128 })
           },
           target: {
             name: visages[visage].name,

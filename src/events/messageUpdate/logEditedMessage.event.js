@@ -108,7 +108,7 @@ module.exports = class LogEditedMessageEvent extends EventScript {
 
     let player = {
       name: editor.displayName,
-      avatar: editor.displayAvatarURL( { size: 128 } )
+      avatar: await editor.displayAvatarURL( { size: 128 } )
     }
 
     let logProps = {

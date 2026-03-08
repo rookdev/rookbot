@@ -188,6 +188,7 @@ module.exports = class EmitCommand extends AdminCommand {
     } else if (eventName == "inviteCreate") {
       // inviteCreate
       //  logCreatedInvite
+      let user = await this.getProp(client, interaction, "user")
       args.push(
         {
           channel: interaction.channel,
@@ -196,8 +197,8 @@ module.exports = class EmitCommand extends AdminCommand {
           createdAt: 0,
           expiresAt: 0,
           guild: guild,
-          inviter: interaction.user,
-          inviterId: interaction.user.id,
+          inviter: user,
+          inviterId: user.id,
           maxAge: 0,
           maxUses: 0,
           memberCount: 0,

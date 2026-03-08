@@ -10,6 +10,11 @@ String.prototype.ucfirst = function() {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
+// Add lcfirst() to String
+String.prototype.lcfirst = function() {
+  return this.charAt(0).toLowerCase() + this.slice(1)
+}
+
 // Add boldItalic() to String
 String.prototype.boldItalic = function() {
   return bold(italic(this))

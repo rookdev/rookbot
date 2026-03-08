@@ -58,11 +58,11 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
       players: {
         user: {
           name: guild.name,
-          avatar: guild.iconURL( { size: 128 } )
+          avatar: await guild.iconURL( { size: 128 } )
         },
         target: {
           name: oldMember.user.displayName,
-          avatar: oldMember.user.displayAvatarURL( { size: 128 } )
+          avatar: await oldMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [

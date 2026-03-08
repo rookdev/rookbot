@@ -13,27 +13,26 @@ module.exports = class BotInviteCommand extends RookCommand {
         test: "basic"
       }
     }
-    let props = {
-      title: {
-        text: "Invite rookbot!",
-        url: `https://discord.com/oauth2/authorize?client_id=${client.user.id}`
-      },
-      description: `Invite [rookbot](https://discord.com/oauth2/authorize?client_id=${client.user.id})!`,
-      image: { image: client.user.avatarURL({ size: 128 }) }
-    }
     super(
       client,
-      {...comprops},
-      {...props}
+      {...comprops}
     )
   }
 
   async action(client, interaction, coptions={}) {
     // all done in constructor
     // Set EmbedPlayerTypes to Bot|Bot
-    this.props.playerTypes = {
-      user: "bot",
-      target: "bot"
+    this.props = {
+      title: {
+        text: "Invite rookbot!",
+        url: `https://discord.com/oauth2/authorize?client_id=${client.user?.id}`
+      },
+      description: `Invite [rookbot](https://discord.com/oauth2/authorize?client_id=${client.user?.id})!`,
+      playerTypes: {
+        user: "bot",
+        target: "bot"
+      },
+      image: { image: client.user?.avatarURL({ size: 128 }) }
     }
     return !this.error
   }

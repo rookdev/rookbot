@@ -30,7 +30,8 @@ module.exports = class GuildCatsCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    if (!interaction?.guild) {
+    let interactionGuild = await this.getGuild(client, interaction)
+    if (!interactionGuild) {
       this.error = true
       this.props.description = "Command must be run in guild."
       return false
@@ -43,7 +44,7 @@ module.exports = class GuildCatsCommand extends RookCommand {
     }
 
     let channels = []
-    for (let [cID, channel] of interaction.guild.channels.cache) {
+    for (let [cID, channel] of interactionGuild.channels.cache) {
       if (channel.type == ChannelType.GuildCategory) {
         channels[channel.position] = channel
       }

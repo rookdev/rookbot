@@ -24,8 +24,8 @@ class RookMessage {
 
   async getChannel() {
     let parent = this.client
-    if (this.interaction?.id) {
-      parent = await this.getGuild(this.client, parent)
+    if (this.interaction?.id && this.interaction.id != 0) {
+      parent = await this.getGuild(this.client, this.interaction)
     }
     return await getters.getCache(
       this.client,
@@ -41,6 +41,66 @@ class RookMessage {
 
   async getGuild(client, parent) {
     return await getters.getGuild(client, parent)
+  }
+
+  async makeStoat(this_package) {
+    let stoat_package = this_package
+    let stoat_content = []
+
+    if (stoat_package.embeds) {
+      stoat_package.embeds = stoat_package.embeds.map(
+        embed => embed?.data
+        ? embed.data
+        : embed
+      )
+    }
+
+    let pageNum = 0
+    for (let embed of stoat_package.embeds) {
+      // if (embed.title) {
+      //   stoat_content.push(`**${embed.title}**`)
+      //   stoat_content.push("---")
+      // }
+      if (embed.description) {
+        stoat_content.push(embed.description)
+      }
+      if (embed.fields) {
+        let fieldNum = 0
+        for (let field of embed.fields) {
+          if (field.name != field.value) {
+            stoat_content.push(`${field.name}: ${field.value}`)
+          }
+          if (fieldNum > 0 && fieldNum % 3 == 0) {
+            stoat_content.push("---")
+          }
+          fieldNum += 1
+        }
+      }
+      if (embed.footer) {
+        stoat_content.push("---")
+        let footer = ""
+        if (embed.footer?.icon_url) {
+          footer += `![Footer Image](${embed.footer.icon_url}) `
+        }
+        if (embed.footer?.text) {
+          footer += embed.footer.text
+        }
+        stoat_content.push(footer)
+        // stoat_content.push(JSON.stringify(embed.footer))
+      }
+      stoat_package.embeds[pageNum].description = stoat_content
+        .join("\n")
+        .replaceAll("```\n",  "")
+        .replaceAll("```",    "")
+      pageNum += 1
+    }
+
+    if (!stoat_package.attachments) {
+      stoat_package.attachments = []
+    }
+
+    // console.log(stoat_package)
+    return stoat_package
   }
 
   async handle_deferrment() {
@@ -84,6 +144,15 @@ class RookMessage {
 
     if (!hasDeferred) {
       hasDeferred = this.interaction?.deferred || await this.handle_deferrment()
+    }
+
+    if (
+      [
+        "stoat"
+      ].includes(this.client.platform)
+    ) {
+      let stoat_package = await this.makeStoat(this_package)
+      this_package = stoat_package
     }
 
     let handle_result = false
@@ -132,53 +201,13 @@ class RookMessage {
       if (this.interaction?.channel) {
         this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
         try {
-          if (["stoat"].includes(this.client.platform)) {
-            let first_embed = this_package.embeds[0]
-            if (first_embed) {
-              let first_embed_props = first_embed.props
-              let stoat_content = []
-              if (first_embed_props?.title) {
-                let title = "## "
-                if (first_embed_props.title?.emoji) {
-                  title = first_embed_props.title.emoji
-                }
-                title += first_embed_props.title.text
-                title += " ##"
-                stoat_content.push(title)
-              }
-              if (first_embed_props?.description) {
-                if (typeof first_embed_props.description == "object") {
-                  stoat_content.push(first_embed_props.description.join("\n"))
-                } else {
-                  stoat_content.push(first_embed_props.description)
-                }
-              }
-              if (first_embed_props.fields) {
-                let firstRow = true
-                for (let fieldRow of first_embed_props.fields) {
-                  if (firstRow) {
-                    firstRow = false
-                  } else {
-                    stoat_content.push("\n")
-                  }
-                  for (let field of fieldRow) {
-                    // stoat_content.push(`**${field.name}** : ${field.value}`)
-                    stoat_content.push(`${field.name} : ${field.value}`)
-                  }
-                }
-              }
-              if (first_embed_props?.footer && first_embed_props?.footer?.text) {
-                stoat_content.push("---")
-                stoat_content.push(first_embed_props.footer.text)
-              }
-
-              // stoat_content.push("![Stoat](https://stoat.chat/app/assets/icon-Dt-nxoOi.ico)")
-
-              let stoat_package = {
-                content: stoat_content.join("\n")
-              }
-              this_package = stoat_package
-            }
+          if (
+            [
+              "stoat"
+            ].includes(this.client.platform)
+          ) {
+            let stoat_package = await this.makeStoat(this_package)
+            this_package = stoat_package
           }
           handle_result = await this.interaction.channel.send(this_package)
         } catch (err) {
@@ -233,11 +262,11 @@ class RookMessage {
         // Bot Entity
         page.entities.bot = {
           type:   "bot",
-          id:     this.client.user.id,
-          name:   this.client.user.displayName,
+          id:     this.client.user?.id,
+          name:   this.client.user?.displayName,
           url:    "http://example.com/bot",
-          avatar: this.client.user.displayAvatarURL({ size: 128 }),
-          tag:    this.client.user.tag
+          avatar: await this.client.user?.displayAvatarURL({ size: 128 }),
+          tag:    this.client.user?.tag
         }
 
         let guild = await this.getGuild(this.client, this.interaction)
@@ -256,7 +285,7 @@ class RookMessage {
               id:     clientMember.id,
               name:   clientMember.displayName,
               url:    "http://example.com/botMember",
-              avatar: clientMember.displayAvatarURL({ size: 128 }),
+              avatar: await clientMember.displayAvatarURL({ size: 128 }),
               tag:    clientMember.user.tag
             }
           }
@@ -271,7 +300,7 @@ class RookMessage {
               tag:    this.interaction.user.tag
             }
             if (typeof this.interaction.user?.displayAvatarURL === "function") {
-              page.entities.caller.avatar = this.interaction.user.displayAvatarURL({ size: 128 })
+              page.entities.caller.avatar = await this.interaction.user.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -282,10 +311,10 @@ class RookMessage {
               id:     callerMember.id,
               name:   callerMember.displayName,
               url:    "http://example.com/callerMember",
-              tag:    callerMember.user.tag
+              tag:    callerMember.user?.tag
             }
             if (typeof callerMember?.displayAvatarURL === "function") {
-              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: 128 })
+              page.entities.callerMember.avatar = await callerMember.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -297,7 +326,11 @@ class RookMessage {
               id:     guild.id,
               name:   guild.name,
               url:    "http://example.com/guild",
-              avatar: guild.iconURL({ size: 128 })
+              avatar: [
+                "stoat"
+              ].includes(this.client.platform)
+              ? ""
+              : await guild.iconURL({ size: 128 })
             }
           }
         }
@@ -358,6 +391,8 @@ class RookMessage {
   }
   async ship_it(independent=false, hasDeferred=false) {
     this.messages.push(`/${this.name}: ...and Ship it!`)
+
+
 
     // Base package is just the pages
     let this_package = { embeds: this.pages }
@@ -423,10 +458,18 @@ class RookMessage {
     if (!interaction_result) {
       try {
         let channelGuild = await this.getGuild(this.client, this.channel)
-        this.messages.push(`/${this.name}: Posting Independent to '${this.channel.name}' of '${channelGuild.name}'`)
+        this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)
+        if (
+          [
+            "stoat"
+          ].includes(this.client.platform)
+        ) {
+          let stoat_package = await this.makeStoat(this_package)
+          this_package = stoat_package
+        }
         send_result = await this.channel.send(this_package)
       } catch(e) {
-        // this.messages.push(e)
+        this.messages.push(e)
         send_result = false
       }
     }
@@ -457,7 +500,7 @@ class RookMessage {
   async execute(independent=false) {
     this.channel = await this.getChannel()
     if (this.interaction?.id) {
-      if (this.channel.id != this.interaction.channel.id) {
+      if (this.channel?.id != this.interaction?.channel?.id) {
         independent = true
       }
     }

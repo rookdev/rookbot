@@ -1,4 +1,5 @@
 const { client, Events } = require('stoatbot.js')
+const stringFuncs = require('../../utils/primitives/stringFuncs')
 const getProfile = require('../../utils/client/getProfile')  // Get loaded Profile
 const fileFuncs = require('../../utils/fs/fileFuncs')
 
@@ -34,6 +35,13 @@ class RookSClient extends client {
     this.profile.colors = fileFuncs.getAFile(["src","dbs"], "colors.json")
     // Global Emojis
     this.profile.emojis = fileFuncs.getAFile(["src","dbs"], "emojis.json")
+
+    this.on(
+      "error", async (client, ...args) => {
+        console.log(...args)
+        console.log(`${this.profile.emojis[this.platform]} ${this.platform.ucfirst()} Error:`)
+      }
+    )
   }
 }
 

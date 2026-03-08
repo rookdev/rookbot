@@ -2,15 +2,15 @@
 // Set up env vars
 require('@dotenvx/dotenvx').config()
 
-const DO_FLUXER   = false
+const DO_FLUXER   = true
 const DO_DISCORD  = true
-const DO_STOAT    = false
+const DO_STOAT    = true
 
 const { REST } = require('@discordjs/rest')
 const { WebSocketManager } = require('@discordjs/ws')
 
 // Get Intents bitfields, Partials
-const { GatewayIntentBits, IntentsBitField, Partials } = require('discord.js')
+const { GatewayIntentBits, IntentsBitField, Partials, GatewayDispatchEvents } = require('discord.js')
 // Get RookClient
 const { RookClient } = require('./classes/objects/rclient.class')
 const { RookFClient } = require('./classes/objects/rfclient.class')
@@ -164,8 +164,8 @@ if (DO_FLUXER) {
       const fgateway = new WebSocketManager(
         {
           intents: 0,
-          frest,
-          FLUXER_TOKEN,
+          rest: frest,
+          token: FLUXER_TOKEN,
           version: '1'
         }
       )
@@ -173,8 +173,8 @@ if (DO_FLUXER) {
       const fclient = new RookFClient(
         {
           intents: clientIntents,
-          frest,
-          fgateway
+          rest: frest,
+          gateway: fgateway
         },
         // Profile to load
         process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
@@ -186,10 +186,11 @@ if (DO_FLUXER) {
       console.log(`${fclient.profile.emojis[fclient.platform]} ${fclient.platform.toUpperCase()}`)
 
       await fclient.init()
-      // console.log(fgateway)
-      // await fgateway.connect()
 
       console.log("---")
+
+      await fgateway.connect()
+
       await eventHandler(fclient)
     }
   })();

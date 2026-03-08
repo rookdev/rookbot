@@ -218,7 +218,7 @@ module.exports = class SearchCommand extends ModCommand {
           bannerData = {
             name: banner.username,
             id: banner.id,
-            avatar: banner.displayAvatarURL({ size: 128 })
+            avatar: await banner.displayAvatarURL({ size: 128 })
           }
         }
         let thisNow = now.format("x") + (banNum * 1000)
@@ -239,7 +239,7 @@ module.exports = class SearchCommand extends ModCommand {
           name: ban.user.username + "#" + ban.user.discriminator,
           id: ban.user.id,
           banner: bannerData,
-          avatar: ban.user.displayAvatarURL({ size: 128 }),
+          avatar: await ban.user.displayAvatarURL({ size: 128 }),
           reason: ban.reason,
           logEntry: {
             [thisNow]: logEntry

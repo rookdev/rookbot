@@ -214,11 +214,11 @@ module.exports = class ZapperEvent extends EventScript {
       players: {
         user: {
           name: message.guild.members.me.name,
-          avatar: message.guild.members.me.displayAvatarURL({ size: 128 })
+          avatar: await message.guild.members.me.displayAvatarURL({ size: 128 })
         },
         target: {
           name: guildMember.user.displayName,
-          avatar: guildMember.user.displayAvatarURL({ size: 128 })
+          avatar: await guildMember.user.displayAvatarURL({ size: 128 })
         }
       },
       fields: logFields

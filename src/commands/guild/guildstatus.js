@@ -34,13 +34,12 @@ module.exports = class GuildStatusCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
-    if (!interaction?.guild) {
+    let guild = await this.getGuild(client, interaction)
+    if (!guild) {
       this.error = true
       this.props.description = "Command must be run in guild."
       return false
     }
-
-    let guild = interaction.guild
 
     // Set EmbedPlayerTypes to Bot|Guild
     this.props.playerTypes = {
@@ -49,7 +48,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     let serverBoostEmojiName = "serverboost2"
-    let dbRes = await this.getCache(client, interaction.guild, "emojis", serverBoostEmojiName)
+    let dbRes = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
     let serverBoostEmoji = dbRes[0]
     this.messages.push(...dbRes[1])
     if (

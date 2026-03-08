@@ -7,6 +7,7 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 // Pretty-print time durations
 const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const strtotime = require('locutus/php/datetime/strtotime')
 
 module.exports = class UptimeCommand extends RookCommand {
   constructor(client) {
@@ -33,7 +34,14 @@ module.exports = class UptimeCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // Get uptime
-    const uptime = await client.uptime
+    let uptime = ["stoat"].includes(client.platform) ? await client.readyAt : await client.uptime
+    if ((uptime+"").indexOf("T") > -1) {
+      uptime = (uptime+"")
+      uptime = uptime.replace("T", " ")
+      uptime = uptime.replace("Z", "")
+      uptime = uptime.substring(0, uptime.indexOf("."))
+      uptime = strtotime(uptime)
+    }
 
     // Print uptime
     this.props.description = [

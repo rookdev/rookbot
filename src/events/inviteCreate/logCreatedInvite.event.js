@@ -45,11 +45,11 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
       players: {
         user: {
           name: guild.name,
-          avatar: guild.iconURL( { size: 128 } )
+          avatar: await guild.iconURL( { size: 128 } )
         },
         target: {
           name: newInvite.inviter.displayName,
-          avatar: newInvite.inviter.displayAvatarURL( { size: 128 } )
+          avatar: await newInvite.inviter.displayAvatarURL( { size: 128 } )
         }
       },
       fields: [

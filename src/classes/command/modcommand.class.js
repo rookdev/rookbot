@@ -663,7 +663,7 @@ class ModCommand extends AdminCommand {
           props.mod.entities = {
             target: {
               name: targetUser.displayName,
-              avatar: targetUser.displayAvatarURL({ size: 128 })
+              avatar: await targetUser.displayAvatarURL({ size: 128 })
             }
           }
           props.mod.ephemeral = true
@@ -843,7 +843,7 @@ class ModCommand extends AdminCommand {
           props.log.entities = {
             target: {
               name: targetUser.displayName,
-              avatar: targetUser.displayAvatarURL({ size: 128 })
+              avatar: await targetUser.displayAvatarURL({ size: 128 })
             }
           }
           props.log.fields = logFields

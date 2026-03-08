@@ -182,6 +182,9 @@ class EventScript {
   }
 
   async execute(client, ...args) {
+    if (!this.platforms.includes(client.platform)) {
+      return 
+    }
     // this.messages.push(`/${this.name}: Event Execute`)
     let build_result = await this.build(client, ...args)
     this.printMessages(client)

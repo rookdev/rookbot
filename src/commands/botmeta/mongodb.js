@@ -69,11 +69,19 @@ module.exports = class MongoDBCommand extends BotDevCommand {
 
     let len = console_output.join("\n").length
     if (len < 2000) {
-      await interaction.editReply(
-        {
-          content: console_output.join("\n")
-        }
-      )
+      if (typeof interaction.editReply === "function") {
+        await interaction.editReply(
+          {
+            content: console_output.join("\n")
+          }
+        )
+      } else {
+        await interaction.reply(
+          {
+            content: console_output.join("\n")
+          }
+        )
+      }
       this.null = true
     } else {
       this.props.description = console_output

@@ -100,7 +100,7 @@ class RookEmbed extends EmbedBuilder {
 
     let bot = {
       name: "Bot",
-      avatar: client.user.displayAvatarURL({ size: 128 })
+      avatar: client.user?.displayAvatarURL({ size: 128 })
     }
 
     if (!(props?.players)) {
@@ -111,38 +111,29 @@ class RookEmbed extends EmbedBuilder {
       props.players.bot = bot
     }
 
-    let avatars = {
-      bot: {
-        type:   "bot",
-        name:   props.players.bot.name,
-        url:    props?.players?.bot?.url && props.players.bot.url.trim() != "" ? props.players.bot.url.trim() : "http://example.com/bot",
-        avatar: props.players.bot.avatar
-      },
-      user: {
-        type:   "user",
-        name:   props?.players?.user?.name && props.players.user.name.trim() != "" ? props.players.user.name.trim() : "",
-        url:    props?.players?.user?.url && props.players.user.url.trim() != "" ? props.players.user.url.trim() : "http://example.com/user",
-        avatar: props?.players?.user?.avatar && props.players.user.avatar.trim() != "" ? props.players.user.avatar.trim() : ""
-      },
-      target: {
-        type:   "target",
-        name:   props?.players?.target?.name && props.players.target.name.trim() != "" ? props.players.target.name.trim() : "",
-        url:    props?.players?.target?.url && props.players.target.url.trim() != "" ? props.players.target.url.trim() : "http://example.com/target",
-        // avatar: props?.players?.target?.avatar && props.players.target.avatar.trim() != "" ? props.players.target.avatar.trim() : ""
-      },
-      thumbnail: {},
-      author: { name: "" }
+    let avatars = {}
+    for (let entity of ["bot","user","target"]) {
+      if (props.players[entity]) {
+        avatars[entity] = {
+          type:   entity,
+          name:   props?.players[entity]?.name    ? props.players[entity].name    : "",
+          url:    props?.players[entity]?.url     ? props.players[entity].url     : `http://example.com/${entity}`,
+          avatar: props?.players[entity]?.avatar  ? props.players[entity].avatar  : ""
+        }
+      }
     }
+    avatars.thumbnail = {}
+    avatars.author    = { name: "" }
 
     // Default; put Bot in Thumbnail
     avatars.thumbnail = avatars.bot
 
     // Have a User, move Bot to Author
-    if(avatars.user.avatar != "") {
+    if(avatars?.user?.avatar && avatars.user.avatar != "") {
       avatars.author = avatars.bot
       avatars.thumbnail = avatars.user
 
-      if(avatars.target.avatar != "") {
+      if(avatars?.target?.avatar && avatars.target.avatar != "") {
         // Have a Target, move User to Author
         avatars.author = avatars.user
         avatars.thumbnail = avatars.target
@@ -165,7 +156,7 @@ class RookEmbed extends EmbedBuilder {
     }
     if (author && author.name != "") {
       if (avatars?.author?.avatar) {
-        author.iconURL = avatars.author.avatar
+        // author.iconURL = avatars.author.avatar
       }
       this.setAuthor(author)
     }

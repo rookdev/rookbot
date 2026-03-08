@@ -96,7 +96,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     let logPlayers = {
       target: {
         name: deletedAuthor.displayName,
-        avatar: deletedAuthor.displayAvatarURL({ size: 128 })
+        avatar: await deletedAuthor.displayAvatarURL({ size: 128 })
       }
     }
     let auditDateTime = moment.utc()
@@ -134,7 +134,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
     if (deleter && deleter?.id) {
       logPlayers.user = {
         name: deleter.displayName,
-        avatar: deleter.displayAvatarURL({ size: 128 })
+        avatar: await deleter.displayAvatarURL({ size: 128 })
       }
       logFields.push(
         // Deleted by someone we can capture
@@ -155,7 +155,7 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
       if (clientMember) {
         logPlayers.user = {
           name: clientMember.displayName,
-          avatar: clientMember.displayAvatarURL({ size: 128 })
+          avatar: await clientMember.displayAvatarURL({ size: 128 })
         }
       }
       logFields.push(

@@ -4,6 +4,7 @@
 const { codeBlock, inlineCode, hyperlink, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('./rcommand.class')
+const { RookMessage } = require('../objects/rmessage.class')
 // Base Rook Embed
 const { RookEmbed } = require('../embed/rembed.class')
 // Pretty-print time durations
@@ -220,19 +221,25 @@ class SalutationCommand extends RookCommand {
     // Build default server info
     let channelGuild = await this.getGuild(client, this?.channel)
     let interactionGuild = await this.getGuild(client, this?.interaction)
-    let server = {
-      name: channelGuild?.name ??
-        interactionGuild?.name ??
-        client.guild.name ??
-        "?",
-      id: channelGuild?.id ??
-        interactionGuild?.id ??
-        client.guild.id ??
-        process.env?.GUILD_ID,
-      avatar: channelGuild?.iconURL({ size: 128 }) ??
-        interactionGuild?.iconURL({ size: 128 }) ??
-        client.guild.iconURL({ size: 128 }) ??
-        ""
+    let server = {}
+    if (channelGuild) {
+      server = {
+        name:   channelGuild.name,
+        id:     channelGuild.id,
+        avatar: ["stoat"].includes(client.platform) ? "" : await channelGuild.iconURL({ size: 128 })
+      }
+    } else if (interactionGuild) {
+      server = {
+        name:   interactionGuild.name,
+        id:     interactionGuild.id,
+        avatar: ["stoat"].includes(client.platform) ? "" : await interactionGuild.iconURL({ size: 128 })
+      }
+    } else {
+      server = {
+        name:   client?.guild?.name ?? "?",
+        id:     client?.guild?.id   ?? process.env?.GUILD_ID,
+        avatar: ["stoat"].includes(client.platform) ? "" : await client?.guild?.iconURL({ size: 128 })
+      }
     }
     if (server?.id) {
       server.name = await getters.getCache(client, client, "guilds", server.id)?.name ?? "?"
@@ -461,7 +468,7 @@ class SalutationCommand extends RookCommand {
           id:     guild.id,
           name:   guild?.name ?? "?",
           url:    "http://example.com/guild",
-          avatar: guild.iconURL({ size: 128 })
+          avatar: ["stoat"].includes(client.platform) ? "" : await guild?.iconURL({ size: 128 })
         }
 
         this.props.fields[1][0].value = server?.name ?? "?"
@@ -475,8 +482,16 @@ class SalutationCommand extends RookCommand {
         let interactionGuild = await this.getGuild(client, interaction)
         if (channel) {
           // Print this page
-          printResult = await this.print_it(client, interaction, [ this.props ])
-          if (printResult) {
+          let helloMsg = await new RookMessage(
+            client,
+            interaction,
+            {
+              channelName: channel.id,
+              pages: [ this.props ]
+            }
+          )
+          let sendResult = await helloMsg.execute()
+          if (sendResult) {
             // Set up package
             let this_package = { embeds: this.pages }
 
@@ -487,9 +502,6 @@ class SalutationCommand extends RookCommand {
               channelGuild?.id &&
               interactionGuild?.id === channelGuild?.id
             ) {
-              // Send package
-              await channel.send(this_package)
-              this.null = true
               msg = `See ${channel}!`
             }
           } else {

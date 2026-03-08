@@ -217,7 +217,9 @@ class RookCommand {
   }
 
   async getChannel(client, interaction, channelTypes) {
+    console.log(`Get ${channelTypes} of guild`)
     let guild = await this.getGuild(client, interaction)
+    // console.log(`Get ${channelTypes} of ${guild.name}`)
     return await this.getCache(
       client,
       guild,
@@ -231,7 +233,7 @@ class RookCommand {
   }
 
   async getGuild(client, parent) {
-    return await this.getProp(client, parent, "guild")
+    return await getters.getGuild(client, parent)
   }
 
   async action(client, interaction, coptions) {
@@ -348,7 +350,7 @@ class RookCommand {
           id:     client.user.id,
           name:   client.user.displayName,
           url:    "http://example.com/bot",
-          avatar: client.user.displayAvatarURL({ size: 128 }),
+          avatar: await client.user.displayAvatarURL({ size: 128 }),
           tag:    client.user.tag
         }
 
@@ -367,7 +369,7 @@ class RookCommand {
               id:     clientMember.id,
               name:   clientMember.displayName,
               url:    "http://example.com/botMember",
-              avatar: clientMember.displayAvatarURL({ size: 128 }),
+              avatar: await clientMember.displayAvatarURL({ size: 128 }),
               tag:    clientMember.user.tag
             }
           }
@@ -382,7 +384,7 @@ class RookCommand {
               tag:    interaction.user.tag
             }
             if (typeof interaction.user?.displayAvatarURL === "function") {
-              page.entities.caller.avatar = interaction.user.displayAvatarURL({ size: 128 })
+              page.entities.caller.avatar = await interaction.user.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -396,7 +398,7 @@ class RookCommand {
               tag:    callerMember.user.tag
             }
             if (typeof callerMember?.displayAvatarURL === "function") {
-              page.entities.callerMember.avatar = callerMember.displayAvatarURL({ size: 128 })
+              page.entities.callerMember.avatar = await callerMember.displayAvatarURL({ size: 128 })
             }
           }
 
@@ -408,7 +410,7 @@ class RookCommand {
               id:     guild?.id,
               name:   guild?.name,
               url:    "http://example.com/guild",
-              avatar: guild?.iconURL({ size: 128 })
+              avatar: await guild?.iconURL({ size: 128 })
             }
           }
         }
@@ -592,14 +594,30 @@ class RookCommand {
           "members",
           interaction?.user?.id ?? interaction.authorId
         )
+        let userHasPermission = false
+        if ([
+          "stoat"
+        ].includes(client.platform)) {
+          userHasPermission = member?.hasPermission(this.userPermissions[0])
+        } else {
+          userHasPermission = member?.permissions?.has(this.userPermissions[0])
+        }
         Table.addRow(
           "User Permissions",
           this.userPermissions,
-          member?.permissions?.has(this.userPermissions[0])
+          userHasPermission
         )
       }
       if (this.botPermissions) {
         let clientMember = guild?.members.me
+        let botHasPermission = false
+        if ([
+          "stoat"
+        ].includes(client.platform)) {
+          botHasPermission = clientMember?.hasPermission(this.botPermissions[0])
+        } else {
+          botHasPermission = clientMember?.permissions?.has(this.botPermissions[0])
+        }
         Table.addRow(
           "Bot Permissions",
           this.botPermissions,
@@ -629,10 +647,10 @@ class RookCommand {
 
     // If there's no channel defined, try to get it
     if (!this.channel) {
-      if (interaction) {
+      if (interaction && interaction?.channel) {
         this.channel = interaction.channel
       } else {
-        this.channel = await this.getChannel(client, interaction, this.channelName)
+        this.channel = await this.getChannel(client, client, this.channelName)
       }
     }
 

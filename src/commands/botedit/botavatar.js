@@ -45,7 +45,7 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
     // Get New Avatar URL
     let new_avatar = coptions["avatar-url"]
     // Get Current Avatar URL
-    let old_avatar = client.user.displayAvatarURL()
+    let old_avatar = await client.user.displayAvatarURL()
 
     this.props.title = {
       text: `Setting ${client.user.displayName}'s Avatar`
