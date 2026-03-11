@@ -250,7 +250,7 @@ module.exports = class EmitCommand extends AdminCommand {
         content: "Old Content",
         guild: guild,
         channel: interaction.channel,
-        url: "http://example.com/message",
+        url: "https://discord.com/channels/11/22/33",
         author: guild.members.me
       }
       // message.author.id = 0
@@ -258,6 +258,7 @@ module.exports = class EmitCommand extends AdminCommand {
       args.push(message)
 
       message.content = "New Content"
+      message.pinned = true
       args.push(message)
     } else if (eventName == "presenceUpdate") {
       let presence = {

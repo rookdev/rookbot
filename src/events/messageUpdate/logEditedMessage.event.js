@@ -90,14 +90,28 @@ module.exports = class LogEditedMessageEvent extends EventScript {
       }
     }
 
-    // Handle cases where the old or new content is unavailable
-    const oldContent = oldMessage.cleanContent.slice(0, 1024) ?? italic('(Content unavailable)')
-    const newContent = newMessage.cleanContent.slice(0, 1024) ?? italic('(Content unavailable)')
-
     // Skip if the content hasn't changed
     if (oldMessage.content === newMessage.content) {
       // console.warn('  No content change detected.')
       return false
+    }
+
+    // Handle cases where the old or new content is unavailable
+    let oldContent = ""
+    let newContent = ""
+    if (oldMessage?.cleanContent) {
+      oldContent = oldMessage.cleanContent.slice(0, 1024)
+    } else if (oldMessage?.content) {
+      oldContent = oldMessage.content.slice(0, 1024)
+    } else {
+      oldContent = italic("(Content unavailable)")
+    }
+    if (newMessage?.cleanContent) {
+      newContent = newMessage.cleanContent.slice(0, 1024)
+    } else if (newMessage?.content) {
+      newContent = newMessage.content.slice(0, 1024)
+    } else {
+      newContent = italic("(Content unavailable)")
     }
 
     let editor = newMessage.author

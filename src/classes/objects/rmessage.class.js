@@ -353,6 +353,16 @@ class RookMessage {
           target: page.entities[page.playerTypes.target]
         }
 
+        // this.messages.push(
+        //   JSON.stringify(
+        //     {
+        //       entities: page.entities,
+        //       playerTypes: page.playerTypes,
+        //       players: page.players
+        //     }
+        //   )
+        // )
+
         // If it's Ephemeral, all need to be Ephemeral
         if (page?.ephemeral && page.ephemeral) {
           // this.messages.push(`/${this.name}: Page ${i} is Ephemeral`)

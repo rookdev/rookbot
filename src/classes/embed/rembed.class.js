@@ -156,7 +156,9 @@ class RookEmbed extends EmbedBuilder {
     }
     if (author && author.name != "") {
       if (avatars?.author?.avatar) {
-        // author.iconURL = avatars.author.avatar
+        if (avatars.author.avatar.trim() != "") {
+          author.iconURL = avatars.author.avatar.trim()
+        }
       }
       this.setAuthor(author)
     }
@@ -167,8 +169,11 @@ class RookEmbed extends EmbedBuilder {
 
     if (avatars.thumbnail.avatar != "") {
       // Set thumbnail
-      // this.setThumbnail(avatars.thumbnail.avatar)
+      if (avatars.thumbnail.avatar.trim() != "")
+      this.setThumbnail(avatars.thumbnail.avatar.trim())
     }
+
+    // console.log(avatars)
 
     // Set title
     if (this.props?.title) {
