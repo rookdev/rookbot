@@ -116,9 +116,8 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           title: { text: "<NONE>" },
           color: "#f47fff",
           description: msg.msg,
-          playerTypes: { user: "user", target: "target" },
-          players: {
-            user: userEntity,
+          playerTypes: { user: "target", target: "target" },
+          entities: {
             target: userEntity
           },
           footer: {
@@ -160,8 +159,8 @@ module.exports = class BoosterPraiseEvent extends EventScript {
             text: "[Log] Server Boosted",
             emoji: ""
           },
-          playerTypes: props.playerTypes,
-          players: props.players,
+          playerTypes: { user: "target", target: "target" },
+          entities: { target: userEntity },
           fields: logFields
         }
 

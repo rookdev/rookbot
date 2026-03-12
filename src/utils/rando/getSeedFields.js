@@ -9,7 +9,33 @@ const { decode } = require('slugid')
 const emojis = require('../../dbs/emojis.json')
 const moment = require('moment')
 
-module.exports = async (hashID, gameID="z3r") => {
+function isValidURLFromDomain(input, domain) {
+  let valid = false
+
+  if (typeof domain != "object") {
+    domain = [domain]
+  }
+
+  for (let pattern of domain) {
+    if (!valid) {
+      try {
+        // Parse the input string as a URL
+        const url = new URL(input)
+
+        // Check if the hostname and protocol match the expected pattern
+        const expectedUrl = new URL(pattern)
+        valid = (url.hostname === expectedUrl.hostname)
+      } catch (error) {
+        // If URL constructor throws, the input is not a valid URL
+        valid = false
+      }
+    }
+  }
+
+  return valid
+}
+
+module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
   let messages = []
   let fields = [
     [
@@ -20,7 +46,12 @@ module.exports = async (hashID, gameID="z3r") => {
     ]
   ]
 
-  if (hashID == "") {
+  if (
+    (!hashID) ||
+    (hashID == "") ||
+    (hashID == "null") ||
+    (`${hashID}` == "null")
+  ) {
     // Need a HashID
     return [
       [
@@ -32,7 +63,12 @@ module.exports = async (hashID, gameID="z3r") => {
     ]
   }
 
-  if (gameID == "") {
+  if (
+    (!gameID) ||
+    (gameID == "") ||
+    (gameID == "null") ||
+    (`${gameID}` == "null")
+  ) {
     // Need a GameID
     return [
       [
@@ -65,6 +101,18 @@ module.exports = async (hashID, gameID="z3r") => {
     `${gameID}.json`
   )
 
+  if (!rData?.rando?.fields) {
+    // Need a Rando Fields Defn
+    return [
+      [
+        {
+          name: "Error",
+          value: `No Fields Definition for '${gameID}' !`
+        }
+      ]
+    ]
+  }
+
   let sources = {}
 
   for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
@@ -92,9 +140,23 @@ module.exports = async (hashID, gameID="z3r") => {
         sources[sKey] = JSON.parse(sources[sKey])
       }
     } else {
-      if (sData["url"].indexOf("<hash>") > -1) {
+      if (
+        (sData["url"].indexOf("<hash>") > -1) ||
+        (sData["url"].indexOf("%3Chash%3E") > -1)
+      ) {
+        let srcURL = sData["url"]
+        if (permalinkURL != "") {
+          srcURL = new URL(sData["url"])
+          let prmURL = new URL(permalinkURL)
+          messages.push(srcURL)
+          messages.push(prmURL)
+          srcURL = srcURL.href.replace(
+            srcURL.origin,
+            prmURL.origin
+          )
+        }
         sources[sKey] = await fileFuncs.getAURL(
-          sData["url"].replace("<hash>",hashID),
+          srcURL.replace("<hash>",hashID).replace("%3Chash%3E",hashID),
           "json"
         )
       } else if (sData["url"].indexOf("<slugid>") > -1) {
@@ -203,38 +265,42 @@ module.exports = async (hashID, gameID="z3r") => {
               break
           }
         } else if(["m3maprando"].includes(gameID)) {
+          let domain = "https://maprando.com"
+          if (permalinkURL.indexOf("dev.") > -1) {
+            domain = "https://dev.maprando.com"
+          }
           switch(itemCell["name"]) {
             case "hash_id":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://maprando.com/seed/${hashID}`
+                            `${domain}/seed/${hashID}`
                           )
               break
             case "metadata":
               itemValue = hyperlink(
                             "Settings",
-                            `https://maprando.com/seed/${hashID}/data/settings.json`
+                            `${domain}/seed/${hashID}/data/settings.json`
                           ) + ", " +
                           hyperlink(
                             "Spoiler",
-                            `https://maprando.com/seed/${hashID}/data/spoiler.json`
+                            `${domain}/seed/${hashID}/data/spoiler.json`
                           )
               break
             case "compiled_maps":
               itemValue = `By ` +
                           hyperlink(
                             "Area",
-                            `https://maprando.com/seed/${hashID}/data/map-assigned.png`
+                            `${domain}/seed/${hashID}/data/map-assigned.png`
                           ) + ", " +
                           hyperlink(
                             "Origin",
-                            `https://maprando.com/seed/${hashID}/data/map-vanilla.png`
+                            `${domain}/seed/${hashID}/data/map-vanilla.png`
                           )
               break
             case "visualizer":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://maprando.com/seed/${hashID}/data/visualizer/index.html`
+                            `${domain}/seed/${hashID}/data/visualizer/index.html`
                           )
               break
           }
@@ -306,7 +372,7 @@ module.exports = async (hashID, gameID="z3r") => {
           if (typeof rData.rando.permalink == "object") {
             rData.rando.permalink = rData.rando.permalink[0]
           }
-          let permalinkURL = rData.rando.permalink.replace("<hash>", hashID)
+          let permalinkURL = rData.rando.permalink.replace("<hash>", hashID).replace("%3Chash%3E", hashID)
           let apiURL = rData.rando.fields.sources["hash_meta"].url.replace("<slugid>", slugID)
 
           switch(itemCell["name"]) {
@@ -336,6 +402,10 @@ module.exports = async (hashID, gameID="z3r") => {
               break
           }
         } else if(["m4xfr"].includes(gameID)) {
+          let domain = "https://mxfrando.com"
+          if (permalinkURL.indexOf("dev.") > -1) {
+            domain = "https://dev.mxfrando.com"
+          }
           switch(itemCell["name"]) {
             case "seed":
               itemValue = inlineCode(sources["metadata"].seed)
@@ -350,19 +420,19 @@ module.exports = async (hashID, gameID="z3r") => {
             case "permalink":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://mxfrando.com/seed/${hashID}/`
+                            `${domain}/seed/${hashID}/`
                           )
               break
             case "seed_json":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://mxfrando.com/seed/${hashID}/data/seed.json`
+                            `${domain}/seed/${hashID}/data/seed.json`
                           )
               break
             case "logic_json":
               itemValue = hyperlink(
                             inlineCode(hashID),
-                            `https://mxfrando.com/seed/${hashID}/data/logic.json`
+                            `${domain}/seed/${hashID}/data/logic.json`
                           )
               break
             default:

@@ -172,7 +172,8 @@ module.exports = class LogNameChangeEvent extends EventScript {
         text: "[Log] Nickname Changed",
         emoji: "✏️"
       },
-      players: logPlayers,
+      entities: logPlayers,
+      playerTypes: { user: "user", target: "target" },
       fields: logFields
     }
 

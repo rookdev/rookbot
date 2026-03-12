@@ -155,6 +155,22 @@ module.exports = class SetPermsCommand extends AdminCommand {
 
     this.props.description = []
 
+    this.props.entities = {
+      GuildCategory: {
+        avatar: "https://em-content.zobj.net/source/twitter/408/file-folder_1f4c1.png"
+      },
+      GuildRole: {
+        avatar: "https://em-content.zobj.net/source/twitter/408/busts-in-silhouette_1f465.png"
+      },
+      GuildText: {
+        avatar: "https://em-content.zobj.net/source/twitter/408/keycap-number-sign_23-fe0f-20e3.png"
+      },
+      GuildVoice: {
+        avatar: "https://em-content.zobj.net/source/twitter/408/speaker-high-volume_1f50a.png"
+      }
+    }
+    this.props.playerTypes = { user: "bot", target: "guild" }
+
     if (channelID) {
       channel = await this.getCache(client, interaction.guild, "channels", channelID)
       setMode = "channel"
@@ -193,12 +209,14 @@ module.exports = class SetPermsCommand extends AdminCommand {
     }
 
     if (setMode == "channel" || setMode == "roleInChannel") {
+      this.props.playerTypes.target = "GuildText"
       permsByRoleID["permsProfile"] = roleChannelPerms["chanPerms"]
       if (Object.keys(roleChannelPerms["chanPerms"]).includes(profileToApply)) {
         permsByRoleID["permsProfile"] = roleChannelPerms["chanPerms"][profileToApply]["profiles"]
       }
       this.props.description.push(`In: ${mentionFuncs.channelMention(channel.id, { showID: true })}`)
       if (channel.permissionsLocked) {
+        this.props.playerTypes.target = "GuildCategory"
         this.props.description.push(`Channel Perms Synced for ${channel}: 🔁`)
         channel = await this.getCache(client, interaction.guild, "channels", channel.parentId)
         this.props.description.push(`Loading Category Instead: ${mentionFuncs.channelMention(channel.id, { showID: true })}`)
@@ -284,6 +302,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
     }
 
     if (setMode == "role") {
+      this.props.playerTypes.target = "GuildRole"
       permsByRoleID["permsProfile"] = roleChannelPerms["rolePerms"]
       if (Object.keys(roleChannelPerms["rolePerms"]).includes(profileToApply)) {
         permsByRoleID["permsProfile"] = roleChannelPerms["rolePerms"][profileToApply]["profiles"]

@@ -8,7 +8,10 @@
     "scripts": [
       "[Unstable June 2024 (`esync-v20240601-smz3`)](https://github.com/alttpo/alttpo/releases/tag/esync-v20240601-smz3) and [SMMR `ROMMapping.as`](https://drive.google.com/file/d/1vlltxwFO5kjOiCUvMD1abIuMNFOJFbO6/view?usp=sharing)"
     ],
-    "permalink": "https://maprando.com/seed/<hash>",
+    "permalink": [
+      "https://maprando.com/seed/<hash>",
+      "https://dev.maprando.com/seed/<hash>"
+    ],
     "fields": {
       "sources": {
         "settings": {

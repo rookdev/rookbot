@@ -354,7 +354,7 @@ module.exports = class MentionCommand extends RookCommand {
             this.props.entities = {
               target: {
                 name: specs?.name,
-                avatar: specs?.url
+                avatar: specs?.url ?? "https://em-content.zobj.net/source/twitter/408/busts-in-silhouette_1f465.png"
               }
             }
           }

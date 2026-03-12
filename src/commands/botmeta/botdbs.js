@@ -55,7 +55,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
     let fileList = []
     this.props.playerTypes = {
       user: "caller",
-      target: "bot"
+      target: "guild"
     }
 
     // Get DB Type

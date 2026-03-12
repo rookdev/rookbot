@@ -131,10 +131,11 @@ module.exports = class LogEditedMessageEvent extends EventScript {
         text: "[Log] Message Edited",
         emoji: "✏️"
       },
-      players: {
+      entities: {
         user: player,
         target: player
       },
+      playerTypes: { user: "user", target: "target" },
       fields: [
         [
           {

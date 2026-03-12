@@ -414,7 +414,7 @@ module.exports = class SayCommand extends ModCommand {
 
     if (["say","edit"].indexOf(mode) > -1) {
       // Say/Edit Mode
-      this.messages.push(`${mode.ucfirst()}: Startup!`)
+      // this.messages.push(`${mode.ucfirst()}: Startup!`)
 
       // Source Checks
       if (["clone"].indexOf(mode) > -1) {
@@ -444,7 +444,7 @@ module.exports = class SayCommand extends ModCommand {
       } else {
         mode = "say"
       }
-      this.messages.push(`${mode.ucfirst()}: Detected`)
+      // this.messages.push(`${mode.ucfirst()}: Detected`)
 
       // Destination Checks
       if (["edit","clone"].indexOf(mode) > -1) {
@@ -494,7 +494,7 @@ module.exports = class SayCommand extends ModCommand {
 
       // If rookhook, use hook
       if (visage && rookhook) {
-        this.messages.push(`${mode.ucfirst()}: rookhook - ${visage}`)
+        // this.messages.push(`${mode.ucfirst()}: rookhook - ${visage}`)
         channel = rookhook.channel
       } else {
         this.messages.push(`${mode.ucfirst()}: Message`)
@@ -514,7 +514,7 @@ module.exports = class SayCommand extends ModCommand {
       if (message && message != "") {
         this_package = message
       }
-      this.messages.push(`Message: [${JSON.stringify(this_package)}]`)
+      // this.messages.push(`Message: [${JSON.stringify(this_package)}]`)
 
       message = await this.buildPayload(
         channel,
@@ -530,7 +530,7 @@ module.exports = class SayCommand extends ModCommand {
       } else {
         mode = "say"
       }
-      this.messages.push(`${mode.ucfirst()}: Decided`)
+      // this.messages.push(`${mode.ucfirst()}: Decided`)
 
       if (visage && rookhook) {
         // Use Rookhook

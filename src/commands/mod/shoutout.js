@@ -63,7 +63,7 @@ module.exports = class ShoutoutCommand extends ModCommand {
     }
     visage = visages[visageName]
 
-    if (visage.quips) {
+    if (visage?.quips) {
       content += " " + randFuncs.randPick(visage.quips)
     }
 

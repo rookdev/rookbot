@@ -258,6 +258,22 @@ class RookMessage {
           avatar: "https://cdn.iconscout.com/icon/free/png-512/free-discord-logo-icon-download-in-svg-png-gif-file-formats--social-media-pack-logos-icons-3073764.png?f=webp&w=256",
           tag:    "discord"
         }
+        // Stoat Entity
+        page.entities.stoat = {
+          type:   "stoat",
+          id:     0,
+          name:   "Stoat",
+          url:    "http://example.com/stoat",
+          tag:    "stoat"
+        }
+        // Fluxer Entity
+        page.entities.fluxer = {
+          type:   "fluxer",
+          id:     0,
+          name:   "Fluxer",
+          url:    "http://example.com/fluxer",
+          tag:    "fluxer"
+        }
 
         // Bot Entity
         page.entities.bot = {
@@ -270,25 +286,39 @@ class RookMessage {
         }
 
         let guild = await this.getGuild(this.client, this.interaction)
+        // Get Guild version of Client User
+        let clientMember = guild?.members.me
+        // Guild Client Entity
+        if (clientMember) {
+          page.entities.botMember = {
+            type:   "botMember",
+            id:     clientMember.id,
+            name:   clientMember.displayName,
+            url:    "http://example.com/botMember",
+            avatar: await clientMember.displayAvatarURL({ size: 128 }),
+            tag:    clientMember.user.tag
+          }
+        }
+        // If there's no Guild Entity set yet
+        //  Set it
+        if ((!page.entities?.guild) && (guild)) {
+          page.entities.guild = {
+            type:   "guild",
+            id:     guild.id,
+            name:   guild.name,
+            url:    "http://example.com/guild",
+            avatar: [
+              "stoat"
+            ].includes(this.client.platform)
+            ? ""
+            : await guild.iconURL({ size: 128 })
+          }
+        }
 
         // If we've got an Interaction
         if (this.interaction?.id) {
-          // Get Guild version of Client User
-          let clientMember = guild?.members.me
           // Get Guild version of Caller
           let callerMember = await this.interaction?.member
-
-          // Guild Client Entity
-          if (clientMember) {
-            page.entities.botMember = {
-              type:   "botMember",
-              id:     clientMember.id,
-              name:   clientMember.displayName,
-              url:    "http://example.com/botMember",
-              avatar: await clientMember.displayAvatarURL({ size: 128 }),
-              tag:    clientMember.user.tag
-            }
-          }
 
           if (this.interaction?.user) {
             // Caller Entity
@@ -317,22 +347,6 @@ class RookMessage {
               page.entities.callerMember.avatar = await callerMember.displayAvatarURL({ size: 128 })
             }
           }
-
-          // If there's no Guild Entity set yet
-          //  Set it
-          if ((!page.entities?.guild) && (guild)) {
-            page.entities.guild = {
-              type:   "guild",
-              id:     guild.id,
-              name:   guild.name,
-              url:    "http://example.com/guild",
-              avatar: [
-                "stoat"
-              ].includes(this.client.platform)
-              ? ""
-              : await guild.iconURL({ size: 128 })
-            }
-          }
         }
 
         // Prefer Member version over Base version
@@ -348,7 +362,7 @@ class RookMessage {
         }
 
         // Set User & Target Players
-        page.players = {
+       page.players = {
           user: page.entities[page.playerTypes.user],
           target: page.entities[page.playerTypes.target]
         }

@@ -140,7 +140,11 @@ async function getCache(client, parent, cacheType, cacheTest) {
     switch(cacheType) {
       case "members":
       case "users":
-        ret = await collection.fetch({ user: ret.id, force: true }).first()
+        if (numFuncs.myIsNumeric(cacheTest[0])) {
+          ret = await collection.fetch({ user: cacheTest[0], force: true })
+        } else {
+          ret = cacheTest[0]
+        }
         break
       case "emojis":
         ret = cacheTest[0]

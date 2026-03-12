@@ -43,6 +43,8 @@ module.exports = class UptimeCommand extends RookCommand {
       uptime = strtotime(uptime)
     }
 
+    this.props.playerTypes = { user: "bot", target: "bot" }
+
     // Print uptime
     this.props.description = [
       `${mentionFuncs.userMention(client.user.id)} has been online for:`,

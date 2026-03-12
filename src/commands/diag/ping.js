@@ -28,8 +28,8 @@ module.exports = class PingCommand extends RookCommand {
   async action(client, interaction, coptions={}) {
     // Set EmbedPlayerTypes to Discord|Caller
     this.props.playerTypes = {
-      user: "discord",
-      target: "caller"
+      user: client.platform,
+      target: "bot"
     }
 
     this.messages.push(`/${this.name}: Ping Action`)

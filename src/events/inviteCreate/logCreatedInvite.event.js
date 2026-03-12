@@ -42,15 +42,19 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
         text: "[Log] Invite Created",
         emoji: "✉️"
       },
-      players: {
+      entities: {
         user: {
-          name: guild.name,
-          avatar: await guild.iconURL( { size: 128 } )
-        },
-        target: {
           name: newInvite.inviter.displayName,
           avatar: await newInvite.inviter.displayAvatarURL( { size: 128 } )
+        },
+        target: {
+          name: guild.name,
+          avatar: await guild.iconURL( { size: 128 } )
         }
+      },
+      playerTypes: {
+        user: "user",
+        target: "target"
       },
       fields: [
         [

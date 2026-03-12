@@ -87,6 +87,7 @@ module.exports = class SeedMetaCommand extends RookCommand {
   async action(client, interaction, coptions) {
     let gameID = coptions['game-id'] ?? "z3r"
     let hashID = coptions['hash-id'] ?? ""
+    let permalinkURL = ""
     let autodetect = false
     let autodetected = false
 
@@ -94,14 +95,20 @@ module.exports = class SeedMetaCommand extends RookCommand {
       gameID == "z3r" &&
       hashID != "" &&
       (
-        hashID.includes("http://") ||
-        hashID.includes("https://")
+        (hashID.indexOf("http://") > -1) ||
+        (hashID.indexOf("https://") > -1)
       )
     ) {
-      [gameID, hashID] = await autodetectRando(hashID)
+      [gameID, hashID, permalinkURL] = await autodetectRando(hashID)
     }
 
-    let fields = await getSeedFields(hashID, gameID) 
+    let fields = await getSeedFields(hashID, gameID, permalinkURL) 
+
+    if (!gameID) {
+      this.error = true
+      this.props.description = `No GameID found!`
+      return !this.error
+    }
 
     let randoData = require(`../../dbs/randos/${gameID}.json`)
     this.props.title = {

@@ -377,7 +377,20 @@ class SalutationCommand extends RookCommand {
     let guilds = await getters.getProp(client, client, "guilds")
     if (guilds) {
       // Cycle through guilds
-      for (let [guildID, guildData] of guilds.cache) {
+      let guildsCache = await guilds.cache
+      if (this.DEV) {
+        let testGuild = null
+        if (client?.guildID) {
+          testGuild = await getters.getCachedGuild(client, client.guildID)
+        }
+        if (!testGuild) {
+          testGuild = await getters.getCachedGuild(Object.keys(guildsCache)[0])
+        }
+        guildsCache = [
+          [testGuild.id, testGuild]
+        ]
+      }
+      for (let [guildID, guildData] of guildsCache) {
         // Get Client User
         let clientMember = null
         if (user) {
@@ -447,7 +460,7 @@ class SalutationCommand extends RookCommand {
               )
             }
             if (channel) {
-              this.messages.push(`Loaded   '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
+              // this.messages.push(`Loaded   '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
             }
           }
         }

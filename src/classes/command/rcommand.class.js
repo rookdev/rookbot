@@ -217,7 +217,7 @@ class RookCommand {
   }
 
   async getChannel(client, interaction, channelTypes) {
-    console.log(`Get ${channelTypes} of guild`)
+    // console.log(`Get ${channelTypes} of guild`)
     let guild = await this.getGuild(client, interaction)
     // console.log(`Get ${channelTypes} of ${guild.name}`)
     return await this.getCache(

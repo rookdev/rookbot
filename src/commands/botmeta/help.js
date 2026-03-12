@@ -193,7 +193,8 @@ module.exports = class HelpCommand extends RookCommand {
           let props = {
             title: { text: `Help - ${sectionName} - ${cmdName}` },
             description: " ",
-            fields: fields
+            fields: fields,
+            playerTypes: { user: "bot", target: "bot" }
           }
 
           // Push this page

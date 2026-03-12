@@ -140,7 +140,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Scheduled Time
     let scheduledTime = coptions['scheduled-time'] ?? null
 
-    const [randomizer, hashID] = await autodetectRando(seedURL)
+    const [randomizer, hashID, permalinkURL] = await autodetectRando(seedURL)
 
       /*
     const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
@@ -390,7 +390,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       }
       let hashID = seedURL.split("/")
       hashID = hashID[hashID.length - 1]
-      this.props.fields = await getSeedFields(hashID, randomizer)
+      this.props.fields = await getSeedFields(hashID, randomizer, permalinkURL)
     } else {
       // No permalink, no fields
       this.props.fields = []

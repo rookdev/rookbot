@@ -5,6 +5,7 @@ module.exports = async (hashID) => {
   let autodetect = false
   let autodetected = false
   let messages = []
+  let permalink = ""
 
   if (
     hashID != "" &&
@@ -34,11 +35,12 @@ module.exports = async (hashID) => {
           randoData.rando.permalink = [randoData.rando.permalink]
         }
         for (let pattern of randoData.rando.permalink) {
-          let thisPattern = pattern.replace("<hash>","")
+          let thisPattern = pattern.replace("<hash>","").replace("%3Chash%3E","")
           if (thisPattern.endsWith("//")) {
             thisPattern = thisPattern.substring(0, thisPattern.length - 2)
           }
           if (hashID.includes(thisPattern)) {
+            permalink = hashID
             let filenameParts = filename.split("\\")
             if (filenameParts.length < 2) {
               filenameParts = filename.split("/")
@@ -75,5 +77,5 @@ module.exports = async (hashID) => {
   }
   // console.log(messages.join("\n"))
   
-  return [gameID, hashID]
+  return [gameID, hashID, permalink]
 }

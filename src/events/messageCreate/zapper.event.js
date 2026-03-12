@@ -211,7 +211,7 @@ module.exports = class ZapperEvent extends EventScript {
         text: "[Log] Bot Trap",
         emoji: "⚡"
       },
-      players: {
+      entities: {
         user: {
           name: message.guild.members.me.name,
           avatar: await message.guild.members.me.displayAvatarURL({ size: 128 })

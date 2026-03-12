@@ -103,7 +103,7 @@ module.exports = class AnnounceScreenShareEvent extends EventScript {
           user: "guild",
           target: "target"
         },
-        players: {
+        entities: {
           user: {
             name: member.guild.name,
             avatar: await member.guild.iconURL({ size: 128 })

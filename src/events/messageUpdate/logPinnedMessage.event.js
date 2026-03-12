@@ -13,10 +13,10 @@ const { filesystem } = require('locutus/php')
 
 /**
  * @class
- * @this {LogNewMessageEvent}
+ * @this {LogPinnedMessageEvent}
  * @public
  */
-module.exports = class LogNewMessageEvent extends EventScript {
+module.exports = class LogPinnedMessageEvent extends EventScript {
   constructor(client) {
     let evtprops = {
       name: "logPinnedMessage",

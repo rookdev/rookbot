@@ -55,15 +55,15 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
         text: "[Log] Member Left",
         emoji: "🚶‍♂️🚪"
       },
-      players: {
-        user: {
-          name: guild.name,
-          avatar: await guild.iconURL( { size: 128 } )
-        },
+      entities: {
         target: {
-          name: oldMember.user.displayName,
-          avatar: await oldMember.user.displayAvatarURL( { size: 128 } )
+          name: newMember.user.displayName,
+          avatar: await newMember.user.displayAvatarURL( { size: 128 } )
         }
+      },
+      playerTypes: {
+        user: "guild",
+        target: "target"
       },
       fields: [
         [

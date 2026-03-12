@@ -220,7 +220,8 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
         text: '[Log] Message Deleted',
         emoji: "🚮"
       },
-      players: logPlayers,
+      entities: logPlayers,
+      playerTypes: { user: "user", target: "target" },
       fields: logFields
     }
 
