@@ -38,6 +38,7 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
     let createdDateTime = moment.utc(newInvite.createdTimestamp)
     let expiresDateTime = newInvite.expiresTimestamp ? moment.utc(newInvite.expiresTimestamp) : null
     let logProps = {
+      color: client.profile.colors.info,
       title: {
         text: "[Log] Invite Created",
         emoji: "✉️"

@@ -4,6 +4,7 @@ const { RookEmbed } = require('../../classes/embed/rembed.class')
 const { RookPlain } = require('../../classes/embed/rplain.class')
 const { SlimEmbed } = require('../../classes/embed/rslimbed.class')
 const { setValue } = require("../../utils/primitives/globalFuncs")
+const numFuncs = require('../../utils/primitives/numFuncs')
 const getters = require('../../utils/guild/getters')
 
 class RookMessage {
@@ -23,6 +24,15 @@ class RookMessage {
   }
 
   async getChannel() {
+    if (numFuncs.myIsNumeric(this.channelName)) {
+      return await getters.getCache(
+        this.client,
+        this.client,
+        "channels",
+        this.channelName
+      )
+    }
+
     let parent = this.client
     if (this.interaction?.id && this.interaction.id != 0) {
       parent = await this.getGuild(this.client, this.interaction)
@@ -415,8 +425,6 @@ class RookMessage {
   }
   async ship_it(independent=false, hasDeferred=false) {
     this.messages.push(`/${this.name}: ...and Ship it!`)
-
-
 
     // Base package is just the pages
     let this_package = { embeds: this.pages }

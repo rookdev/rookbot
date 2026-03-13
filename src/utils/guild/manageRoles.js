@@ -1,9 +1,12 @@
-const { MessageReaction, User } = require('discord.js')
+const { MessageReaction, User, hyperlink } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // Rook-branded Client
 const { RookClient } = require('../../classes/objects/rclient.class')
+const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
+const moment = require('moment')
 
 /**
  * Logs edited messages from the server.
@@ -91,6 +94,92 @@ const manageRoles = async (client, reaction, user, mode="add") => {
   let guildMember = await getters.getCachedMember(client, guild, user.id)
   if (mode == "add") {
     guildMember.roles.add(role)
+    let verifiedDateTime = moment.utc()
+    let joinedDateTime = moment.utc(guildMember.joinedTimestamp)
+    let durationStr = timeConversion(
+      moment.duration(
+        Math.abs(
+          joinedDateTime.diff(
+            verifiedDateTime
+          )
+        )
+      )
+    )
+    // get logging-members channel
+    console.log(
+      "Verified",
+      `'${guild.name}'`,
+      `@${role.name}`
+    )
+    let logsChannel = await getters.getCachedChannel(
+      client,
+      guild,
+      "logs-members"
+    )
+    let addedMessage = await new RookMessage(
+      client,
+      null,
+      {
+        channelName: logsChannel?.id,
+        pages: [
+          {
+            color: client.profile.colors.good,
+            title: {
+              text: "[Log] Member Verified",
+              emoji: "👤"
+            },
+            entities: {
+              target: {
+                name: guildMember.user.displayName,
+                avatar: await guildMember.user.displayAvatarURL({ size: 128 })
+              }
+            },
+            playerTypes: {
+              user: "guild",
+              target: "target"
+            },
+            fields: [
+              [
+                {
+                  name: "Elapsed Time",
+                  value: durationStr
+                }
+              ],
+              [
+                {
+                  name: "Member Verified",
+                  value: hyperlink(
+                    guildMember.user.tag,
+                    `https://discord.com/users/${guildMember.user.id}`
+                  )
+                }
+              ],
+              [
+                {
+                  name: "Member Mention",
+                  value: mentionFuncs.userMention(
+                    guildMember.user.id,
+                    { showID: true }
+                  )
+                }
+              ],
+              [
+                {
+                  name: "Guild",
+                  value: mentionFuncs.guildMention(
+                    guild.name,
+                    guild.id,
+                    { showID: true }
+                  )
+                }
+              ]
+            ]
+          }
+        ]
+      }
+    )
+    await addedMessage.execute()
+
     // if admin, cycle through reactions on this post
     //  for each reaction, cycle through users who reacted
     //   for each user, assign the role, just in case

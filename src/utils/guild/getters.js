@@ -49,7 +49,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
   let collection = null
 
   if (cacheType == "channels") {
-    cacheTest = cacheTest ?? [ this.channelName ]
+    cacheTest = cacheTest ?? null
     collection = await parent.channels
   } else if (cacheType == "emojis") {
     cacheTest = cacheTest ?? null
@@ -71,7 +71,7 @@ async function getCache(client, parent, cacheType, cacheTest) {
     collection = await client.users
   }
 
-  if (!cacheTest) {
+  if ((!cacheTest) || (cacheTest == null) || (cacheTest == "null")) {
     return null
   }
 
@@ -84,11 +84,26 @@ async function getCache(client, parent, cacheType, cacheTest) {
   }
 
   let guild = parent
+  if (guild) {
+    // console.log(
+    //   `Cache1: ${guild.name} [${guild.id}]`
+    // )
+  }
   if (!guild) {
     guild = await getGuild(client, parent)
   }
+  if (guild) {
+    // console.log(
+    //   `Cache2: ${guild.name} [${guild.id}]`
+    // )
+  }
   if (!guild) {
     guild = client.guild
+  }
+  if (guild) {
+    // console.log(
+    //   `Cache3: ${guild.name} [${guild.id}]`
+    // )
   }
   let guildID = guild?.id ?? client.guildID
   let ret = null

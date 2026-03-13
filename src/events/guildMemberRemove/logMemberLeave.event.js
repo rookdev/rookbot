@@ -57,8 +57,8 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
       },
       entities: {
         target: {
-          name: newMember.user.displayName,
-          avatar: await newMember.user.displayAvatarURL( { size: 128 } )
+          name: oldMember.user.displayName,
+          avatar: await oldMember.user.displayAvatarURL( { size: 128 } )
         }
       },
       playerTypes: {
