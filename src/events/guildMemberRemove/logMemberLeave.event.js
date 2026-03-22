@@ -56,6 +56,10 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
         emoji: "🚶‍♂️🚪"
       },
       entities: {
+        guild: {
+          name: guild.name,
+          avatar: await guild.iconURL({ size: 128 })
+        },
         target: {
           name: oldMember.user.displayName,
           avatar: await oldMember.user.displayAvatarURL( { size: 128 } )

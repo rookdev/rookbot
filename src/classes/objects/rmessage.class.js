@@ -162,7 +162,7 @@ class RookMessage {
       ].includes(this.client.platform)
     ) {
       let stoat_package = await this.makeStoat(this_package)
-      this_package = stoat_package
+      // this_package = stoat_package
     }
 
     let handle_result = false
@@ -395,12 +395,21 @@ class RookMessage {
 
         // Build Printing message
         let msg = `/${this.name}: Printing `
-        if (page?.full && !page.full) {
+        if (
+          (page?.full) &&
+          (!page.full)
+        ) {
           msg += "slimbed "
           this.pages[i] = await new SlimEmbed(this.client, page)
-        } else if (page?.plain && page.plain) {
+        } else if (
+          (
+            (page?.plain) &&
+            (page.plain)
+          ) ||
+          (["stoat"].includes(this.client.platform))
+        ) {
           msg += "plain   "
-          this.pages[i] = await new RookPlain(client, page)
+          this.pages[i] = await new RookPlain(this.client, page)
         } else {
           msg += "embed   "
           this.pages[i] = await new RookEmbed(this.client, page)

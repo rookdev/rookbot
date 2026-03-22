@@ -240,7 +240,11 @@ module.exports = class LogPinnedMessageEvent extends EventScript {
         text: '[Log] Message Pinned',
         emoji: "📌"
       },
-      players: logPlayers,
+      entities: logPlayers,
+      playerTypes: {
+        user: "user",
+        target: "user"
+      },
       fields: logFields
     }
 

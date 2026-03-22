@@ -48,9 +48,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     let serverBoostEmojiName = "serverboost2"
-    let dbRes = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
-    let serverBoostEmoji = dbRes[0]
-    this.messages.push(...dbRes[1])
+    let serverBoostEmoji = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
     if (
       !(serverBoostEmoji) ||
       (serverBoostEmoji == serverBoostEmojiName) ||
@@ -155,6 +153,11 @@ module.exports = class GuildStatusCommand extends RookCommand {
         {
           name: "Verified",
           value: guild.verified ? this.profile.emojis.check : this.profile.emojis.nocheck
+        },
+        // AFK Channel
+        {
+          name: "AFK Channel",
+          value: guild.afkChannel ? `${guild.afkChannel}` : ""
         }
       ]
     )
@@ -162,7 +165,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
       [
         {
           name: "Public Updates Channel",
-          value: guild.publicUpdateChannel ? `${guild.publicUpdateChannel}` : ""
+          value: guild.publicUpdatesChannel ? `${guild.publicUpdatesChannel}` : ""
         },
         {
           name: "Rules Channel",

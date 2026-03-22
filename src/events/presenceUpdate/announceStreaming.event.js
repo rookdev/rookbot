@@ -122,7 +122,7 @@ module.exports = class AnnounceStreamingEvent extends EventScript {
           target: "target"
         },
         entities: {
-          user: {
+          guild: {
             name: guild.name,
             avatar: await guild.iconURL({ size: 128 })
           },

@@ -44,6 +44,10 @@ module.exports = class LogMemberJoinEvent extends EventScript {
         emoji: "👋"
       },
       entities: {
+        guild: {
+          name: guild.name,
+          avatar: await guild.iconURL({ size: 128 })
+        },
         target: {
           name: newMember.user.displayName,
           avatar: await newMember.user.displayAvatarURL( { size: 128 } )

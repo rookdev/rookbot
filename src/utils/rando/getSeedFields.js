@@ -148,8 +148,8 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
         if (permalinkURL != "") {
           srcURL = new URL(sData["url"])
           let prmURL = new URL(permalinkURL)
-          messages.push(srcURL)
-          messages.push(prmURL)
+          // messages.push(srcURL)
+          // messages.push(prmURL)
           srcURL = srcURL.href.replace(
             srcURL.origin,
             prmURL.origin

@@ -196,7 +196,7 @@ module.exports = class MentionCommand extends RookCommand {
     let specs = {}
 
     // Get Guild
-    let guild = await this.getCache(client, client, "guilds", interaction?.guild?.id)
+    let guild = await this.getGuild(client, interaction)
 
     switch(targetType) {
       // Channel
@@ -243,19 +243,84 @@ module.exports = class MentionCommand extends RookCommand {
             if (channel?.createdTimestamp) {
               specs.creationStr = timeFormat(channel?.createdTimestamp, { with: "relative" })
             }
+            if (channel?.messages) {
+              let numPins = 0
+              let fetchedPins = await channel.messages.fetchPins()
+              numPins += fetchedPins.items.length
+              while(fetchedPins.hasMore) {
+                fetchedPins = await channel.messages.fetchPins(
+                  {
+                    before: fetchedPins.items.at(-1).pinnedAt
+                  }
+                )
+              }
+              if (numPins) {
+                specs.numPins = codeBlock(numPins)
+              }
+            }
 
             // Set Target to Channel
             let avatar = ""
             switch (specs?.subtype) {
-              case "GuildVoice":
+              case "GuildForum":    // Forum
+                avatar = "https://em-content.zobj.net/source/lg/57/two-speech-bubbles_1f5ea.png"
+                break
+              case "GuildNews":     // Announcements
+                avatar = "https://em-content.zobj.net/source/twitter/408/megaphone_1f4e3.png"
+                break
+              case "GuildVoice":    // Voice
                 avatar = "https://em-content.zobj.net/source/twitter/408/speaker-high-volume_1f50a.png"
                 break
-              case "GuildCategory":
+              case "GuildCategory": // Category
                 avatar = "https://em-content.zobj.net/source/twitter/408/file-folder_1f4c1.png"
                 break
               default:
                 avatar = "https://em-content.zobj.net/source/twitter/408/keycap-number-sign_23-fe0f-20e3.png"
                 break
+            }
+            for (let [specialChannelType, specialChannelId] of Object.entries(
+              {
+                afk:            guild?.afkChannelId,
+                publicUpdates:  guild?.publicUpdatesChannelId,
+                rules:          guild?.rulesChannelId,
+                safetyAlerts:   guild?.safetyAlertsChannelId,
+                system:         guild?.systemChannelId,
+                widget:         guild?.widgetChannelId
+              }
+            )) {
+              if (specialChannelId && (specialChannelId == targetId)) {
+                switch(specialChannelType) {
+                  case "afk":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/sleeping-face_1f634.png"
+                    specs.subtype += ", AFK"
+                    break
+                  case "publicUpdates":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/gear_2699-fe0f.png"
+                    specs.subtype += ", Public Updates"
+                    break
+                  case "rules":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/memo_1f4dd.png"
+                    specs.subtype += ", Rules"
+                    break
+                  case "safetyAlerts":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/safety-vest_1f9ba.png"
+                    specs.subtype += ", Safety Alerts"
+                    break
+                  case "system":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/desktop-computer_1f5a5-fe0f.png"
+                    specs.subtype += ", System"
+                    break
+                  case "widget":
+                    avatar = "https://em-content.zobj.net/source/twitter/408/globe-with-meridians_1f310.png"
+                    specs.subtype += ", Widget"
+                    break
+                }
+              }
+            }
+            if (specs?.subtype) {
+              if (specs.subtype.indexOf(", ") > -1) {
+                specs.subtype = specs.subtype.split(", ").join("\n")
+              }
             }
             this.props.playerTypes = {
               user: "target",
@@ -288,7 +353,7 @@ module.exports = class MentionCommand extends RookCommand {
             }
             specs = {
               name: emoji?.name,
-              url: emoji?.imageURL({ size: 128 }),
+              url: await emoji?.imageURL({ size: 128 }),
               animated: emoji?.animated ?
                 (
                   emoji.animated ?
@@ -374,8 +439,11 @@ module.exports = class MentionCommand extends RookCommand {
             if (!targetMember?.user) {
               break
             }
-            specs = {
-              name: targetMember.user.tag
+            specs = {}
+            if (targetMember?.user?.tag) {
+              specs.name = targetMember.user.tag
+            } else if (targetMember?.user?.username) {
+              specs.name = `${targetMember.user.username}#${targetMember.user.discriminator}`
             }
             const roles = await targetMember
               .roles
@@ -492,7 +560,15 @@ module.exports = class MentionCommand extends RookCommand {
               user: "target",
               target: "target"
             }
-            let targetAvatar = await targetMember.displayAvatarURL({ size: 128 })
+            let targetAvatar = ""
+            let targetImage = ""
+            if (["stoat"].includes(client.platform)) {
+              targetAvatar = await targetMember.avatarURL
+              targetImage = await targetMember.avatarURL
+            } else {
+              targetAvatar = await targetMember.displayAvatarURL({ size: 128 })
+              targetImage = await targetMember.displayAvatarURL({ size: 256 })
+            }
             if (specs?.roleIcon) {
               targetAvatar = specs.roleIcon
             } else if (specs?.clan?.badge) {
@@ -509,7 +585,7 @@ module.exports = class MentionCommand extends RookCommand {
               }
             }
             this.props.image = {
-              image: await targetMember.displayAvatarURL({ size: Math.pow(2, 8) })
+              image: targetImage
             }
           }
         }
@@ -523,7 +599,7 @@ module.exports = class MentionCommand extends RookCommand {
 
     if (!specs?.name || !specs.name || specs.name == "") {
       this.error = true
-      this.props.description = `${targetType.ucfirst()} ${inlineCode(targetId)} not found in ${italic(guild.name)}`
+      this.props.description = `${targetType.ucfirst()} ${inlineCode(targetId)} not found in ${italic(guild?.name)}`
       return false
     }
 
@@ -728,6 +804,11 @@ module.exports = class MentionCommand extends RookCommand {
 
       this.props.fields.push(
         [
+          // Pins
+          {
+            name: "Pins",
+            value: specs?.numPins
+          },
           // Extra
           {
             name: "Extra",

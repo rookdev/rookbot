@@ -156,8 +156,10 @@ class RookEmbed extends EmbedBuilder {
     }
     if (author && author.name != "") {
       if (avatars?.author?.avatar) {
-        if (avatars.author.avatar.trim() != "") {
-          author.iconURL = avatars.author.avatar.trim()
+        if (typeof avatars.author.avatar === "string") {
+          if (avatars.author.avatar.trim() != "") {
+            author.iconURL = avatars.author.avatar.trim()
+          }
         }
       }
       this.setAuthor(author)
@@ -336,7 +338,7 @@ class RookEmbed extends EmbedBuilder {
       let hasIcon = this.props.footer?.image && !footerNone
 
       if (!hasText) {
-        this.props.footer.text = this.profile.emojis.null
+        this.props.footer.text = client.profile.emojis.null
       }
 
       if (hasText || hasIcon) {
