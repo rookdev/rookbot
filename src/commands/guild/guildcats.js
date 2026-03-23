@@ -63,7 +63,9 @@ module.exports = class GuildCatsCommand extends RookCommand {
 
     this.props.description = []
     for (let channel of channels) {
-      this.props.description.push(`${inlineCode(channel.id)}: ${channel.name}`)
+      if (channel) {
+        this.props.description.push(`${inlineCode(channel.id)}: ${channel.name}`)
+      }
     }
 
     return !this.error
