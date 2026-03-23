@@ -3,7 +3,11 @@
   "1462848259574730826": {
     "#channel": "1303959083904274493",
     "#description": "Welcome to Yuki TV! Please react below to gain access to the server.",
+    "#log": true,
     "#title": "Welcome",
-    "✅": "Member"
+    "✅": {
+      "log": true,
+      "role": "Member"
+    }
   }
 }

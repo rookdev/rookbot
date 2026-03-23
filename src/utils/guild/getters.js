@@ -25,16 +25,31 @@ async function searchCache(cacheType, collection, cacheID) {
     }
   } else if (typeof cacheID == "string") {
     // Search for item by Name
-    ret = await collection.cache.find(
-      item => 
-        item?.name === cacheID ||               // global
-        item?.name === `:${cacheID}:` ||        // emoji
-        item?.nickname === cacheID ||           // member
-        item?.user?.displayName === cacheID ||  // user
-        item?.user?.globalName === cacheID ||   // user
-        item?.user?.tag === cacheID ||          // user
-        item?.user?.username === cacheID        // user
-    )
+    if (typeof collection.cache.find === "function") {
+      ret = await collection.cache.find(
+        item => 
+          item?.name === cacheID ||               // global
+          item?.name === `:${cacheID}:` ||        // emoji
+          item?.nickname === cacheID ||           // member
+          item?.user?.displayName === cacheID ||  // user
+          item?.user?.globalName === cacheID ||   // user
+          item?.user?.tag === cacheID ||          // user
+          item?.user?.username === cacheID        // user
+      )
+    } else if (typeof collection.cache.get === "function") {
+      // Stoat
+      for (let [cKey, cVal] of collection.cache.entries()) {
+        let cFound = false
+        if (cVal?.name === cacheID)               { cFound = true }
+        if (cVal?.name === `:${cacheID}`)         { cFound = true }
+        if (cVal?.nickname === cacheID)           { cFound = true }
+        if (cVal?.user?.displayName === cacheID)  { cFound = true }
+        if (cVal?.user?.globalName === cacheID)   { cFound = true }
+        if (cVal?.user?.tag === cacheID)          { cFound = true }
+        if (cVal?.user?.username === cacheID)     { cFound = true }
+        if (cFound)                               { ret = cVal }
+      }
+    }
   }
 
   return ret
@@ -112,6 +127,9 @@ async function getCache(client, parent, cacheType, cacheTest) {
   for (let cacheID of cacheTest) {
     if (ret) {
       continue
+    }
+    if (!collection?.client) {
+      collection.client = { platform: client.platform }
     }
     ret = await searchCache(cacheType, collection, cacheID)
   }

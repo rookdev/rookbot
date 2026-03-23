@@ -1,13 +1,12 @@
 // @ts-nocheck
 
-// Base Rook Slimbed
-const { SlimEmbed } = require('../../classes/embed/rslimbed.class')
+const { SlimEmbed } = require('../embed/rslimbed.class')
 // Rook Client
 const { RookClient } = require('../objects/rclient.class')
 
 /**
  * @class
- * @classdesc Build a Slim Villains-branded Embed
+ * @classdesc Build a Plain Rook-branded Embed
  * @this {RookPlain}
  * @extends {SlimEmbed}
  * @public
@@ -42,6 +41,10 @@ class RookPlain extends SlimEmbed {
       props.description.push(...plainFields)
     }
     delete props.fields
+
+    if (props?.image?.image) {
+      props.description.push(`![](${props.image.image})`)
+    }
 
     if (props?.footer) {
       props.description.push("---")

@@ -45,7 +45,7 @@ module.exports = class DiceRollCommand extends RookCommand {
   }
 
   async action(client, interaction, coptions) {
-    const count = coptions.count      // Number of dice
+    const count = coptions.count ?? 1 // Number of dice
     const sides = coptions.sides ?? 6 // Number of sides per die
 
     // Roll the dice and collect results

@@ -141,9 +141,12 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     let scheduledTime = coptions['scheduled-time'] ?? null
 
     const [randomizer, hashID, permalinkURL] = await autodetectRando(seedURL)
+    if (permalinkURL) {
+      seedURL = permalinkURL
+    }
 
       /*
-    const sahaBot = await interaction.guild.members.fetch(userIDs['sahabot'])
+    const sahaBot = await interactionGuild.members.fetch(userIDs['sahabot'])
 
     if (!sahaBot) {
       let intOptions = {
@@ -322,9 +325,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     // Construct the content for the channel message
     // Get the Pinger role
     let roleObject = null
+    let interactionGuild = await this.getGuild(client, interaction)
     // DB
     let dbRes = await dbFuncs.getDB(
-      interaction.guild.id,
+      interactionGuild.id,
       "roleIDs"
     )
     let roleIDs = dbRes[0]
@@ -335,10 +339,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // If no role, try the one listed in the guild DB
       if (roleID == 0) {
         if (roleIDs[randomizer]) {
-          this.messages.push(`Found Game-Specific Pingable Role ID for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
+          this.messages.push(`Found Game-Specific Pingable Role ID for ${mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs[randomizer]
         } else if (roleIDs["pingable-multiplayer-role"]) {
-          this.messages.push(`Found Pingable Role ID for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
+          this.messages.push(`Found Pingable Role ID for ${mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs["pingable-multiplayer-role"]
         }          
       }
@@ -347,11 +351,15 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (roleID != 0) {
       // If we've got a role, try to find it
       roleID = roleID.replace(/[<#@&!>]/g, '')
-      roleObject = await this.getCache(client, interaction.guild, "roles", roleID)
+      if (["stoat"].includes(client.platform)) {
+        roleObject = await interactionGuild.roles.cache.get(roleID)
+      } else {
+        roleObject = await this.getCache(client, interactionGuild, "roles", roleID)
+      }
       if (!roleObject) {
         this.error = true
-        this.messages.push(`Role doesn't exist in '${interaction.guild.name}' with ID of '${roleID}'`)
-        this.props.description = `Role doesn't exist in ${italic(interaction?.guild?.name)} with ID of '${roleID}'.`
+        this.messages.push(`Role doesn't exist in '${interactionGuild.name}' with ID of '${roleID}'`)
+        this.props.description = `Role doesn't exist in ${italic(interactionGuild?.name)} with ID of '${roleID}'.`
         return false
       } else {
         this.messages.push(`Role Found`)
@@ -402,7 +410,7 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
     // Setup
     let setupLink = ""
-    if (interaction.guild.name.indexOf("ZDoI") > -1) {
+    if (interactionGuild.name.indexOf("ZDoI") > -1) {
       let setupLinks = {
         "m3maprando": "https://discord.com/channels/1450159772622913628/1465896350465130546/1465896350465130546",
         "z3m3": "https://discord.com/channels/1450159772622913628/1465896350465130546/1465896350465130546"

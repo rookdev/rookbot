@@ -44,9 +44,20 @@ module.exports = class GuildCatsCommand extends RookCommand {
     }
 
     let channels = []
-    for (let [cID, channel] of interactionGuild.channels.cache) {
-      if (channel.type == ChannelType.GuildCategory) {
-        channels[channel.position] = channel
+    let chanCache = interactionGuild.channels.cache
+    if (["stoat"].includes(client.platform)) {
+      chanCache = interactionGuild.categories
+    }
+    for (let [cID, channel] of chanCache) {
+      if (
+        (channel.type == ChannelType.GuildCategory) ||
+        (channel?.children?.size > 0)
+      ) {
+        if (channel?.position) {
+          channels[channel.position] = channel
+        } else {
+          channels.push(channel)
+        }
       }
     }
 

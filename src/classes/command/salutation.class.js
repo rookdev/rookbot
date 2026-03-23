@@ -386,9 +386,11 @@ class SalutationCommand extends RookCommand {
         if (!testGuild) {
           testGuild = await getters.getCachedGuild(Object.keys(guildsCache)[0])
         }
-        guildsCache = [
-          [testGuild.id, testGuild]
-        ]
+        if (testGuild) {
+          guildsCache = [
+            [testGuild.id, testGuild]
+          ]
+        }
       }
       for (let [guildID, guildData] of guildsCache) {
         // Get Client User

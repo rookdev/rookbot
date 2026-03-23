@@ -96,7 +96,10 @@ module.exports = class SeedMetaCommand extends RookCommand {
       hashID != "" &&
       (
         (hashID.indexOf("http://") > -1) ||
-        (hashID.indexOf("https://") > -1)
+        (hashID.indexOf("https://") > -1) ||
+        (
+          (hashID.indexOf("/") > -1)
+        )
       )
     ) {
       [gameID, hashID, permalinkURL] = await autodetectRando(hashID)

@@ -5,6 +5,9 @@
     "#description": "Test Roles",
     "#note": "Test Uptime Post: 20250111",
     "#title": "Test Post",
-    "👍": "RR"
+    "👍": {
+      "log": true,
+      "role": "RR"
+    }
   }
 }

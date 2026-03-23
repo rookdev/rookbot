@@ -245,14 +245,16 @@ module.exports = class MentionCommand extends RookCommand {
             }
             if (channel?.messages) {
               let numPins = 0
-              let fetchedPins = await channel.messages.fetchPins()
-              numPins += fetchedPins.items.length
-              while(fetchedPins.hasMore) {
-                fetchedPins = await channel.messages.fetchPins(
-                  {
-                    before: fetchedPins.items.at(-1).pinnedAt
-                  }
-                )
+              if (typeof channel?.messages?.fetchPins === "function") {
+                let fetchedPins = await channel.messages.fetchPins()
+                numPins += fetchedPins.items.length
+                while(fetchedPins.hasMore) {
+                  fetchedPins = await channel.messages.fetchPins(
+                    {
+                      before: fetchedPins.items.at(-1).pinnedAt
+                    }
+                  )
+                }
               }
               if (numPins) {
                 specs.numPins = codeBlock(numPins)

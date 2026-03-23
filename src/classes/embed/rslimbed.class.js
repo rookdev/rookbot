@@ -7,7 +7,7 @@ const { RookClient } = require('../objects/rclient.class')
 
 /**
  * @class
- * @classdesc Build a Slim Villains-branded Embed
+ * @classdesc Build a Slim Rook-branded Embed
  * @this {SlimEmbed}
  * @extends {RookEmbed}
  * @public

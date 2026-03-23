@@ -161,7 +161,7 @@ class RookMessage {
         "stoat"
       ].includes(this.client.platform)
     ) {
-      let stoat_package = await this.makeStoat(this_package)
+      // let stoat_package = await this.makeStoat(this_package)
       // this_package = stoat_package
     }
 
@@ -450,29 +450,42 @@ class RookMessage {
       // We're only paginating Embed objects
       // We're setting the footer to include the page number
       this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
-      let these_pagination = await new Pagination(this.interaction)
-      // Set to all users for control
-      these_pagination.setAuthorizedUsers([])
-      these_pagination.setEmbeds(
-        this.pages,
-        (page, index, array) => {
-          let this_footer = page.toJSON()?.footer
-          if (this_footer) {
-            if (this_footer.text) {
-              this_footer.text = ` • ${this_footer.text}`
+      if (this?.interaction) {
+        if (typeof this.interaction !== "object") {
+          let these_pagination = await new Pagination(this.interaction)
+          // Set to all users for control
+          these_pagination.setAuthorizedUsers([])
+          these_pagination.setEmbeds(
+            this.pages,
+            (page, index, array) => {
+              let this_footer = page.toJSON()?.footer
+              if (this_footer) {
+                if (this_footer.text) {
+                  this_footer.text = ` • ${this_footer.text}`
+                }
+                this_footer.text = `Page: ${index+1}/${array.length}${this_footer.text}`
+                if (this_footer?.icon_url && (this_footer.icon_url != "")) {
+                  this_footer.iconURL = this_footer.icon_url
+                }
+              }
+              return page.setFooter(this_footer)
             }
-            this_footer.text = `Page: ${index+1}/${array.length}${this_footer.text}`
-            if (this_footer?.icon_url && (this_footer.icon_url != "")) {
-              this_footer.iconURL = this_footer.icon_url
-            }
+          )
+          these_pagination.render()
+          this_package = {
+            content: "** **",
+            embeds: [ these_pagination ]
           }
-          return page.setFooter(this_footer)
+        } else {
+          this_package = []
+          for (let page of this.pages) {
+            this_package.push(
+              {
+                embeds: [ page ]
+              }
+            )
+          }
         }
-      )
-      these_pagination.render()
-      this_package = {
-        content: "** **",
-        embeds: [ these_pagination ]
       }
     }
 
@@ -500,15 +513,13 @@ class RookMessage {
       try {
         let channelGuild = await this.getGuild(this.client, this.channel)
         this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)
-        if (
-          [
-            "stoat"
-          ].includes(this.client.platform)
-        ) {
-          let stoat_package = await this.makeStoat(this_package)
-          this_package = stoat_package
+        if (Array.isArray(this_package)) {
+          for (let page of this_package) {
+            send_result = await this.channel.send(page)
+          }
+        } else {
+          send_result = await this.channel.send(this_package)
         }
-        send_result = await this.channel.send(this_package)
       } catch(e) {
         this.messages.push(e)
         send_result = false
@@ -545,8 +556,14 @@ class RookMessage {
         independent = true
       }
     }
-    let sendResult = await this.send(independent)
-    // if (sendResult) { this.messages.push(`/${this.name}: Sent!`) }
+
+    let sendResult = false
+    try {
+      sendResult = await this.send(independent)
+      // if (sendResult) { this.messages.push(`/${this.name}: Sent!`) }
+    } catch (err) {
+      this.messages.push(err.stack)
+    }
 
     console.log(this.messages.join("\n"))
 

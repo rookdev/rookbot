@@ -48,7 +48,12 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     let serverBoostEmojiName = "serverboost2"
-    let serverBoostEmoji = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
+    let serverBoostEmoji = null
+    if (["stoat"].includes(client.platform)) {
+      serverBoostEmoji = null
+    } else {
+      serverBoostEmoji = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
+    }
     if (
       !(serverBoostEmoji) ||
       (serverBoostEmoji == serverBoostEmojiName) ||
@@ -68,7 +73,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     // List Guild Features
-    if (guild.features.length > 0) {
+    if (guild?.features?.length > 0) {
       this.props.description.push(
         bold("Features"),
         codeBlock(guild.features.sort().join(", "))
@@ -110,9 +115,19 @@ module.exports = class GuildStatusCommand extends RookCommand {
       )
     }
 
-    let members = await guild.members.fetch()
+    let members = null
+    if (["stoat"].includes(client.platform)) {
+      members = await guild.members.cache
+    } else {
+      members = await guild.members.fetch()
+    }
     let numMembers = members.size
-    let numBots = members.filter(member=>member.user.bot).size
+    let numBots = 0
+    if (["stoat"].includes(client.platform)) {
+      numBots = 0
+    } else {
+      numBots = members?.filter(member=>member.user.bot).size ?? 0
+    }
     this.props.fields.push(
       [
         // Number of Members

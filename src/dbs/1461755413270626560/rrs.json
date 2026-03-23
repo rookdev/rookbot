@@ -4,7 +4,10 @@
     "#channel": "1461758974872391680",
     "#description": "Welcome to Rookbot Sandbox! Please react below to gain access to the server.",
     "#title": "Access",
-    "akariwuv": "Member",
+    "akariwuv": {
+      "log": true,
+      "role": "Member"
+    },
     "❌": "Muted"
   }
 }

@@ -31,6 +31,10 @@
       "description": "([Super Metroid / Zelda 3 Combo Randomizer](<http://samus.link>))",
       "role": "SMZ3"
     },
+    "❌": {
+      "description": "([Metroid X-Fusion Randomizer](<http://mxfrando.com>))",
+      "role": "MXFR"
+    },
     "🎮": {
       "description": "([Archipelago](<http://archipelago.gg>))",
       "role": "MultiWorld"
@@ -38,12 +42,20 @@
     "🎲": {
       "description": "([Randovania](<http://randovania.org>))",
       "role": "Randovania"
+    },
+    "🐰": {
+      "description": "([Rabbit & Steel](<https://www.minodevgames.com/rabbit-steel>))",
+      "role": "Rabbit & Steel"
     }
   },
   "1451699174058758291": {
+    "#channel": "1450197389079085056",
     "#description": "Please react below to gain access to the server.",
     "#note": "#welcome: Welcome",
     "#title": "Welcome to the ZDoI Randomizer Community!",
-    "akariwuv": "Member"
+    "akariwuv": {
+      "log": true,
+      "role": "Member"
+    }
   }
 }

@@ -94,11 +94,19 @@ module.exports = class LogsCommand extends BotDevCommand {
     let resLen = display_output.length
 
     if (resLen < 2000) {
-      await interaction.editReply(
-        {
-          content: display_output
-        }
-      )
+      if (typeof interaction.editReply == "function") {
+        await interaction.editReply(
+          {
+            content: display_output
+          }
+        )
+      } else {
+        await interaction.reply(
+          {
+            content: display_output
+          }
+        )
+      }
       this.null = true
     } else if (resLen < 4096) {
       this.props.description = display_output

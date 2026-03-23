@@ -10,10 +10,19 @@ module.exports = async (hashID) => {
   if (
     hashID != "" &&
     (
-      hashID.includes("http://") ||
-      hashID.includes("https://")
+      (hashID.indexOf("http://") > -1) ||
+      (hashID.indexOf("https://") > -1) ||
+      (
+        hashID.indexOf("/") > -1
+      )
     )
   ) {
+    if (
+      (hashID.indexOf("http://") == -1) &&
+      (hashID.indexOf("https://") == -1)
+    ) {
+      hashID = `https://${hashID}`
+    }
     autodetect = true
     for (let filename of fileFuncs.getAllFiles(
       [
@@ -39,6 +48,13 @@ module.exports = async (hashID) => {
           if (thisPattern.endsWith("//")) {
             thisPattern = thisPattern.substring(0, thisPattern.length - 2)
           }
+          // console.log(
+          //   {
+          //     pattern: new URL(pattern),
+          //     check: new URL(thisPattern),
+          //     hash: new URL(hashID)
+          //   }
+          // )
           if (hashID.includes(thisPattern)) {
             permalink = hashID
             let filenameParts = filename.split("\\")
