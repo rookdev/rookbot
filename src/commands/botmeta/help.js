@@ -15,6 +15,7 @@ const {
 } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 /**
  * @class
@@ -58,6 +59,7 @@ module.exports = class HelpCommand extends RookCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      platforms: ["discord", "stoat"],
       testOptions: [
         {},
         { "section-name": "app" },
@@ -109,7 +111,10 @@ module.exports = class HelpCommand extends RookCommand {
       showJSON = thisJSON
     } else {
       // Else, show it all
-      showJSON = {...helpJSON}
+      // NOT FOR STOAT ZOMG
+      if (!globalFuncs.isStoat(client)) {
+        showJSON = {...helpJSON}
+      }
     }
 
     // Cycle through sections

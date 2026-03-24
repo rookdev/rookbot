@@ -23,7 +23,8 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
           maxLength: 32,
           required: true
         }
-      ]
+      ],
+      platforms: ["discord","stoat"]
     }
     let props = {}
 

@@ -182,7 +182,7 @@ class EventScript {
   }
 
   async execute(client, ...args) {
-    if (!this.platforms.includes(client.platform)) {
+    if (!this.platforms.includes(client)) {
       return 
     }
     // this.messages.push(`/${this.name}: Event Execute`)

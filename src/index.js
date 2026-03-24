@@ -154,42 +154,54 @@ if (DO_FLUXER) {
     if (FLUXER_TOKEN) {
       // console.log("FLUXER")
 
-      const frest = new REST(
-        {
-          api:      "https://api.fluxer.app",
-          version:  '1'
-        }
-      ).setToken(FLUXER_TOKEN)
+      if (false) {
+        const frest = new REST(
+          {
+            api:      "https://api.fluxer.app",
+            version:  '1'
+          }
+        ).setToken(FLUXER_TOKEN)
 
-      const fgateway = new WebSocketManager(
-        {
-          intents: 0,
-          rest: frest,
-          token: FLUXER_TOKEN,
-          version: '1'
-        }
-      )
+        const fgateway = new WebSocketManager(
+          {
+            intents: 0,
+            rest: frest,
+            token: FLUXER_TOKEN,
+            version: '1'
+          }
+        )
+
+        const fclient = new RookFClient(
+          {
+            intents: clientIntents,
+            rest: frest,
+            gateway: fgateway
+          },
+          // Profile to load
+          process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
+          {
+            DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+          }
+        )
+      }
 
       const fclient = new RookFClient(
         {
-          intents: clientIntents,
-          rest: frest,
-          gateway: fgateway
-        },
-        // Profile to load
-        process.env.ENV_ACTIVE.startsWith("prod") ? "default" : options.profile,
-        {
-          DEV: !process.env.ENV_ACTIVE.startsWith("prod")
+          intents: 0
         }
       )
 
       console.log(`${fclient.profile.emojis[fclient.platform]} ${fclient.platform.toUpperCase()}`)
 
+      await fclient.login(FLUXER_TOKEN);
+
       await fclient.init()
 
       console.log("---")
 
-      await fgateway.connect()
+      if (false) {
+        await fgateway.connect()
+      }
 
       await eventHandler(fclient)
     }

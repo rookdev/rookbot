@@ -25,6 +25,7 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -327,7 +328,7 @@ module.exports = class SayCommand extends ModCommand {
     // Get Src Message
     let sourceMessageURL = coptions["source-message"] ?? null
     // Get Attachment Data
-    let attachment = interaction.options.getAttachment("attachment-message") ?? null
+    let attachment = interaction?.options ? interaction.options.getAttachment("attachment-message") : null
     // Get Visage
     let visage = coptions["visage-name"] ?? null
     let visages = null
@@ -364,22 +365,32 @@ module.exports = class SayCommand extends ModCommand {
     }
 
     // Bot doesn't have perms SendMessages in channel
-    if (
-      !channel
-      .permissionsFor(client.user)
-      .has(PermissionFlagsBits.SendMessages)
-    ) {
+    let botChanPerms = false
+    if (globalFuncs.isStoat(client)) {
+      // FIXME: Just go, we ballin'
+      botChanPerms = true
+    } else {
+      botChanPerms = channel
+        .permissionsFor(client.user)
+        .has(PermissionFlagsBits.SendMessages)
+    }
+    if (!botChanPerms) {
       this.error = true
       this.props.description = `Bot doesn't have ${inlineCode('SendMessages')} for ${channel}`
       return false
     }
 
     // User doesn't have perms ManageMessages in channel
-    if (
-      !channel
-      .permissionsFor(interaction.user)
-      .has(PermissionFlagsBits.ManageMessages)
-    ) {
+    let userChanPerms = false
+    if (globalFuncs.isStoat(client)) {
+      // FIXME: Just go, we ballin'
+      userChanPerms = true
+    } else {
+      userChanPerms = channel
+        .permissionsFor(interaction.user)
+        .has(PermissionFlagsBits.ManageMessages)
+    }
+    if (!userChanPerms) {
       this.error = true
       this.props.description = `User doesn't have ${inlineCode('ManageMessages')} for ${channel}`
       return false
@@ -599,6 +610,9 @@ module.exports = class SayCommand extends ModCommand {
        */
       let region = ((!this.DEV) ? "Production" : "Development")
 
+      let interactionGuild = await this.getGuild(client, interaction)
+      let interactionAuthor = await this.getProp(client, interaction, "user")
+
       // Get the posted time
       let resultDateTime = moment.utc(result.createdTimestamp)
       props.mod = {
@@ -614,7 +628,7 @@ module.exports = class SayCommand extends ModCommand {
             // Whodunnit?
             {
               name: "User",
-              value: mentionFuncs.userMention(interaction.user.id, { showID: true })
+              value: mentionFuncs.userMention(interactionAuthor.id, { showID: true })
             }
           ],
           [
@@ -635,7 +649,7 @@ module.exports = class SayCommand extends ModCommand {
             // Sent in what Guild?
             {
               name: "Guild",
-              value: mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true })
+              value: mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true })
             },
             // Sent to what Channel?
             {
@@ -673,8 +687,8 @@ module.exports = class SayCommand extends ModCommand {
         }
         props.mod.players = {
           user: {
-            name: interaction.user.displayName,
-            avatar: await interaction.user.displayAvatarURL({ size: 128 })
+            name: interactionAuthor.displayName,
+            avatar: await interactionAuthor.displayAvatarURL({ size: 128 })
           },
           target: {
             name: visages[visage].name,
@@ -707,10 +721,10 @@ module.exports = class SayCommand extends ModCommand {
       )
       let logEntry = [
         `[${moment.utc().toISOString()}]`,
-        `Author:      ${interaction.user.tag} (ID: ${interaction.user.id})`,
+        `Author:      ${interactionAuthor.tag} (ID: ${interactionAuthor.id})`,
         `Mode:        ${mode.ucfirst()}`,
         `Visage:      ${visage}`,
-        `Guild:       ${result.guild.name} (ID: ${result.guild.id})`,
+        `Guild:       ${interactionGuild.name} (ID: ${interactionGuild.id})`,
         `Channel:     #${result.channel.name} (ID: ${result.channel.id})`,
         `Message ID:  ${result.id}`,
         `Region:      ${region}`,

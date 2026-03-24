@@ -10,6 +10,7 @@ const { RookEmbed } = require('../embed/rembed.class')
 // Pretty-print time durations
 const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -226,19 +227,19 @@ class SalutationCommand extends RookCommand {
       server = {
         name:   channelGuild.name,
         id:     channelGuild.id,
-        avatar: ["stoat"].includes(client.platform) ? "" : await channelGuild.iconURL({ size: 128 })
+        avatar: globalFuncs.isStoat(client) ? "" : await channelGuild.iconURL({ size: 128 })
       }
     } else if (interactionGuild) {
       server = {
         name:   interactionGuild.name,
         id:     interactionGuild.id,
-        avatar: ["stoat"].includes(client.platform) ? "" : await interactionGuild.iconURL({ size: 128 })
+        avatar: globalFuncs.isStoat(client) ? "" : await interactionGuild.iconURL({ size: 128 })
       }
     } else {
       server = {
         name:   client?.guild?.name ?? "?",
         id:     client?.guild?.id   ?? process.env?.GUILD_ID,
-        avatar: ["stoat"].includes(client.platform) ? "" : await client?.guild?.iconURL({ size: 128 })
+        avatar: globalFuncs.isStoat(client) ? "" : await client?.guild?.iconURL({ size: 128 })
       }
     }
     if (server?.id) {
@@ -483,7 +484,7 @@ class SalutationCommand extends RookCommand {
           id:     guild.id,
           name:   guild?.name ?? "?",
           url:    "http://example.com/guild",
-          avatar: ["stoat"].includes(client.platform) ? "" : await guild?.iconURL({ size: 128 })
+          avatar: globalFuncs.isStoat(client) ? "" : await guild?.iconURL({ size: 128 })
         }
 
         this.props.fields[1][0].value = server?.name ?? "?"

@@ -1,12 +1,13 @@
 // @ts-nocheck
 const { GatewayDispatchEvents, SimpleShardingStrategy } = require('discord.js')
+const globalFuncs = require('../utils/primitives/globalFuncs')
 const stringFuncs = require('../utils/primitives/stringFuncs')
 const fileFuncs = require('../utils/fs/fileFuncs') // Get All Files
 const moment = require('moment')
 const path = require('path')                       // Easy filepath management
 
 module.exports = (client) => {
-  // console.log(`${client.platform} Events`)
+  console.log(`${client.platform} Events`)
   // Get all folders in ./events
   const eventFolders = fileFuncs.getAllFiles(
     [
@@ -29,22 +30,23 @@ module.exports = (client) => {
     if (client.eventNames.includes(eventName)) {
       // console.log(` ${eventName}`)
       let internalEventName = eventName
-      if (["fluxer"].includes(client.platform)) {
-        internalEventName = GatewayDispatchEvents[eventName.ucfirst()]
-      }
+      // if (globalFuncs.isFluxer(client)) {
+      //   internalEventName = GatewayDispatchEvents[eventName.ucfirst()]
+      // }
       if (internalEventName) {
         // console.log(`  ${internalEventName}`)
 
         // onEvent
         client.on(internalEventName, async (...args) => {
-          if (["fluxer"].includes(client.platform)) {
-            args = args[0]
-            args = Object.values(args)
-            let api = args.shift()
-            let shardID = args.shift()
-            let newArgs = [...args]
-            args = newArgs
-            // console.log(args)
+          if (globalFuncs.isFluxer(client)) {
+            // console.log(
+            //   {
+            //     eventName,
+            //     internalEventName,
+            //     platform: client.platform,
+            //     args
+            //   }
+            // )
           }
 
           let showDateTime  = true
@@ -90,7 +92,13 @@ module.exports = (client) => {
 
             if (!handled) {
               // Handle inline
-              let [result, messages] = await eventObject(client, ...args) // Pass all arguments to the event function
+              let result = false
+              let messages = []
+              if (args) {
+                [result, messages] = await eventObject(client, ...args) // Pass all arguments to the event function
+              } else {
+                [result, messages] = await eventObject(client) // Pass all arguments to the event function
+              }
 
               if (messages.length) {
                 if (showDateTime && showScript && firstScript) {

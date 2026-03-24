@@ -2,6 +2,7 @@
 
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 module.exports = class PingCommand extends RookCommand {
   constructor(client) {

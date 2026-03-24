@@ -28,6 +28,7 @@ module.exports = class RosterCommand extends RookCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      platforms: ["discord", "stoat"],
       testOptions: [
         {},
         { "guild-id": "1282788953052676177" },
@@ -55,7 +56,15 @@ module.exports = class RosterCommand extends RookCommand {
     // Get Section Type
     const sectionType = coptions["section-type"]
     // Get Guild ID
-    const guildID = coptions["guild-id"] ?? interaction?.guild?.id ?? process.env.GUILD_ID
+    let interactionGuild = await this.getGuild(client, interaction)
+    let guildID = null
+    if (coptions["guild-id"]) {
+      guildID = coptions["guild-id"]
+    } else if (interactionGuild?.id) {
+      guildID = interactionGuild.id
+    } else {
+      guildID = process.env.GUILD_ID
+    }
 
     // Get Guild IDs list
     const guildIDs = fileFuncs.getAFile(
@@ -143,7 +152,7 @@ module.exports = class RosterCommand extends RookCommand {
           // Cycle through users
           for (let username of sData.users) {
             // Try to get the Guild Member
-            let member = await this.getCache(client, interaction.guild, "members", username)
+            let member = await this.getCache(client, interactionGuild, "members", username)
             if (!member) {
               let query = await guild.members.fetch(
                 {

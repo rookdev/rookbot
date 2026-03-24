@@ -1,10 +1,11 @@
 const getLocalCommands = require("../../utils/client/getLocalCommands")
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 module.exports = async (client, message) => {
   let result = false
   let messages = []
 
-  if (["fluxer"].includes(client.platform)) {
+  if (globalFuncs.isFluxer(client)) {
     if (message.content.charAt(0) == "/") {
       let coptions = {}
       let cmdString = message.content.substring(1)

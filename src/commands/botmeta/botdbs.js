@@ -36,7 +36,8 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           type: ApplicationCommandOptionType.String,
           maxLength: 32
         }
-      ]
+      ],
+      platforms: ["discord", "stoat"]
     }
     let props = {}
 

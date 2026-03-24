@@ -25,6 +25,7 @@ const {
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
@@ -564,10 +565,11 @@ module.exports = class MentionCommand extends RookCommand {
             }
             let targetAvatar = ""
             let targetImage = ""
-            if (["stoat"].includes(client.platform)) {
+            if (globalFuncs.isStoat(client)) {
               targetAvatar = await targetMember.avatarURL
               targetImage = await targetMember.avatarURL
             } else {
+              // "discord"
               targetAvatar = await targetMember.displayAvatarURL({ size: 128 })
               targetImage = await targetMember.displayAvatarURL({ size: 256 })
             }

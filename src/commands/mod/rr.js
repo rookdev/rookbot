@@ -1,12 +1,13 @@
 // @ts-nocheck
 
 // Formatters: inlineCode
-const { inlineCode } = require('discord.js')
+const { inlineCode, shouldUseGlobalFetchAndWebSocket } = require('discord.js')
 const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Rook-branded Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const memberFuncs = require('../../utils/formatters/mentions')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
@@ -30,7 +31,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    let guild = interaction.guild
+    let guild = await this.getGuild(client, interaction)
 
     // DB
     let rrs = null
@@ -82,7 +83,11 @@ module.exports = class ReactionRolesCommand extends ModCommand {
           }
         }
       }
-      if (!interaction.deferred && !interaction.replied) {
+      if (
+        !interaction.deferred &&
+        !interaction.replied &&
+        typeof interaction?.deleteReply === "function"
+      ) {
         await interaction.deleteReply()
       }
 
@@ -108,9 +113,13 @@ module.exports = class ReactionRolesCommand extends ModCommand {
           emoji = emojiName
         }
 
-        let reacted = await post.reactions.resolve(emoji)?.me
-        if (!reacted) {
-          await post.react(emoji)
+        if (globalFuncs.isStoat(client)) {
+          // do nothing
+        } else {
+          let reacted = await post.reactions.resolve(emoji)?.me
+          if (!reacted) {
+            await post.react(emoji)
+          }
         }
       }
     }

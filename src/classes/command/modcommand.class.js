@@ -33,6 +33,7 @@ const { RookEmbed } = require('../embed/rembed.class')
 // Convert milliseconds to d/h/m/s
 const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const AsciiTable = require('ascii-table')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
@@ -963,8 +964,21 @@ class ModCommand extends AdminCommand {
         return false
       }
 
+      let hasRoles = false
       // Bail if member doesn't have Approved Roles
-      if(!(await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))) ) {
+      if (globalFuncs.isStoat(client)) {
+        let theseRoles = await interaction.member.roles
+        theseRoles = theseRoles.valueOf().map(role=>role.name)
+        for (let role of theseRoles) {
+          if (APPROVED_ROLES.includes(role)) {
+            hasRoles = true
+            break
+          }
+        }
+      } else {
+        hasRoles = await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))
+      }
+      if(!hasRoles) {
         this.error = true
         this.props.description = this.errors.adminOnly
         this.props.fields = []

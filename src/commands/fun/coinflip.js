@@ -13,7 +13,8 @@ module.exports = class CoinFlipCommand extends RookCommand {
       description: "Flips a coin and return either Heads or Tails",
       flags: {
         test: "basic"
-      }
+      },
+      platforms: ["discord", "stoat"]
     }
     let props = {
       title: {

@@ -32,6 +32,7 @@ module.exports = class SlapCommand extends AdminCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      platforms: ["discord", "stoat"],
       testOptions: [
         { "target-id": "1306491719717748830" },
         { "target-id": "1306491719717748830", "item": "a sledgehammer" },

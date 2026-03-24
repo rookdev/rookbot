@@ -23,6 +23,31 @@ const empty = (data) => {
   return false;
 };
 
+function isPlatforms(sentPlatform, wantPlatforms) {
+  if (sentPlatform?.platform) {
+    sentPlatform = sentPlatform.platform
+  }
+  return wantPlatforms.includes(sentPlatform)
+}
+function isPlatform(sentPlatform, wantPlatform) {
+  if (sentPlatform?.platform) {
+    sentPlatform = sentPlatform.platform
+  }
+  return sentPlatform == wantPlatform
+}
+function isDiscord(sentPlatform) {
+  return isPlatform(sentPlatform, "discord")
+}
+function isFluxer(sentPlatform) {
+  return isPlatform(sentPlatform, "fluxer")
+}
+function isRevolt(sentPlatform) {
+  return isPlatform(sentPlatform, "revolt")
+}
+function isStoat(sentPlatform) {
+  return isRevolt(sentPlatform) || isPlatform(sentPlatform, "stoat")
+}
+
 // Set value with a fallback
 function setValue(input, defvalue) {
   if (!defvalue) {
@@ -33,5 +58,11 @@ function setValue(input, defvalue) {
 
 module.exports = {
   empty,
+  isPlatforms,
+  isPlatform,
+  isDiscord,
+  isFluxer,
+  isRevolt,
+  isStoat,
   setValue
 }

@@ -7,6 +7,7 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 const autodetectRando = require('../../utils/rando/autodetectRando')
 const getSeedFields = require('../../utils/rando/getSeedFields')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const randFuncs = require('../../utils/primitives/randFuncs')
@@ -114,10 +115,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "prep-time": 60 },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "scheduled-time": "3155760000" },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "group-id": "1983" },
-        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "ping-multiplayer-role": true },
-        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "prep-time": 60 },
-        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "scheduled-time": "3155760000" },
-        { "seed-url": "https://mxfrando.com/seed/UVVBUk5USU4gU0EtWCBBUkFOIENIQVJHRQ//", "group-id": "1983" }
+        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "ping-multiplayer-role": true },
+        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "prep-time": 60 },
+        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "scheduled-time": "3155760000" },
+        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "group-id": "1983" }
       ]
     }
     props = props || {}
@@ -351,9 +352,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
     if (roleID != 0) {
       // If we've got a role, try to find it
       roleID = roleID.replace(/[<#@&!>]/g, '')
-      if (["stoat"].includes(client.platform)) {
+      if (globalFuncs.isStoat(client)) {
         roleObject = await interactionGuild.roles.cache.get(roleID)
       } else {
+        // "discord"
         roleObject = await this.getCache(client, interactionGuild, "roles", roleID)
       }
       if (!roleObject) {

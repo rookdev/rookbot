@@ -5,6 +5,7 @@ const { codeBlock, inlineCode, bold, hyperlink } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const moment = require('moment')
@@ -17,7 +18,8 @@ module.exports = class GuildStatusCommand extends RookCommand {
       description: "Guild Status",
       flags: {
         test: "basic"
-      }
+      },
+      platforms: ["discord", "stoat"]
     }
     let props = {
       title: {
@@ -49,9 +51,10 @@ module.exports = class GuildStatusCommand extends RookCommand {
 
     let serverBoostEmojiName = "serverboost2"
     let serverBoostEmoji = null
-    if (["stoat"].includes(client.platform)) {
+    if (globalFuncs.isStoat(client)) {
       serverBoostEmoji = null
     } else {
+      // "discord"
       serverBoostEmoji = await this.getCache(client, guild, "emojis", serverBoostEmojiName)
     }
     if (
@@ -116,16 +119,18 @@ module.exports = class GuildStatusCommand extends RookCommand {
     }
 
     let members = null
-    if (["stoat"].includes(client.platform)) {
+    if (globalFuncs.isStoat(client)) {
       members = await guild.members.cache
     } else {
+      // "discord"
       members = await guild.members.fetch()
     }
     let numMembers = members.size
     let numBots = 0
-    if (["stoat"].includes(client.platform)) {
+    if (globalFuncs.isStoat(client)) {
       numBots = 0
     } else {
+      // "discord"
       numBots = members?.filter(member=>member.user.bot).size ?? 0
     }
     this.props.fields.push(

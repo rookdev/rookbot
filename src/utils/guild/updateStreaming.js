@@ -175,11 +175,11 @@ const detectStreaming = async (
 
   debug["changesDetected"] = changesDetected
 
+  let adding = false
+  let removing = false
+  let rolesMode = ""
   if (changesDetected) {
-    let adding = false
-    let removing = false
     // Add roles
-    let rolesMode = ""
     if (
       debug["startedStreaming"] ||
       debug["updatedStream"]
@@ -270,6 +270,12 @@ const detectStreaming = async (
 
   if (changesDetected) {
     if (globalFuncs.empty(debug["streamer-type"])) {
+      debug["changesDetected"] = false
+    }
+    if ((!adding) && (!removing)) {
+      debug["changesDetected"] = false
+    }
+    if (rolesMode == "") {
       debug["changesDetected"] = false
     }
   }

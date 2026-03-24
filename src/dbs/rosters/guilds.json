@@ -1,8 +1,10 @@
 {
-  "1282788953052676177":  { "name": "DoI Main", "set": "doi" },
-  "1297216081110372474":  { "name": "DoI Navy", "set": "doi" },
-  "1450159772622913628":  { "name": "DoI Rando Community", "set": "rook" },
-  "1303864272832565268":  { "name": "rook", "set": "rook" },
-  "1461755413270626560":  { "name": "Rookbot Sandbox", "set": "rook" },
-  "745409743593406634":   { "name": "TridentBot", "set": "rook" }
+  "1282788953052676177":        { "name": "DoI Main", "set": "doi" },
+  "1297216081110372474":        { "name": "DoI Navy", "set": "doi" },
+  "1450159772622913628":        { "name": "DoI Rando Community", "set": "rook" },
+  "1303864272832565268":        { "name": "rook", "set": "rook" },
+  "1461755413270626560":        { "name": "Rookbot Sandbox", "set": "rook" },
+  "1476765618626433235":        { "name": "Rookbot Fluxer Sandbox", "set": "rook" },
+  "01KHHXDY8KQ3XAMX3BS6SPKFZB": { "name": "Rookbot Stoat Sandbox", "set": "rook" },
+  "745409743593406634":         { "name": "TridentBot", "set": "rook" }
 }

@@ -1,3 +1,13 @@
 {
-  "#note": "Rookbot Stoat Sandbox"
+  "#note": "Rookbot Stoat Sandbox",
+  "01KMER89DR4Y75EGH007YF0AXX": {
+    "#channel": "01KHHXRBBBM7A2A2M8V9JNNES8",
+    "#description": "Welcome to Rookbot Sandbox! Please react below to gain access to the server.",
+    "#title": "Access",
+    "✅": {
+      "log": true,
+      "role": "Member"
+    },
+    "❌": "Muted"
+  }
 }

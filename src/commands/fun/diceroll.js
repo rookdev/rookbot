@@ -28,6 +28,7 @@ module.exports = class DiceRollCommand extends RookCommand {
           max_value: 9999
         }
       ],
+      platforms: ["discord", "stoat"],
       testOptions: [
         { count: 4 },
         { count: 4, sides: 20 },

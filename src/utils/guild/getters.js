@@ -1,4 +1,5 @@
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const numFuncs = require("../../utils/primitives/numFuncs")
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -9,8 +10,9 @@ async function searchCache(cacheType, collection, cacheID) {
     (collection) &&
     (collection?.client) &&
     (collection?.client?.platform) &&
-    (["discord"].includes(collection.client.platform) && numFuncs.myIsNumeric(cacheID)) ||
-    (["stoat"].includes(collection.client.platform) && cacheID.replaceAll(" ", "").toUpperCase() == cacheID)
+    (globalFuncs.isDiscord(collection.client) && numFuncs.myIsNumeric(cacheID)) ||
+    (globalFuncs.isFluxer(collection.client) && numFuncs.myIsNumeric(cacheID)) ||
+    (globalFuncs.isStoat(collection.client) && cacheID.replaceAll(" ", "").toUpperCase() == cacheID)
   ) {
     if (
       [
@@ -185,6 +187,17 @@ async function getCache(client, parent, cacheType, cacheTest) {
     }
   }
 
+  if (globalFuncs.isFluxer(client)) {
+    // console.log(
+    //   {
+    //     platform: client.platform,
+    //     cacheType,
+    //     cacheTest,
+    //     retKeys: ret ? Object.keys(ret) : ret
+    //   }
+    // )
+  }
+
   return ret
 }
 
@@ -201,9 +214,8 @@ async function getProp(client, parent, propName) {
 
   if (
     (!prop) &&
-    [
-      "stoat"
-    ].includes(client.platform)) {
+    globalFuncs.isStoat(client)
+  ) {
     propName = propName.replace("guild","server")
     switch(propName) {
       case "user":
@@ -212,6 +224,15 @@ async function getProp(client, parent, propName) {
     }
     if (parent[propName]) {
       prop = await parent[propName]
+    }
+  }
+
+  if (
+    (!prop) &&
+    globalFuncs.isFluxer(client)
+  ) {
+    if (propName == "guild") {
+      prop = await getCache(client, client, "guilds", parent.guildId)
     }
   }
 

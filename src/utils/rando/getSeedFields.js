@@ -114,6 +114,7 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
   }
 
   let sources = {}
+  let check = null
 
   for (let [sKey, sData] of Object.entries(rData["rando"]["fields"]["sources"])) {
     if (
@@ -176,9 +177,14 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
           "json"
         )
       }
-      check = sources[sKey][sData["check"]]
+      check = false
+      if (sources[sKey]) {
+        if (sources[sKey][sData["check"]]) {
+          check = sources[sKey][sData["check"]]
+        }
+      }
     }
-    if (!sources[sKey][sData["check"]]) {
+    if (!check) {
       // Hash Data not found
       return [
         [

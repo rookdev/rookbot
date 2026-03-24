@@ -171,8 +171,7 @@ class RookEmbed extends EmbedBuilder {
 
     if (avatars.thumbnail.avatar != "") {
       // Set thumbnail
-      if (avatars.thumbnail.avatar.trim() != "")
-      this.setThumbnail(avatars.thumbnail.avatar.trim())
+      // this.setThumbnail(avatars.thumbnail.avatar)
     }
 
     // console.log(avatars)

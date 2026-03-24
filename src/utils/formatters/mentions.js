@@ -1,4 +1,4 @@
-const { inlineCode, italic } = require('discord.js')
+const { inlineCode, italic, shouldUseGlobalFetchAndWebSocket } = require('discord.js')
 
 /*
 
@@ -92,21 +92,40 @@ function guildMention(gName, gID, opts={}) {
   return ret
 }
 function messageMention(tID, opts={}) {
+  let platform = "discord"
   let guildID = 0
   let chanID = 0
   let msgID = 0
+  let messageURL = ""
   if (typeof tID === "object") {
     guildID = tID.guildId
     chanID = tID.channelId
     msgID = tID.messageId
   } else if (typeof tID == "string") {
-    let matches = tID.match(/^(?:[\D]+)([\d]+)(?:[/])([\d]+)(?:[/])([\d]+)(?:[/]?)$/)
-    guildID = matches[1]
-    chanID = matches[2]
-    msgID = matches[3]
+    let matches = null
+    // Discord
+    matches = tID.match(/^(?:[\D]+)([\d]+)(?:[/])([\d]+)(?:[/])([\d]+)(?:[/]?)$/)
+    if (matches) { platform = "discord" }
+    if (!matches) {
+      // Stoat
+      matches = tID.match(/^(?:[\D]+)([^\/]+)(?:[\/])channel(?:[/])([^\/]+)(?:[/]?)([\d\w]+)$/)
+      if (matches) { platform = "stoat" }
+    }
+    if (matches) {
+      guildID = matches[1]
+      chanID = matches[2]
+      msgID = matches[3]
+      switch(platform) {
+        case "discord":
+          messageURL = `https://discord.com/channels/` + `${guildID}/${chanID}/${msgID}`
+          break
+        case "stoat":
+          messageURL = `https://stoat.chat/server/` + `${guildID}/channel/${chanID}/${msgID}`
+          break
+      }
+    }
   }
 
-  let messageURL = `https://discord.com/channels/` + `${guildID}/${chanID}/${msgID}`
   ret = messageURL
 
   if (opts.showID) {

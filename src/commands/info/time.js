@@ -13,7 +13,8 @@ module.exports = class TimeCommand extends RookCommand {
     let comprops = {
       name: "time",
       category: "info",
-      description: "Time"
+      description: "Time",
+      platforms: ["discord", "stoat"]
     }
     let props = {
       title: {

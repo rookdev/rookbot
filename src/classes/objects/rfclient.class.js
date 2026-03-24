@@ -1,4 +1,5 @@
-const { Client, GatewayDispatchEvents } = require('@discordjs/core')
+const { Client, Events } = require('@fluxerjs/core')
+const { GatewayDispatchEvents } = require('@discordjs/core')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 const getProfile = require('../../utils/client/getProfile')  // Get loaded Profile
 const fileFuncs = require('../../utils/fs/fileFuncs')
@@ -21,7 +22,8 @@ class RookFClient extends Client {
     // Platform
     this.platform     = "fluxer"
     // Client Events
-    this.eventNames   = Object.keys(GatewayDispatchEvents).map(k => k.lcfirst())
+    // this.eventNames   = Object.keys(GatewayDispatchEvents).map(k => k.lcfirst())
+    this.eventNames   = Object.values(Events)
     // Commands
     this.commands     = {}
     // Guild Object

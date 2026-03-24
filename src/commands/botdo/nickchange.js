@@ -6,6 +6,7 @@ const { changeNickname } = require('../../utils/guild/changeNickname')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 module.exports = class NickChangeCommand extends RookCommand {
   constructor(client, comprops, props) {
@@ -75,7 +76,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     this.props.entities = {
       caller: {
         name: user.displayName,
-        avatar: ["stoat"].includes(client.platform) ? await user.avatarURL : await user.displayAvatarURL({ size: 128 })
+        avatar: globalFuncs.isStoat(client) ? await user.avatarURL : await user.displayAvatarURL({ size: 128 })
       }
     }
 

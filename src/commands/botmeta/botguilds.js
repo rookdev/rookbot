@@ -6,6 +6,7 @@ const { ApplicationCommandOptionType, inlineCode, bold, userMention } = require(
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
 const AsciiTable = require('ascii-table') // Pretty-print to console
@@ -78,7 +79,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
     // Cycle through guilds
     for (let [guildID, guildData] of guilds.cache) {
       // Get Guild Owner
-      let owner = ["stoat"].includes(client.platform) ? await guildData.owner : await guildData.fetchOwner()
+      let owner = globalFuncs.isStoat(client) ? await guildData.owner : await guildData.fetchOwner()
       if (await this.getProp(client, owner, "user")) {
         owner = await this.getProp(client, owner, "user")
       }

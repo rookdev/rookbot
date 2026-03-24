@@ -4,6 +4,7 @@
 const { ChannelType, codeBlock, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 module.exports = class GuildCatsCommand extends RookCommand {
   constructor(client) {
@@ -13,7 +14,8 @@ module.exports = class GuildCatsCommand extends RookCommand {
       description: "Guild Categories",
       flags: {
         test: "basic"
-      }
+      },
+      platforms: ["discord", "stoat"]
     }
     let props = {
       title: {
@@ -45,7 +47,7 @@ module.exports = class GuildCatsCommand extends RookCommand {
 
     let channels = []
     let chanCache = interactionGuild.channels.cache
-    if (["stoat"].includes(client.platform)) {
+    if (globalFuncs.isStoat(client)) {
       chanCache = interactionGuild.categories
     }
     for (let [cID, channel] of chanCache) {

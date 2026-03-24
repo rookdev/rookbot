@@ -17,6 +17,7 @@ const {
 } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const AsciiTable = require('ascii-table') // Pretty-print to console
 
 module.exports = class BotActivityCommand extends BotDevCommand {

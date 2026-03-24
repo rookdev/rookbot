@@ -12,6 +12,7 @@ const fileFuncs = require('../../utils/fs/fileFuncs')
 
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const stringFuncs = require("../../utils/primitives/stringFuncs")
 const numFuncs = require("../../utils/primitives/numFuncs")
 const dbFuncs = require('../../utils/db/dbFuncs')
@@ -410,7 +411,7 @@ class RookCommand {
               id:     guild?.id,
               name:   guild?.name,
               url:    "http://example.com/guild",
-              avatar: await guild?.iconURL({ size: 128 })
+              avatar: globalFuncs.isStoat(client) ? "" : await guild?.iconURL({ size: 128 })
             }
           }
         }
@@ -578,7 +579,7 @@ class RookCommand {
         interaction?.user?.id
       )
 
-    if (["stoat"].includes(client.platform)) {
+    if (globalFuncs.isStoat(client)) {
       // console.log(interaction)
     }
 
@@ -595,11 +596,10 @@ class RookCommand {
           interaction?.user?.id ?? interaction.authorId
         )
         let userHasPermission = false
-        if ([
-          "stoat"
-        ].includes(client.platform)) {
+        if (globalFuncs.isStoat(client)) {
           userHasPermission = member?.hasPermission(this.userPermissions[0])
         } else {
+          // "discord"
           userHasPermission = member?.permissions?.has(this.userPermissions[0])
         }
         Table.addRow(
@@ -611,11 +611,10 @@ class RookCommand {
       if (this.botPermissions) {
         let clientMember = guild?.members.me
         let botHasPermission = false
-        if ([
-          "stoat"
-        ].includes(client.platform)) {
+        if (globalFuncs.isStoat(client)) {
           botHasPermission = clientMember?.hasPermission(this.botPermissions[0])
         } else {
+          // "discord"
           botHasPermission = clientMember?.permissions?.has(this.botPermissions[0])
         }
         Table.addRow(

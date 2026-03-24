@@ -3,7 +3,7 @@ const { Pagination } = require('pagination.djs')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const { RookPlain } = require('../../classes/embed/rplain.class')
 const { SlimEmbed } = require('../../classes/embed/rslimbed.class')
-const { setValue } = require("../../utils/primitives/globalFuncs")
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
 const getters = require('../../utils/guild/getters')
 
@@ -12,10 +12,10 @@ class RookMessage {
     this.client = client
     this.interaction = interaction ?? null
 
-    this.channelName  = setValue(mprops.channelName, "bot-console")
-    this.content      = setValue(mprops.content, "")
-    this.pages        = setValue(mprops.pages, [])
-    this.ephemeral    = setValue(mprops.ephemeral, false)
+    this.channelName  = globalFuncs.setValue(mprops.channelName, "bot-console")
+    this.content      = globalFuncs.setValue(mprops.content, "")
+    this.pages        = globalFuncs.setValue(mprops.pages, [])
+    this.ephemeral    = globalFuncs.setValue(mprops.ephemeral, false)
 
     this.name = "Message"
     this.messages = []
@@ -156,11 +156,7 @@ class RookMessage {
       hasDeferred = this.interaction?.deferred || await this.handle_deferrment()
     }
 
-    if (
-      [
-        "stoat"
-      ].includes(this.client.platform)
-    ) {
+    if (globalFuncs.isStoat(this.client)) {
       // let stoat_package = await this.makeStoat(this_package)
       // this_package = stoat_package
     }
@@ -211,11 +207,7 @@ class RookMessage {
       if (this.interaction?.channel) {
         this.messages.push(`/${this.name}: Sending to Interaction's Channel`)
         try {
-          if (
-            [
-              "stoat"
-            ].includes(this.client.platform)
-          ) {
+          if (globalFuncs.isStoat(this.client)) {
             let stoat_package = await this.makeStoat(this_package)
             this_package = stoat_package
           }
@@ -223,6 +215,9 @@ class RookMessage {
         } catch (err) {
           if (!["50035"].includes((err.code + ""))) {
             this.messages.push(err, err.stack)
+            if (globalFuncs.isFluxer(this.client)) {
+              this.messages.push(JSON.stringify(this_package))
+            }
           }
         }
       }
@@ -317,10 +312,9 @@ class RookMessage {
             id:     guild.id,
             name:   guild.name,
             url:    "http://example.com/guild",
-            avatar: [
-              "stoat"
-            ].includes(this.client.platform)
+            avatar: globalFuncs.isStoat(this.client)
             ? ""
+            // "discord"
             : await guild.iconURL({ size: 128 })
           }
         }
@@ -406,7 +400,7 @@ class RookMessage {
             (page?.plain) &&
             (page.plain)
           ) ||
-          (["stoat"].includes(this.client.platform))
+          (globalFuncs.isStoat(this.client))
         ) {
           msg += "plain   "
           this.pages[i] = await new RookPlain(this.client, page)
@@ -451,7 +445,17 @@ class RookMessage {
       // We're setting the footer to include the page number
       this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
       if (this?.interaction) {
-        if (typeof this.interaction !== "object") {
+        if (globalFuncs.isStoat(this.client)) {
+          this_package = []
+          for (let page of this.pages) {
+            this_package.push(
+              {
+                embeds: [ page ]
+              }
+            )
+          }
+        } else {
+          // "discord"
           let these_pagination = await new Pagination(this.interaction)
           // Set to all users for control
           these_pagination.setAuthorizedUsers([])
@@ -475,15 +479,6 @@ class RookMessage {
           this_package = {
             content: "** **",
             embeds: [ these_pagination ]
-          }
-        } else {
-          this_package = []
-          for (let page of this.pages) {
-            this_package.push(
-              {
-                embeds: [ page ]
-              }
-            )
           }
         }
       }
@@ -511,6 +506,14 @@ class RookMessage {
     let send_result = false
     if (!interaction_result) {
       try {
+        if (globalFuncs.isFluxer(this.client)) {
+          // console.log(
+          //   {
+          //     channelName: this.channel.name,
+          //     channelID: this.channel.id
+          //   }
+          // )
+        }
         let channelGuild = await this.getGuild(this.client, this.channel)
         this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)
         if (Array.isArray(this_package)) {
