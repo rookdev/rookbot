@@ -4,6 +4,7 @@ const { Message, hyperlink } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const getters = require('../../utils/guild/getters')
 const moment = require('moment')
@@ -36,6 +37,15 @@ module.exports = class LogEditedMessageEvent extends EventScript {
    */
   async action(client, oldMessage, newMessage) {
     // this.messages.push(`/${this.name}: Event Action`)
+
+    if (globalFuncs.isStoat(client)) {
+      console.log(
+        {
+          oldMessage,
+          newMessage
+        }
+      )
+    }
 
     // Check for invalid or undefined data
     if (!newMessage) {

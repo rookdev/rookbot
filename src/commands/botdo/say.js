@@ -366,7 +366,7 @@ module.exports = class SayCommand extends ModCommand {
 
     // Bot doesn't have perms SendMessages in channel
     let botChanPerms = false
-    if (globalFuncs.isStoat(client)) {
+    if (globalFuncs.isPlatforms(client, ["stoat","fluxer"])) {
       // FIXME: Just go, we ballin'
       botChanPerms = true
     } else {
@@ -382,7 +382,7 @@ module.exports = class SayCommand extends ModCommand {
 
     // User doesn't have perms ManageMessages in channel
     let userChanPerms = false
-    if (globalFuncs.isStoat(client)) {
+    if (globalFuncs.isPlatforms(client, ["stoat","fluxer"])) {
       // FIXME: Just go, we ballin'
       userChanPerms = true
     } else {

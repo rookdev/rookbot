@@ -2,6 +2,7 @@
 
 // We're gonna base this on Discord's EmbedBuilder
 const { EmbedBuilder } = require('discord.js')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
 
 class RookEmbed extends EmbedBuilder {
@@ -202,21 +203,21 @@ class RookEmbed extends EmbedBuilder {
     let footerDev = client.profile?.DEV && client.profile.DEV
     // Hack footer for PROD Mode
     if (!(footerDev || footerNone)) {
-      let profileFooterText = client.profile.footer?.text && client.profile.footer.text.trim() != "" ? client.profile.footer.text.trim() : ""
-      let profileFooterImage = client.profile.footer?.image && client.profile.footer.image.trim() != "" ? client.profile.footer.image.trim() : ""
+      let profileFooterText = client.profile.footer?.text && client.profile.footer.text != "" ? client.profile.footer.text : ""
+      let profileFooterImage = client.profile.footer?.image && client.profile.footer.image != "" ? client.profile.footer.image : ""
       if (!this.props?.footer) {
         this.props.footer = {
           text: "",
           image: ""
         }
       }
-      if (profileFooterText != "" && this.props.footer.text.trim() != "") {
-        this.props.footer.text = this.props.footer.text.trim() + " • " + profileFooterText
+      if (profileFooterText != "" && this.props.footer.text != "") {
+        this.props.footer.text = this.props.footer.text + " • " + profileFooterText
       } else {
         this.props.footer.text = profileFooterText
       }
-      if (profileFooterImage != "" && this.props.footer.image.trim() != "") {
-        this.props.footer.image = this.props.footer.image.trim() + " • " + profileFooterImage
+      if (profileFooterImage != "" && this.props.footer.image != "") {
+        this.props.footer.image = this.props.footer.image
       } else {
         this.props.footer.image = profileFooterImage
       }
@@ -341,9 +342,9 @@ class RookEmbed extends EmbedBuilder {
       }
 
       if (hasText || hasIcon) {
-        let footer = { text: this.props.footer.text.trim() }
+        let footer = { text: this.props.footer.text }
         if (this.props.footer?.image) {
-          footer.iconURL = this.props.footer.image.trim()
+          footer.iconURL = this.props.footer.image
         }
         this.setFooter(footer)
       }

@@ -975,6 +975,22 @@ class ModCommand extends AdminCommand {
             break
           }
         }
+      } else if (globalFuncs.isFluxer(client)) {
+        // hasRoles = await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))
+        let interactionGuild = await this.getGuild(client, interaction)
+        let interactionAuthor = await this.getProp(client, interaction, "author")
+        let interactionMember = await this.getCache(client, interactionGuild, "members", interactionAuthor.id)
+        if (interactionMember[0]) {
+          interactionMember = interactionMember[0]
+        }
+        let theseRoleIDs = interactionMember.roles.roleIds
+        for (let roleID of theseRoleIDs) {
+          let role = await this.getCache(client, interactionGuild, "roles", roleID)
+          if (APPROVED_ROLES.includes(role.name)) {
+            hasRoles = true
+            break
+          }
+        }
       } else {
         hasRoles = await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))
       }

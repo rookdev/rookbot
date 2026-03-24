@@ -11,7 +11,7 @@ async function searchCache(cacheType, collection, cacheID) {
     (collection?.client) &&
     (collection?.client?.platform) &&
     (globalFuncs.isDiscord(collection.client) && numFuncs.myIsNumeric(cacheID)) ||
-    (globalFuncs.isFluxer(collection.client) && numFuncs.myIsNumeric(cacheID)) ||
+    (globalFuncs.isFluxer(collection.client) && numFuncs.myIsNumeric(cacheID) && (cacheType != "roles")) ||
     (globalFuncs.isStoat(collection.client) && cacheID.replaceAll(" ", "").toUpperCase() == cacheID)
   ) {
     if (
@@ -25,10 +25,18 @@ async function searchCache(cacheType, collection, cacheID) {
       // Search for item by ID
       ret = await collection.fetch(cacheID)
     }
+  } else if (
+    (globalFuncs.isFluxer(collection.client) && numFuncs.myIsNumeric(cacheID) && (cacheType == "roles"))
+  ) {
+    ret = await collection.get(cacheID)
   } else if (typeof cacheID == "string") {
     // Search for item by Name
-    if (typeof collection.cache.find === "function") {
-      ret = await collection.cache.find(
+    let cache = collection?.cache
+    if (!cache) {
+      cache = collection
+    }
+    if (typeof cache.find === "function") {
+      ret = await cache.find(
         item => 
           item?.name === cacheID ||               // global
           item?.name === `:${cacheID}:` ||        // emoji
@@ -38,9 +46,9 @@ async function searchCache(cacheType, collection, cacheID) {
           item?.user?.tag === cacheID ||          // user
           item?.user?.username === cacheID        // user
       )
-    } else if (typeof collection.cache.get === "function") {
+    } else if (typeof cache.get === "function") {
       // Stoat
-      for (let [cKey, cVal] of collection.cache.entries()) {
+      for (let [cKey, cVal] of cache.entries()) {
         let cFound = false
         if (cVal?.name === cacheID)               { cFound = true }
         if (cVal?.name === `:${cacheID}`)         { cFound = true }
@@ -133,6 +141,16 @@ async function getCache(client, parent, cacheType, cacheTest) {
     if (!collection?.client) {
       collection.client = { platform: client.platform }
     }
+    if (globalFuncs.isFluxer(client)) {
+      console.log(
+        {
+          collection,
+          cache: collection.cache,
+          cacheType,
+          cacheID
+        }
+      )
+    }
     ret = await searchCache(cacheType, collection, cacheID)
   }
 
@@ -217,6 +235,12 @@ async function getProp(client, parent, propName) {
     globalFuncs.isStoat(client)
   ) {
     propName = propName.replace("guild","server")
+  }
+
+  if (
+    (!prop) &&
+    globalFuncs.isPlatforms(client, ["stoat", "fluxer"])
+  ) {
     switch(propName) {
       case "user":
         propName = "author"
