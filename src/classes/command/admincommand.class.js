@@ -54,7 +54,7 @@ class AdminCommand extends RookCommand {
 
   // Build the response
   async build(client, interaction, coptions={}) {
-    this.messages.push(`/${this.name}: Admin Build`)
+    // this.messages.push(`/${this.name}: Admin Build`)
     if (interaction) {
       // Get list of roles
       // DB

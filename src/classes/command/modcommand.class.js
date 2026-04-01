@@ -932,7 +932,7 @@ class ModCommand extends AdminCommand {
   }
 
   async build(client, interaction, coptions={}) {
-    this.messages.push(`/${this.name}: Mod Build`)
+    // this.messages.push(`/${this.name}: Mod Build`)
 
     // Get list of roles
     // DB

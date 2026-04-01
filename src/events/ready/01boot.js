@@ -4,7 +4,7 @@ module.exports = async (client) => {
   let result = false
   let messages = []
   
-  messages.push(JSON.stringify(emojis))
+  // messages.push(JSON.stringify(emojis))
 
   return [result, messages]
 }

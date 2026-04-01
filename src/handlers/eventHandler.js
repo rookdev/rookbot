@@ -7,7 +7,7 @@ const moment = require('moment')
 const path = require('path')                       // Easy filepath management
 
 module.exports = (client) => {
-  console.log(`${client.platform} Events`)
+  console.log(`${client.profile.emojis[client.platform]} ${client.platform.ucfirst()} Events`)
   // Get all folders in ./events
   const eventFolders = fileFuncs.getAllFiles(
     [
@@ -83,6 +83,7 @@ module.exports = (client) => {
               if (eventObject?.name) {
                 if (eventObject.name.includes("Event")) {
                   // Handle OOP
+                  // console.log(`  ${eventObject.name}`)
                   let evt = new eventObject(client)
                   let result = await evt.execute(client, ...args)
                   handled = true

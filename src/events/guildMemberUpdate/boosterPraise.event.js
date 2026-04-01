@@ -126,7 +126,7 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           }
         }
 
-        let boostChannel = await this.getChannel(client, guild, ["logging-boosts", "logging"])
+        let boostChannel = await this.getChannel(client, guild, [ "logging-boosts", "logging" ])
         let boostMessage = await new RookMessage(
           client,
           null,

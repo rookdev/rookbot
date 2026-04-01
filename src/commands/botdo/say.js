@@ -735,7 +735,7 @@ module.exports = class SayCommand extends ModCommand {
       // Append the log entry to the file
       fs.appendFileSync(logFilePath, logEntry.join("\n") + "\n", "utf8")
 
-      let logsChannel = await this.getChannel(client, interaction, "logging-say")
+      let logsChannel = await this.getChannel(client, interaction, [ "logging-say", "logging" ])
       if (logsChannel) {
         logsChannel.send({ embeds: [ embeds.mod ] })
       }

@@ -642,7 +642,7 @@ class RookCommand {
       this.messages.push(Table.toString())
     }
 
-    this.messages.push(`/${this.name}: Rook Execute`)
+    // this.messages.push(`/${this.name}: Rook Execute`)
 
     // If there's no channel defined, try to get it
     if (!this.channel) {

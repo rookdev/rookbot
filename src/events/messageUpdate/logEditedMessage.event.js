@@ -95,7 +95,7 @@ module.exports = class LogEditedMessageEvent extends EventScript {
       try {
         newMessage = await newMessage.fetch()
       } catch (err) {
-        console.error(`${client.profile.emojis.fail} Failed to fetch new message:`, err)
+        this.messages.push(`${client.profile.emojis.fail} Failed to fetch new message:`, err)
         return false
       }
     }

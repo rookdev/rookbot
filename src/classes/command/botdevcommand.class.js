@@ -54,7 +54,7 @@ class BotDevCommand extends AdminCommand {
 
   // Build the response
   async build(client, interaction, coptions={}) {
-    this.messages.push(`/${this.name}: BotDev Build`)
+    // this.messages.push(`/${this.name}: BotDev Build`)
     if (interaction) {
       // Get list of roles
       // DB

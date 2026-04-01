@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fileFuncs = require('../fs/fileFuncs')
+const numFuncs = require('../../utils/primitives/numFuncs')
 const fs = require('fs')
 
 function createClient() {
@@ -59,13 +60,26 @@ async function getDB(cName, dName, platform="discord", source="mongodb") {
         let rec_name = dName
 
         if (db) {
+          // console.log(`Got DB: ${db_name}`)
           let coll = db.collection(coll_name)
           if (coll) {
+            // console.log(`Got Coll: ${coll_name}`)
             let docs = await coll.find().toArray()
             if (docs) {
+              // console.log(`Got Docs`)
               let gName = ""
               for await (let doc of docs) {
-                gName = doc._gname
+                // console.log(`Got Doc`)
+                gName = doc?._gname
+                // console.log(
+                //   {
+                //     cName,
+                //     dName,
+                //     platform,
+                //     source,
+                //     gName: doc?._gname,
+                //   }
+                // )
                 if (doc?._platform == platform) {
                   if (rec_name) {
                     rec = doc[rec_name]
@@ -73,6 +87,11 @@ async function getDB(cName, dName, platform="discord", source="mongodb") {
                     dName = "<list>"
                     rec = Object.keys(doc).filter(k=>!k.startsWith("_"))
                   }
+                } else if (
+                  (!doc?._platform) &&
+                  (!numFuncs.myIsNumeric(rec_name))
+                ) {
+                  rec = doc[rec_name]
                 }
               }
               if (rec) {

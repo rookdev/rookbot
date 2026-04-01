@@ -4,6 +4,7 @@ const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const { setValue } = require("../../utils/primitives/globalFuncs")
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
@@ -145,8 +146,8 @@ class EventScript {
     this.messages.push(msg)
   }
 
-  async action(client, args) {
-    // this.messages.push(`/${this.name}: Event Action`)
+  async action(client, ...args) {
+    this.messages.push(`/${this.name}: Event Action`)
     this.messages.push(`Action Args: ${JSON.stringify(Object.keys(newMember))}`)
   }
 
@@ -182,7 +183,9 @@ class EventScript {
   }
 
   async execute(client, ...args) {
-    if (!this.platforms.includes(client)) {
+    if (!globalFuncs.isPlatforms(client, this.platforms)) {
+      this.messages.push(`${this.name}: NYI for ${client.platform.ucfirst()} ${client.profile.emojis[client.platform]}`)
+      this.printMessages(client)
       return 
     }
     // this.messages.push(`/${this.name}: Event Execute`)
