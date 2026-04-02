@@ -412,7 +412,8 @@ class RookMessage {
         msg += '/'
         msg += ((this.pages.length)+"").padStart(2,'0')
         msg += "..."
-        let title = page?.caption?.text ?? page?.title?.text ?? ""
+        let title = page?.caption?.emoji ?? page?.title?.emoji ?? ""
+        title += page?.caption?.text ?? page?.title?.text ?? ""
         msg += `[${title}]`
         this.messages.push(msg)
         i += 1

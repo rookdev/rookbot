@@ -38,6 +38,12 @@ module.exports = class LogNameChangeEvent extends EventScript {
   async action(client, oldMember, newMember) {
     // this.messages.push(`/${this.name}: Event Action`)
 
+    if ([
+      "272937604339466240" // Craig: http://craig.chat
+    ].includes(oldMember.id)) {
+      return
+    }
+
     if (oldMember.nickname === newMember.nickname) {
       // this.messages.push(`${client.profile.emojis.warning} No nickname change detected for ${mentionFuncs.userMention(newMember.user.id, { showID: true, oneLine: true, textOnly: true })}`)
       return

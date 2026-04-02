@@ -172,7 +172,12 @@ class RookEmbed extends EmbedBuilder {
 
     if (avatars.thumbnail.avatar != "") {
       // Set thumbnail
-      // this.setThumbnail(avatars.thumbnail.avatar)
+      if (
+        (avatars.thumbnail.avatar) &&
+        (typeof avatars.thumbnail.avatar == "string")
+      ) {
+        this.setThumbnail(avatars.thumbnail.avatar)
+      }
     }
 
     // console.log(avatars)
