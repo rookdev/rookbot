@@ -393,7 +393,11 @@ class SalutationCommand extends RookCommand {
           ]
         }
       }
+      let sentGuilds = []
       for (let [guildID, guildData] of guildsCache) {
+        if (sentGuilds.contains(guildID)) {
+          continue
+        }
         // Get Client User
         let clientMember = null
         if (user) {
@@ -508,9 +512,7 @@ class SalutationCommand extends RookCommand {
           )
           let sendResult = await helloMsg.execute()
           if (sendResult) {
-            // Set up package
-            let this_package = { embeds: this.pages }
-
+            sentGuilds.push(guildID)
             let channelGuild = await this.getGuild(client, channel)
             if (
               channel &&
