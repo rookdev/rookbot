@@ -395,7 +395,7 @@ class SalutationCommand extends RookCommand {
       }
       let sentGuilds = []
       for (let [guildID, guildData] of guildsCache) {
-        if (sentGuilds.contains(guildID)) {
+        if (sentGuilds.includes(guildID)) {
           continue
         }
         // Get Client User
