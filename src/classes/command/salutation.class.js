@@ -513,6 +513,7 @@ class SalutationCommand extends RookCommand {
           let sendResult = await helloMsg.execute()
           if (sendResult) {
             sentGuilds.push(guildID)
+            this.null = true
             let channelGuild = await this.getGuild(client, channel)
             if (
               channel &&
