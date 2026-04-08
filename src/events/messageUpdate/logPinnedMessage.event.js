@@ -151,6 +151,11 @@ module.exports = class LogPinnedMessageEvent extends EventScript {
       ]
     )
     if (pinner && pinner?.id) {
+      if ([
+        "1218450020118822912"  // Trident Esports Carl-bot
+      ].includes(pinner.id)) {
+        return false
+      }
       logPlayers.user = {
         name: pinner.displayName,
         avatar: await pinner.displayAvatarURL({ size: 128 })
@@ -235,7 +240,7 @@ module.exports = class LogPinnedMessageEvent extends EventScript {
     )
 
     let logProps = {
-      color: client.profile.colors.bad,
+      color: client.profile.colors.info,
       title: {
         text: '[Log] Message Pinned',
         emoji: "📌"

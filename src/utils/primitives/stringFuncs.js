@@ -5,6 +5,11 @@ const {
   underline
 } = require('discord.js')
 
+// Add contains() to String as alias for includes()
+String.prototype.contains = function(searchString="", position=0) {
+  return this.includes(searchString, position)
+}
+
 // Add ucfirst() to String
 String.prototype.ucfirst = function() {
   return this.charAt(0).toUpperCase() + this.slice(1)

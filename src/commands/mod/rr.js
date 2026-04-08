@@ -9,6 +9,7 @@ const { ModCommand } = require('../../classes/command/modcommand.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 const memberFuncs = require('../../utils/formatters/mentions')
+const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
@@ -54,7 +55,7 @@ module.exports = class ReactionRolesCommand extends ModCommand {
     for (let [msgID, msgData] of Object.entries(rrs)) {
       this.props = {}
       this.props.description = []
-      if (msgID.indexOf("#") > -1) {
+      if (msgID.contains("#")) {
         continue 
       } else {
         for (let [emojiName, roleData] of Object.entries(msgData)) {

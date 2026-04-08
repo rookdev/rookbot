@@ -1,3 +1,9 @@
+// Add contains() to Array as alias for includes
+Array.prototype.contains = function(searchElement="", fromIndex=0) {
+  return this.includes(searchElement, fromIndex)
+}
+
+// Check if a value is empty
 const empty = (data) => {
   // Check if data is a number or boolean, and return false as they're never considered empty
   if (typeof data === 'number' || typeof data === 'boolean') {

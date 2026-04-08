@@ -135,6 +135,10 @@ const manageRoles = async (client, reaction, user, mode="add", logging=false) =>
                 emoji: "🏷️"
               },
               entities: {
+                guild: {
+                  name: guild.name,
+                  avatar: await guild.iconURL({ size: 128 })
+                },
                 target: {
                   name: guildMember.user.displayName,
                   avatar: await guildMember.user.displayAvatarURL({ size: 128 })

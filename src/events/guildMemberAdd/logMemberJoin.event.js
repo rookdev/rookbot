@@ -107,14 +107,6 @@ module.exports = class LogMemberJoinEvent extends EventScript {
               { showID: true }
             )
           }
-        ],
-        [
-          {
-            name: "Member Role?",
-            value: await newMember.roles.cache.map(r=>r.name).includes("Member")
-              ? client.profile.emojis.check
-              : client.profile.emojis.nocheck
-          }
         ]
       ]
     }
