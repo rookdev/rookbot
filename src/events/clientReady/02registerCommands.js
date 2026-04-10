@@ -128,7 +128,7 @@ async function registerCommand(
           helpDoc[cmdParts.category][cmdParts.name] = buildCommandHelp(cmdParts, "edited")
         } else {
           // Failed to edit
-          messages.push(`${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message)
+          messages.push(`${client.profile.emojis.fail} Failed to edit: "${cmdParts.name}":`, error.message, JSON.stringify(cmdParts))
         }
       }
     } else {
@@ -248,13 +248,25 @@ module.exports = async (client) => {
           if (cmdParts?.options && cmdParts.options.length > 0) {
             for (let i in cmdParts.options) {
               let option = cmdParts.options[i]
-              if (alias?.options) {
-                if (!Object.keys(alias?.options).includes(option.name)) {
-                  newOptions.push(option)
+              if (typeof option == "object") {
+                if (alias?.options) {
+                  if (!Object.keys(alias?.options).includes(option.name)) {
+                    newOptions.push(option)
+                  }
                 }
               }
             }
           }
+
+          // messages.push(
+          //   JSON.stringify(
+          //     {
+          //       cmdName: parentName,
+          //       alias: alias?.name,
+          //       options: newOptions
+          //     }
+          //   )
+          // )
 
           cmdParts.options = newOptions
           cmdParts.parent = parentName

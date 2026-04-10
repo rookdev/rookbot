@@ -28,10 +28,10 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
       # install python
       - name: 💿Install Python
-        uses: actions/setup-python@v6.1.0
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
       # python version
@@ -48,7 +48,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       # install node
       - name: 💿Install Node
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version: "24.12.0"
       # disable funding message
