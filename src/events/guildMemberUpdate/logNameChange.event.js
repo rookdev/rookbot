@@ -7,7 +7,6 @@ const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const moment = require('moment')
-const { filesystem } = require('locutus/php')
 
 /**
  * @class

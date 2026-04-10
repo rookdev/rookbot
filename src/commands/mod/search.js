@@ -21,7 +21,6 @@ const {
 const { ModCommand } = require('../../classes/command/modcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const timeFormat = require('../../utils/formatters/timeFormat')
-const strtotime = require('locutus/php/datetime/strtotime')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 

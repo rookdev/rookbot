@@ -9,7 +9,6 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
 const moment = require('moment')
-const { filesystem } = require('locutus/php')
 
 /**
  * @class
