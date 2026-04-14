@@ -112,7 +112,8 @@ module.exports = class EditVoiceChannelEvent extends EventScript {
       this.messages.push(`${client.profile.emojis.warning} No new channel in ${mentionFuncs.guildMention(newChannel.guild.name, newChannel.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
     }
     if (!newChannel.isVoiceBased()) {
-      this.messages.push(`${client.profile.emojis.warning} ${mentionFuncs.channelMention(newChannel.id, { showID: true, oneLine: true, textOnly: true })} of ${mentionFuncs.guildMention(newChannel.guild.name, newChannel.guild.id, { showID: true, oneLine: true, textOnly: true })} is not a Voice-based channel`)
+      // this.messages.push(`${client.profile.emojis.warning} ${mentionFuncs.channelMention(newChannel.id, { showID: true, oneLine: true, textOnly: true })} of ${mentionFuncs.guildMention(newChannel.guild.name, newChannel.guild.id, { showID: true, oneLine: true, textOnly: true })} is not a Voice-based channel`)
+      return false
     }
 
     let oldName = newChannel.name

@@ -83,6 +83,10 @@ module.exports = class BotActivityCommand extends BotDevCommand {
   }
 
   async action(client, interaction, coptions) {
+    this.props.title = {
+      text: "Bot Activity"
+    }
+
     // Default supported activities
     let activityNames = [
       "playing",

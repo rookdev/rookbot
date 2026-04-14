@@ -7,7 +7,7 @@ import fs from 'fs'
 let PACKAGE = JSON.parse(fs.readFileSync("./package.json", "utf8"))
 
 let data = {}
-for(let module of [ "node", "npm", "discord.js" ]) {
+for(let module of [ "node", "npm", "discord.js", "stoat.js", "fluxerjs" ]) {
   data[module] = {}
   data[module].current = ""
   let current = ""
