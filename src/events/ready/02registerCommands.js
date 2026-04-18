@@ -1,5 +1,4 @@
 const getLocalCommands = require('../../utils/client/getLocalCommands')
-const getters = require('../../utils/guild/getters')
 
 async function extractCommand(command) {
   let {

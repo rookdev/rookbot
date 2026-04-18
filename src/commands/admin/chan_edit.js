@@ -15,7 +15,7 @@ const mentionFuncs = require('../../utils/formatters/mentions')
 module.exports = class ChannelEditCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      name: "chanedit",
+      name: "chan_edit",
       category: "admin",
       description: "Edit a Channel",
       options: [

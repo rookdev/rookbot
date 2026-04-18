@@ -398,6 +398,14 @@ module.exports = class MentionCommand extends RookCommand {
             specs = {
               name: role?.name,
               url: await role?.iconURL({ size: 128 }),
+              color: role?.colors ? 
+                codeBlock(
+                  Object.values(role.colors)
+                    .filter(v => v)
+                    .map(v => ("#" + v.toString(16).toUpperCase()))
+                    .join(", ")
+                ) :
+                "",
               hoisted: role?.hoist ?
                 (
                   role.hoist ?
@@ -708,6 +716,11 @@ module.exports = class MentionCommand extends RookCommand {
                 : ""
               )
               : ""
+          },
+          // Color
+          {
+            name: "Color",
+            value: specs?.color
           },
           // Hoisted
           {
