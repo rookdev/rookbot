@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const { Message, hyperlink } = require('discord.js')
+const { Message, hyperlink, italic } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const mentionFuncs = require('../../utils/formatters/mentions')

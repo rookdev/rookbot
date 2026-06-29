@@ -37,49 +37,62 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
     let guild = await this.getProp(client, newInvite, "guild")
     let createdDateTime = moment.utc(newInvite.createdTimestamp)
     let expiresDateTime = newInvite.expiresTimestamp ? moment.utc(newInvite.expiresTimestamp) : null
-    let logProps = {
-      color: client.profile.colors.info,
-      title: {
-        text: "[Log] Invite Created",
-        emoji: "✉️"
-      },
-      entities: {
-        user: {
-          name: newInvite.inviter.displayName,
-          avatar: await newInvite.inviter.displayAvatarURL( { size: 128 } )
-        },
-        target: {
-          name: guild.name,
-          avatar: await guild.iconURL( { size: 128 } )
+    let logProps = {}
+    logProps.color = client.profile.colors.info
+    logProps.title = {
+      text: "[Log] Invite Created",
+      emoji: "✉️"
+    }
+    logProps.entities = {
+      target: {
+        name: guild.name,
+        avatar: await guild.iconURL( { size: 128 })
+      }
+    }
+    if (newInvite.inviter) {
+      logProps.entities.user = {
+        name: newInvite.inviter.displayName,
+        avatar: await newInvite.inviter.displayAvatarURL( { size: 128 } )
+      }
+    }
+    logProps.playerTypes = {
+      user: "user",
+      target: "target"
+    }
+
+    // Fields
+    // Expires At
+    logProps.fields.push(
+      [
+        {
+          name: "Expires At",
+          value: expiresDateTime
+            ? timeFormat(
+                expiresDateTime.format("x"),
+                { with: "relative" }
+              )
+            : 'Unknown'
         }
-      },
-      playerTypes: {
-        user: "user",
-        target: "target"
-      },
-      fields: [
-        [
-          {
-            name: "Expires At",
-            value: expiresDateTime
-              ? timeFormat(
-                  expiresDateTime.format("x"),
-                  { with: "relative" }
-                )
-              : 'Unknown'
-          }
-        ],
-        [
-          {
-            name: "Created At",
-            value: createdDateTime
-              ? timeFormat(
-                  createdDateTime.format("x"),
-                  { with: "relative" }
-                )
-              : 'Unknown'
-          }
-        ],
+      ]
+    )
+    // Created At
+    logProps.fields.push(
+      [
+        {
+          name: "Created At",
+          value: createdDateTime
+            ? timeFormat(
+                createdDateTime.format("x"),
+                { with: "relative" }
+              )
+            : 'Unknown'
+        }
+      ]
+    )
+
+    // Inviter Link
+    if (newInvite.inviter) {
+      logProps.fields.push(
         [
           {
             name: "Inviter Link",
@@ -88,7 +101,10 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
               `https://discord.com/users/${newInvite.inviter.id}`
             )
           }
-        ],
+        ]
+      )
+      // Inviter Mention
+      logProps.fields.push(
         [
           {
             name: "Inviter Mention",
@@ -97,79 +113,102 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
               { showID: true }
             )
           }
-        ],
-        [
-          {
-            name: "Guild",
-            value: mentionFuncs.guildMention(
-              guild.name,
-              guild.id,
-              { showID: true }
-            )
-          }
-        ],
-        [
-          {
-            name: "Channel",
-            value: mentionFuncs.channelMention(
-              newInvite.channelId,
-              { showID: true }
-            )
-          }
-        ],
-        [
-          {
-            name: "Code",
-            value: codeBlock(newInvite.code)
-          }
-        ],
-        [
-          {
-            name: "Type",
-            value: InviteType[newInvite.type]
-          }
         ]
-        [
-          {
-            name: "Max Age",
-            value: newInvite.maxAge
-          },
-          {
-            name: "Max Uses",
-            value: newInvite.maxUses
-          },
-          {
-            name: "Used Uses",
-            value: newInvite.uses
-          }
-        ],
-        [
-          {
-            name: "Member Count",
-            value: newInvite.memberCount
-          },
-          {
-            name: "Presence Count",
-            value: newInvite.presenceCount
-          },
-          {
-            name: "Temp Membership",
-            value: newInvite.temporary
-              ? client.profile.emojis[
-                (
-                  (
-                    newInvite.temporary
-                      ? ""
-                      : "no"
-                  )
-                  + "check"
-                )
-              ]
-              : ""
-          }
-        ]
-      ]
+      )
     }
+
+    // Guild
+    logProps.fields.push(
+      [
+        {
+          name: "Guild",
+          value: mentionFuncs.guildMention(
+            guild.name,
+            guild.id,
+            { showID: true }
+          )
+        }
+      ]
+    )
+    // Channel
+    logProps.fields.push(
+      [
+        {
+          name: "Channel",
+          value: mentionFuncs.channelMention(
+            newInvite.channelId,
+            { showID: true }
+          )
+        }
+      ]
+    )
+    // Code
+    logProps.fields.push(
+      [
+        {
+          name: "Code",
+          value: codeBlock(newInvite.code)
+        }
+      ]
+    )
+    // Type
+    logProps.fields.push(
+      [
+        {
+          name: "Type",
+          value: InviteType[newInvite.type]
+        }
+      ]
+    )
+    // Max Age
+    // Max Uses
+    // Used Uses
+    logProps.fields.push(
+      [
+        {
+          name: "Max Age",
+          value: newInvite.maxAge
+        },
+        {
+          name: "Max Uses",
+          value: newInvite.maxUses
+        },
+        {
+          name: "Used Uses",
+          value: newInvite.uses
+        }
+      ]
+    )
+    // Member Count
+    // Presence Count
+    // Temp Membership
+    logProps.fields.push(
+      [
+        {
+          name: "Member Count",
+          value: newInvite.memberCount
+        },
+        {
+          name: "Presence Count",
+          value: newInvite.presenceCount
+        },
+        {
+          name: "Temp Membership",
+          value: newInvite.temporary
+            ? client.profile.emojis[
+              (
+                (
+                  newInvite.temporary
+                    ? ""
+                    : "no"
+                )
+                + "check"
+              )
+            ]
+            : ""
+        }
+      ]
+    )
 
     // client
     // guild
@@ -182,16 +221,20 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
       logProps
     )
 
-    let logLines = [
-      `User:     ${newInvite.inviter.tag} (ID: ${newInvite.inviter.id})`,
-      `Guild:    ${guild.name} (ID: ${guild.id})`,
-      `Channel:  ${newInvite.channel.name} (ID: ${newInvite.channel.id})`,
-      `Expires:  ${expiresDateTime}`,
-      `Code:     ${newInvite.code}`,
-      `Max Age:  ${newInvite.maxAge}`,
-      `Max Uses: ${newInvite.maxUses}`,
-      `Type:     ${InviteType[newInvite.type]}`
-    ]
+    let logLines = []
+    if (newInvite.inviter) {
+      logLines.push(
+        `User:     ${newInvite.inviter.tag} (ID: ${newInvite.inviter.id})`
+      )
+    }
+
+    logLines.push(`Guild:    ${guild.name} (ID: ${guild.id})`)
+    logLines.push(`Channel:  ${newInvite.channel.name} (ID: ${newInvite.channel.id})`)
+    logLines.push(`Expires:  ${expiresDateTime}`)
+    logLines.push(`Code:     ${newInvite.code}`)
+    logLines.push(`Max Age:  ${newInvite.maxAge}`)
+    logLines.push(`Max Uses: ${newInvite.maxUses}`)
+    logLines.push(`Type:     ${InviteType[newInvite.type]}`)
     // client
     // data
     // <region><this>.log
@@ -206,7 +249,7 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
       "✉️",
       {
         guild: guild.name,
-        member: newInvite.inviter.tag,
+        member: newInvite?.inviter?.tag,
         expires: expiresDateTime,
         channel: newInvite.channel.name,
         code: newInvite.code,
