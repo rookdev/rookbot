@@ -71,6 +71,11 @@ module.exports = class SayCommand extends ModCommand {
           type: ApplicationCommandOptionType.String
         },
         {
+          name: "reply-message",
+          description: "Reply Message URL",
+          type: ApplicationCommandOptionType.String
+        },
+        {
           name: "attachment-message",
           description: "Upload a JSON file with an embed",
           type: ApplicationCommandOptionType.Attachment
@@ -327,6 +332,8 @@ module.exports = class SayCommand extends ModCommand {
     let destMessageURL = coptions["destination-message"] ?? null
     // Get Src Message
     let sourceMessageURL = coptions["source-message"] ?? null
+    // Get Reply Message
+    let replyMessageURL = coptions["reply-message"] ?? null
     // Get Attachment Data
     let attachment = interaction?.options ? interaction.options.getAttachment("attachment-message") : null
     // Get Visage
@@ -336,6 +343,7 @@ module.exports = class SayCommand extends ModCommand {
     let rookhook = null     // Bucket for rookhook webhook
     let srcMessage = null   // Bucket for source message
     let destMessage = null  // Bucket for destination message
+    let replyMessage = null // Bucket for reply message
 
     let messages = []
 
@@ -345,6 +353,8 @@ module.exports = class SayCommand extends ModCommand {
     //  Edit, Clone
     // If destination-message
     //  Edit, Clone
+    // If reply-message
+    //  Reply
     // If no source-message
     //  Say, Edit
     // If no destination-message
@@ -447,6 +457,20 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
 
+      if (replyMessageURL) {
+        replyMessage = await this.getMessage(client, replyMessageURL)
+        // Reply Message not found
+        if (!replyMessage) {
+          this.error = true
+          this.props.description = `${mode.ucfirst()} Mode: Couldn't load Reply Message ID '${replyMessageURL}'`
+          return false
+        } else if (visage) {
+          this.error = true
+          this.props.description = `${mode.ucfirst()} Mode: Visages can't reply`
+          return false
+        }
+      }
+
       if (sourceMessageURL || destMessageURL) {
         mode = "edit"
         if (!destMessageURL) {
@@ -454,6 +478,9 @@ module.exports = class SayCommand extends ModCommand {
         }
       } else {
         mode = "say"
+        if (replyMessageURL) {
+          mode = "reply"
+        }
       }
       // this.messages.push(`${mode.ucfirst()}: Detected`)
 
@@ -540,6 +567,9 @@ module.exports = class SayCommand extends ModCommand {
         }
       } else {
         mode = "say"
+        if (replyMessage) {
+          mode = "reply"
+        }
       }
       // this.messages.push(`${mode.ucfirst()}: Decided`)
 
@@ -561,6 +591,10 @@ module.exports = class SayCommand extends ModCommand {
           case "say":
           case "clone":
             destMessage = await channel.send(message)
+            result = destMessage
+            break
+          case "reply":
+            destMessage = await replyMessage.reply(message)
             result = destMessage
             break
           case "edit":
@@ -615,71 +649,98 @@ module.exports = class SayCommand extends ModCommand {
 
       // Get the posted time
       let resultDateTime = moment.utc(result.createdTimestamp)
-      props.mod = {
-        fields: [
-          [
-            // Posted Time
-            {
-              name: "Time",
-              value: timeFormat(resultDateTime.format("x"), { with: "relative" })
-            }
-          ],
-          [
-            // Whodunnit?
-            {
-              name: "User",
-              value: mentionFuncs.userMention(interactionAuthor.id, { showID: true })
-            }
-          ],
-          [
-            // Mode
-            {
-              name: "Mode",
-              value: mode.ucfirst()
-            }
-          ],
-          [
-            // Visage
-            {
-              name: "Visage",
-              value: visage
-            }
-          ],
-          [
-            // Sent in what Guild?
-            {
-              name: "Guild",
-              value: mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true })
-            },
-            // Sent to what Channel?
-            {
-              name: "Channel",
-              value: mentionFuncs.channelMention(result.channel.id, { showID: true })
-            }
-          ],
-          [
-            // Message Link
-            {
-              name: "Message",
-              value: mentionFuncs.messageMention(result.url, { showID: true })
-            }
-          ],
-          [
-            // Message Content
-            {
-              name: "Content",
-              value: typeof message == "string" ? message.slice(0,1024) : ""
-            }
-          ],
-          [
-            // Region
-            {
-              name: "Region",
-              value: region
-            }
-          ]
+      props.mod = {}
+      props.mod.fields = []
+      props.mod.fields.push(
+        [
+          // Posted Time
+          {
+            name: "Time",
+            value: timeFormat(resultDateTime.format("x"), { with: "relative" })
+          }
         ]
+      )
+      props.mod.fields.push(
+        [
+          // Whodunnit?
+          {
+            name: "User",
+            value: mentionFuncs.userMention(interactionAuthor.id, { showID: true })
+          }
+        ]
+      )
+      props.mod.fields.push(
+        [
+          // Mode
+          {
+            name: "Mode",
+            value: mode.ucfirst()
+          }
+        ]
+      )
+      props.mod.fields.push(
+        [
+          // Visage
+          {
+            name: "Visage",
+            value: visage
+          }
+        ]
+      )
+      let fieldRow = [
+        // Sent in what Guild?
+        {
+          name: "Guild",
+          value: mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true })
+        }
+      ]
+      if (mode == "reply") {
+        fieldRow.push(
+          // Replied to what Message?
+          {
+            name: "ReplyTo",
+            value: mentionFuncs.messageMention(replyMessage.url, { showID: true })
+          }
+        )
+      } else {
+        fieldRow.push(
+          // Sent to what Channel?
+          {
+            name: "Channel",
+            value: mentionFuncs.channelMention(result.channel.id, { showID: true })
+          }
+        )
       }
+      props.mod.fields.push(fieldRow)
+
+      props.mod.fields.push(
+        [
+          // Message Link
+          {
+            name: "Message",
+            value: mentionFuncs.messageMention(result.url, { showID: true })
+          }
+        ]
+      )
+      props.mod.fields.push(
+        [
+          // Message Content
+          {
+            name: "Content",
+            value: typeof message == "string" ? message.slice(0,1024) : ""
+          }
+        ]
+      )
+      props.mod.fields.push(
+        [
+          // Region
+          {
+            name: "Region",
+            value: region
+          }
+        ]
+      )
+
       if (visage && visages && visages[visage]) {
         props.mod.playerTypes = {
           user: "user",
