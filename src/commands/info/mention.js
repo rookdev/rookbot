@@ -59,6 +59,11 @@ module.exports = class MentionCommand extends RookCommand {
           type: ApplicationCommandOptionType.String
         },
         {
+          name: "message-url",
+          description: "Message URL",
+          type: ApplicationCommandOptionType.String
+        },
+        {
           name: "target-type",
           description: "Target Type",
           type: ApplicationCommandOptionType.String,
@@ -124,6 +129,57 @@ module.exports = class MentionCommand extends RookCommand {
 
   // declare props: import('../../types/embed').EmbedProps
 
+  async getMessage(client=null, messageURL="") {
+    let message = null
+
+    if (!client) {
+      // this.messages.push("No client sent")
+      return false
+    }
+
+    if (!messageURL || (messageURL == "")) {
+      // this.messages.push("No message URL sent")
+      return false
+    }
+
+    let matches = messageURL.match(/^(?:[\D]+)([\d]+)(?:[/])([\d]+)(?:[/])([\d]+)(?:[/]?)$/)
+    // Couldn't identify message
+    if (!matches || (matches.length < 4)) {
+      this.error = true
+      this.props.description = `Couldn't identify message: '${messageURL}'`
+      return false
+    }
+
+    // Try to locate message
+    let [ _, guildID, channelID, messageID ] = matches
+
+    const guild = await this.getCache(client, client, "guilds", guildID)
+    // Guild not found
+    if (!guild) {
+      this.error = true
+      this.props.description = `Couldn't load Guild ID '${guildID}'`
+      return false
+    }
+
+    const channel = await this.getCache(client, guild, "channels", channelID)
+    // Channel not found
+    if (!channel) {
+      this.error = true
+      this.props.description = `Couldn't load Channel ID '${channelID}'`
+      return false
+    }
+
+    message = await this.getCache(client, channel, "messages", messageID)
+    // Message not found
+    if (!message) {
+      this.error = true
+      this.props.description = `Couldn't load Message ID '${messageID}'`
+      return false
+    }
+
+    return message
+  }
+
   async action(client, interaction, coptions) {
     // Get Target Input
     let targetInput   = ""
@@ -131,6 +187,7 @@ module.exports = class MentionCommand extends RookCommand {
     let targetType    = coptions["target-type"] ?? "channel"
     let targetMember  = null
     let targetMention = ""
+    let messageURL    = coptions["message-url"] ?? null
 
     for (let check of 
       [
@@ -181,6 +238,10 @@ module.exports = class MentionCommand extends RookCommand {
     }
     if (targetType == "emoji") {
       targetId = targetId.substring(targetId.indexOf(':', 2) + 1)
+    }
+
+    if (messageURL) {
+      targetType = "message"
     }
 
     // this.messages.push(
@@ -602,6 +663,35 @@ module.exports = class MentionCommand extends RookCommand {
           }
         }
         break
+      // Message
+      case "message":
+        targetId = messageURL
+        let message = await this.getMessage(client, messageURL)
+        if (message) {
+          targetMention = mentionFuncs.messageMention(message.url)
+          targetId = guild.id + '/' + message.channel.id + '/' + message.id
+          specs.name = "Message"
+
+          if (message?.createdTimestamp) {
+            specs.creationStr = timeFormat(message?.createdTimestamp, { with: "relative" })
+          }
+          specs.author = mentionFuncs.userMention(message.author.id, { showID: true })
+          specs.guild = mentionFuncs.guildMention(guild.name, guild.id, { showID: true })
+          specs.channel = mentionFuncs.channelMention(message.channel.id, { showID: true })
+
+          this.props.playerTypes = {
+            user: "target",
+            target: "target"
+          }
+
+          this.props.entities = {
+            target: {
+              name: specs.name,
+              avatar: "https://em-content.zobj.net/source/twitter/408/keycap-number-sign_23-fe0f-20e3.png"
+            }
+          }
+        }
+        break
       default:
         targetMention = "Error"
         this.error = true
@@ -803,6 +893,30 @@ module.exports = class MentionCommand extends RookCommand {
           ]
         )
       }
+
+      this.props.fields.push(
+        [
+          // Author
+          {
+            name: "Author",
+            value: specs?.author
+          }
+        ]
+      )
+      this.props.fields.push(
+        [
+          // Guild
+          {
+            name: "Guild",
+            value: specs?.guild
+          },
+          // Channel
+          {
+            name: "Channel",
+            value: specs?.channel
+          }
+        ]
+      )
 
       this.props.fields.push(
         [
