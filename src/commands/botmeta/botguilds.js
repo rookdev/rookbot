@@ -61,12 +61,6 @@ module.exports = class BotGuildsCommand extends RookCommand {
       target: "bot"
     }
 
-    this.props.description = []
-    this.props.description.push(
-      `Guilds that ${client.user} is in:`.boldItalic(),
-      ""
-    )
-
     // Get Guilds
     let guilds = await this.getProp(client, client, "guilds")
     let locale = coptions['locale']
@@ -74,10 +68,14 @@ module.exports = class BotGuildsCommand extends RookCommand {
       locale = "en-AU"
     }
 
+    let totalMembers = 0
     let sorted = []
 
     // Cycle through guilds
     for (let [guildID, guildData] of guilds.cache) {
+      // Add Members Number
+      totalMembers += guildData.memberCount
+
       // Get Guild Owner
       let owner = globalFuncs.isStoat(client) ? await guildData.owner : await guildData.fetchOwner()
       if (await this.getProp(client, owner, "user")) {
@@ -104,6 +102,12 @@ module.exports = class BotGuildsCommand extends RookCommand {
       sorted[bot.joinedTimestamp] = thisGuild
     }
 
+    this.props.description = []
+    this.props.description.push(
+      `${client.user} is servicing ${totalMembers} members in ${Object.keys(sorted).length} guilds:`.boldItalic(),
+      ""
+    )
+
     this.messages.push("")
     this.messages.push("---")
 
@@ -118,18 +122,21 @@ module.exports = class BotGuildsCommand extends RookCommand {
     for (let [guildID, guildData] of Object.entries(ksort(sorted))) {
       if (guildData?.guild) {
         // Get Guild Tier Level
-        let tier = guildData.guild.premiumTier
-        if (!tier) { tier = 0 }
+        let tier = guildData.guild.premiumTier ?? 0
+        // Get Guild Server Boosts
+        let boosts = guildData.guild.premiumSubscriptionCount ?? 0
         Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
-          .addRow("Owner",`\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
-          .addRow("Added",guildData.added)
-          .addRow("Tier",tier)
+          .addRow("Owner",  `\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
+          .addRow("Added",  guildData.added)
+          // .addRow("Tier",   tier)
+          // .addRow("Boosts", boosts)
           .addRow("")
         this.props.description.push(
-          bold(`Guild:`) + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
-          bold(`Owner:`) + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
-          bold(`Added:`) + ` ${guildData.addedHammertime}`,
-          bold(`Tier:`) + ` ${tier}`,
+          bold(`Guild:`)  + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
+          bold(`Owner:`)  + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
+          bold(`Added:`)  + ` ${guildData.addedHammertime}`,
+          // bold(`Tier:`)   + ` ${tier}`,
+          // bold(`Boosts:`) + ` ${boosts}`,
           ""
         )
       }
