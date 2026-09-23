@@ -5,10 +5,8 @@
   },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
-  "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-  "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
-  "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
-  "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+  "js/ts.format.placeOpenBraceOnNewLineForControlBlocks": false,
+  "js/ts.format.placeOpenBraceOnNewLineForFunctions": false,
   "files.associations": {
     "*.js.off": "javascript"
   },
