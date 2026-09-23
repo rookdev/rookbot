@@ -162,15 +162,30 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
     )
 
     logProps.description = []
-    logProps.description.push("**Members**")
-    let memberCount = 0;
+    let memberCount = 0
+    let memberMentions = []
     for (let [memberID, member] of await channel.members) {
-      logProps.description.push(mentionFuncs.userMention(memberID))
+      let memberMention = mentionFuncs.userMention(memberID)
+      if (memberID == state.id) {
+        if (status == "connected") {
+          memberMention = "🟢" + memberMention
+        } else if (status == "disconnected") {
+          memberMention = "❌" + memberMention
+        }
+      } else {
+        memberMention = "⚫" + memberMention
+      }
+      memberMentions.push(memberMention)
       memberCount++;
     }
     if (memberCount == 0) {
-      logProps.description.push("*None*")
+      let memberID = state.id
+      let memberMention = mentionFuncs.userMention(memberID)
+      memberMention = "❌" + memberMention
+      memberMentions.push(memberMention)
     }
+    logProps.description.push(`**Members (${memberCount})**`)
+    logProps.description.push(...memberMentions)
 
     // client
     // guild
