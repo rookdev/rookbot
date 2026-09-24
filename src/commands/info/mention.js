@@ -283,11 +283,14 @@ module.exports = class MentionCommand extends RookCommand {
             }
             if (specs.subtype == "GuildCategory") {
               this.props.description.push("Channels".boldUnderline())
+              this.props.description.push("🏁" + " " + "📝" + " " + "🔄")
               for (let [cID, thisChannel] of await channel.children.cache) {
-                this.props.description.push(
-                  (thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck) +
-                  inlineCode(thisChannel.name)
-                )
+                let child = ""
+                child += " " + inlineCode(thisChannel.position) + " "
+                child += " " + inlineCode(thisChannel.rawPosition) + " "
+                child += thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck
+                child += inlineCode(thisChannel.name)
+                this.props.description.push(child)
               }
             }
             if (channel?.parent?.name) {

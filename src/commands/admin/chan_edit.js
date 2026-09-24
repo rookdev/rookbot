@@ -7,7 +7,7 @@
  *  Formatters
  *   codeBlock
  */
-const { ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -27,6 +27,8 @@ module.exports = class ChannelEditCommand extends RookCommand {
           choices: [
             { name: "Rename", value: "rename" },
             { name: "Sync",   value: "sync" },
+            { name: "Move",   value: "move" },
+            { name: "Sort",   value: "sort" },
             { name: "Delete", value: "delete" }
           ]
         },
@@ -44,6 +46,21 @@ module.exports = class ChannelEditCommand extends RookCommand {
           name: "channel-name",
           description: "New Channel Name",
           type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "parent",
+          description: "Parent Channel",
+          type: ApplicationCommandOptionType.Channel
+        },
+        {
+          name: "parent-id",
+          description: "Parent Channel ID",
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "position",
+          description: "Position Placement",
+          type: ApplicationCommandOptionType.Integer
         }
       ],
       testOptions: [
@@ -96,6 +113,41 @@ module.exports = class ChannelEditCommand extends RookCommand {
         if (channel.deletable) {
           await channel.delete()
         }
+      } else if (mode == "move") {
+        let parentInput = coptions?.parent ?? coptions["parent-id"]
+        // Get Parent ID
+        let parentId = parentInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
+        let parentChannel = await this.getCache(client, interactionGuild, "channels", parentId)
+        let position = coptions?.position
+        if (parentId && parentChannel) {
+          let oldParentId = channel.parentId
+          await channel.setParent(parentChannel)
+          this.props.fields.push(
+            [
+              { name: "Old Parent", value: oldParentId ? mentionFuncs.channelMention(parentId) : "*None*" },
+              { name: "New Parent", value: mentionFuncs.channelMention(parentId) }
+            ],
+            [
+              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
+            ]
+          )
+        } else if (position) {
+          let oldPosition = channel.position
+          let oldRawPosition = channel.rawPosition
+          await channel.setPosition(position)
+          this.props.fields.push(
+            [
+              { name: "Old Position",     value: inlineCode(oldPosition) },
+              { name: "Old Raw Position", value: inlineCode(oldRawPosition) }
+            ],
+            [
+              { name: "New Position", value: inlineCode(position) }
+            ],
+            [
+              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
+            ]
+          )
+        }
       } else if (mode == "rename") {
         let oldName = ""
         let newName = coptions["channel-name"]
@@ -115,6 +167,38 @@ module.exports = class ChannelEditCommand extends RookCommand {
               { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
             ]
           )
+        }
+      } else if (mode == "sort") {
+        let children = await channel?.children?.cache
+        let channels = []
+        if (children) {
+          for (let [cID, child] of children) {
+            if (!channels[child.name]) {
+              channels[child.name] = []
+            }
+            channels[child.name][cID] = child
+          }
+          this.props.fields = []
+          this.props.fields.push(
+            [
+              {
+                name: "Category",
+                value: mentionFuncs.channelMention(channel.id)
+              }
+            ]
+          )
+          this.props.description = []
+          this.props.description.push("**Children**")
+          let position = 0
+          for (let channelName of Object.keys(channels).toSorted()) {
+            for (let childId of Object.keys(channels[channelName]).toSorted()) {
+              let child = channels[channelName][childId]
+              await child.setPosition(position++)
+              this.props.description.push(
+                inlineCode(child.position) + " " + mentionFuncs.channelMention(childId)
+              )
+            }
+          }
         }
       } else if (mode == "sync") {
         this.props.description.push("---")
