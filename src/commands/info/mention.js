@@ -30,6 +30,11 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 
+// natSort
+function natSort(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true });
+}
+
 module.exports = class MentionCommand extends RookCommand {
   constructor(client) {
     let comprops = {
@@ -284,13 +289,24 @@ module.exports = class MentionCommand extends RookCommand {
             if (specs.subtype == "GuildCategory") {
               this.props.description.push("Channels".boldUnderline())
               this.props.description.push("🏁" + " " + "📝" + " " + "🔄")
-              for (let [cID, thisChannel] of await channel.children.cache) {
-                let child = ""
-                child += " " + inlineCode(thisChannel.position) + " "
-                child += " " + inlineCode(thisChannel.rawPosition) + " "
-                child += thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck
-                child += inlineCode(thisChannel.name)
-                this.props.description.push(child)
+              let children = await channel?.children?.cache
+              let channels = []
+              for (let [cID, child] of children) {
+                if (!channels[child.position]) {
+                  channels[child.position] = []
+                }
+                channels[child.position][cID] = child
+              }
+              for (let position of Object.keys(channels).toSorted(natSort)) {
+                for (let childId of Object.keys(channels[position]).toSorted(natSort)) {
+                  let thisChannel = channels[position][childId]
+                  let child = ""
+                  child += inlineCode(thisChannel.position.toString().padStart(2)) + " "
+                  child += inlineCode(thisChannel.rawPosition.toString().padStart(2)) + " "
+                  child += thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck
+                  child += inlineCode(thisChannel.name)
+                  this.props.description.push(child)
+                }
               }
             }
             if (channel?.parent?.name) {

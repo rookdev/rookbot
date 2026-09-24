@@ -195,7 +195,8 @@ module.exports = class ChannelEditCommand extends RookCommand {
               let child = channels[channelName][childId]
               await child.setPosition(position++)
               this.props.description.push(
-                inlineCode(child.position) + " " + mentionFuncs.channelMention(childId)
+                inlineCode(child.position.toString().padStart(2)) +
+                mentionFuncs.channelMention(childId)
               )
             }
           }
