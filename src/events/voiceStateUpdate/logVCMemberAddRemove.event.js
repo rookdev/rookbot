@@ -113,6 +113,17 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
     logProps.fields.push(
       [
         {
+          name: (status == "connected" ? "Joined" : "Left") + " At",
+          value: timeFormat(
+            moment.utc().format("x"),
+            { with: "relative" }
+          )
+        }
+      ]
+    )
+    logProps.fields.push(
+      [
+        {
           name: "Member",
           value: mentionFuncs.userMention(state.id)
         }
@@ -168,7 +179,7 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
       let connectionEmoji = ((memberID == state.id) && (status == "connected")) ? "🟢" : "⚫"
       let memberMention = connectionEmoji + mentionFuncs.userMention(memberID)
       memberMentions.push(memberMention)
-      memberCount++;
+      memberCount++
     }
     if (status == "disconnected") {
       let memberID = state.id
@@ -190,7 +201,12 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
       logProps
     )
 
-    let logLines = []
+    let logLines = [
+      `Member:  ${state.member.user.tag} (ID: ${state.id})`,
+      `Guild:   ${guild.name} (ID: ${guild.id})`,
+      `Channel: #${channel.name} (ID: ${channel.id})`,
+      `Action:  ` + status.ucfirst()
+    ]
 
     // client
     // data
