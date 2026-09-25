@@ -161,24 +161,16 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
       ]
     )
 
-    logProps.description = []
     let memberCount = 0
     let memberMentions = []
+    logProps.description = []
     for (let [memberID, member] of await channel.members) {
-      let memberMention = mentionFuncs.userMention(memberID)
-      if (memberID == state.id) {
-        if (status == "connected") {
-          memberMention = "🟢" + memberMention
-        } else if (status == "disconnected") {
-          memberMention = "❌" + memberMention
-        }
-      } else {
-        memberMention = "⚫" + memberMention
-      }
+      let connectionEmoji = ((memberID == state.id) && (status == "connected")) ? "🟢" : "⚫"
+      let memberMention = connectionEmoji + mentionFuncs.userMention(memberID)
       memberMentions.push(memberMention)
       memberCount++;
     }
-    if (memberCount == 0) {
+    if (status == "disconnected") {
       let memberID = state.id
       let memberMention = mentionFuncs.userMention(memberID)
       memberMention = "❌" + memberMention
