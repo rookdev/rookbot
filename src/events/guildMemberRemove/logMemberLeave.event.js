@@ -39,15 +39,18 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
     let leftDateTime = moment.utc()
     let joinedDateTime = moment.utc(oldMember.joinedTimestamp)
     let createdDateTime = moment.utc(oldMember.user.createdTimestamp)
-    let durationStr = timeConversion(
-      moment.duration(
-        Math.abs(
-          joinedDateTime.diff(
-            leftDateTime
+    let durationStr = null
+    if (joinedDateTime && leftDateTime) {
+      durationStr = timeConversion(
+        moment.duration(
+          Math.abs(
+            joinedDateTime.diff(
+              leftDateTime
+            )
           )
         )
       )
-    )
+    }
 
     let logProps = {
       color: client.profile.colors.bad,
