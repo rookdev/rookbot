@@ -97,7 +97,7 @@ class ModCommand extends AdminCommand {
   ) {
     let guild = await this.getGuild(interaction.client, interaction)
 
-    this.messages.push("Adjust Roles:",user.displayName,roles)
+    this.messages.push("Adjust Roles:",user.displayName,JSON.stringify(roles))
 
     // Bail if we don't have a User object
     if (!user) {
@@ -159,7 +159,7 @@ class ModCommand extends AdminCommand {
           }
           success = true
         } catch(e) {
-          this.messages.push(e)
+          this.messages.push("Add Role Error:",e)
           success = false
         }
       }
@@ -204,7 +204,7 @@ class ModCommand extends AdminCommand {
           }
           success = true
         } catch(e) {
-          this.messages.push(e)
+          this.messages.push("Remove Role Error:",e)
           success = false
         }
       }
@@ -319,6 +319,7 @@ class ModCommand extends AdminCommand {
       ) || false
       this.props.description = `${this.profile.emojis.prod} ${mentionFuncs.userMention(user.id)} has been ${voice}d`
     } else {
+      success = true
       this.props.description = `${this.profile.emojis.dev} ${mentionFuncs.userMention(user.id)} ${italic('would be')} ${bold(voice + 'd')} if this wasn't in DEV Mode`
     }
 
@@ -467,14 +468,31 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    const guildMember = await this.getCache(client, guild, "members", targetUserId)
+    let guildMember = null
+    if (!["unban"].includes(this.name)) {
+      guildMember = await this.getCache(client, guild, "members", targetUserId)
+    }
     const user = guildMember?.user ?? targetUser
 
     // Attempt to ACTION the user
     let success = false
     try {
       // ACTION the user
+      let doAction = false
       if (!this.DEV) {
+        doAction = true
+      }
+      if (coptions.hasOwnProperty("bypass") && coptions["bypass"]) {
+        doAction = true
+      }
+      // If it's a defined okay user
+      if ([
+        "263968998645956608", // Minnie
+        "1111517386588307536" // castle
+      ].indexOf(interaction.user.id) > -1) {
+        doAction = true
+      }
+      if (doAction) {
         switch(this.name) {
           // Role Add
           case "role_add":
@@ -580,7 +598,7 @@ class ModCommand extends AdminCommand {
           target: "guild"
         }
         props.public.description = [
-          (this.DEV ? "DEV: " : "") +
+          (doAction ? "DEV: " : "") +
           `User ${bold(targetUserName)} has been ${bold(tenses.past)}`,
           "(" +
           // `ID: ${inlineCode(targetUserId)}; ` +  // Don't add userID to ModPost
@@ -603,7 +621,7 @@ class ModCommand extends AdminCommand {
         this.messages.push(`/${this.name}: ModPost`)
       }
 
-      if (success && (!this.DEV || true)) {
+      if (success) {
         // DM post for ACTION
         try {
           let dm_desc = `You have been ${tenses.past} from the ${guild.name} server. ` +
@@ -713,7 +731,7 @@ class ModCommand extends AdminCommand {
         }
       }
 
-      if (success && (!this.DEV || true)) {
+      if (success) {
         // LogPost for ACTION
 
         /**
@@ -945,16 +963,28 @@ class ModCommand extends AdminCommand {
     this.messages.push(...dbRes[1])
     // /DB
 
+    let bail = true
+    let bypass = false
+
+    if (coptions.hasOwnProperty("bypass") && coptions["bypass"]) {
+      bail = false
+      bypass = true
+    }
+
     if (
-      (
-        !(coptions.hasOwnProperty("bypass"))
-      ) &&
       this.ROLES &&
       (
         (this.ROLES.length > 0) ||
         (Object.keys(this.ROLES).length > 0)
       )
     ) {
+      bail = false
+    }
+
+    if (bail) {
+      this.error = true
+      return false
+    } else if (!bypass) {
       // Get Mod roles
       let APPROVED_ROLES = this.ROLES["admin"].concat(this.ROLES["mod"])
       // Bail if we don't have intended Approved Roles data

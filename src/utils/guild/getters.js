@@ -18,6 +18,7 @@ async function searchCache(cacheType, collection, cacheID) {
       [
         "channels",
         "guilds",
+        "roles",
         "users"
       ].includes(cacheType)) {
       ret = await collection.cache.get(cacheID)
