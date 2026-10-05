@@ -56,7 +56,7 @@ module.exports = class LogMemberLeaveEvent extends EventScript {
       color: client.profile.colors.bad,
       title: {
         text: "[Log] Member Left",
-        emoji: "🚶‍♂️🚪"
+        emoji: "🚶🚪"
       },
       entities: {
         guild: {

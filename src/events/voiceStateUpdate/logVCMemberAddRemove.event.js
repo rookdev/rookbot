@@ -80,7 +80,7 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
         status = "disconnected"
         logProps.color = client.profile.colors.bad
         logProps.title.text = "[Log] Member Left VC"
-        logProps.title.emoji = "🚶‍♂️🔊"
+        logProps.title.emoji = "🚶🔊"
       }
     }
 
