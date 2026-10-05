@@ -273,7 +273,7 @@ class ModCommand extends AdminCommand {
     // Muted Role ID
     let MUTED_ID    = interaction.options.getString("muted-role-id")  ?? null
 
-    if (!this.DEV) {
+    if ((!this.DEV) || true) {
       let mainRole = MEMBER_ROLE  ?? MEMBER_ID  // Member Role
       let muteRole = MUTED_ROLE   ?? MUTED_ID   // Muted Role
 
@@ -405,7 +405,7 @@ class ModCommand extends AdminCommand {
         emoji = "🔨"
         break
       case "Kick":
-        emoji = "👟💥🏃‍♂️"
+        emoji = "👟💥🏃"
         break
       case "Unmute":
         emoji = "🔊"
@@ -512,23 +512,16 @@ class ModCommand extends AdminCommand {
         // Ban
         case "ban":
           if (armed) {
-            if (guildMember || true) {
-              let banPurgeDays = coptions['delete-days'] ?? 0
-              let banOptions = { reason: reason }
-              if (banPurgeDays) {
-                SEC = 1000
-                MIN = SEC * 60
-                HR  = MIN * 60
-                DAY = HR  * 24
-                banOptions.deleteMessageSeconds = banPurgeDays * DAY
-              }
-              success = await guild.members.ban(
-                targetUserId,
-                banOptions
-              )
-            } else {
-              this.messages.push("Member to Ban not found!")
+            let banPurgeDays = coptions['delete-days'] ?? 0
+            let banOptions = { reason: reason }
+            if (banPurgeDays) {
+              SEC = 1000
+              MIN = SEC * 60
+              HR  = MIN * 60
+              DAY = HR  * 24
+              banOptions.deleteMessageSeconds = banPurgeDays * DAY
             }
+            success = await guild.bans.create(targetUserId, banOptions)
           } else {
             success = true
           }
@@ -537,9 +530,9 @@ class ModCommand extends AdminCommand {
         // Kick
         case "kick":
           armed = true
-          success = await guild.members.kick(
-            targetUserId, { reason }
-          )
+          if (guildMember) {
+            success = await guildMember.kick({ reason: reason })
+          }
           break
 
         // Mute
@@ -555,10 +548,14 @@ class ModCommand extends AdminCommand {
         // Timeout
         case "timeout":
           armed = true
-          success = await guildMember.timeout(
-            durationMilliseconds,
-            reason
-          )
+          try {
+            success = await guildMember.timeout(
+              durationMilliseconds,
+              reason
+            )
+          } catch (e) {
+            // do nothing
+          }
           break
 
         // Unban
@@ -571,9 +568,7 @@ class ModCommand extends AdminCommand {
               // do nothing
             }
             if (isBanned) {
-              success = await guild.members.unban(
-                targetUserId
-              )
+              success = await guild.bans.remove(targetUserId)
             } else {
               this.messages.push("User Ban not found!")
             }
