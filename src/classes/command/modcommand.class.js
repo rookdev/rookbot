@@ -468,117 +468,138 @@ class ModCommand extends AdminCommand {
     }
 
     // Get the guild member (to fetch nickname if present)
-    let guildMember = null
-    if (!["unban"].includes(this.name)) {
-      guildMember = await this.getCache(client, guild, "members", targetUserId)
-    }
+    let guildMember = await this.getCache(client, guild, "members", targetUserId)
     const user = guildMember?.user ?? targetUser
 
     // Attempt to ACTION the user
     let success = false
     try {
       // ACTION the user
-      let doAction = false
-      if (!this.DEV) {
-        doAction = true
-      }
+      let armed = false
       if (coptions.hasOwnProperty("bypass") && coptions["bypass"]) {
-        doAction = true
+        armed = true
       }
-      // If it's a defined okay user
-      if ([
-        "263968998645956608", // Minnie
-        "1111517386588307536" // castle
-      ].indexOf(interaction.user.id) > -1) {
-        doAction = true
-      }
-      if (doAction) {
-        switch(this.name) {
-          // Role Add
-          case "role_add":
-            success = await this.add_role(
-              interaction,
-              guildMember,
-              role
-            ) || false
-            break
-
-          // Role Remove
-          case "role_remove":
-            success = await this.remove_role(
-              interaction,
-              guildMember,
-              role
-            ) || false
-            break
-
-          // Ban
-          case "ban":
-            let banPurgeDays = coptions['delete-days'] ?? 0
-            let banOptions = { reason: reason }
-            if (banPurgeDays) {
-              SEC = 1000
-              MIN = SEC * 60
-              HR  = MIN * 60
-              DAY = HR  * 24
-              banOptions.deleteMessageSeconds = banPurgeDays * DAY
-            }
-            success = await guild.members.ban(
-              targetUserId,
-              banOptions
-            )
-            break
-
-          // Kick
-          case "kick":
-            success = await guild.members.kick(
-              targetUserId, { reason }
-            )
-            break
-
-          // Mute
-          case "mute":
-            success = await this.mute_user(
-              interaction,
-              guildMember,
-              reason
-            ) || false
-            break
-
-          // Timeout
-          case "timeout":
-            success = await guildMember.timeout(
-              durationMilliseconds,
-              reason
-            )
-            break
-
-          // Unban
-          case "unban":
-            success = await guild.members.unban(
-              targetUserId
-            )
-            break
-
-          // Unmute
-          case "unmute":
-            success = await this.unmute_user(
-              interaction,
-              guildMember,
-              reason
-            ) || false
-            break
-
-          // Warn
-          case "warn":
-            success = true
-            // success = await guild.members.warn(
-            //   targetUserId
-            // )
-            break
+      if (interaction?.user) {
+        // If it's a defined okay user
+        if ([
+          "263968998645956608", // Minnie
+          "1111517386588307536" // castle
+        ].indexOf(interaction.user.id) > -1) {
+          armed = true
         }
-      } else {
-        success = true
+      }
+      switch(this.name) {
+        // Role Add
+        case "role_add":
+          armed = true
+          success = await this.add_role(
+            interaction,
+            guildMember,
+            role
+          ) || false
+          break
+
+        // Role Remove
+        case "role_remove":
+          armed = true
+          success = await this.remove_role(
+            interaction,
+            guildMember,
+            role
+          ) || false
+          break
+
+        // Ban
+        case "ban":
+          if (armed) {
+            if (guildMember || true) {
+              let banPurgeDays = coptions['delete-days'] ?? 0
+              let banOptions = { reason: reason }
+              if (banPurgeDays) {
+                SEC = 1000
+                MIN = SEC * 60
+                HR  = MIN * 60
+                DAY = HR  * 24
+                banOptions.deleteMessageSeconds = banPurgeDays * DAY
+              }
+              success = await guild.members.ban(
+                targetUserId,
+                banOptions
+              )
+            } else {
+              this.messages.push("Member to Ban not found!")
+            }
+          } else {
+            success = true
+          }
+          break
+
+        // Kick
+        case "kick":
+          armed = true
+          success = await guild.members.kick(
+            targetUserId, { reason }
+          )
+          break
+
+        // Mute
+        case "mute":
+          armed = true
+          success = await this.mute_user(
+            interaction,
+            guildMember,
+            reason
+          ) || false
+          break
+
+        // Timeout
+        case "timeout":
+          armed = true
+          success = await guildMember.timeout(
+            durationMilliseconds,
+            reason
+          )
+          break
+
+        // Unban
+        case "unban":
+          if (armed) {
+            let isBanned = false
+            try {
+              isBanned = await guild.bans.fetch(targetUserId)
+            } catch(e) {
+              // do nothing
+            }
+            if (isBanned) {
+              success = await guild.members.unban(
+                targetUserId
+              )
+            } else {
+              this.messages.push("User Ban not found!")
+            }
+          } else {
+            success = true
+          }
+          break
+
+        // Unmute
+        case "unmute":
+          armed = true
+          success = await this.unmute_user(
+            interaction,
+            guildMember,
+            reason
+          ) || false
+          break
+
+        // Warn
+        case "warn":
+          armed = true
+          success = true
+          // success = await guild.members.warn(
+          //   targetUserId
+          // )
+          break
       }
 
       // Determine the name to display (use nickname if available, otherwise default to tag or username)
@@ -598,7 +619,7 @@ class ModCommand extends AdminCommand {
           target: "guild"
         }
         props.public.description = [
-          (doAction ? "DEV: " : "") +
+          ((this.DEV && !armed) ? "DEV: " : "") +
           `User ${bold(targetUserName)} has been ${bold(tenses.past)}`,
           "(" +
           // `ID: ${inlineCode(targetUserId)}; ` +  // Don't add userID to ModPost
@@ -694,18 +715,15 @@ class ModCommand extends AdminCommand {
             "",
             `Message: ${props.dm.description}`
           )
-          printResult = await this.print_it(client, interaction, [ props.mod ])
-          embeds.mod = this.pages[0]
-          this.pages = []
-          if (interaction.hasOwnProperty("followUp")) {
-            interaction.followUp(
-              {
-                embeds: [ embeds.mod ],
-                flags: MessageFlags.Ephemeral
-              }
-            )
-            this.messages.push(`/${this.name}: YouPost`)
-          }
+          let youPost = await new RookMessage(
+            client,
+            interaction,
+            {
+              ephemeral: true,
+              pages: [ props.mod ]
+            }
+          )
+          this.messages.push(`/${this.name}: YouPost`)
         } catch (dmError) {
           // Reply to Mod about failed DM for ACTION
           this.ephemeral = true
@@ -739,11 +757,11 @@ class ModCommand extends AdminCommand {
          *  Development
          *  Production; also sends to Discord Audit Log
          */
-        let region = ((!this.DEV) ? "Production" : "Development")
+        let region = (((this.DEV) && (!armed)) ? "Development" : "Production")
 
         const logsChannel = await this.getChannel(client, interaction, [ `logging-${this.name}`, "logging" ])
         if (logsChannel) {
-          if(this.DEV) {
+          if((this.DEV) && (!armed)) {
             emoji = "[DEV]" + emoji
           }
 
@@ -887,7 +905,7 @@ class ModCommand extends AdminCommand {
             "src",
             "botlogs"
           ],
-          ((this.DEV ? "DEV" : "") + "member" + pretty_name.replace(" ", "") + "s.log")
+          ((((this.DEV) && (!armed)) ? "" : "DEV") + "member" + pretty_name.replace(" ", "") + "s.log")
         )
         let logEntry = [
           `[${now.toISOString()}]`,
@@ -919,6 +937,7 @@ class ModCommand extends AdminCommand {
     } catch (error) {
       lastingError = error
       success = false
+      this.messages.push(lastingError,lastingError.stack)
     }
 
     if (!success) {

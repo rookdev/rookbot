@@ -24,7 +24,11 @@ async function searchCache(cacheType, collection, cacheID) {
       ret = await collection.cache.get(cacheID)
     } else {
       // Search for item by ID
-      ret = await collection.fetch(cacheID)
+      try {
+        ret = await collection.fetch(cacheID)
+      } catch(e) {
+        // do nothing
+      }
     }
   } else if (
     (globalFuncs.isFluxer(collection.client) && numFuncs.myIsNumeric(cacheID) && (cacheType == "roles"))
@@ -195,7 +199,11 @@ async function getCache(client, parent, cacheType, cacheTest) {
       case "members":
       case "users":
         if (numFuncs.myIsNumeric(cacheTest[0])) {
-          ret = await collection.fetch({ user: cacheTest[0], force: true })
+          try {
+            ret = await collection.fetch({ user: cacheTest[0], force: true })
+          } catch(e) {
+            // do nothing
+          }
         } else {
           ret = cacheTest[0]
         }

@@ -111,9 +111,7 @@ module.exports = class ZapperEvent extends EventScript {
       (
         (ROLES.length > 0) ||
         (Object.keys(ROLES).length > 0)
-      ) &&
-      // true
-      false
+      )
     ) {
       // Get Mod roles
       let APPROVED_ROLES = ROLES["admin"].concat(ROLES["mod"])
@@ -247,6 +245,7 @@ module.exports = class ZapperEvent extends EventScript {
       },
       true
     )
+    await banCmd.printMessages()
 
     this.messages.push(
       "⚡ " +
@@ -255,13 +254,14 @@ module.exports = class ZapperEvent extends EventScript {
           guild: message.guild.name,
           member: message.author.tag,
           action: "zap",
+          banned: JSON.stringify(banResult),
           channel: message.channel.name,
           message: message.id
         }
       )
     )
 
-    message.delete()
+    await message.delete()
 
     return true
   }

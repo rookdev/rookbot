@@ -57,6 +57,13 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
       return false
     }
 
+    // Skip logging message deletions of specific authors
+    if (deletedMessage.author && [
+      "1218450020118822912" // Trident Esports Bot
+    ].includes(deletedMessage.author.id)) {
+      return false
+    }
+
     let guild = await this.getProp(client, deletedMessage, "guild")
     const fetchedLogs = await guild?.fetchAuditLogs(
       {
