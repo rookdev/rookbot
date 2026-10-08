@@ -304,6 +304,29 @@ module.exports = class MentionCommand extends RookCommand {
                   child += inlineCode(thisChannel.position.toString().padStart(2)) + " "
                   child += inlineCode(thisChannel.rawPosition.toString().padStart(2)) + " "
                   child += thisChannel.permissionsLocked ? this.profile.emojis.check : this.profile.emojis.nocheck
+                  switch (ChannelType[thisChannel.type]) {
+                    // Voice
+                    case "GuildVoice":
+                      child += "🔊"
+                      break
+                    // Forum
+                    case "GuildForum":
+                      child += "🗪"
+                      break
+                    // Announcement
+                    case "GuildAnnouncement":
+                    case "GuildNews":
+                      child += "📣"
+                      break
+                    // Stage
+                    case "GuildStageVoice":
+                      child += "🛜"
+                      break
+                    // Text
+                    default:
+                      child += "#️⃣"
+                      break
+                  }
                   child += inlineCode(thisChannel.name)
                   this.props.description.push(child)
                 }

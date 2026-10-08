@@ -60,6 +60,7 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
       target: "target"
     }
 
+    logProps.fields = []
     // Fields
     // Expires At
     logProps.fields.push(

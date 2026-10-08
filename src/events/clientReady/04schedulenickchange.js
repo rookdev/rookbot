@@ -62,7 +62,7 @@ module.exports = async (client) => {
         // Get the guild member
         const member = await getters.getCache(client, guild, "members", userID)
         if (!member) {
-          messages.push(`${client.profile.emojis.fail} Member ${userID} not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}!`)
+          // messages.push(`${client.profile.emojis.fail} Member ${userID} not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}!`)
           continue
         }
         // If guild owner, bail
