@@ -11,6 +11,8 @@ const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
+const stringFuncs = require('../../utils/primitives/stringFuncs')
 
 module.exports = class ChannelEditCommand extends RookCommand {
   constructor(client) {
@@ -25,11 +27,13 @@ module.exports = class ChannelEditCommand extends RookCommand {
           type: ApplicationCommandOptionType.String,
           required: true,
           choices: [
-            { name: "Rename", value: "rename" },
-            { name: "Sync",   value: "sync" },
-            { name: "Move",   value: "move" },
-            { name: "Sort",   value: "sort" },
-            { name: "Delete", value: "delete" }
+            { name: "Rename",       value: "set" },
+            { name: "Sync",         value: "sync" },
+            { name: "Move",         value: "move" },
+            { name: "Sort",         value: "sort" },
+            { name: "Set",          value: "set" },
+            { name: "Toggle NSFW",  value: "nsfw" },
+            { name: "Delete",       value: "delete" }
           ]
         },
         {
@@ -45,6 +49,11 @@ module.exports = class ChannelEditCommand extends RookCommand {
         {
           name: "channel-name",
           description: "New Channel Name",
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: "channel-topic",
+          description: "New Channel Topic",
           type: ApplicationCommandOptionType.String
         },
         {
@@ -82,13 +91,20 @@ module.exports = class ChannelEditCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    let mode = coptions.mode ?? "rename"
+    let mode = coptions.mode ?? "set"
+
     let targetInput = coptions?.channel ?? coptions["channel-id"]
-    // Get Target ID
-    let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
     this.props.description = []
-    this.props.fields = []
+
+    if (!targetInput) {
+      this.error = true
+      this.props.description.push("No Target Channel Received!")
+      return false
+    }
+
+    // Get Target ID
+    let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
     let interactionGuild = await this.getGuild(client, interaction)
 
@@ -96,6 +112,8 @@ module.exports = class ChannelEditCommand extends RookCommand {
     if (interactionGuild) {
       channel = await this.getCache(client, interactionGuild, "channels", targetId)
     }
+
+    this.props.fields = []
 
     if (channel) {
       if (mode == "delete") {
@@ -148,21 +166,71 @@ module.exports = class ChannelEditCommand extends RookCommand {
             ]
           )
         }
-      } else if (mode == "rename") {
-        let oldName = ""
-        let newName = coptions["channel-name"]
-        oldName = channel.name
-        if (oldName != newName) {
-          await channel.edit(
-            {
-              name: newName
-            }
-          )
+      } else if (["set","nsfw"].includes(mode)) {
+        let oldSet = ""
+        let newSet = ""
+        let setType = "name"
+
+        if (mode == "nsfw") {
+          setType = "nsfw"
+        } else if (coptions["channel-name"]) {
+          setType = "name"
+        } else if (coptions["channel-topic"]) {
+          setType = "topic"
+        }
+
+        if (setType == "name") {
+          oldSet = channel.name
+          newSet = coptions["channel-name"]
+
+          if (oldSet != newSet) {
+            await channel.setName(newSet)
+          }
+        } else if (setType == "nsfw") {
+          oldSet = channel.nsfw
+          newSet = !channel.nsfw
+          setType = "NSFW"
+
+          if (oldSet != newSet) {
+            await channel.setNSFW(newSet)
+          }
+        } else if (setType == "topic") {
+          oldSet = channel.topic
+          newSet = coptions["channel-topic"] ?? channel.topic
+
+          if (newSet == "<NONE>") {
+            newSet = ""
+          }
+
+          if (oldSet != newSet) {
+            await channel.setTopic(newSet)
+          }
+        }
+
+        if (oldSet != newSet) {
+          this.props.fields = []
           this.props.fields.push(
             [
-              { name: "Old Name", value: oldName },
-              { name: "New Name", value: newName }
+              {
+                name: "Old " + setType.ucfirst(),
+                value: inlineCode(oldSet)
+              },
+              {
+                name: "New " + setType.ucfirst(),
+                value: (newSet != "")
+                  ? inlineCode(newSet)
+                  : "*No Text*"
+              }
             ],
+            [
+              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
+            ]
+          )
+        } else {
+          this.props.description = []
+          this.props.description.push("No changes received!")
+          this.props.fields = []
+          this.props.fields.push(
             [
               { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
             ]
