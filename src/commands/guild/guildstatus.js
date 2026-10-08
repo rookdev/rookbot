@@ -159,7 +159,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
         },
         // Server Boosters
         {
-          name: "Server Boosters",
+          name: "Server Boosts",
           value: guild?.premiumSubscriptionCount
         }
       ],

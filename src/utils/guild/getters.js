@@ -147,14 +147,14 @@ async function getCache(client, parent, cacheType, cacheTest) {
       collection.client = { platform: client.platform }
     }
     if (globalFuncs.isFluxer(client)) {
-      console.log(
-        {
-          collection,
-          cache: collection.cache,
-          cacheType,
-          cacheID
-        }
-      )
+      // console.log(
+      //   {
+      //     // collection,
+      //     // cache: collection.cache,
+      //     cacheType,
+      //     cacheID
+      //   }
+      // )
     }
     ret = await searchCache(cacheType, collection, cacheID)
   }

@@ -1,5 +1,66 @@
 {
   "admin": {
+    "chan_edit": {
+      "name": "chan_edit",
+      "category": "admin",
+      "description": "Edit a Channel",
+      "options": [
+        {
+          "name": "mode",
+          "description": "Mode",
+          "required": true
+        },
+        {
+          "name": "channel",
+          "description": "Selected Channel"
+        },
+        {
+          "name": "channel-id",
+          "description": "Selected Channel ID"
+        },
+        {
+          "name": "channel-name",
+          "description": "New Channel Name"
+        },
+        {
+          "name": "channel-topic",
+          "description": "New Channel Topic"
+        },
+        {
+          "name": "parent",
+          "description": "Parent Channel"
+        },
+        {
+          "name": "parent-id",
+          "description": "Parent Channel ID"
+        },
+        {
+          "name": "position",
+          "description": "Position Placement"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "delcommand": {
+      "name": "delcommand",
+      "category": "admin",
+      "description": "Delete a Command",
+      "options": [
+        {
+          "name": "command-name",
+          "description": "Command Name",
+          "required": true
+        },
+        {
+          "name": "scope",
+          "description": "Scope?",
+          "required": true
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
     "emit": {
       "name": "emit",
       "category": "admin",
@@ -9,6 +70,71 @@
           "name": "event-name",
           "description": "Event Name",
           "required": true
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "listcommands": {
+      "name": "listcommands",
+      "category": "admin",
+      "description": "List Commands",
+      "options": [
+        {
+          "name": "domain",
+          "description": "Commands Domain"
+        }
+      ],
+      "access": "Admin",
+      "segment": "local"
+    },
+    "role_edit": {
+      "name": "role_edit",
+      "category": "admin",
+      "description": "Edit a Role",
+      "options": [
+        {
+          "name": "mode",
+          "description": "Mode",
+          "required": true
+        },
+        {
+          "name": "role",
+          "description": "Selected Role"
+        },
+        {
+          "name": "role-id",
+          "description": "Selected Role ID"
+        },
+        {
+          "name": "role-name",
+          "description": "New Role Name"
+        },
+        {
+          "name": "color",
+          "description": "New Color (HTML hex code)"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
+    "server_profile": {
+      "name": "server_profile",
+      "category": "admin",
+      "description": "Server Profile",
+      "options": [
+        {
+          "name": "manifest",
+          "description": "Server Profile Manifest",
+          "required": true
+        },
+        {
+          "name": "profile-name",
+          "description": "Profile Name"
+        },
+        {
+          "name": "args",
+          "description": "Arguments"
         }
       ],
       "access": "Admin",
@@ -50,6 +176,27 @@
       "description": "Set Role Permissions",
       "options": [],
       "parent": "setperms",
+      "access": "Admin",
+      "segment": "local"
+    },
+    "vview": {
+      "name": "vview",
+      "category": "admin",
+      "description": "Verbose View",
+      "options": [
+        {
+          "name": "role-id",
+          "description": "Role ID"
+        },
+        {
+          "name": "member-id",
+          "description": "Member ID"
+        },
+        {
+          "name": "channel-id",
+          "description": "Channel ID"
+        }
+      ],
       "access": "Admin",
       "segment": "local"
     }
@@ -202,6 +349,10 @@
         {
           "name": "source-message",
           "description": "Source Message URL"
+        },
+        {
+          "name": "reply-message",
+          "description": "Reply Message URL"
         },
         {
           "name": "attachment-message",
@@ -538,6 +689,10 @@
         {
           "name": "emoji-id",
           "description": "Emoji ID"
+        },
+        {
+          "name": "message-url",
+          "description": "Message URL"
         },
         {
           "name": "target-type",

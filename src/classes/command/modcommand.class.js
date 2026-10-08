@@ -482,8 +482,9 @@ class ModCommand extends AdminCommand {
       if (interaction?.user) {
         // If it's a defined okay user
         if ([
-          "263968998645956608", // Minnie
-          "1111517386588307536" // castle
+          "263968998645956608",   // Minnie
+          "1022300007136776252",  // Yuki
+          "1111517386588307536",  // castle
         ].indexOf(interaction.user.id) > -1) {
           armed = true
         }
