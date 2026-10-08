@@ -184,8 +184,8 @@ class EventScript {
 
   async execute(client, ...args) {
     if (!globalFuncs.isPlatforms(client, this.platforms)) {
-      this.messages.push(`${this.name}: NYI for ${client.platform.ucfirst()} ${client.profile.emojis[client.platform]}`)
-      this.printMessages(client)
+      // this.messages.push(`${this.name}: NYI for ${client.platform.ucfirst()} ${client.profile.emojis[client.platform]}`)
+      // this.printMessages(client)
       return 
     }
     // this.messages.push(`/${this.name}: Event Execute`)

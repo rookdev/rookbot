@@ -20,6 +20,7 @@ const {
   italic,
   MessagePayload
 } = require('discord.js')
+const { RookMessage } = require('../../classes/objects/rmessage.class')
 // ModCommand
 const { ModCommand } = require('../../classes/command/modcommand.class')
 // Base Rook Embed
@@ -647,6 +648,8 @@ module.exports = class SayCommand extends ModCommand {
       let interactionGuild = await this.getGuild(client, interaction)
       let interactionAuthor = await this.getProp(client, interaction, "user")
 
+      console.log(result)
+
       // Get the posted time
       let resultDateTime = moment.utc(result.createdTimestamp)
       props.mod = {}
@@ -713,12 +716,21 @@ module.exports = class SayCommand extends ModCommand {
       }
       props.mod.fields.push(fieldRow)
 
+      let messageMeta = result.url
+      if (globalFuncs.isFluxer(this.client)) {
+        messageMeta = {
+          guildId: result.guildId,
+          channelId: result.channelId,
+          messageId: result.id,
+          platform: this.client.platform
+        }
+      }
       props.mod.fields.push(
         [
           // Message Link
           {
             name: "Message",
-            value: mentionFuncs.messageMention(result.url, { showID: true })
+            value: mentionFuncs.messageMention(messageMeta, { showID: true })
           }
         ]
       )
@@ -798,7 +810,15 @@ module.exports = class SayCommand extends ModCommand {
 
       let logsChannel = await this.getChannel(client, interaction, [ "logging-say", "logging" ])
       if (logsChannel) {
-        logsChannel.send({ embeds: [ embeds.mod ] })
+        let logPost = await new RookMessage(
+          client,
+          null,
+          {
+            channelName: logsChannel.id,
+            pages: [ props.mod ]
+          }
+        )
+        await logPost.execute()
       }
     }
 

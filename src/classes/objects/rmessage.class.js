@@ -446,7 +446,7 @@ class RookMessage {
       // We're setting the footer to include the page number
       this.messages.push(`/${this.name}: Binding a Book with ${this.pages.length} Pages`)
       if (this?.interaction) {
-        if (globalFuncs.isStoat(this.client)) {
+        if (globalFuncs.isStoat(this.client) || globalFuncs.isFluxer(this.client)) {
           this_package = []
           for (let page of this.pages) {
             this_package.push(
@@ -508,12 +508,43 @@ class RookMessage {
     if (!interaction_result) {
       try {
         if (globalFuncs.isFluxer(this.client)) {
-          // console.log(
-          //   {
-          //     channelName: this.channel.name,
-          //     channelID: this.channel.id
-          //   }
-          // )
+          let this_embed = JSON.parse(JSON.stringify(this_package.embeds[0]))
+          let new_package = null
+          let new_embed = {
+            color: this_embed.color,
+            author: this_embed.author,
+            thumbnail: this_embed.thumbnail,
+            footer: this_embed.footer
+          }
+          if (this_embed.description) {
+            new_embed.description = this_embed.description + "\n"
+          } else if (this_embed.content) {
+            new_embed.description = this_embed.content + "\n"
+          } else {
+            new_embed.description = "** **"
+          }
+          if (this_embed.fields) {
+            new_embed.description += "\n"
+            for (let field of this_embed.fields) {
+              if ((field.name.trim() != "") && (field.value.trim() != "")) {
+                new_embed.description += "**" + field.name + "**" + "\n"
+                new_embed.description += field.value + "\n"
+                new_embed.description += "\n"
+              }
+            }
+          }
+          new_package = {
+            "embeds": [ new_embed ]
+          }
+          console.log(
+            {
+              channelName: this.channel.name,
+              channelID: this.channel.id,
+              package: JSON.stringify(this_package),
+              new_package: JSON.stringify(new_package)
+            }
+          )
+          this_package = new_package
         }
         let channelGuild = await this.getGuild(this.client, this.channel)
         this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)

@@ -101,6 +101,7 @@ function messageMention(tID, opts={}) {
     guildID = tID.guildId
     chanID = tID.channelId
     msgID = tID.messageId
+    platform = tID.platform
   } else if (typeof tID == "string") {
     let matches = null
     // Discord
@@ -115,15 +116,19 @@ function messageMention(tID, opts={}) {
       guildID = matches[1]
       chanID = matches[2]
       msgID = matches[3]
-      switch(platform) {
-        case "discord":
-          messageURL = `https://discord.com/channels/` + `${guildID}/${chanID}/${msgID}`
-          break
-        case "stoat":
-          messageURL = `https://stoat.chat/server/` + `${guildID}/channel/${chanID}/${msgID}`
-          break
-      }
     }
+  }
+
+  switch(platform) {
+    case "discord":
+      messageURL = `https://discord.com/channels/` + `${guildID}/${chanID}/${msgID}`
+      break
+    case "fluxer":
+      messageURL = `https://web.fluxer.app/channels/` + `${guildID}/${chanID}/${msgID}`
+      break
+    case "stoat":
+      messageURL = `https://stoat.chat/server/` + `${guildID}/channel/${chanID}/${msgID}`
+      break
   }
 
   ret = messageURL

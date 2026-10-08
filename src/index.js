@@ -154,7 +154,7 @@ if (DO_FLUXER) {
     if (FLUXER_TOKEN) {
       // console.log("FLUXER")
 
-      if (false) {
+      if (DO_FLUXER) {
         const frest = new REST(
           {
             api:      "https://api.fluxer.app",
@@ -173,7 +173,8 @@ if (DO_FLUXER) {
 
         const fclient = new RookFClient(
           {
-            intents: clientIntents,
+            // intents: clientIntents,
+            intents: 0,
             rest: frest,
             gateway: fgateway
           },
@@ -183,27 +184,20 @@ if (DO_FLUXER) {
             DEV: !process.env.ENV_ACTIVE.startsWith("prod")
           }
         )
-      }
+        console.log(`${fclient.profile.emojis[fclient.platform]} ${fclient.platform.toUpperCase()}`)
 
-      const fclient = new RookFClient(
-        {
-          intents: 0
+        await fclient.login(FLUXER_TOKEN);
+
+        await fclient.init()
+
+        console.log("---")
+
+        if (DO_FLUXER) {
+          await fgateway.connect()
         }
-      )
 
-      console.log(`${fclient.profile.emojis[fclient.platform]} ${fclient.platform.toUpperCase()}`)
-
-      await fclient.login(FLUXER_TOKEN);
-
-      await fclient.init()
-
-      console.log("---")
-
-      if (false) {
-        await fgateway.connect()
+        await eventHandler(fclient)
       }
-
-      await eventHandler(fclient)
     }
   })();
 }
@@ -284,7 +278,9 @@ if (DO_STOAT) {
       await sclient.login(STOAT_TOKEN)
 
       // // Initialize Client Object
-      // await sclient.init()
+      if (DO_STOAT) {
+        await sclient.init()
+      }
 
       // Register Events
       console.log("---")

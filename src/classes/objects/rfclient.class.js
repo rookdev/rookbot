@@ -23,7 +23,7 @@ class RookFClient extends Client {
     this.platform     = "fluxer"
     // Client Events
     // this.eventNames   = Object.keys(GatewayDispatchEvents).map(k => k.lcfirst())
-    this.eventNames   = Object.values(Events)
+    this.eventNames   = Object.values(Events).toSorted()
     // Commands
     this.commands     = {}
     // Guild Object
