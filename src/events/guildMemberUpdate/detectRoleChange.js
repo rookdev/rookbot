@@ -1,10 +1,11 @@
-const { GuildMember, hyperlink } = require('discord.js')
+const { GuildMember, hyperlink, AuditLogEvent } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
 const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const timeConversion = require('../../utils/formatters/timeConversion')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const dbFuncs = require('../../utils/db/dbFuncs')
+const getters = require('../../utils/guild/getters')
 const moment = require('moment')
 
 /**
@@ -115,6 +116,25 @@ module.exports = class RoleChangeEvent extends EventScript {
 
     if (!doLog) {
       return false
+    }
+
+    const fetchedLogs = await guild?.fetchAuditLogs(
+      {
+        limit: 6,
+        type: AuditLogEvent.MemberRoleUpdate
+      }
+    ).catch(console.error)
+    const auditEntry = await fetchedLogs?.entries.find(
+      a =>
+        a.target.id === newMember.id &&
+        Date.now() - a.createdTimestamp < 20 * 1000
+    )
+    let editor = auditEntry?.executor ?? null
+    if (editor) {
+      let editorMember = await getters.getCachedMember(client, guild, editor.id)
+      if (editorMember) {
+        editor = editorMember
+      }
     }
 
     // Make logpost
@@ -246,6 +266,20 @@ module.exports = class RoleChangeEvent extends EventScript {
     fieldRow.push(field)
     logProps.fields.push(fieldRow)
     fieldRow = []
+
+    // [Editor]
+    if (editor && editor?.id) {
+      field = {
+        name: "Editor",
+        value: ((editor?.user?.bot || editor?.bot) ? "🤖" : "👤") + mentionFuncs.userMention(
+          editor?.id,
+          { showID: true }
+        )
+      }
+      fieldRow.push(field)
+      logProps.fields.push(fieldRow)
+      fieldRow = []
+    }
 
     // [Guild]
     field = {
