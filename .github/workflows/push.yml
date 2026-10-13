@@ -7,8 +7,8 @@ on: [push, pull_request]
 #########
 # actions
 #########
-# actions/checkout@v6.0.2
-# actions/setup-python@v6.2.0
+# actions/checkout@v7.0.1
+# actions/setup-python@v7.0.0
 # rookdev/rookbot/install
 # rookdev/rookbot/test
 
@@ -32,10 +32,10 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       # install python
       - name: 💿Install Python
-        uses: actions/setup-python@v6.2.0
+        uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
       # python version
@@ -86,7 +86,7 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       # get parent dir
       - name: 📁Get Parent Directory
         id: parentDir
@@ -99,7 +99,7 @@ jobs:
       # upload pages artifact for later step
       - name: 🔼Upload Pages Artifact
         id: deployment
-        uses: actions/upload-pages-artifact@v4.0.0
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
           name: pages-${{ matrix.os-name }}
           path: ${{ steps.parentDir.outputs.parentDir }}/pages
@@ -125,10 +125,10 @@ jobs:
     steps:
       # checkout commit
       - name: ✔️Checkout commit
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
       # download pages artifact
       - name: 🔽Download Pages Artifact
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           name: pages-${{ matrix.os-name }}
           path: ./
@@ -155,7 +155,7 @@ jobs:
           cat commit.txt
       # Push to GH-Pages
       - name: 🚀Push to GH-Pages
-        uses: actions/deploy-pages@v5.0.0
+        uses: actions/deploy-pages@v5.0.1
         with:
           artifact-name: pages-${{ matrix.os-name }}
         if: contains(github.ref, 'main')
