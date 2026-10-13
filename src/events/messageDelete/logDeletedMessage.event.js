@@ -52,6 +52,11 @@ module.exports = class LogDeletedMessageEvent extends EventScript {
       }
     }
 
+    if (!deletedMessage) {
+      this.messages.push("No message!")
+      return false
+    }
+
     // Skip logging system messages or messages with no content
     if (deletedMessage.system || !deletedMessage.content) {
       return false

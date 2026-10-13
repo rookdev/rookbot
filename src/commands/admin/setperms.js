@@ -23,7 +23,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
       options: [
         {
           name: "channel-id",
-          description: "Channel to check",
+          description: "Channel to check (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {

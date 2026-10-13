@@ -25,17 +25,17 @@ module.exports = class VerboseViewCommand extends AdminCommand {
       options: [
         {
           name: "role-id",
-          description: "Role ID",
+          description: "Role ID (Role)",
           type: ApplicationCommandOptionType.Role
         },
         {
           name: "member-id",
-          description: "Member ID",
+          description: "Member ID (User)",
           type: ApplicationCommandOptionType.User
         },
         {
           name: "channel-id",
-          description: "Channel ID",
+          description: "Channel ID (Channel)",
           type: ApplicationCommandOptionType.Channel
         }
       ],

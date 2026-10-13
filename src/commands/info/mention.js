@@ -55,7 +55,7 @@ module.exports = class MentionCommand extends RookCommand {
         },
         {
           name: "channel-id",
-          description: "Channel ID",
+          description: "Channel ID (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {

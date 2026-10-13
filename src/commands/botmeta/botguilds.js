@@ -88,7 +88,9 @@ module.exports = class BotGuildsCommand extends RookCommand {
       let thisGuild = {}
       thisGuild.guild = {
         name: guildData.name,
-        id: guildID
+        id: guildID,
+        premiumTier: guildData?.premiumTier,
+        premiumSubscriptionCount: guildData?.premiumSubscriptionCount
       }
       if (owner) {
         thisGuild.owner = {
@@ -122,21 +124,21 @@ module.exports = class BotGuildsCommand extends RookCommand {
     for (let [guildID, guildData] of Object.entries(ksort(sorted))) {
       if (guildData?.guild) {
         // Get Guild Tier Level
-        let tier = guildData.guild.premiumTier ?? 0
+        let tier = guildData.guild?.premiumTier ?? 0
         // Get Guild Server Boosts
-        let boosts = guildData.guild.premiumSubscriptionCount ?? 0
+        let boosts = guildData.guild?.premiumSubscriptionCount ?? 0
         Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
           .addRow("Owner",  `\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
           .addRow("Added",  guildData.added)
-          // .addRow("Tier",   tier)
-          // .addRow("Boosts", boosts)
+          .addRow("Tier",   tier)
+          .addRow("Boosts", boosts)
           .addRow("")
         this.props.description.push(
           bold(`Guild:`)  + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
           bold(`Owner:`)  + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
           bold(`Added:`)  + ` ${guildData.addedHammertime}`,
-          // bold(`Tier:`)   + ` ${tier}`,
-          // bold(`Boosts:`) + ` ${boosts}`,
+          bold(`Tier:`)   + ` ${tier + client.profile.emojis.success.repeat(tier)}`,
+          bold(`Boosts:`) + ` ${boosts + "💗".repeat(boosts)}`,
           ""
         )
       }

@@ -38,7 +38,7 @@ module.exports = class ChannelEditCommand extends RookCommand {
         },
         {
           name: "channel",
-          description: "Selected Channel",
+          description: "Selected Channel (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {
@@ -58,7 +58,7 @@ module.exports = class ChannelEditCommand extends RookCommand {
         },
         {
           name: "parent",
-          description: "Parent Channel",
+          description: "Parent Channel (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {

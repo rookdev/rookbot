@@ -35,7 +35,7 @@ module.exports = class RoleEditCommand extends RookCommand {
         },
         {
           name: "role",
-          description: "Selected Role",
+          description: "Selected Role (Role)",
           type: ApplicationCommandOptionType.Role
         },
         {
