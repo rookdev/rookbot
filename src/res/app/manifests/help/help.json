@@ -12,7 +12,7 @@
         },
         {
           "name": "channel",
-          "description": "Selected Channel"
+          "description": "Selected Channel (Channel)"
         },
         {
           "name": "channel-id",
@@ -28,7 +28,7 @@
         },
         {
           "name": "parent",
-          "description": "Parent Channel"
+          "description": "Parent Channel (Channel)"
         },
         {
           "name": "parent-id",
@@ -100,7 +100,7 @@
         },
         {
           "name": "role",
-          "description": "Selected Role"
+          "description": "Selected Role (Role)"
         },
         {
           "name": "role-id",
@@ -147,7 +147,7 @@
       "options": [
         {
           "name": "channel-id",
-          "description": "Channel to check"
+          "description": "Channel to check (Channel)"
         },
         {
           "name": "role-id",
@@ -186,15 +186,15 @@
       "options": [
         {
           "name": "role-id",
-          "description": "Role ID"
+          "description": "Role ID (Role)"
         },
         {
           "name": "member-id",
-          "description": "Member ID"
+          "description": "Member ID (User)"
         },
         {
           "name": "channel-id",
-          "description": "Channel ID"
+          "description": "Channel ID (Channel)"
         }
       ],
       "access": "Admin",
@@ -684,7 +684,7 @@
         },
         {
           "name": "channel-id",
-          "description": "Channel ID"
+          "description": "Channel ID (Channel)"
         },
         {
           "name": "emoji-id",
@@ -806,6 +806,23 @@
         }
       ],
       "access": "BotDev",
+      "segment": "local"
+    },
+    "guildinvite": {
+      "name": "guildinvite",
+      "category": "mod",
+      "description": "Guild Invite",
+      "options": [
+        {
+          "name": "channel",
+          "description": "Channel (Channel)"
+        },
+        {
+          "name": "channel-id",
+          "description": "Channel ID"
+        }
+      ],
+      "access": "Mod",
       "segment": "local"
     },
     "kick": {
