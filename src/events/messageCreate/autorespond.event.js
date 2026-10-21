@@ -98,6 +98,14 @@ module.exports = class AutoRespondEvent extends EventScript {
     return false
   }
 
+  // No VC Text Channel usage
+  async respondNoVCText(client, message) {
+    if (message.author.id === client.user.id) { return }
+    if (message.channel.type == ChannelType.GuildVoice) {
+      await message.delete()
+    }
+  }
+
   // Seed Permalinks
   async respondPermalinks(client, message) {
     let content = await message.content
@@ -147,6 +155,25 @@ module.exports = class AutoRespondEvent extends EventScript {
       return true
     }
     return false
+  }
+
+  async respondScrubber(client, message) {
+    if (message.author.id === client.user.id) { return }
+    let guild = await this.getGuild(client, message)
+    if (
+      [
+        "1450159772622913628" // ZDoI Rando Community
+      ].includes(guild.id)
+    ) {
+      if (
+        [
+          "1450373860460462161", // vc-text
+          "1450163849394258013" // multiplayer-vc-text
+        ].includes(message.channel.id)
+      ) {
+        await message.delete()
+      }
+    }
   }
 
   // Wikis
@@ -333,6 +360,12 @@ module.exports = class AutoRespondEvent extends EventScript {
         switch(responseID) {
           case "holyimages":
             response = await this.respondHolyimages(client, message)
+            break
+          case "novctext":
+            response = await this.respondNoVCText(client, message)
+            break
+          case "scrubber":
+            response = await this.respondScrubber(client, message)
             break
           case "seedpermalinks":
             response = await this.respondPermalinks(client, message)

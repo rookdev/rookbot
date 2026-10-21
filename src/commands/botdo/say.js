@@ -648,8 +648,6 @@ module.exports = class SayCommand extends ModCommand {
       let interactionGuild = await this.getGuild(client, interaction)
       let interactionAuthor = await this.getProp(client, interaction, "user")
 
-      console.log(result)
-
       // Get the posted time
       let resultDateTime = moment.utc(result.createdTimestamp)
       props.mod = {}
