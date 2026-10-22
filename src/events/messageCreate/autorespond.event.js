@@ -101,7 +101,7 @@ module.exports = class AutoRespondEvent extends EventScript {
   // No VC Text Channel usage
   async respondNoVCText(client, message) {
     if (message.author.id === client.user.id) { return }
-    if (message.channel.type == ChannelType.GuildVoice) {
+    if (message.channel.type === ChannelType.GuildVoice) {
       await message.delete()
     }
   }

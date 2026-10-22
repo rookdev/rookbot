@@ -301,13 +301,16 @@ module.exports = class SayCommand extends ModCommand {
     }
 
     if (rookhook.name !== visages[visage].name) {
-      let rookhookEdit = await rookhook.edit(
-        {
-          name: visages[visage].name,
-          avatar: visages[visage].avatar,
-          channel: channel
+      let rookhookProps = {
+        name: visages[visage].name,
+        avatar: visages[visage].avatar
+      }
+      if (channel) {
+        if (rookhook.channel.id !== channel.id) {
+          rookhookProps.channel = channel
         }
-      )
+      }
+      let rookhookEdit = await rookhook.edit(rookhookProps)
 
       if (!rookhookEdit) {
         this.error = true
@@ -409,13 +412,6 @@ module.exports = class SayCommand extends ModCommand {
 
     // this.messages.push("We've got a valid channel!")
 
-    // If we're using a visage
-    if (visage) {
-      let visageRes = await this.setVisage(interaction, visage, channel)
-      rookhook = visageRes[0]
-      visages = visageRes[1]
-    }
-
     // Result
     let result = null
 
@@ -484,6 +480,13 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
       // this.messages.push(`${mode.ucfirst()}: Detected`)
+
+      // If we're using a visage
+      if (visage) {
+        let visageRes = await this.setVisage(interaction, visage, ((mode == "edit") ? null : channel))
+        rookhook = visageRes[0]
+        visages = visageRes[1]
+      }
 
       // Destination Checks
       if (["edit","clone"].indexOf(mode) > -1) {

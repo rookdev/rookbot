@@ -63,6 +63,10 @@ module.exports = class LogPinnedMessageEvent extends EventScript {
       return false
     }
 
+    if (oldMessage.pinned && newMessage.pinned) {
+      return false
+    }
+
     if (!newMessage.pinned) {
       return false
     }
@@ -77,8 +81,8 @@ module.exports = class LogPinnedMessageEvent extends EventScript {
     const auditEntry = await fetchedLogs?.entries.find(
       a =>
         // Small filter function to make use of the little discord provides to narrow down the correct audit entry.
-        a.target.id === newMessage.author.id &&
-        a.extra.channel.id === newMessage.channel.id &&
+        a?.target?.id === newMessage?.author?.id &&
+        a.extra.channel.id === newMessage?.channel?.id &&
         // Ignore entries that are older than 20 seconds to reduce false positives.
         Date.now() - a.createdTimestamp < 20 * 1000
     )
