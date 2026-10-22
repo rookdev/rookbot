@@ -54,6 +54,10 @@ module.exports = class ReactionRolesCommand extends ModCommand {
 
     for (let [msgID, msgData] of Object.entries(rrs)) {
       this.props = {}
+      this.props.playerTypes = {
+        user: "guild",
+        target: "guild"
+      }
       this.props.description = []
       if (msgID.contains("#")) {
         continue 

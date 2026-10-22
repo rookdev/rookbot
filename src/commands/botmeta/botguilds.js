@@ -55,8 +55,11 @@ module.exports = class BotGuildsCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions={}) {
+    let preamble = {}
+    let props = {}
+
     // Set EmbedPlayerTypes to Bot|Bot
-    this.props.playerTypes = {
+    preamble.playerTypes = {
       user: "bot",
       target: "bot"
     }
@@ -89,6 +92,7 @@ module.exports = class BotGuildsCommand extends RookCommand {
       thisGuild.guild = {
         name: guildData.name,
         id: guildID,
+        memberCount: guildData?.memberCount,
         premiumTier: guildData?.premiumTier,
         premiumSubscriptionCount: guildData?.premiumSubscriptionCount
       }
@@ -104,8 +108,8 @@ module.exports = class BotGuildsCommand extends RookCommand {
       sorted[bot.joinedTimestamp] = thisGuild
     }
 
-    this.props.description = []
-    this.props.description.push(
+    preamble.description = []
+    preamble.description.push(
       `${client.user} is servicing ${totalMembers} members in ${Object.keys(sorted).length} guilds:`.boldItalic(),
       ""
     )
@@ -121,30 +125,60 @@ module.exports = class BotGuildsCommand extends RookCommand {
       .setHeading("Type","Name","ID")
 
     // Cycle through guilds
+    let i = 0
+    let description = []
+    let perPage = 5
     for (let [guildID, guildData] of Object.entries(ksort(sorted))) {
       if (guildData?.guild) {
         // Get Guild Tier Level
         let tier = guildData.guild?.premiumTier ?? 0
         // Get Guild Server Boosts
         let boosts = guildData.guild?.premiumSubscriptionCount ?? 0
-        Table.addRow("Guild",guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
-          .addRow("Owner",  `\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
-          .addRow("Added",  guildData.added)
-          .addRow("Tier",   tier)
-          .addRow("Boosts", boosts)
+        Table.addRow("Guild", guildData.guild.name,`(ID:\'${guildData.guild.id}\')`)
+          .addRow("Owner",    `\'${guildData.owner.username}\'`,`(ID:\'${guildData.owner.id}\')`)
+          .addRow("Added",    guildData.added)
+          .addRow("Members",  guildData.guild.memberCount)
+          .addRow("Tier",     tier)
+          .addRow("Boosts",   boosts)
           .addRow("")
-        this.props.description.push(
-          bold(`Guild:`)  + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
-          bold(`Owner:`)  + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
-          bold(`Added:`)  + ` ${guildData.addedHammertime}`,
-          bold(`Tier:`)   + ` ${tier + client.profile.emojis.success.repeat(tier)}`,
-          bold(`Boosts:`) + ` ${boosts + "💗".repeat(boosts)}`,
+        description.push(
+          bold(`Guild:`)    + ` ${mentionFuncs.guildMention(guildData.guild.name, guildData.guild.id, { showID: true, oneLine: true })}`,
+          bold(`Owner:`)    + ` ${inlineCode(guildData.owner.username)} [${inlineCode(guildData.owner.id)}, ${mentionFuncs.userMention(guildData.owner.id)}]`,
+          bold(`Added:`)    + ` ${guildData.addedHammertime}`,
+          bold(`Members:`)  + ` ${guildData.guild.memberCount}`,
+          bold(`Tier:`)     + ` ${tier + client.profile.emojis.success.repeat(tier)}`,
+          bold(`Boosts:`)   + ` ${boosts + "💗".repeat(boosts)}`,
           ""
         )
+        i++
+        if (i % perPage == 0) {
+          this.pages.push(
+            {
+              description: [
+                ...preamble.description,
+                ...JSON.parse(JSON.stringify(description))
+              ],
+              playerTypes: preamble.playerTypes
+            }
+          )
+          description = []
+        }
       }
+    }
+    if (i % perPage) {
+      this.pages.push(
+        {
+          description: [
+            ...preamble.description,
+            ...JSON.parse(JSON.stringify(description))
+          ],
+          playerTypes: preamble.playerTypes
+        }
+      )
+      description = []
     }
     this.messages.push(Table.toString())
 
-    return !this.error
+    return this.pages.length > 0 && !this.error
   }
 }
