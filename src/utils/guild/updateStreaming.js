@@ -207,6 +207,74 @@ const detectStreaming = async (
     guildRoles = dbRes[0]
     debug["messages"].push(...dbRes[1])
 
+    //              Current Intended
+    // Global Yes   Y       Y
+    // Global No    N       N
+    // Member No    N       N
+    // Admin Voice  N       N
+    // Member Voice Y       Y
+
+    if (newObject?.channel) {
+      let newChannel = newObject.channel
+      let channelRoles = await newChannel.permissionOverwrites.cache
+
+      // Member
+      let MEMBER_ROLES = guildRoles["member"] ?? null
+      if (MEMBER_ROLES) {
+        for (let memberRoleName of MEMBER_ROLES) {
+          let memberRole = await getters.getCachedRole(client, newGuild, memberRoleName)
+          if (memberRole) {
+            let memberPerms = channelRoles
+              .valueOf()
+              .filter(r => r.id == memberRole.id)
+              .first()
+            if (memberPerms) {
+              let allow = memberPerms?.allow?.toArray()
+              let deny = memberPerms?.deny?.toArray()
+              for (let perm of ["ViewChannel","Connect"]) {
+                if (allow.contains(perm)) {
+                  // console.log(`Member can ${perm} !`)
+                  changesDetected = true
+                } else if (deny.contains(perm)) {
+                  // console.log(`Member can't ${perm} !`)
+                  changesDetected = false
+                }
+              }
+            } else {
+              // console.log("Member Perms not found!")
+              changesDetected = false
+            }
+          }
+        }
+      }
+
+      if (!changesDetected) {
+        // @everyone
+        let everyonePerms = channelRoles
+          .valueOf()
+          .filter(r => r.id == newGuild.roles.everyone.id)
+          .first()
+        if (everyonePerms) {
+          let allow = everyonePerms?.allow?.toArray()
+          let deny = everyonePerms?.deny?.toArray()
+          for (let perm of ["ViewChannel","Connect"]) {
+            if (allow.contains(perm)) {
+              // console.log(`@Everyone can ${perm} !`)
+              changesDetected = true
+            } else if (deny.contains(perm)) {
+              // console.log(`@Everyone can't ${perm} !`)
+              changesDetected = false
+            }
+          }
+        } else {
+          // console.log("@Everyone Perms not found!")
+          changesDetected = false
+        }
+      }
+    }
+
+    debug["changesDetected"] = changesDetected
+
     // Owner roles
     let OWNER_ROLES = guildRoles["owner"] ?? null
     if (OWNER_ROLES) {
