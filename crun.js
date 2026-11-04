@@ -121,8 +121,10 @@ let del = ""
 let purge = ""
 let profile = ""
 
-// MongoDB
-envs += `-f ./env/db/.env.mongodb `
+if (!process.env.GITHUB_WORKFLOW) {
+  // MongoDB if not gitrook
+  envs += `-f ./env/db/.env.mongodb `
+}
 
 // CUser
 if (haveCUser && !haveUser && !haveClient) {
