@@ -50,7 +50,7 @@ jobs:
       - name: 💿Install Node
         uses: actions/setup-node@v7.1.0
         with:
-          node-version: "24.12.0"
+          node-version: "24.22.2"
       # disable funding message
       - name: 💲Disable funding message
         run: npm config set fund false
