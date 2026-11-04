@@ -37,6 +37,9 @@ const moment = require('moment')
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 const fs = require('fs')      // Filesystem manipulation
 
+const momentFormat = "HH:mm:ss"
+const rookhookWait = 2 * 1000
+
 /**
  * @class
  * @classdesc Speak as Bot
@@ -89,9 +92,11 @@ module.exports = class SayCommand extends ModCommand {
       ],
       testOptions: [
         { message: "Send to current channel" },
-        { message: "Send to #bot-console", channel: "#bot-console" },
+        { message: "Send to #bot-console",  channel: "#bot-console" },
         { message: "Send to #rook-console", channel: "#rook-console" },
-        { message: "Say as Brad", "visage-name": "brad" }
+        { message: "Send to Forum Thread",  channel: "1462546530736017552" },
+        { message: "Say as Guild",          "visage-name": "guild" },
+        { message: "Send to Forum Thread as Guild", "visage-name": "guild", channel: "1462546530736017552" }
       ],
       userPermissions: [ PermissionFlagsBits.ManageMessages ],
       botPermissions: [ PermissionFlagsBits.SendMessages ]
@@ -109,7 +114,15 @@ module.exports = class SayCommand extends ModCommand {
 
     if (typeof message === "object") {
       // this.messages.push(message)
-      for (let property of ["content","embeds","poll","files"]) {
+      for (let property of
+        [
+          "content",
+          "embeds",
+          "poll",
+          "files",
+          "threadId"
+        ]
+      ) {
         if (message[property]) {
           payload[property] = message[property]
         }
@@ -181,7 +194,7 @@ module.exports = class SayCommand extends ModCommand {
     return message
   }
 
-  async getRookhook(interaction) {
+  async getRookhook(interaction, rookhookID=0) {
     // Get Guild Metadata
     // DB
     let dbRes = await dbFuncs.getDB(
@@ -193,7 +206,6 @@ module.exports = class SayCommand extends ModCommand {
     // /DB
 
     let rookhook = null // Bucket for rookhook
-    let rookhookID = 0  // Bucket for rookhook ID
     let webhooks = null // Bucket for Guild Webhooks
 
     if (!interaction?.guild) {
@@ -216,6 +228,13 @@ module.exports = class SayCommand extends ModCommand {
         rookhookID = guildMetadata.rookhook
       }
     }
+    // this.messages.push(
+    //   moment().format(momentFormat) +
+    //   "; " +
+    //   webhooks.map(
+    //     h => "'" + h.name + "' [@" + h.id + "][#" + h.channel.name + ']'
+    //   )
+    // )
 
     // If we didn't receive the ID, try to search for it by name
     if (rookhookID == 0) {
@@ -231,6 +250,7 @@ module.exports = class SayCommand extends ModCommand {
 
     if (!rookhook) {
       try {
+        // this.messages.push(moment().format(momentFormat) + "; *Creating 'rookbot imporsonator' for '" + interaction.guild.name + "'")
         await interaction.channel.createWebhook(
           {
             name: "rookbot impersonator",
@@ -241,19 +261,29 @@ module.exports = class SayCommand extends ModCommand {
         rookhook = webhooks.find(
           w => w.name == "rookbot impersonator"
         )
+        // this.messages.push(
+        //   moment().format(momentFormat) +
+        //   "; " +
+        //   webhooks.map(
+        //     h => "'" + h.name + "' [@" + h.id + "][#" + h.channel.name + ']'
+        //   )
+        // )
+        // this.messages.push(moment().format(momentFormat) + "; Got new rookhook for '" + interaction.guild.name + "'")
       } catch (e) {
         this.error = true
         this.props.description = `rookhook not found and not creatable for ${mentionFuncs.guildMention(interaction.guild.name, interaction.guild.id, { showID: true, oneLine: true })}`
         return false
       }
+    } else {
+      // this.messages.push(moment().format(momentFormat) + "; Got existing rookhook for '" + interaction.guild.name + "'")
     }
 
     return rookhook
   }
 
-  async setVisage(interaction, visage, channel) {
+  async setVisage(interaction, visage, channel, rookhookID=0) {
     // this.messages.push("We're selecting a visage!")
-    let rookhook = await this.getRookhook(interaction)
+    let rookhook = await this.getRookhook(interaction, rookhookID)
     let visages = null  // Bucket for visages
 
     if (!interaction?.guild) {
@@ -300,16 +330,20 @@ module.exports = class SayCommand extends ModCommand {
       return false
     }
 
-    if (rookhook.name !== visages[visage].name) {
-      let rookhookProps = {
-        name: visages[visage].name,
-        avatar: visages[visage].avatar
+    let updateRookProfile = (rookhook.name != visages[visage].name)
+    let updateRookChannel = (rookhook.channel.id != channel.id)
+
+    if (updateRookProfile || updateRookChannel) {
+      let rookhookProps = {}
+      if (updateRookProfile) {
+        rookhookProps.name = visages[visage].name
+        rookhookProps.avatar = visages[visage].avatar
       }
-      if (channel) {
-        if (rookhook.channel.id !== channel.id) {
-          rookhookProps.channel = channel
-        }
+      if (updateRookChannel) {
+        rookhookProps.channel = channel
       }
+
+      // this.messages.push(moment().format(momentFormat) + "; *Setting rookhook to '" + rookhookProps.name + "' in [#" + channel.name + "]")
       let rookhookEdit = await rookhook.edit(rookhookProps)
 
       if (!rookhookEdit) {
@@ -318,9 +352,10 @@ module.exports = class SayCommand extends ModCommand {
         return false
       }
 
-      // Wait a second after editing the webhook
-      await wait(1 * 1000)
+      // Wait a sec after editing the webhook
+      await wait(rookhookWait)
     }
+
     // this.messages.push("We've selected a visage!")
     return [rookhook, visages]
   }
@@ -344,10 +379,11 @@ module.exports = class SayCommand extends ModCommand {
     let visage = coptions["visage-name"] ?? null
     let visages = null
 
-    let rookhook = null     // Bucket for rookhook webhook
-    let srcMessage = null   // Bucket for source message
-    let destMessage = null  // Bucket for destination message
-    let replyMessage = null // Bucket for reply message
+    let thread        = null  // Bucket for channel thread
+    let rookhook      = null  // Bucket for rookhook webhook
+    let srcMessage    = null  // Bucket for source message
+    let destMessage   = null  // Bucket for destination message
+    let replyMessage  = null  // Bucket for reply message
 
     let messages = []
 
@@ -483,9 +519,26 @@ module.exports = class SayCommand extends ModCommand {
 
       // If we're using a visage
       if (visage) {
-        let visageRes = await this.setVisage(interaction, visage, ((mode == "edit") ? null : channel))
+        // this.messages.push(
+        //   JSON.stringify({ "source": "assumed", channelName: channel.name, channelId: channel.id, isThread: channel.isThread(), isThreadOnly: channel.isThreadOnly(), visage: visage })
+        // )
+        if (channel.isThread()) {
+          thread = channel
+          channel = channel.parent
+        }
+        // this.messages.push(
+        //   JSON.stringify({ "source": "assumed", channelName: channel.name, channelId: channel.id, isThread: channel.isThread(), isThreadOnly: channel.isThreadOnly(), visage: visage })
+        // )
+        let visageRes = await this.setVisage(
+          interaction,
+          visage,
+          channel
+        )
         rookhook = visageRes[0]
         visages = visageRes[1]
+        // this.messages.push(
+        //   JSON.stringify({ rookName: rookhook?.name, rookId: rookhook?.id, rookChannel: rookhook?.channel?.name })
+        // )
       }
 
       // Destination Checks
@@ -506,6 +559,32 @@ module.exports = class SayCommand extends ModCommand {
         }
 
         if (destMessage) {
+          // If we're using a visage
+          if (visage) {
+            // this.messages.push(
+            //   JSON.stringify({ "source": "destination", channelName: channel.name, channelId: channel.id, isThread: channel.isThread(), isThreadOnly: channel.isThreadOnly(), visage: visage })
+            // )
+            channel = destMessage.channel
+            if (channel.isThread()) {
+              thread = channel
+              channel = channel.parent
+            }
+            // this.messages.push(
+            //   JSON.stringify({ "source": "destination", channelName: channel.name, channelId: channel.id, isThread: channel.isThread(), isThreadOnly: channel.isThreadOnly(), visage: visage })
+            // )
+            let visageRes = await this.setVisage(
+              interaction,
+              visage,
+              channel,
+              rookhook.id
+            )
+            rookhook = visageRes[0]
+            visages = visageRes[1]
+            // this.messages.push(
+            //   JSON.stringify({ rookName: rookhook?.name, rookId: rookhook?.id, rookChannel: rookhook?.channel?.name })
+            // )
+          }
+
           let notPostedByClientError = (!rookhook) && (destMessage.author.id !== client.user.id)
           let notPostedByHookError = (rookhook) && (false)
 
@@ -544,8 +623,8 @@ module.exports = class SayCommand extends ModCommand {
 
       let this_package = {
         content:  "** **",
-        embeds:   srcMessage?.embeds  ?? [],
-        poll:     srcMessage?.poll    ?? null,
+        embeds:   srcMessage?.embeds                ?? [],
+        poll:     srcMessage?.poll                  ?? null,
         files:    srcMessage?.attachments?.toJSON() ?? []
       }
       if (srcMessage?.content) {
@@ -554,7 +633,14 @@ module.exports = class SayCommand extends ModCommand {
         }
       }
       if (message && message != "") {
-        this_package = message
+        // If it's a thread, set the message text to content
+        if (thread?.id) {
+          this_package.threadId = thread.id
+          this_package.content = message
+        } else {
+          // Else, just set the message text as whole package
+          this_package = message
+        }
       }
       // this.messages.push(`Message: [${JSON.stringify(this_package)}]`)
 
@@ -586,6 +672,10 @@ module.exports = class SayCommand extends ModCommand {
             result = destMessage
             break
           case "edit":
+            // this.messages.push("DestMessage: " + destMessage.url)
+            // this.messages.push("DestAuthor:  " + destMessage.author.id)
+            // this.messages.push("HookID:      " + rookhook.id)
+            // await this.printMessages()
             result = await rookhook.editMessage(destMessage, message)
             break
         }
@@ -624,12 +714,15 @@ module.exports = class SayCommand extends ModCommand {
 
     if (visages) {
       if (rookhook) {
+        // this.messages.push(moment().format(momentFormat) + "; *Resetting rookhook to '" + visages.reset.name + "'")
         let rookhookEdit = await rookhook.edit(
           {
             name: visages.reset.name,
             avatar: visages.reset.avatar
           }
         )
+        // Wait a sec after editing the webhook
+        await wait(rookhookWait)
 
         if (!rookhookEdit) {
           // this.messages.push("Couldn't reset rookhook!")

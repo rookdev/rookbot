@@ -81,7 +81,7 @@ module.exports = async (client, message) => {
   const user = guildMember?.user ?? targetUser
 
   if (!user) {
-    messages.push(`Couldn't resolve user for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
+    // messages.push(`Couldn't resolve user for seener ${mentionFuncs.userMention(message.author.id, { showID: true, oneLine: true, textOnly: true })}`)
     return [result, messages]
   }
 
