@@ -208,8 +208,8 @@ class RookEmbed extends EmbedBuilder {
     let footerDev = client.profile?.DEV && client.profile.DEV
     // Hack footer for PROD Mode
     if (!(footerDev || footerNone)) {
-      let profileFooterText = client.profile.footer?.text && client.profile.footer.text != "" ? client.profile.footer.text : ""
-      let profileFooterImage = client.profile.footer?.image && client.profile.footer.image != "" ? client.profile.footer.image : ""
+      let profileFooterText = client.profile?.footer?.text && client.profile?.footer.text != "" ? client.profile.footer.text : ""
+      let profileFooterImage = client.profile?.footer?.image && client.profile?.footer.image != "" ? client.profile.footer.image : ""
       if (!this.props?.footer) {
         this.props.footer = {
           text: "",
@@ -245,7 +245,7 @@ class RookEmbed extends EmbedBuilder {
 
     if (!footerNone) {
       // Make sure version number is in the footer text
-      let versionText = `[v${client.profile.PACKAGE.version}]`
+      let versionText = `[v${client.profile?.PACKAGE?.version}]`
       if (this.props.footer?.text) {
         if (this.props.footer.text.indexOf(versionText) == -1) {
           this.props.footer.text += " " + versionText
@@ -343,7 +343,7 @@ class RookEmbed extends EmbedBuilder {
       let hasIcon = this.props.footer?.image && !footerNone
 
       if (!hasText) {
-        this.props.footer.text = client.profile.emojis.null
+        this.props.footer.text = client.profile?.emojis.null
       }
 
       if (hasText || hasIcon) {

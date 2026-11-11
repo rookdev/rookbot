@@ -421,8 +421,8 @@ module.exports = class SayCommand extends ModCommand {
       botChanPerms = true
     } else {
       botChanPerms = channel
-        .permissionsFor(client.user)
-        .has(PermissionFlagsBits.SendMessages)
+        ?.permissionsFor(client.user)
+        ?.has(PermissionFlagsBits.SendMessages)
     }
     if (!botChanPerms) {
       this.error = true
@@ -437,8 +437,8 @@ module.exports = class SayCommand extends ModCommand {
       userChanPerms = true
     } else {
       userChanPerms = channel
-        .permissionsFor(interaction.user)
-        .has(PermissionFlagsBits.ManageMessages)
+        ?.permissionsFor(interaction.user)
+        ?.has(PermissionFlagsBits.ManageMessages)
     }
     if (!userChanPerms) {
       this.error = true
@@ -865,7 +865,7 @@ module.exports = class SayCommand extends ModCommand {
       }
 
       // Edit reply to Mod
-      embeds.mod = new RookEmbed(client, props.mod)
+      embeds.mod = await new RookEmbed(client, props.mod)
       if (typeof interaction.editReply === "function") {
         try {
           await interaction.editReply({ embeds: [ embeds.mod ] })

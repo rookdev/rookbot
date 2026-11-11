@@ -15,6 +15,9 @@ const { RookClient } = require('../objects/rclient.class')
 class SlimEmbed extends RookEmbed {
   // constructor(client: RookClient, props: import('../../types/embed').EmbedProps) {
   constructor(client, props) {
+    if (!props) {
+      props = {}
+    }
     // If we've got no title, set default
     if(props?.title?.text && props.title.text.trim() != "" && props.title.text.trim() != "<NONE>") {
       if(!(props?.description)) {

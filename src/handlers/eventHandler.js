@@ -99,8 +99,8 @@ module.exports = (client) => {
                 try {
                   [result, messages] = await eventObject(client, ...args) // Pass all arguments to the event function
                 } catch (error) {
-                  messages.push(`Args: ${JSON.stringify(args)}`)
-                  messages.push(`${client.profile.emojis.bad}${error.stack}`)
+                  // messages.push(`Args: ${JSON.stringify(args)}`)
+                  // messages.push(`${client.profile.emojis.bad}${error.stack}`)
                 }
               } else {
                 try {

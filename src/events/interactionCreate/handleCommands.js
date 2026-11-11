@@ -75,7 +75,7 @@ module.exports = async (client, interaction) => {
           testGuilds.push(guildID)
         }
       }
-      if (!(testGuilds.includes(interaction.guild.id))) {
+      if (!(testGuilds.includes(interaction?.guild?.id))) {
         let content = `${client.profile.emojis.fail} This command cannot be ran here.`
         let intOptions = {
           content: content,
@@ -104,7 +104,7 @@ module.exports = async (client, interaction) => {
 
     if (commandObject.botPermissions?.length) {
       for (const permission of commandObject.botPermissions) {
-        const bot = interaction.guild.members.me
+        const bot = interaction?.guild?.members.me
 
         if (!bot.permissions.has(permission)) {
           let content = `${client.profile.emojis.bot} Bot is missing permissions.`
@@ -132,7 +132,7 @@ module.exports = async (client, interaction) => {
       coptions
     )
   } catch (error) {
-    messages.push(`${client.profile.emojis.fail} There was an error running this command: ${error.stack}`)
+    messages.push(`${client.profile.emojis.fail} There was an error running /${interaction.commandName}: ${error.stack}`)
     return [result, messages]
   }
 

@@ -84,8 +84,18 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
       }
     }
 
-    if (!guild) { return false }
-    if (!state) { return false }
+    if (!guild) { return false } // No guild
+    if (!state) { return false } // No state
+
+    // Ignore these accounts
+    if (
+      [
+        "1470151477610938509",  // Green-bot
+        "1222739006350032966"   // Suno Bot
+      ].includes(state.id)
+    ) {
+      return false
+    }
 
     let dbRes = await dbFuncs.getDB(guild.id, "autoresponders", "", "fs", true)
     let responses = dbRes[0]
