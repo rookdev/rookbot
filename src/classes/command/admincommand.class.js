@@ -59,34 +59,38 @@ class AdminCommand extends RookCommand {
       // Get list of roles
       // DB
       let guild = await this.getGuild(client, interaction)
-      let guildID = guild.id
-      let dbRes = await dbFuncs.getDB(
-        guildID,
-        "roles"
-      )
-      this.ROLES = dbRes[0]
-      this.messages.push(...dbRes[1])
-      // /DB
-
-      if (this.ROLES && this.ROLES.length > 0) {
-        // Get Admin roles
-        let APPROVED_ROLES = this.ROLES["admin"]
-        // Bail if we don't have intended Approved Roles data
-        if (!APPROVED_ROLES) {
-          this.error = true
-          this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
-          return false
+      if (guild) {
+        let guildID = guild.id
+        let dbRes = await dbFuncs.getDB(
+          guildID,
+          "roles"
+        )
+        this.ROLES = dbRes[0]
+        this.messages.push(...dbRes[1])
+        // /DB
+  
+        if (this.ROLES && this.ROLES.length > 0) {
+          // Get Admin roles
+          let APPROVED_ROLES = this.ROLES["admin"]
+          // Bail if we don't have intended Approved Roles data
+          if (!APPROVED_ROLES) {
+            this.error = true
+            this.props.description = `${this.profile.emojis.fail} Failed to get Approved Roles for ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true })}`
+            return false
+          }
+  
+          // Bail if member doesn't have Approved Roles
+          if(!(await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))) ) {
+            this.error = true
+            this.props.description = this.errors.adminOnly
+            this.props.fields = []
+            this.props.footer = { text: "" }
+            this.props.image = { image: "" }
+            return false
+          }
         }
-
-        // Bail if member doesn't have Approved Roles
-        if(!(await interaction.member.roles.cache.some(r=>APPROVED_ROLES.includes(r.name))) ) {
-          this.error = true
-          this.props.description = this.errors.adminOnly
-          this.props.fields = []
-          this.props.footer = { text: "" }
-          this.props.image = { image: "" }
-          return false
-        }
+      } else {
+        this.error = true
       }
     }
 
