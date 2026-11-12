@@ -22,6 +22,7 @@ class EventScript {
     this.name = setValue(evtprops.name, "unknownName")
     this.event = setValue(evtprops.event, "unknownEvent")
     this.label = setValue(evtprops.label, "unknownLabel")
+    this.description = setValue(evtprops.description, "")
     this.platforms = setValue(evtprops.platforms, ["discord"])
     this.props = {}
     this.pages = []

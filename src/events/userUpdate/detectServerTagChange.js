@@ -18,21 +18,23 @@ module.exports = async (client, oldUser, newUser) => {
     }
 
     for (let [repGuildID, rData] of Object.entries(repData)) {
-      let repRoleID = rData["roleID"]
-      let repGuild   = await getters.getCache(client, client, "guilds", repGuildID)
-
-      if (repGuild) {
-        let reppingGuild = false
-        if (newUser?.primaryGuild?.identityGuildId) {
-          reppingGuild = newUser.primaryGuild.identityGuildId == repGuild
-        }
+      if ("roleID" in rData) {
+        let repRoleID = rData["roleID"]
+        let repGuild   = await getters.getCache(client, client, "guilds", repGuildID)
+  
         if (repGuild) {
-          let member = await getters.getCachedMember(client, repGuild, newUser.id)
-          if (member) {
-            if (reppingGuild) {
-              await member.roles.add(repRoleID)
-            } else {
-              await member.roles.remove(repRoleID)
+          let reppingGuild = false
+          if (newUser?.primaryGuild?.identityGuildId) {
+            reppingGuild = newUser.primaryGuild.identityGuildId == repGuild
+          }
+          if (repGuild) {
+            let member = await getters.getCachedMember(client, repGuild, newUser.id)
+            if (member) {
+              if (reppingGuild) {
+                await member.roles.add(repRoleID)
+              } else {
+                await member.roles.remove(repRoleID)
+              }
             }
           }
         }

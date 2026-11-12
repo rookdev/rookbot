@@ -7,7 +7,7 @@ const moment = require('moment')
 const path = require('path')                       // Easy filepath management
 
 module.exports = (client) => {
-  console.log(`${client.profile.emojis[client.platform]} ${client.platform.ucfirst()} Events`)
+  console.log(`${client.profile.emojis[client.platform]} ${client.platform.ucfirst()} Register Events Listeners`)
   // Get all folders in ./events
   const eventFolders = fileFuncs.getAllFiles(
     [
@@ -138,6 +138,8 @@ module.exports = (client) => {
                   messages.map(m=>"    " + m).join("\n")
                 )
               }
+            } else {
+              return
             }
           }
         })
