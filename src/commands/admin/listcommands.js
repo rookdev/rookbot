@@ -167,9 +167,12 @@ module.exports = class ListCommandsCommand extends AdminCommand {
     if (baseDomain != "local") {
       cmdOrder.sort()
     }
+    let cmdCount = 0
     for (let cmdName of cmdOrder) {
       let cmdParts = commands[baseDomain][cmdName]
+      cmdCount += 1
       Table.addRow(
+        cmdCount,
         cmdParts?.name,
         cmdParts?.category,
         Object.keys(commands.test).includes(cmdParts?.name)   ? "⚙️" : "",
