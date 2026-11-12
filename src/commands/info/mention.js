@@ -185,6 +185,197 @@ module.exports = class MentionCommand extends RookCommand {
     return message
   }
 
+  async buildFields(client, specs, targetData) {
+    // client
+    // specs
+    // targetId
+    // targetMember
+    // targetMention
+    // targetType
+    let targetId      = targetData.id
+    let targetMember  = targetData.member
+    let targetMention = targetData.mention
+    let targetType    = targetData.type
+
+    let fieldTypes = []
+
+    /**
+     * Type
+     * Name, ID
+     */
+    fieldTypes.push([ "type" ])
+    fieldTypes.push([ "name", "id" ])
+    if (targetType == "channel") {
+      /**
+       * Parent Name, Parent ID
+       * Topic
+       * SubType, Synced?
+       */
+      fieldTypes.push([ "parentName", "parentId" ])
+      fieldTypes.push([ "topic" ])
+      fieldTypes.push([ "subtype", "synced" ])
+      fieldTypes.push([ "pins" ])
+    } else if (targetType == "emoji") {
+      /**
+       * Animated?
+       */
+      fieldTypes.push([ "animated" ])
+    } else if (targetType == "message") {
+      /**
+       * Author
+       * Guild, Channel
+       */
+      fieldTypes.push([ "author" ])
+      fieldTypes.push([ "guild", "channel" ])
+    } else if (targetType == "user") {
+      /**
+       * Clan Tag, Clan ID
+       * Nickname, Display Name, Global Name
+       * Roles
+       * Bot User? Can Bot Edit? Can Bot Moderate?
+       * Joined Time
+       */
+      fieldTypes.push([ "clanTag", "clanId" ])
+      fieldTypes.push([ "nickname", "displayName", "globalName" ])
+      fieldTypes.push([ "roles" ])
+      fieldTypes.push([ "seenStr", "seenChan", "seenMsg" ])
+      fieldTypes.push([ "botUser", "botEdit", "botMod" ])
+      fieldTypes.push([ "joinedTime" ])
+    } else if (targetType == "role") {
+      /**
+       * Member Count, Rank
+       * Position, Color, Hoisted?
+       */
+      fieldTypes.push([ "memberCount", "rank" ])
+      fieldTypes.push([ "position", "color", "hoisted" ])
+    }
+    /**
+     * Creation Time
+     * Mention, Code
+     */
+    fieldTypes.push([ "creationTime" ])
+    fieldTypes.push([ "mention", "code" ])
+    fieldTypes.push([ "extra" ])
+
+    let fieldNames = {
+      type:         "Type",
+      memberCount:  "Member Count",
+      name:         "Name",
+      id:           "ID",
+      rank:         "Rank",
+      animated:     "Animated?",
+      clanTag:      "Clan Guild Tag",
+      clanId:       "Clan Guild ID",
+      parentName:   "Parent Name",
+      parentId:     "Parent ID",
+      nickname:     "Nickname",
+      displayName:  "Display Name",
+      globalName:   "Global Name",
+      topic:        "Topic",
+      roles:        "Roles",
+      subtype:      "Subtype",
+      position:     "Position",
+      synced:       "Synced?",
+      color:        "Color",
+      hoisted:      "Hoisted",
+      creationTime: "Creation Time",
+      joinedTime:   "Joined Time",
+      seenStr:      "Last Seen Active",
+      seenChan:     "Last Seen In",
+      seenMsg:      "Last Seen Saying",
+      botUser:      "Bot User?",
+      botEdit:      "Can Bot Edit?",
+      botMod:       "Can Bot Mod?",
+      author:       "Author",
+      guild:        "Guild",
+      channel:      "Channel",
+      mention:      "Mention",
+      code:         "Code",
+      pins:         "Pins",
+      extra:        "Extra"
+    }
+    let buildFieldRows = []
+    for (let fieldRow of fieldTypes) {
+      let buildFieldRow = []
+      for (let fieldId of fieldRow) {
+        let fieldName = fieldNames[fieldId]
+        let fieldValue = null
+        if (fieldId == "type") {
+          fieldValue = codeBlock(targetType)
+        } else if (fieldId == "name") {
+          if (specs?.url) {
+            fieldValue = `[${inlineCode(specs?.name)}](${specs?.url})`
+          } else {
+            fieldValue = codeBlock(specs[fieldId])
+          }
+        } else if (fieldId == "id") {
+          fieldValue = codeBlock(targetId)
+        } else if ([ "memberCount", "rank", "topic", "subtype", "position" ].contains(fieldId)) {
+          if (specs[fieldId]) {
+            fieldValue = codeBlock(specs[fieldId])
+          }
+        } else if (fieldId == "clanTag") {
+          fieldValue = specs?.clan?.tag ? codeBlock(specs.clan.tag) : ""
+        } else if (fieldId == "clanId") {
+          fieldValue = specs?.clan?.identityGuildId ? codeBlock(specs.clan.identityGuildId) : ""
+        } else if (fieldId == "parentName") {
+          fieldValue = specs?.parent?.name ?? ""
+        } else if (fieldId == "parentId") {
+          fieldValue = specs?.parent?.id ? codeBlock(specs.parent.id) : ""
+        } else if (fieldId == "roles") {
+          if (specs?.roles?.length && specs.roles.length > 0) {
+            fieldName += ' [' + specs.roles.length + specs?.highest + ']'
+            fieldValue = codeBlock(specs.roles.join(", "))
+          }
+        } else if ([ "synced", "hoisted" ].contains(fieldId)) {
+          let show = true
+          if ((fieldId == "synced") && !(specs?.parent)) {
+            show = false
+          }
+          if (show) {
+            fieldValue = specs[fieldId] ?
+              this.profile.emojis.check :
+              this.profile.emojis.nocheck
+          }
+        } else if (fieldId == "creationTime") {
+          fieldValue = specs?.creationStr
+        } else if (fieldId == "joinedTime") {
+          fieldValue = specs?.joinedStr
+        } else if (fieldId == "botUser") {
+          fieldValue = targetMember.user.bot ? "🤖" : "🟥"
+        } else if (fieldId == "botEdit") {
+          fieldValue = await this.botCanEdit(client, targetMember, true) ? "🛠" : "🟥"
+        } else if (fieldId == "botMod") {
+          fieldValue = await this.botCanMod(client, targetMember, true) ? "🔨" : "🟥"
+        } else if (fieldId == "mention") {
+          fieldValue = targetMention
+        } else if (fieldId == "code") {
+          fieldValue = codeBlock(targetMention)
+        }
+
+        if (!fieldValue) {
+          if (fieldId in specs) {
+            if (specs[fieldId]) {
+              fieldValue = specs[fieldId]
+            }
+          }
+        }
+        buildFieldRow.push(
+          {
+            name: fieldName,
+            value: fieldValue
+          }
+        )
+      }
+      buildFieldRows.push(buildFieldRow)
+    }
+
+    this.messages.push(JSON.stringify(fieldTypes))
+    this.messages.push(JSON.stringify(buildFieldRows))
+
+    return buildFieldRows
+  }
+
   async action(client, interaction, coptions) {
     // Get Target Input
     let targetInput   = ""
@@ -499,6 +690,7 @@ module.exports = class MentionCommand extends RookCommand {
               break
             }
             let numRoles = await guild.roles.fetch()
+            let roleCounts = await guild.roles.fetchMemberCounts()
             numRoles = numRoles.size
             specs = {
               name: role?.name,
@@ -519,7 +711,8 @@ module.exports = class MentionCommand extends RookCommand {
                 ) :
                 this.profile.emojis.nocheck,
               position: role?.position,
-              rank: numRoles - role?.position
+              rank: numRoles - role?.position,
+              memberCount: roleCounts.get(role.id)
             }
 
             this.props.color = role?.hexColor
@@ -557,11 +750,19 @@ module.exports = class MentionCommand extends RookCommand {
               break
             }
             specs = {}
-            if (targetMember?.user?.tag) {
-              specs.name = targetMember.user.tag
+            specs.nickname      = targetMember?.nickname                ?? targetMember.displayName
+            specs.displayName   = targetMember.displayName
+            specs.globalName    = targetMember?.user?.globalName        ?? targetMember?.user?.tag      ?? "??"
+            specs.username      = targetMember?.user?.tag               ?? targetMember?.user?.username ?? "??"
+            specs.discriminator = targetMember?.user?.discriminator  ?? "0000"
+            if (specs.username != "??") {
+              specs.name = specs.username
             } else if (targetMember?.user?.username) {
               specs.name = `${targetMember.user.username}#${targetMember.user.discriminator}`
             }
+
+            this.props.color = targetMember?.displayHexColor ?? ""
+
             const roles = await targetMember
               .roles
               .valueOf()
@@ -757,247 +958,19 @@ module.exports = class MentionCommand extends RookCommand {
     //   ].join("\n")
     // )
 
-    if(!this.error) {
-      this.props.fields = []
-
-      this.props.fields.push(
-        [
-          // Mention Type
-          {
-            name: "Type",
-            value: targetType
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Name
-          {
-            name: "Name",
-            value: specs?.url ? `[${inlineCode(specs?.name)}](${specs?.url})` : codeBlock(specs?.name)
-          },
-          // Mention ID
-          {
-            name: "ID",
-            value: codeBlock(targetId)
-          },
-          // Mention ID
-          {
-            name: "Rank",
-            value: specs?.rank ? codeBlock(specs.rank) : ""
-          },
-          // Animated Emoji
-          {
-            name: "Animated?",
-            value: specs?.animated ? specs.animated : ""
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          //
-          {
-            name: "Guild Tag",
-            value: specs?.clan?.tag ? codeBlock(specs?.clan?.tag) : ""
-          },
-          // Parent Name
-          {
-            name: "Parent Name",
-            value: specs?.parent?.name
-          },
-          // Parent ID
-          {
-            name: "Parent ID",
-            value: specs?.parent?.id ? codeBlock(specs.parent.id) : ""
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Topic
-          {
-            name: "Topic",
-            value: specs?.topic ? codeBlock(specs?.topic) : ""
-          },
-          // Roles
-          {
-            name: `Roles [${specs?.roles?.length}${specs?.highest}]`,
-            value: specs?.roles?.length && (specs.roles.length > 0) ? codeBlock(specs?.roles?.join(", ")) : ""
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Subtype
-          {
-            name: "Subtype",
-            value: specs?.subtype ? codeBlock(specs?.subtype) : ""
-          },
-          // Position
-          {
-            name: "Position",
-            value: specs?.position ? codeBlock(specs?.position) : ""
-          },
-          // Synced?
-          {
-            name: "Synced",
-            value: (targetType == "channel") ?
-              (
-                specs?.synced ?
-                (
-                  specs.synced ?
-                  this.profile.emojis.check :
-                  this.profile.emojis.nocheck
-                )
-                : ""
-              )
-              : ""
-          },
-          // Color
-          {
-            name: "Color",
-            value: specs?.color
-          },
-          // Hoisted
-          {
-            name: "Hoisted?",
-            value: (targetType == "role") ?
-              (
-                specs?.hoisted ?
-                (
-                  specs.hoisted ?
-                  this.profile.emojis.check :
-                  this.profile.emojis.nocheck
-                )
-                : ""
-              )
-              : ""
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Creation Time
-          {
-            name: "Creation Time",
-            value: specs?.creationStr
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Joined Time
-          {
-            name: "Joined Time",
-            value: specs?.joinedStr
-          }
-        ]
-      )
-
-      if (specs?.seenStr) {
-        this.props.fields.push(
-          [
-            // Seen Time
-            {
-              name: "Last Seen Active",
-              value: specs?.seenStr
-            }
-          ],
-          [
-            // Seen In
-            {
-              name: "Last Seen In",
-              value: specs?.seenChan
-            },
-            // Seen Saying
-            {
-              name: "Last Seen Saying",
-              value: specs?.seenMsg
-            }
-          ]
-        )
-      }
-
-      if (targetType == "user" && targetMember) {
-        this.props.fields.push(
-          [
-            // Bot Actions
-            {
-              name: "Bot User?",
-              value: targetMember.user.bot ? "🤖" : "🟥"
-            },
-            {
-              name: "Can Bot Edit?",
-              value: await this.botCanEdit(client, targetMember, true) ? "🛠" : "🟥"
-            },
-            {
-              name: "Can Bot Moderate?",
-              value: await this.botCanMod(client, targetMember, true) ? "🔨" : "🟥"
-            }
-          ]
-        )
-      }
-
-      this.props.fields.push(
-        [
-          // Author
-          {
-            name: "Author",
-            value: specs?.author
-          }
-        ]
-      )
-      this.props.fields.push(
-        [
-          // Guild
-          {
-            name: "Guild",
-            value: specs?.guild
-          },
-          // Channel
-          {
-            name: "Channel",
-            value: specs?.channel
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Mention Link
-          {
-            name: "Mention",
-            value: targetMention
-          },
-          // Mention Raw Code
-          {
-            name: "Code",
-            value: codeBlock(targetMention)
-          }
-        ]
-      )
-
-      this.props.fields.push(
-        [
-          // Pins
-          {
-            name: "Pins",
-            value: specs?.numPins
-          },
-          // Extra
-          {
-            name: "Extra",
-            value: specs?.extra
-          }
-        ]
+    if (!this.error) {
+      this.props.fields = await this.buildFields(
+        client,
+        specs,
+        {
+          id:       targetId,
+          member:   targetMember,
+          mention:  targetMention,
+          type:     targetType
+        }
       )
     }
+
 
     return !this.error
   }

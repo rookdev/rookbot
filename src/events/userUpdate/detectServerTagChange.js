@@ -7,13 +7,17 @@ module.exports = async (client, oldUser, newUser) => {
 
   if (globalFuncs.isDiscord(client)) {
     let repData = {
-      "1450159772622913628": {
-        "name": "ZDoI Randomizer Community",
-        "roleID": "1570271647909552229"
-      },
       "246204694396010497": {
         "name": "Juritsu's Safe Haven",
         "roleID": "1570283522650804264"
+      },
+      "1300236759606497310": {
+        "name": "YukiTV",
+        "roleID": "1570313689247260702"
+      },
+      "1450159772622913628": {
+        "name": "ZDoI Randomizer Community",
+        "roleID": "1570271647909552229"
       }
     }
 
