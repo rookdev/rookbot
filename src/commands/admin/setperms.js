@@ -37,16 +37,6 @@ module.exports = class SetPermsCommand extends AdminCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
-      aliases: [
-        {
-          name: "chanperms",
-          description: "Set Channel Permissions"
-        },
-        {
-          name: "roleperms",
-          description: "Set Role Permissions"
-        }
-      ],
       flags: {
         test: "basic"
       }

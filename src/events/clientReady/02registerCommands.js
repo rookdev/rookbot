@@ -12,6 +12,8 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 let helpDoc = {}
 let aliasesDoc = {}
 
+let cmdCount = 0
+
 async function extractCommand(command) {
   let {
     name,
@@ -97,7 +99,8 @@ async function registerCommand(
 
     // If they're different
     if (areCommandsDifferent(existingCommand, cmdParts)) {
-      messages.push(`${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
+      cmdCount += 1
+      messages.push(`${cmdCount} ${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
       try {
         // Edit it
         await commandsManager.edit(
@@ -133,7 +136,8 @@ async function registerCommand(
       }
     } else {
       // No change
-      messages.push(`${client.profile.emojis.current} Current: "${cmdParts.name}"`)
+      cmdCount += 1
+      messages.push(`${cmdCount} ${client.profile.emojis.current} Current: "${cmdParts.name}"`)
       client.commands[cmdParts.name] = existingCommand
     }
   } else {
@@ -150,7 +154,8 @@ async function registerCommand(
     }
 
     // Register New Command
-    messages.push(`${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
+    cmdCount += 1
+    messages.push(`${cmdCount} ${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
     try {
       // Create New
       let newCommand = await commandsManager.create(cmdParts)
@@ -174,6 +179,7 @@ async function registerCommand(
         client.commands[cmdParts.name] = newCommand
       } else {
         // Failed to register
+        cmdCount -= 1
         messages.push(`${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
       }
     }
@@ -297,7 +303,7 @@ module.exports = async (client) => {
       }
     }
 
-    messages.push(`${client.profile.emojis.success} Registration completed`)
+    messages.push(`${client.profile.emojis.success} Registration completed of ${cmdCount} commands`)
     await fs.writeFile(
       "./src/res/app/manifests/help/help.json",
       (
