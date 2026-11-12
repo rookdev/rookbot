@@ -91,6 +91,7 @@ class AdminCommand extends RookCommand {
         }
       } else {
         this.error = true
+        return false
       }
     }
 
