@@ -133,6 +133,35 @@ module.exports = class GuildStatusCommand extends RookCommand {
       // "discord"
       numBots = members?.filter(member=>member.user.bot).size ?? 0
     }
+
+    let maxEmojis         = 50
+    let maxStickers       =  5
+    let maxSoundboard     =  8
+    let emojis            = await guild.emojis.fetch()
+    let numStaticEmojis   = emojis?.filter(e=>!e.animated).size ?? 0
+    let numAnimatedEmojis = emojis?.filter(e=>e.animated).size  ?? 0
+    let stickers          = await guild.stickers.fetch()
+    let numStickers       = stickers?.size ?? 0
+    let soundboardSounds  = await guild.soundboardSounds.fetch()
+    let numSoundboard     = soundboardSounds?.size ?? 0
+
+    let serverLevel = guild.premiumTier
+    if (serverLevel >= 1) {
+      maxEmojis     = 100
+      maxStickers   =  15
+      maxSoundboard =  24
+      if (serverLevel >= 2) {
+        maxEmojis     = 150
+        maxStickers   =  30
+        maxSoundboard =  36
+        if (serverLevel >= 3) {
+          maxEmojis     = 250
+          maxStickers   =  60
+          maxSoundboard =  48
+        }
+      }
+    }
+
     this.props.fields.push(
       [
         // Number of Members
@@ -155,12 +184,29 @@ module.exports = class GuildStatusCommand extends RookCommand {
         // Server Level
         {
           name: "Server Level",
-          value: guild.premiumTier == 0 ? `${guild.premiumTier}` : `${serverBoostEmoji}`.repeat(guild.premiumTier)
+          value: serverLevel == 0 ? `${serverLevel}` : `${serverBoostEmoji}`.repeat(serverLevel)
         },
         // Server Boosters
         {
           name: "Server Boosts",
           value: guild?.premiumSubscriptionCount
+        }
+      ],
+      [
+        // Static/Animated Emojis
+        {
+          name: "Static/Animated Emojis",
+          value: `${numStaticEmojis}/${numAnimatedEmojis}/${maxEmojis}`
+        },
+        // Stickers
+        {
+          name: "Stickers",
+          value: `${numStickers}/${maxStickers}`
+        },
+        // Soundboard
+        {
+          name: "Soundboard",
+          value: `${numSoundboard}/${maxSoundboard}`
         }
       ],
       [

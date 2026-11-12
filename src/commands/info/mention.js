@@ -498,6 +498,8 @@ module.exports = class MentionCommand extends RookCommand {
             if (!role?.name) {
               break
             }
+            let numRoles = await guild.roles.fetch()
+            numRoles = numRoles.size
             specs = {
               name: role?.name,
               url: await role?.iconURL({ size: 128 }),
@@ -516,7 +518,8 @@ module.exports = class MentionCommand extends RookCommand {
                   this.profile.emojis.nocheck
                 ) :
                 this.profile.emojis.nocheck,
-              position: role?.position
+              position: role?.position,
+              rank: numRoles - role?.position
             }
 
             this.props.color = role?.hexColor
@@ -778,6 +781,11 @@ module.exports = class MentionCommand extends RookCommand {
           {
             name: "ID",
             value: codeBlock(targetId)
+          },
+          // Mention ID
+          {
+            name: "Rank",
+            value: specs?.rank ? codeBlock(specs.rank) : ""
           },
           // Animated Emoji
           {

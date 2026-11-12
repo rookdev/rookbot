@@ -1,5 +1,6 @@
 const getLocalCommands = require("../../utils/client/getLocalCommands")
 const globalFuncs = require('../../utils/primitives/globalFuncs')
+const getters = require('../../utils/guild/getters')
 
 module.exports = async (client, message) => {
   let result = false
@@ -51,5 +52,30 @@ module.exports = async (client, message) => {
       }
     }
   }
+
+  if (globalFuncs.isDiscord(client)) {
+    let messageGuild = await getters.getGuild(client, message)
+
+    if ([
+      "1450159772622913628" // ZDoI Randomizer Community
+    ].contains(messageGuild.id)) {
+      let reppingGuild = false
+      if (message?.author) {
+        let member = await getters.getCachedMember(client, messageGuild, message.author.id)
+        if (message?.author?.primaryGuild?.identityGuildId) {
+          reppingGuild = message.author.primaryGuild.identityGuildId == messageGuild.id
+        }
+        if (member) {
+          let repRole = "1570271647909552229"
+          if (reppingGuild) {
+            await member.roles.add(repRole)
+          } else {
+            await member.roles.remove(repRole)
+          }
+        }
+      }
+    }
+  }
+
   return [result, messages]
 }
