@@ -237,7 +237,7 @@ if (DO_DISCORD || process.env.GITHUB_WORKFLOW) {
         console.log(process.env.GITHUB_WORKFLOW)
 
         // Run List Commands
-        await callCommands(client, "listcommands")
+        await callCommands(client, [ "listcommands" ])
 
         // Set Timeout to call Exit
         setTimeout(async () => {
