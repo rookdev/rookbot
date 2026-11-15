@@ -181,6 +181,6 @@ module.exports = class ListCommandsCommand extends AdminCommand {
         cmdParts?.description
       )
     }
-    console.log(Table.toString())
+    this.messages.push(Table.toString())
   }
 }
