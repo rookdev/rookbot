@@ -235,22 +235,33 @@ if (DO_DISCORD || process.env.GITHUB_WORKFLOW) {
       // If this is a GitHub Actions run
       if (process.env.GITHUB_WORKFLOW) {
         console.log(process.env.GITHUB_WORKFLOW)
+        let seconds = 60
 
-        // Run List Commands
-        await callCommands(client, [ "listcommands" ])
-
-        // Set Timeout to call Exit
+        // Set Timeout to call "List Commands"
+        seconds = 10  // 10 seconds
         setTimeout(async () => {
           try {
-            // Run Exit
+            // Run "List Commands"
+            let commandNames = [ "listcommands" ]
+            await callCommands(client, commandNames)
+          } catch(err) {
+            console.log(err.stack)
+          }
+        },
+        seconds * 1000)
+
+        // Set Timeout to call "Exit"
+        seconds = 60  // 60 seconds
+        setTimeout(async () => {
+          try {
+            // Run "Exit"
             let commandNames = [ "exit" ]
             await callCommands(client, commandNames)
           } catch(err) {
             console.log(err.stack)
           }
         },
-        // Do this after 60 seconds
-        60 * 1000)
+        seconds * 1000)
       }
     }
   })();
