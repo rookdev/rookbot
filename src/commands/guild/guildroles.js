@@ -26,6 +26,40 @@ module.exports = class GuildRolesCommand extends RookCommand {
           name: "page",
           description: "Page",
           type: ApplicationCommandOptionType.Number
+        },
+        {
+          name: "member-type",
+          description: "Member Type",
+          type: ApplicationCommandOptionType.String,
+          choices: [
+            {
+              name: "People",
+              value: "people"
+            },
+            {
+              name: "Bots",
+              value: "bots"
+            },
+            {
+              name: "All",
+              value: "members"
+            }
+          ]
+        },
+        {
+          name: "logic-mode",
+          description: "Logic Mode",
+          type: ApplicationCommandOptionType.String,
+          choices: [
+            {
+              name: "Yes",
+              value: "yes"
+            },
+            {
+              name: "Not",
+              value: "not"
+            }
+          ]
         }
       ],
       platforms: ["discord"]
@@ -50,6 +84,8 @@ module.exports = class GuildRolesCommand extends RookCommand {
     // Get Target ID
     let targetId = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
     let page = coptions["page"] ?? null
+    let memberType = coptions["member-type"] ?? "members"
+    let logicMode = coptions["logic-mode"] ?? "yes"
 
     let interactionGuild = await this.getGuild(client, interaction)
     if (!interactionGuild) {
@@ -69,18 +105,21 @@ module.exports = class GuildRolesCommand extends RookCommand {
     let max = 35
     if (targetId) {
       let role = await this.getCache(client, interactionGuild, "roles", targetId)
-      this.props.description.push(
-        inlineCode((role.id + "").padStart(20)) + ' [' + (await role.members.size) + ']: ' +
-        mentionFuncs.roleMention(role.id)
-      )
-      this.props.description.push("")
 
       if (role.members) {
         let membersById = await role
           .members
           .valueOf()
-          .map(member => { return { name: member.displayName, id: member.id }})
-  
+        if (logicMode == "not") {
+          membersById = await interactionGuild.members.cache.filter(m => !m.roles.cache.has(role.id))
+        }
+        if (memberType == "people") {
+          membersById = membersById.filter(m => !m.user.bot)
+        } else if (memberType == "bots") {
+          membersById = membersById.filter(m => m.user.bot)
+        }
+        membersById = membersById.map(member => { return { name: member.displayName, id: member.id }})
+
         let membersByName = {}
         Object.keys(membersById).forEach(
           (el, i) => {
@@ -90,6 +129,12 @@ module.exports = class GuildRolesCommand extends RookCommand {
         )
 
         let memberNames = Object.keys(membersByName).sort()
+
+        this.props.description.push(
+          inlineCode((role.id + "").padStart(20)) + ' [' + (memberNames.length) + '/' + (await role.members.size) + ']: ' +
+          mentionFuncs.roleMention(role.id)
+        )
+        this.props.description.push("")
 
         if (memberNames.length > max) {
           memberNames = memberNames.slice(0, max)

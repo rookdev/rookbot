@@ -83,7 +83,7 @@ class FileReaderEvent extends EventScript {
     if (this?.channelId || this?.channelName) {
       let check = this?.channelId ?? this?.channelName ?? null
       if (check) {
-        this.channel = await getters.getCache(client, guild, "channels", check)
+        this.channel = await getters.getCachedChannel(client, guild, check)
         if (this.channel) {
           this.channelId = this.channel.id
         }
@@ -102,7 +102,7 @@ class FileReaderEvent extends EventScript {
     }
 
     if (!this.channel && this.channelId) {
-      this.channel = await getters.getCache(client, guild, "channels", this.channelId)
+      this.channel = await getters.getCachedChannel(client, guild, this.channelId)
     }
 
     if (message.channel.id != this.channel.id) {

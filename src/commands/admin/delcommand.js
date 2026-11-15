@@ -54,7 +54,7 @@ module.exports = class DeleteCommandCommand extends AdminCommand {
 
     if (isDevelopment) {
       const testGuildID = process.env.GUILD_ID
-      const testGuild = await getters.getCache(client, client, "guilds", testGuildID)
+      const testGuild = await getters.getCachedGuild(client, client, testGuildID)
       if (!testGuild) {
         this.error = true
         this.messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)

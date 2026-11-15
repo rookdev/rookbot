@@ -55,7 +55,7 @@ module.exports = class UnlockCommand extends ModCommand {
     // Get requested Channel ID
     const channelID = coptions['channel']
     // Get requested Channel
-    const channel = await this.getCache(client, client, "channels", channelID)
+    const channel = await this.getChannel(client, interaction, channelID)
 
     try {
       if (!this.DEV) {

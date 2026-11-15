@@ -11,11 +11,11 @@ const {
   ApplicationCommandOptionType,
   codeBlock
 } = require('discord.js')
-// Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class')
+// Admin Command
+const { AdminCommand } = require('../../classes/command/admincommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 
-module.exports = class RoleEditCommand extends RookCommand {
+module.exports = class RoleEditCommand extends AdminCommand {
   constructor(client) {
     let comprops = {
       name: "role_edit",

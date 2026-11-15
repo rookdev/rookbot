@@ -70,19 +70,16 @@ module.exports = class RoleChangeEvent extends EventScript {
         .sort(
           (roleA, roleB) => roleB.position - roleA.position
         )
+        .filter(r => r.name != "@everyone")
       roleSets[roleSet] = Object.fromEntries(roleSets[roleSet])
       let newRoleSet = []
       for (let [roleID, role] of Object.entries(roleSets[roleSet])) {
-        if (role.name == "@everyone") {
-          delete roleSets[roleSet][roleID]
-        } else {
-          newRoleSet.push(roleID)
-          if (!roleSets["db"][roleID]) {
-            roleSets["db"][roleID] = {
-              name:     role.name,
-              id:       role.id,
-              position: role.position
-            }
+        newRoleSet.push(roleID)
+        if (!roleSets["db"][roleID]) {
+          roleSets["db"][roleID] = {
+            name:     role.name,
+            id:       role.id,
+            position: role.position
           }
         }
       }

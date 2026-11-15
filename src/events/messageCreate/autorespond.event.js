@@ -160,6 +160,7 @@ module.exports = class AutoRespondEvent extends EventScript {
   async respondScrubber(client, message) {
     if (message.author.id === client.user.id) { return }
     let guild = await this.getGuild(client, message)
+    if (message.author.id === guild?.ownerId) { return }
     if (
       [
         "1450159772622913628" // ZDoI Rando Community
@@ -169,6 +170,18 @@ module.exports = class AutoRespondEvent extends EventScript {
         [
           "1450373860460462161", // vc-text
           "1450163849394258013" // multiplayer-vc-text
+        ].includes(message.channel.id)
+      ) {
+        await message.delete()
+      }
+    } else if (
+      [
+        "1300236759606497310" // Yuki TV
+      ].includes(guild.id)
+    ) {
+      if (
+        [
+          "1571373545680801893" // Adult Rules
         ].includes(message.channel.id)
       ) {
         await message.delete()

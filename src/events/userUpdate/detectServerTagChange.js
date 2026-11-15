@@ -24,7 +24,7 @@ module.exports = async (client, oldUser, newUser) => {
     for (let [repGuildID, rData] of Object.entries(repData)) {
       if ("roleID" in rData) {
         let repRoleID = rData["roleID"]
-        let repGuild   = await getters.getCache(client, client, "guilds", repGuildID)
+        let repGuild   = await getters.getCachedGuild(client, client, repGuildID)
   
         if (repGuild) {
           let reppingGuild = false

@@ -318,7 +318,7 @@ const detectStreaming = async (
     }
 
     for (let roleName of roles[rolesMode]) {
-      let hasRole = await member.roles.cache.some(r=>r.name===roleName)
+      let hasRole = await member.roles.cache.some(r => r.name == roleName)
       if (
         (adding && !hasRole) ||
         (removing && hasRole)

@@ -463,7 +463,7 @@ module.exports = class MentionCommand extends RookCommand {
         if (guild) {
           let channel = null
           try {
-            channel = await this.getCache(client, guild, "channels", targetId)
+            channel = await this.getChannel(client, interaction, targetId)
           } catch (error) {
             this.error = true
             this.props.description = `Channel ${inlineCode(targetId)} not found in ${italic(guild.name)}`

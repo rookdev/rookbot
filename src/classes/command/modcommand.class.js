@@ -89,7 +89,7 @@ class ModCommand extends AdminCommand {
    */
   async adjust_roles(
     interaction,
-    user,
+    member,
     // @ts-ignore
     // roles: Object<[x:string], string | number>,
     roles,
@@ -97,10 +97,10 @@ class ModCommand extends AdminCommand {
   ) {
     let guild = await this.getGuild(interaction.client, interaction)
 
-    this.messages.push("Adjust Roles:",user.displayName,JSON.stringify(roles))
+    this.messages.push("Adjust Roles:",member.displayName,JSON.stringify(roles))
 
-    // Bail if we don't have a User object
-    if (!user) {
+    // Bail if we don't have a GuildMember object
+    if (!member) {
       this.error = true
       this.props.description = `${this.profile.emojis.fail} No member loaded.`
       return
@@ -152,10 +152,10 @@ class ModCommand extends AdminCommand {
         (addRole != 0)
       ) {
         try {
-          let hasRole = await this.getCache(interaction.client, user, "roles", addRole.id)
+          let hasRole = await this.getCache(interaction.client, member, "roles", addRole.id)
           if (!hasRole) {
-            // this.messages.push(`Adding Role: ${user.displayName} [${addRole.id}]`)
-            await user.roles.add(addRole.id)
+            // this.messages.push(`Adding Role: ${member.displayName} [${addRole.id}]`)
+            await member.roles.add(addRole.id)
           }
           success = true
         } catch(e) {
@@ -197,10 +197,10 @@ class ModCommand extends AdminCommand {
         (remRole != 0)
       ) {
         try {
-          let hasRole = await this.getCache(interaction.client, user, "roles", remRole.id)
+          let hasRole = await this.getCache(interaction.client, member, "roles", remRole.id)
           if (hasRole) {
-            // this.messages.push(`Removing Role: ${user.displayName} [${remRole.id}]`)
-            await user.roles.remove(remRole.id)
+            // this.messages.push(`Removing Role: ${member.displayName} [${remRole.id}]`)
+            await member.roles.remove(remRole.id)
           }
           success = true
         } catch(e) {
@@ -522,7 +522,7 @@ class ModCommand extends AdminCommand {
               DAY = HR  * 24
               banOptions.deleteMessageSeconds = banPurgeDays * DAY
             }
-            success = await guild.bans.create(targetUserId, banOptions)
+            success = await guild.members.ban(targetUserId, banOptions)
           } else {
             success = true
           }
@@ -569,7 +569,7 @@ class ModCommand extends AdminCommand {
               // do nothing
             }
             if (isBanned) {
-              success = await guild.bans.remove(targetUserId)
+              success = await guild.members.unban(targetUserId)
             } else {
               this.messages.push("User Ban not found!")
             }

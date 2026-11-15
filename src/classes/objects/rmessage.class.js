@@ -25,10 +25,9 @@ class RookMessage {
 
   async getChannel() {
     if (numFuncs.myIsNumeric(this.channelName)) {
-      return await getters.getCache(
+      return await getters.getCachedChannel(
         this.client,
         this.client,
-        "channels",
         this.channelName
       )
     }
@@ -37,10 +36,9 @@ class RookMessage {
     if (this.interaction?.id && this.interaction.id != 0) {
       parent = await this.getGuild(this.client, this.interaction)
     }
-    return await getters.getCache(
+    return await getters.getCachedChannel(
       this.client,
       parent,
-      "channels",
       this.channelName
     )
   }

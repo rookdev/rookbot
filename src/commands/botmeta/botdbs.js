@@ -147,7 +147,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
             // rrs
             for (let [rrKey, rrData] of Object.entries(thisDB)) {
               if(!rrKey.includes("#")) {
-                let channel = await this.getCache(client, interaction.guild, "channels", rrData["#channel"])
+                let channel = await this.getChannel(client, interaction, rrData["#channel"])
                 let message = null
                 if (channel) {
                   message = await this.getCache(client, channel, "messages", rrKey)

@@ -118,7 +118,7 @@ module.exports = class ListCommandsCommand extends AdminCommand {
     }
     if (["test","universal"].includes(domain)) {
       const testGuildID = process.env.GUILD_ID
-      const testGuild = await getters.getCache(client, client, "guilds", testGuildID)
+      const testGuild = await getters.getCachedGuild(client, client, testGuildID)
 
       if (testGuild) {
         let testManager = testGuild.commands

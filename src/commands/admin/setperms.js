@@ -162,7 +162,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
     this.props.playerTypes = { user: "bot", target: "guild" }
 
     if (channelID) {
-      channel = await this.getCache(client, interaction.guild, "channels", channelID)
+      channel = await this.getChannel(client, interaction, channelID)
       setMode = "channel"
     }
 
@@ -208,7 +208,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
       if (channel.permissionsLocked) {
         this.props.playerTypes.target = "GuildCategory"
         this.props.description.push(`Channel Perms Synced for ${channel}: 🔁`)
-        channel = await this.getCache(client, interaction.guild, "channels", channel.parentId)
+        channel = await this.getChannel(client, interaction, channel.parentId)
         this.props.description.push(`Loading Category Instead: ${mentionFuncs.channelMention(channel.id, { showID: true })}`)
       }
 

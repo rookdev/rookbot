@@ -8,13 +8,13 @@
  *   codeBlock
  */
 const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
-// Base Rook Command
-const { RookCommand } = require('../../classes/command/rcommand.class')
+// Admin Command
+const { AdminCommand } = require('../../classes/command/admincommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 
-module.exports = class ChannelEditCommand extends RookCommand {
+module.exports = class ChannelEditCommand extends AdminCommand {
   constructor(client) {
     let comprops = {
       name: "chan_edit",
@@ -110,7 +110,7 @@ module.exports = class ChannelEditCommand extends RookCommand {
 
     let channel = null
     if (interactionGuild) {
-      channel = await this.getCache(client, interactionGuild, "channels", targetId)
+      channel = await this.getChannel(client, interaction, targetId)
     }
 
     this.props.fields = []
@@ -135,7 +135,7 @@ module.exports = class ChannelEditCommand extends RookCommand {
         let parentInput = coptions?.parent ?? coptions["parent-id"]
         // Get Parent ID
         let parentId = parentInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
-        let parentChannel = await this.getCache(client, interactionGuild, "channels", parentId)
+        let parentChannel = await this.getChannel(client, interaction, parentId)
         let position = coptions?.position
         if (parentId && parentChannel) {
           let oldParentId = channel.parentId

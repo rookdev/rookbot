@@ -96,7 +96,7 @@ module.exports = class GuildInviteCommand extends ModCommand {
       if (targetInput) {
         // Get Target ID
         let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
-        let channel = await this.getCache(client, interactionGuild, "channels", targetId)
+        let channel = await this.getChannel(client, interaction, targetId)
         if (channel) {
           let everyonDenyStr = ""
           let channelRoles = await channel.permissionOverwrites.cache

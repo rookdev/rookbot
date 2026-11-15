@@ -53,14 +53,14 @@ module.exports = async (client) => {
       // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
-      let guild = await getters.getCache(client, client, "guilds", guildID)
+      let guild = await getters.getCachedGuild(client, client, guildID)
       if (!guild || !guild?.id) {
         continue
       }
 
       try {
         // Get the guild member
-        const member = await getters.getCache(client, guild, "members", userID)
+        const member = await getters.getCachedMember(client, guild, userID)
         if (!member) {
           // messages.push(`${client.profile.emojis.fail} Member ${userID} not found in ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, oneLine: true, textOnly: true })}!`)
           continue

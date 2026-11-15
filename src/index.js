@@ -54,7 +54,7 @@ async function callCommands(client, commandNames) {
             let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
             let channelID = channelIDs["bot-salutations"]
             if (client.guild) {
-              let channel = await getters.getCache(client, client.guild, "channels", channelID)
+              let channel = await getters.getCachedChannel(client, client.guild, channelID)
               if (channel) {
                 // @ts-ignore
                 await channel?.send(props)
@@ -65,7 +65,7 @@ async function callCommands(client, commandNames) {
             let channelIDs = require(`./dbs/${process.env.GUILD_ID}/channels.json`)
             let channelID = channelIDs["bot-salutations"]
             if (client.guild) {
-              let channel = await getters.getCache(client, client.guild, "channels", channelID)
+              let channel = await getters.getCachedChannel(client, client.guild, channelID)
               if (channel) {
                 // @ts-ignore
                 await channel?.send(props)

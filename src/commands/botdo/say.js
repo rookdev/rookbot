@@ -405,7 +405,7 @@ module.exports = class SayCommand extends ModCommand {
     if (typeof channel === "string") {
       channel = channel.replace(/[<#@&!>]/g, '')
       // Calculate channel
-      channel = await this.getCache(client, interaction.guild, "channels", channel)
+      channel = await this.getChannel(client, interaction, channel)
     }
 
     if (!channel) {

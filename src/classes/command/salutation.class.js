@@ -243,7 +243,7 @@ class SalutationCommand extends RookCommand {
       }
     }
     if (server?.id) {
-      server.name = await getters.getCache(client, client, "guilds", server.id)?.name ?? "?"
+      server.name = await getters.getCachedGuild(client, server.id)?.name ?? "?"
     }
 
     this.props["fields"] = [
@@ -462,9 +462,7 @@ class SalutationCommand extends RookCommand {
               channel = await this.getCache(client, guild, "channels", channelID)
             } else {
               // this.messages.push(`Loading  '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)
-              channel = await guild?.channels?.cache?.find(
-                c => c.name === channelName
-              )
+              channel = await this.getCache(client, guild, "channels", channelName)
             }
             if (channel) {
               // this.messages.push(`Loaded   '${channelName}' of ${mentionFuncs.guildMention(guild.name, guild.id, { showID: true, textOnly:true })}`)

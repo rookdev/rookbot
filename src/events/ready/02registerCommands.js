@@ -33,7 +33,7 @@ module.exports = async (client) => {
 
   let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
   if (isDevelopment) {
-    // const testGuild = await getters.getCache(client, client, "guilds", testGuildID)
+    // const testGuild = await getters.getCachedGuild(client, client,testGuildID)
     // if (!testGuild) {
     //   messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
     //   return [result, messages]
