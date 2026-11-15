@@ -84,7 +84,8 @@ module.exports = class GuildRolesCommand extends RookCommand {
         let membersByName = {}
         Object.keys(membersById).forEach(
           (el, i) => {
-            membersByName[membersById[el].name] = membersById[el].id
+            // membersByName[membersById[el].name] = membersById[el].id
+            membersByName[membersById[el].name.toLowerCase()] = membersById[el].id
           }
         )
 
@@ -111,19 +112,39 @@ module.exports = class GuildRolesCommand extends RookCommand {
         )
         .filter(role => role.name != "@everyone")
         .map(role => role.id)
+      let start = 1
+      let end   = roleIds.length
+      let last  = end
       if (page) {
         roleIds = roleIds.slice(max * (page - 1))
+        end     = roleIds.length
+
+        if (page > 1) {
+          start = start + (max * (page - 1))
+          end   = end   + (max * (page - 1))
+        }
       }
       if (roleIds.length > max) {
         roleIds = roleIds.slice(0, max)
+        end     = roleIds.length
+
+        if (page > 1) {
+          end = end + (max * (page - 1))
+        }
       }
       for (let roleId of roleIds) {
         let role = await this.getCache(client, interactionGuild, "roles", roleId)
         this.props.description.push(
-          inlineCode((roleId + "").padStart(20)) + ' [' + (await role.members.size) + ']: ' +
+          inlineCode((roleId + "").padStart(20)) + ' [' + inlineCode(((await role.members.size) + "").padStart(4)) + ']: ' +
           mentionFuncs.roleMention(roleId)
         )
       }
+      this.props.description.push("")
+      this.props.description.push(
+        // Start-End/Last
+        start + "-" +
+        end + (end != last ? `/${last}` : "")
+      )
     }
 
     return !this.error

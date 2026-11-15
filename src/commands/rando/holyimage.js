@@ -79,7 +79,8 @@ module.exports = class HolyImageCommand extends RookCommand {
         // this.messages.push(
         //   this_image.title,
         //   this_image.slug,
-        //   this_image?.aliases ? this_image.aliases : []
+        //   this_image?.aliases ? this_image.aliases : [],
+        //   this_image.url
         // )
         image = this_image
       }
@@ -109,12 +110,14 @@ module.exports = class HolyImageCommand extends RookCommand {
         user: "user",
         target: "target"
       }
+      let interactionGuild = await this.getGuild(client, interaction)
+      let minnie = await this.getCache(client, interactionGuild, "members", "263968998645956608")
       this.props.entities = {
         // Override User
         user: {
           name: "Minnie's Holy Images",
           url: "http://alttp.mymm1.com/holyimage/",
-          avatar: "https://cdn.discordapp.com/avatars/263968998645956608/f3e20428f32ae6ebea3be438916027b8.webp?size=128"
+          avatar: await minnie.displayAvatarURL({ size: 32 })
         },
         // Override Target
         target: {
