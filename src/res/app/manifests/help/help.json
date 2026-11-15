@@ -161,24 +161,6 @@
       "access": "Admin",
       "segment": "local"
     },
-    "chanperms": {
-      "name": "chanperms",
-      "category": "admin",
-      "description": "Set Channel Permissions",
-      "options": [],
-      "parent": "setperms",
-      "access": "Admin",
-      "segment": "local"
-    },
-    "roleperms": {
-      "name": "roleperms",
-      "category": "admin",
-      "description": "Set Role Permissions",
-      "options": [],
-      "parent": "setperms",
-      "access": "Admin",
-      "segment": "local"
-    },
     "vview": {
       "name": "vview",
       "category": "admin",
@@ -297,6 +279,14 @@
     }
   },
   "botdo": {
+    "bdaynotif": {
+      "name": "bdaynotif",
+      "category": "botdo",
+      "description": "Post birthday notification",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
     "nickchange": {
       "name": "nickchange",
       "category": "botdo",
@@ -482,6 +472,23 @@
       "access": "unset",
       "segment": "local"
     },
+    "listevents": {
+      "name": "listevents",
+      "category": "botmeta",
+      "description": "Events Help",
+      "options": [
+        {
+          "name": "event-name",
+          "description": "Event Name"
+        },
+        {
+          "name": "script-name",
+          "description": "Script Name"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
     "mongodb": {
       "name": "mongodb",
       "category": "botmeta",
@@ -614,10 +621,43 @@
       "access": "unset",
       "segment": "local"
     },
+    "guildfeatures": {
+      "name": "guildfeatures",
+      "category": "guild",
+      "description": "Guild Features",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "guildroles": {
+      "name": "guildroles",
+      "category": "guild",
+      "description": "Guild Roles",
+      "options": [
+        {
+          "name": "role-id",
+          "description": "Role ID"
+        },
+        {
+          "name": "page",
+          "description": "Page"
+        }
+      ],
+      "access": "unset",
+      "segment": "local"
+    },
     "guildstatus": {
       "name": "guildstatus",
       "category": "guild",
       "description": "Guild Status",
+      "options": [],
+      "access": "unset",
+      "segment": "local"
+    },
+    "guildwebhooks": {
+      "name": "guildwebhooks",
+      "category": "guild",
+      "description": "Guild Webhooks",
       "options": [],
       "access": "unset",
       "segment": "local"

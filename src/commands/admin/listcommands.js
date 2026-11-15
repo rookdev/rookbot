@@ -156,6 +156,7 @@ module.exports = class ListCommandsCommand extends AdminCommand {
     )
       .setBorder()
       .setHeading(
+        "Index",
         "Command",
         "Category",
         "Test ",

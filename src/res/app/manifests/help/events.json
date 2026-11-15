@@ -1,0 +1,148 @@
+{
+  "channelCreate": {
+    "editVoiceChannel": {
+      "label": "Edit Voice Channel Name",
+      "description": "Edit a Voice Channel Name based on provided rules when it's created.",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "guildMemberAdd": {
+    "logMemberJoin": {
+      "label": "Member Joined",
+      "description": "Log to a channel and to disk when a member joins",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "guildMemberRemove": {
+    "logMemberLeave": {
+      "label": "Member Left",
+      "description": "Log to a channel and to disk when a member leaves",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "guildMemberUpdate": {
+    "boosterPraise": {
+      "label": "Praise for Server Booster",
+      "description": "Log to a channel when a member boosts the server",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "roleChange": {
+      "label": "Detect Role Change and do something",
+      "description": "Log to a channel when a member has specific roles added/removed",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "logNameChange": {
+      "label": "Name Change",
+      "description": "Log to a channel and to disk when a member gets a new nickname",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "inviteCreate": {
+    "logCreatedInvite": {
+      "label": "Invite Created",
+      "description": "Log to a channel and to disk when an invite is created",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "messageCreate": {
+    "autorespond": {
+      "label": "AutoRespond",
+      "description": "Listen for messages for bot to respond to",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "yamlFile": {
+      "label": "File Reader",
+      "description": "Read a yaml file uploaded in a message",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "rdvgameFile": {
+      "label": "File Reader",
+      "description": "Read a rdvgame file uploaded in a message",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "txtFile": {
+      "label": "File Reader",
+      "description": "Read a txt file uploaded in a message",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "zapper": {
+      "label": "Zapper",
+      "description": "Bans a user that posts in the zapper",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "messageDelete": {
+    "logDeletedMessage": {
+      "label": "Message Deleted",
+      "description": "Log to a channel and to disk when a message is deleted",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "messageUpdate": {
+    "logEditedMessage": {
+      "label": "Message Edited",
+      "description": "Log to a channel and to disk when a message is edited",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "logPinnedMessage": {
+      "label": "Message Pinned",
+      "description": "Log to a channel when a message is pinned",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "presenceUpdate": {
+    "announceStreaming": {
+      "label": "Announce Streaming",
+      "description": "Log to a channel when a member streams",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
+  "voiceStateUpdate": {
+    "announceScreenShare": {
+      "label": "Member Sharing Screen",
+      "description": "Log to a channel when a member shares their screen",
+      "platforms": [
+        "discord"
+      ]
+    },
+    "logVCMemberAddRemove": {
+      "label": "Member Joins/Leaves Voice Channel",
+      "description": "Log to a channel and to disk when a member joins or leaves a voice channel",
+      "platforms": [
+        "discord"
+      ]
+    }
+  }
+}
