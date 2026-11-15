@@ -81,7 +81,8 @@ module.exports = class GuildMembersCommand extends RookCommand {
 
     for (let roleType of [
         "access",
-        "member"
+        "member",
+        "server-tag"
       ]
     ) {
       if (roleType in guildRoles) {

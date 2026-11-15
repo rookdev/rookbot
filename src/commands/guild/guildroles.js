@@ -132,6 +132,14 @@ module.exports = class GuildRolesCommand extends RookCommand {
 
         this.props.description.push(
           inlineCode((role.id + "").padStart(20)) + ' [' + (memberNames.length) + '/' + (await role.members.size) + ']: ' +
+          (
+            {
+              "people":   "👤",
+              "bots":     "🤖",
+              "members":  "🌎"
+            }[memberType]
+          ) +
+          (logicMode == "not" ? "Not " : "") +
           mentionFuncs.roleMention(role.id)
         )
         this.props.description.push("")
