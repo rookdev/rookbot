@@ -64,6 +64,10 @@ module.exports = class BotActivityCommand extends BotDevCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      playerTypes: {
+        user:   "caller",
+        target: "bot"
+      },
       testOptions: [
         { "message": "Slash Commands" },
         { "activity-type": "playing" },

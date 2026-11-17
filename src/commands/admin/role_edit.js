@@ -9,7 +9,8 @@
  */
 const { 
   ApplicationCommandOptionType,
-  codeBlock
+  codeBlock,
+  inlineCode
 } = require('discord.js')
 // Admin Command
 const { AdminCommand } = require('../../classes/command/admincommand.class')
@@ -54,6 +55,10 @@ module.exports = class RoleEditCommand extends AdminCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      playerTypes: {
+        user:   "bot",
+        target: "target"
+      },
       testOptions: [
       ]
     }
@@ -86,11 +91,26 @@ module.exports = class RoleEditCommand extends AdminCommand {
     let role = null
     if (interactionGuild) {
       role = await this.getCache(client, interactionGuild, "roles", targetId)
+      this.props.fields.push(
+        [
+          {
+            name: "Guild",
+            value: mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true })
+          }
+        ]
+      )
     }
 
     if (role) {
+      this.props.fields.push(
+        [
+          {
+            name: "Role Mention",
+            value: mentionFuncs.roleMention(role.id, { showID: true })
+          }
+        ]
+      )
       if (mode == "delete") {
-        this.props.description.push(`@${role.name}`)
         if (role.deletable) {
           await role.delete()
         }
@@ -128,7 +148,7 @@ module.exports = class RoleEditCommand extends AdminCommand {
           newColors = tempColors.join(", ")
         }
         this.messages.push(
-          "👥" +
+          client.profile.emojis.role +
           JSON.stringify(
             {
               guild: interactionGuild.name,
@@ -167,9 +187,6 @@ module.exports = class RoleEditCommand extends AdminCommand {
                 name: "New Color",
                 value: codeBlock(Object.values(newColors).join(", "))
               }
-            ],
-            [
-              { name: "Role Mention", value: mentionFuncs.roleMention(targetId) }
             ]
           )
         }
@@ -185,14 +202,21 @@ module.exports = class RoleEditCommand extends AdminCommand {
           )
           this.props.fields.push(
             [
-              { name: "Old Name", value: oldName },
-              { name: "New Name", value: newName }
-            ],
-            [
-              { name: "Role Mention", value: mentionFuncs.roleMention(targetId) }
+              { name: "Old Name", value: inlineCode(oldName) },
+              { name: "New Name", value: inlineCode(newName) }
             ]
           )
+        } else {
+          this.error = true
+          this.props.description.push("No changes found!")
         }
+      }
+      // Role Emoji
+      // Guild
+      if (role?.icon) {
+        this.props.entities.target.avatar = await role.iconURL( { size: 128 } )
+      } else {
+        this.props.playerTypes.target = "guild"
       }
     }
   }

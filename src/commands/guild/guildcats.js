@@ -4,6 +4,7 @@
 const { ChannelType, codeBlock, inlineCode, bold, userMention } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
+const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 
 module.exports = class GuildCatsCommand extends RookCommand {
@@ -14,6 +15,10 @@ module.exports = class GuildCatsCommand extends RookCommand {
       description: "Guild Categories",
       flags: {
         test: "basic"
+      },
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
       },
       platforms: ["discord", "stoat"]
     }
@@ -39,31 +44,30 @@ module.exports = class GuildCatsCommand extends RookCommand {
       return false
     }
 
-    // Set EmbedPlayerTypes to Bot|Guild
-    this.props.playerTypes = {
-      user: "bot",
-      target: "guild"
-    }
+    this.props.description = []
+    this.props.description.push(bold("Guild"))
+    this.props.description.push(mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true }))
+    this.props.description.push("")
 
     let channels = []
     let chanCache = interactionGuild.channels.cache
     if (globalFuncs.isStoat(client)) {
       chanCache = interactionGuild.categories
     }
+
     for (let [cID, channel] of chanCache) {
       if (
         (channel.type == ChannelType.GuildCategory) ||
         (channel?.children?.size > 0)
       ) {
-        if (channel?.position) {
-          channels[channel.position] = channel
+        if (channel?.rawPosition) {
+          channels[channel.rawPosition] = channel
         } else {
           channels.push(channel)
         }
       }
     }
 
-    this.props.description = []
     for (let channel of channels) {
       if (channel) {
         this.props.description.push(`${inlineCode(channel.id)}: ${channel.name}`)

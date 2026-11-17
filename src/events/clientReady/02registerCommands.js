@@ -24,6 +24,17 @@ async function extractCommand(command) {
     aliases,
     deleted
   } = await command
+  let instanceProto   = Object.getPrototypeOf(command)
+  let parentProto     = Object.getPrototypeOf(instanceProto)
+  if (
+    [
+      "SalutationCommand"
+    ].includes(parentProto.constructor.name)
+  ) {
+    parentProto = Object.getPrototypeOf(parentProto)
+  }
+  command.instanceClassName = instanceProto.constructor.name
+  command.parentClassName   = parentProto.constructor.name
 
   return {
     name,
@@ -32,7 +43,9 @@ async function extractCommand(command) {
     options,
     access,
     aliases,
-    deleted
+    deleted,
+    instanceClassName:  command.instanceClassName,
+    parentClassName:    command.parentClassName
   }
 }
 function buildCommandHelp(cmdParts, segment="local") {
@@ -42,21 +55,23 @@ function buildCommandHelp(cmdParts, segment="local") {
     for(let option of cmdParts.options) {
       slimoptions.push(
         {
-          name: option.name,
-          description: option.description,
-          required: option.required
+          name:         option.name,
+          description:  option.description,
+          required:     option.required
         }
       )
     }
   }
   cmdHelp = {
-    name: cmdParts.name,
-    category: cmdParts.category,
-    description: cmdParts.description,
-    options: slimoptions,
-    parent: cmdParts?.parent,
-    access: cmdParts.access,
-    segment: segment
+    name:               cmdParts.name,
+    category:           cmdParts.category,
+    description:        cmdParts.description,
+    options:            slimoptions,
+    parent:             cmdParts?.parent,
+    access:             cmdParts.access,
+    segment:            segment,
+    instanceClassName:  cmdParts?.instanceClassName,
+    parentClassName:    cmdParts?.parentClassName
   }
 
   return cmdHelp

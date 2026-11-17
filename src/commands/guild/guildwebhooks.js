@@ -16,6 +16,10 @@ module.exports = class GuildWebhooksCommand extends RookCommand {
       flags: {
         test: "basic"
       },
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       platforms: ["discord", "stoat"]
     }
     let props = {
@@ -40,15 +44,14 @@ module.exports = class GuildWebhooksCommand extends RookCommand {
       return false
     }
 
-    // Set EmbedPlayerTypes to Bot|Guild
-    this.props.playerTypes = {
-      user: "bot",
-      target: "guild"
-    }
-
     let hookCache = await interactionGuild.fetchWebhooks()
 
+    this.props.title.text = `Guild Webhooks for ${interactionGuild.name}`
     this.props.description = []
+    this.props.description.push(bold("Guild"))
+    this.props.description.push(mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true }))
+    this.props.description.push("")
+
     for (let [hID, hook] of hookCache) {
       this.props.description.push(
         inlineCode(hID) + ': ' +

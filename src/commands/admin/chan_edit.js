@@ -72,6 +72,10 @@ module.exports = class ChannelEditCommand extends AdminCommand {
           type: ApplicationCommandOptionType.Integer
         }
       ],
+      playerTypes: {
+        user:   "caller",
+        target: "guild"
+      },
       testOptions: [
       ]
     }
@@ -114,8 +118,21 @@ module.exports = class ChannelEditCommand extends AdminCommand {
     }
 
     this.props.fields = []
+    this.props.fields.push(
+      [
+        {
+          name: "Guild",
+          value: mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true })
+        }
+      ]
+    )
 
     if (channel) {
+      this.props.fields.push(
+        [
+          { name: "Channel Mention", value: mentionFuncs.channelMention(targetId, {showID: true} ) }
+        ]
+      )
       if (mode == "delete") {
         this.props.description.push(`#${channel.name}`)
         let children = await channel?.children?.cache
@@ -142,11 +159,8 @@ module.exports = class ChannelEditCommand extends AdminCommand {
           await channel.setParent(parentChannel)
           this.props.fields.push(
             [
-              { name: "Old Parent", value: oldParentId ? mentionFuncs.channelMention(parentId) : "*None*" },
-              { name: "New Parent", value: mentionFuncs.channelMention(parentId) }
-            ],
-            [
-              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
+              { name: "Old Parent", value: oldParentId ? mentionFuncs.channelMention(oldParentId, { showID: true }) : "*None*" },
+              { name: "New Parent", value: mentionFuncs.channelMention(parentId, { showID: true }) }
             ]
           )
         } else if (position) {
@@ -160,9 +174,6 @@ module.exports = class ChannelEditCommand extends AdminCommand {
             ],
             [
               { name: "New Position", value: inlineCode(position) }
-            ],
-            [
-              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
             ]
           )
         }
@@ -208,7 +219,6 @@ module.exports = class ChannelEditCommand extends AdminCommand {
         }
 
         if (oldSet != newSet) {
-          this.props.fields = []
           this.props.fields.push(
             [
               {
@@ -221,20 +231,11 @@ module.exports = class ChannelEditCommand extends AdminCommand {
                   ? inlineCode(newSet)
                   : "*No Text*"
               }
-            ],
-            [
-              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
             ]
           )
         } else {
           this.props.description = []
           this.props.description.push("No changes received!")
-          this.props.fields = []
-          this.props.fields.push(
-            [
-              { name: "Channel Mention", value: mentionFuncs.channelMention(targetId) }
-            ]
-          )
         }
       } else if (mode == "sort") {
         let children = await channel?.children?.cache
@@ -246,15 +247,6 @@ module.exports = class ChannelEditCommand extends AdminCommand {
             }
             channels[child.name][cID] = child
           }
-          this.props.fields = []
-          this.props.fields.push(
-            [
-              {
-                name: "Category",
-                value: mentionFuncs.channelMention(channel.id)
-              }
-            ]
-          )
           this.props.description = []
           this.props.description.push("**Children**")
           let position = 0

@@ -38,6 +38,7 @@ class RookCommand {
     this.messages         = []
     this.platforms        = setValue(comprops.platforms, ["discord"])
     this.errors           = require('../../dbs/errors.json')
+    this.playerTypes      = setValue(comprops.playerTypes, null)
 
     // Initialize global properties
     this.profile = client.profile // Loaded Profile
@@ -80,10 +81,14 @@ class RookCommand {
     // Initialize Embed:Entities
     this.props.entities = {}
 
-    // Default Embed:PlayerTypes to Bot|Caller
-    this.props.playerTypes = {
-      user: "bot",
-      target: "caller"
+    if (this.playerTypes) {
+      this.props.playerTypes = this.playerTypes
+    } else {
+      // Default Embed:PlayerTypes to Bot|Caller
+      this.props.playerTypes = {
+        user:   "bot",
+        target: "caller"
+      }
     }
   }
 

@@ -39,8 +39,10 @@
           "description": "Position Placement"
         }
       ],
-      "access": "unset",
-      "segment": "local"
+      "access": "Admin",
+      "segment": "local",
+      "instanceClassName": "ChannelEditCommand",
+      "parentClassName": "AdminCommand"
     },
     "delcommand": {
       "name": "delcommand",
@@ -59,7 +61,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "DeleteCommandCommand",
+      "parentClassName": "AdminCommand"
     },
     "emit": {
       "name": "emit",
@@ -73,7 +77,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "EmitCommand",
+      "parentClassName": "AdminCommand"
     },
     "listcommands": {
       "name": "listcommands",
@@ -86,7 +92,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ListCommandsCommand",
+      "parentClassName": "AdminCommand"
     },
     "role_edit": {
       "name": "role_edit",
@@ -115,8 +123,10 @@
           "description": "New Color (HTML hex code)"
         }
       ],
-      "access": "unset",
-      "segment": "local"
+      "access": "Admin",
+      "segment": "local",
+      "instanceClassName": "RoleEditCommand",
+      "parentClassName": "AdminCommand"
     },
     "server_profile": {
       "name": "server_profile",
@@ -138,7 +148,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ServerProfileCommand",
+      "parentClassName": "AdminCommand"
     },
     "setperms": {
       "name": "setperms",
@@ -159,7 +171,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "SetPermsCommand",
+      "parentClassName": "AdminCommand"
     },
     "vview": {
       "name": "vview",
@@ -180,7 +194,9 @@
         }
       ],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "VerboseViewCommand",
+      "parentClassName": "AdminCommand"
     }
   },
   "app": {
@@ -190,7 +206,9 @@
       "description": "Exit rookbot",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ExitCommand",
+      "parentClassName": "BotDevCommand"
     },
     "goodbye": {
       "name": "goodbye",
@@ -198,7 +216,9 @@
       "description": "Goodbye",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GoodbyeCommand",
+      "parentClassName": "RookCommand"
     },
     "hello": {
       "name": "hello",
@@ -206,7 +226,9 @@
       "description": "Hello",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "HelloCommand",
+      "parentClassName": "RookCommand"
     },
     "install": {
       "name": "install",
@@ -214,7 +236,9 @@
       "description": "Install Node Modules",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "InstallCommand",
+      "parentClassName": "BotDevCommand"
     },
     "logs": {
       "name": "logs",
@@ -227,7 +251,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "LogsCommand",
+      "parentClassName": "BotDevCommand"
     },
     "pull": {
       "name": "pull",
@@ -240,7 +266,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "PullCommand",
+      "parentClassName": "BotDevCommand"
     },
     "shutdown": {
       "name": "shutdown",
@@ -253,7 +281,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ShutdownCommand",
+      "parentClassName": "BotDevCommand"
     },
     "testsuite": {
       "name": "testsuite",
@@ -267,7 +297,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "TestSuiteCommand",
+      "parentClassName": "BotDevCommand"
     },
     "update": {
       "name": "update",
@@ -275,7 +307,9 @@
       "description": "Update Node Modules",
       "options": [],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "UpdateCommand",
+      "parentClassName": "BotDevCommand"
     }
   },
   "botdo": {
@@ -285,7 +319,9 @@
       "description": "Post birthday notification",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BirthdayNotifCommand",
+      "parentClassName": "RookCommand"
     },
     "nickchange": {
       "name": "nickchange",
@@ -299,7 +335,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "NickChangeCommand",
+      "parentClassName": "RookCommand"
     },
     "castiename": {
       "name": "castiename",
@@ -308,7 +346,9 @@
       "options": [],
       "parent": "nickchange",
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "NickChangeCommand",
+      "parentClassName": "RookCommand"
     },
     "castlename": {
       "name": "castlename",
@@ -317,7 +357,9 @@
       "options": [],
       "parent": "nickchange",
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "NickChangeCommand",
+      "parentClassName": "RookCommand"
     },
     "say": {
       "name": "say",
@@ -354,7 +396,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "SayCommand",
+      "parentClassName": "ModCommand"
     }
   },
   "botedit": {
@@ -381,7 +425,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotActivityCommand",
+      "parentClassName": "BotDevCommand"
     },
     "botavatar": {
       "name": "botavatar",
@@ -395,7 +441,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotAvatarCommand",
+      "parentClassName": "BotDevCommand"
     },
     "botnickname": {
       "name": "botnickname",
@@ -409,7 +457,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotNicknameCommand",
+      "parentClassName": "BotDevCommand"
     }
   },
   "botmeta": {
@@ -424,7 +474,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotDBsCommand",
+      "parentClassName": "BotDevCommand"
     },
     "botguilds": {
       "name": "botguilds",
@@ -437,7 +489,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotGuildsCommand",
+      "parentClassName": "RookCommand"
     },
     "botinvite": {
       "name": "botinvite",
@@ -445,7 +499,9 @@
       "description": "Invite rookbot",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotInviteCommand",
+      "parentClassName": "RookCommand"
     },
     "botsrc": {
       "name": "botsrc",
@@ -453,7 +509,9 @@
       "description": "Links to the GitHub repository of rookbot",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BotSourceCommand",
+      "parentClassName": "RookCommand"
     },
     "help": {
       "name": "help",
@@ -470,7 +528,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "HelpCommand",
+      "parentClassName": "RookCommand"
     },
     "listevents": {
       "name": "listevents",
@@ -487,7 +547,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ListEventsCommand",
+      "parentClassName": "RookCommand"
     },
     "mongodb": {
       "name": "mongodb",
@@ -500,7 +562,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "MongoDBCommand",
+      "parentClassName": "BotDevCommand"
     },
     "uptime": {
       "name": "uptime",
@@ -508,7 +572,9 @@
       "description": "Uptime",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "UptimeCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "diagnostic": {
@@ -518,7 +584,9 @@
       "description": "Pong!",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "PingCommand",
+      "parentClassName": "RookCommand"
     },
     "test": {
       "name": "test",
@@ -526,7 +594,9 @@
       "description": "Test",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "TestCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "doi": {
@@ -536,7 +606,9 @@
       "description": "Pronunciation Tutorial",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "FugetaboutitCommand",
+      "parentClassName": "RookCommand"
     },
     "moth": {
       "name": "moth",
@@ -544,7 +616,9 @@
       "description": "Hear it from the legend himself",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "MothCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "fun": {
@@ -554,7 +628,9 @@
       "description": "Flips a coin and return either Heads or Tails",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "CoinFlipCommand",
+      "parentClassName": "RookCommand"
     },
     "diceroll": {
       "name": "diceroll",
@@ -572,7 +648,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "DiceRollCommand",
+      "parentClassName": "RookCommand"
     },
     "slap": {
       "name": "slap",
@@ -593,8 +671,10 @@
           "description": "How far to slap"
         }
       ],
-      "access": "Admin",
-      "segment": "local"
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "SlapCommand",
+      "parentClassName": "RookCommand"
     },
     "trout": {
       "name": "trout",
@@ -608,8 +688,10 @@
         }
       ],
       "parent": "slap",
-      "access": "Admin",
-      "segment": "local"
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "SlapCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "guild": {
@@ -619,7 +701,9 @@
       "description": "Guild Categories",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildCatsCommand",
+      "parentClassName": "RookCommand"
     },
     "guildfeatures": {
       "name": "guildfeatures",
@@ -627,7 +711,19 @@
       "description": "Guild Features",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildFeaturesCommand",
+      "parentClassName": "RookCommand"
+    },
+    "guildmembers": {
+      "name": "guildmembers",
+      "category": "guild",
+      "description": "Guild Members",
+      "options": [],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "GuildMembersCommand",
+      "parentClassName": "RookCommand"
     },
     "guildroles": {
       "name": "guildroles",
@@ -641,10 +737,20 @@
         {
           "name": "page",
           "description": "Page"
+        },
+        {
+          "name": "member-type",
+          "description": "Member Type"
+        },
+        {
+          "name": "logic-mode",
+          "description": "Logic Mode"
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildRolesCommand",
+      "parentClassName": "RookCommand"
     },
     "guildstatus": {
       "name": "guildstatus",
@@ -652,7 +758,9 @@
       "description": "Guild Status",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildStatusCommand",
+      "parentClassName": "RookCommand"
     },
     "guildwebhooks": {
       "name": "guildwebhooks",
@@ -660,7 +768,9 @@
       "description": "Guild Webhooks",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildWebhooksCommand",
+      "parentClassName": "RookCommand"
     },
     "roster": {
       "name": "roster",
@@ -677,7 +787,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "RosterCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "info": {
@@ -693,7 +805,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "CalcCommand",
+      "parentClassName": "RookCommand"
     },
     "color": {
       "name": "color",
@@ -707,7 +821,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ColorCommand",
+      "parentClassName": "RookCommand"
     },
     "mention": {
       "name": "mention",
@@ -740,7 +856,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "MentionCommand",
+      "parentClassName": "RookCommand"
     },
     "time": {
       "name": "time",
@@ -748,7 +866,9 @@
       "description": "Time",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "TimeCommand",
+      "parentClassName": "RookCommand"
     },
     "wiki": {
       "name": "wiki",
@@ -766,7 +886,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "WikiCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "misc": {
@@ -776,7 +898,9 @@
       "description": "Sends an embed with predefined content",
       "options": [],
       "access": "Admin",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "EmbedCommand",
+      "parentClassName": "AdminCommand"
     },
     "hyperlink": {
       "name": "hyperlink",
@@ -799,7 +923,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "HyperlinkCommand",
+      "parentClassName": "RookCommand"
     },
     "nl": {
       "name": "nl",
@@ -807,7 +933,9 @@
       "description": "Posts a rainbow divider line",
       "options": [],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "NLCommand",
+      "parentClassName": "RookCommand"
     }
   },
   "mod": {
@@ -832,7 +960,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BanCommand",
+      "parentClassName": "ModCommand"
     },
     "batchmod": {
       "name": "batchmod",
@@ -846,7 +976,9 @@
         }
       ],
       "access": "BotDev",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "BatchModCommand",
+      "parentClassName": "BotDevCommand"
     },
     "guildinvite": {
       "name": "guildinvite",
@@ -863,7 +995,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "GuildInviteCommand",
+      "parentClassName": "ModCommand"
     },
     "kick": {
       "name": "kick",
@@ -882,7 +1016,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "KickCommand",
+      "parentClassName": "ModCommand"
     },
     "lock": {
       "name": "lock",
@@ -896,7 +1032,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "LockCommand",
+      "parentClassName": "ModCommand"
     },
     "lockdown": {
       "name": "lockdown",
@@ -915,7 +1053,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "LockdownCommand",
+      "parentClassName": "ModCommand"
     },
     "mute": {
       "name": "mute",
@@ -942,7 +1082,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "MuteCommand",
+      "parentClassName": "ModCommand"
     },
     "purge": {
       "name": "purge",
@@ -960,7 +1102,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "PurgeCommand",
+      "parentClassName": "ModCommand"
     },
     "clear": {
       "name": "clear",
@@ -974,7 +1118,9 @@
       ],
       "parent": "purge",
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "PurgeCommand",
+      "parentClassName": "ModCommand"
     },
     "role_add": {
       "name": "role_add",
@@ -997,7 +1143,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "RoleAddCommand",
+      "parentClassName": "ModCommand"
     },
     "role_profile": {
       "name": "role_profile",
@@ -1020,7 +1168,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "RoleProfileCommand",
+      "parentClassName": "ModCommand"
     },
     "role_remove": {
       "name": "role_remove",
@@ -1043,7 +1193,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "RoleRemoveCommand",
+      "parentClassName": "ModCommand"
     },
     "rr": {
       "name": "rr",
@@ -1051,7 +1203,9 @@
       "description": "Create Reaction Role posts for cloning.",
       "options": [],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ReactionRolesCommand",
+      "parentClassName": "ModCommand"
     },
     "search": {
       "name": "search",
@@ -1077,7 +1231,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "SearchCommand",
+      "parentClassName": "ModCommand"
     },
     "shoutout": {
       "name": "shoutout",
@@ -1096,7 +1252,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "ShoutoutCommand",
+      "parentClassName": "ModCommand"
     },
     "timeout": {
       "name": "timeout",
@@ -1120,7 +1278,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "TimeoutCommand",
+      "parentClassName": "ModCommand"
     },
     "unban": {
       "name": "unban",
@@ -1139,7 +1299,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "UnbanCommand",
+      "parentClassName": "ModCommand"
     },
     "unlock": {
       "name": "unlock",
@@ -1153,7 +1315,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "UnlockCommand",
+      "parentClassName": "ModCommand"
     },
     "unmute": {
       "name": "unmute",
@@ -1180,7 +1344,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "UnmuteCommand",
+      "parentClassName": "ModCommand"
     },
     "warn": {
       "name": "warn",
@@ -1199,7 +1365,9 @@
         }
       ],
       "access": "Mod",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "WarnCommand",
+      "parentClassName": "ModCommand"
     }
   },
   "rando": {
@@ -1218,7 +1386,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "HolyImageCommand",
+      "parentClassName": "RookCommand"
     },
     "mmminfo": {
       "name": "mmminfo",
@@ -1231,7 +1401,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "MMMInfoCommand",
+      "parentClassName": "RookCommand"
     },
     "seedannounce": {
       "name": "seedannounce",
@@ -1260,7 +1432,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "SeedAnnounceCommand",
+      "parentClassName": "RookCommand"
     },
     "seedmeta": {
       "name": "seedmeta",
@@ -1278,7 +1452,9 @@
         }
       ],
       "access": "unset",
-      "segment": "local"
+      "segment": "local",
+      "instanceClassName": "SeedMetaCommand",
+      "parentClassName": "RookCommand"
     }
   }
 }

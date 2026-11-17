@@ -128,12 +128,12 @@ module.exports = class HelpCommand extends RookCommand {
               // Command Name
               {
                 name: "Name",
-                value: inlineCode(cmd.name)
+                value: cmd?.name ? inlineCode(cmd.name) : "??"
               },
               // Command Category
               {
                 name: "Category",
-                value: inlineCode(cmd.category)
+                value: cmd?.category ? inlineCode(cmd.category) : "??"
               }
             ]
           )
@@ -153,22 +153,25 @@ module.exports = class HelpCommand extends RookCommand {
               // Command Description
               {
                 name: "Description",
-                value: cmd?.description ?? " "
+                value: cmd?.description ?? "??"
               }
             ]
           )
 
-          // If we've set the Command Access, note it
-          if (cmd?.access && cmd.access.toLowerCase() != "unset") {
-            fields.push(
-              [
-                {
-                  name: "Access",
-                  value: cmd.access
-                }
-              ]
-            )
-          }
+          fields.push(
+            [
+              // If we've set the Command Access, note it
+              {
+                name: "Access",
+                value: cmd?.access
+              },
+              // Get parent Class name
+              {
+                name: "Class",
+                value: cmd?.parentClassName ? inlineCode(cmd.parentClassName) : ""
+              }
+            ]
+          )
 
           // If the command has options, list them
           if(cmd?.options && cmd.options.length > 0) {

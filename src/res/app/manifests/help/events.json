@@ -9,6 +9,13 @@
     }
   },
   "guildMemberAdd": {
+    "autorole": {
+      "label": "Member AutoRole",
+      "description": "Automatically add a role when a member joins",
+      "platforms": [
+        "discord"
+      ]
+    },
     "logMemberJoin": {
       "label": "Member Joined",
       "description": "Log to a channel and to disk when a member joins",

@@ -342,7 +342,7 @@ module.exports = class MentionCommand extends RookCommand {
         } else if (fieldId == "joinedTime") {
           fieldValue = specs?.joinedStr
         } else if (fieldId == "botUser") {
-          fieldValue = targetMember.user.bot ? "🤖" : "🟥"
+          fieldValue = targetMember.user.bot ? client.profile.emojis.bot : "🟥"
         } else if (fieldId == "botEdit") {
           fieldValue = await this.botCanEdit(client, targetMember, true) ? "🛠" : "🟥"
         } else if (fieldId == "botMod") {

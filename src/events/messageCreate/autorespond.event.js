@@ -399,7 +399,7 @@ module.exports = class AutoRespondEvent extends EventScript {
 
     if (!globalFuncs.empty(responded)) {
       this.messages.push(
-        "🤖💬" +
+        client.profile.emojis.bot + "💬" +
         JSON.stringify(
           {
             guild: guild.name,

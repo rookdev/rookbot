@@ -2,10 +2,10 @@
 
 const { ApplicationCommandOptionType, userMention, italic } = require("discord.js")
 // AdminCommand
-const { AdminCommand } = require("../../classes/command/admincommand.class")
+const { RookCommand } = require("../../classes/command/rcommand.class")
 const mentionFuncs = require('../../utils/formatters/mentions')
 
-module.exports = class SlapCommand extends AdminCommand {
+module.exports = class SlapCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "slap",
@@ -32,6 +32,10 @@ module.exports = class SlapCommand extends AdminCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      playerTypes: {
+        user:   "caller",
+        target: "target"
+      },
       platforms: ["discord", "stoat"],
       testOptions: [
         { "target-id": "1306491719717748830" },
@@ -65,8 +69,15 @@ module.exports = class SlapCommand extends AdminCommand {
     // Get Target ID
     let targetId      = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
+    let interactionGuild = await this.getGuild(client, interaction)
+
     let user = await this.getProp(client, interaction, "user")
     this.props.description = italic(`${user} slaps ${mentionFuncs.userMention(targetId)} around ${distance} with ${item}`)
+    let target = await this.getCache(client, interactionGuild, "members", targetId)
+    if (target) {
+      let avatar = await target.displayAvatarURL( { size: 128 })
+      this.props.entities.target = { avatar }
+    }
 
     return !this.error
   }

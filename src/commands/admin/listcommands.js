@@ -48,7 +48,11 @@ module.exports = class ListCommandsCommand extends AdminCommand {
             }
           ]
         }
-      ]
+      ],
+      playerTypes: {
+        user:   "bot",
+        target: "bot"
+      }
     }
     let props = {
       title: {
@@ -66,6 +70,18 @@ module.exports = class ListCommandsCommand extends AdminCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async extractCommand(command) {
+    let instanceProto   = Object.getPrototypeOf(command)
+    let parentProto     = Object.getPrototypeOf(instanceProto)
+    if (
+      [
+        "SalutationCommand"
+      ].includes(parentProto.constructor.name)
+    ) {
+      parentProto = Object.getPrototypeOf(parentProto)
+    }
+    command.instanceClassName = instanceProto.constructor.name
+    command.parentClassName   = parentProto.constructor.name
+
     let {
       name,
       category,
@@ -83,7 +99,9 @@ module.exports = class ListCommandsCommand extends AdminCommand {
       options,
       access,
       aliases,
-      deleted
+      deleted,
+      instanceClassName:  command.instanceClassName,
+      parentClassName:    command.parentClassName
     }
   } 
 
@@ -118,7 +136,7 @@ module.exports = class ListCommandsCommand extends AdminCommand {
     }
     if (["test","universal"].includes(domain)) {
       const testGuildID = process.env.GUILD_ID
-      const testGuild = await getters.getCachedGuild(client, client, testGuildID)
+      const testGuild = await getters.getCachedGuild(client, testGuildID)
 
       if (testGuild) {
         let testManager = testGuild.commands
@@ -159,6 +177,7 @@ module.exports = class ListCommandsCommand extends AdminCommand {
         "Index",
         "Command",
         "Category",
+        "Parent",
         "Test ",
         "Local",
         "Global",
@@ -176,9 +195,10 @@ module.exports = class ListCommandsCommand extends AdminCommand {
         cmdCount,
         cmdParts?.name,
         cmdParts?.category,
-        Object.keys(commands.test).includes(cmdParts?.name)   ? "⚙️" : "",
-        Object.keys(commands.local).includes(cmdParts?.name)  ? "💾" : "",
-        Object.keys(commands.global).includes(cmdParts?.name) ? "🌎" : "",
+        cmdParts?.parentClassName,
+        Object.keys(commands.test).includes(cmdParts?.name)   ? client.profile.emojis.dev   : "",
+        Object.keys(commands.local).includes(cmdParts?.name)  ? client.profile.emojis.disk  : "",
+        Object.keys(commands.global).includes(cmdParts?.name) ? client.profile.emojis.prod  : "",
         cmdParts?.description
       )
     }

@@ -268,7 +268,7 @@ module.exports = class RoleChangeEvent extends EventScript {
     if (editor && editor?.id) {
       field = {
         name: "Editor",
-        value: ((editor?.user?.bot || editor?.bot) ? "🤖" : "👤") + mentionFuncs.userMention(
+        value: ((editor?.user?.bot || editor?.bot) ? client.profile.emojis.bot : client.profile.emojis.user) + mentionFuncs.userMention(
           editor?.id,
           { showID: true }
         )

@@ -68,6 +68,9 @@ module.exports = class GuildFeaturesCommand extends RookCommand {
 
     this.props.title.text = `Guild Features for ${guild.name}`
     this.props.description = []
+    this.props.description.push(bold("Guild"))
+    this.props.description.push(mentionFuncs.guildMention(guild.name, guild.id, { showID: true }))
+    this.props.description.push("")
 
     // List Guild Features
     if (guild?.features?.length > 0) {

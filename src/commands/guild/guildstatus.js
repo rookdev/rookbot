@@ -19,6 +19,10 @@ module.exports = class GuildStatusCommand extends RookCommand {
       flags: {
         test: "basic"
       },
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       platforms: ["discord", "stoat"]
     }
     let props = {
@@ -41,12 +45,6 @@ module.exports = class GuildStatusCommand extends RookCommand {
       this.error = true
       this.props.description = "Command must be run in guild."
       return false
-    }
-
-    // Set EmbedPlayerTypes to Bot|Guild
-    this.props.playerTypes = {
-      user: "bot",
-      target: "guild"
     }
 
     let serverBoostEmojiName = "serverboost2"
@@ -83,14 +81,27 @@ module.exports = class GuildStatusCommand extends RookCommand {
       )
     }
 
-    // Creation DateTime
-    let createdDateTime = moment.utc(guild.createdTimestamp)
-    this.props.description.push(
-      bold("Created"),
-      timeFormat(createdDateTime.format("x"), { with: "relative" })
+    this.props.fields = []
+
+    this.props.fields.push(
+      [
+        {
+          name: "Guild",
+          value: mentionFuncs.guildMention(guild.name, guild.id, { showID: true })
+        }
+      ]
     )
 
-    this.props.fields = []
+    // Creation DateTime
+    let createdDateTime = moment.utc(guild.createdTimestamp)
+    this.props.fields.push(
+      [
+        {
+          name: "Created",
+          value: timeFormat(createdDateTime.format("x"), { with: "relative" })
+        }
+      ]
+    )
 
     if (guild?.ownerId && guild.ownerId != "undefined") {
       // this.messages.push(`Guild Owner: ${guild.ownerId}`)
@@ -223,7 +234,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
         // AFK Channel
         {
           name: "AFK Channel",
-          value: guild.afkChannel ? `${guild.afkChannel}` : ""
+          value: guild.afkChannel ? `${guild.afkChannel}` : client.profile.emojis.no
         }
       ]
     )
@@ -231,25 +242,25 @@ module.exports = class GuildStatusCommand extends RookCommand {
       [
         {
           name: "Public Updates Channel",
-          value: guild.publicUpdatesChannel ? `${guild.publicUpdatesChannel}` : ""
+          value: guild.publicUpdatesChannel ? `${guild.publicUpdatesChannel}` : client.profile.emojis.no
         },
         {
           name: "Rules Channel",
-          value: guild.rulesChannel ? `${guild.rulesChannel}` : ""
+          value: guild.rulesChannel ? `${guild.rulesChannel}` : client.profile.emojis.no
         },
         {
           name: "Safety Alerts Channel",
-          value: guild.safetyAlertsChannel ? `${guild.safetyAlertsChannel}` : ""
+          value: guild.safetyAlertsChannel ? `${guild.safetyAlertsChannel}` : client.profile.emojis.no
         }
       ],
       [
         {
           name: "System Channel",
-          value: guild.systemChannel ? `${guild.systemChannel}` : ""
+          value: guild.systemChannel ? `${guild.systemChannel}` : client.profile.emojis.no
         },
         {
           name: "Widget Channel",
-          value: guild.widgetChannel ? `${guild.widgetChannel}` : ""
+          value: guild.widgetChannel ? `${guild.widgetChannel}` : client.profile.emojis.no
         },
         {
           name: "Widget Enabled?",

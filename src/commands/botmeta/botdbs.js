@@ -13,7 +13,9 @@ const {
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
+const BirthdayNotifCommand = require('../../commands/botdo/bdaynotif')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const numFuncs = require('../../utils/primitives/numFuncs')
@@ -37,6 +39,10 @@ module.exports = class BotDBsCommand extends BotDevCommand {
           maxLength: 32
         }
       ],
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       platforms: ["discord", "stoat"]
     }
     let props = {}
@@ -54,15 +60,11 @@ module.exports = class BotDBsCommand extends BotDevCommand {
     let messages = []
     let newMessages = []
     let fileList = []
-    this.props.playerTypes = {
-      user: "caller",
-      target: "guild"
-    }
 
     // Get DB Type
     let db_type = coptions["database-type"] ?? ""
 
-    let guild = interaction?.guild ?? interaction.server
+    let guild = await this.getGuild(interaction)
 
     this.props.title = {
       text: `${guild.name}'s Setup`
@@ -88,21 +90,72 @@ module.exports = class BotDBsCommand extends BotDevCommand {
         this.props.title.text += `: ${filename}`
 
         if (thisDB) {
-          if (filename.includes("channels")) {
-            // channels
+          if (filename.startsWith("autoroles") || filename.startsWith("roleLogging")) {
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
+                let role = await this.getCache(client, guild, "roles", v)
                 this.props.description.push(
-                  inlineCode(k) + `: ` + mentionFuncs.channelMention(v)
+                  inlineCode((role.id+"").padStart(20)) + ': ' +
+                  mentionFuncs.roleMention(role.id)
                 )
               }
             }
-          } else if (filename.includes("meta")) {
+          } else if (filename.startsWith("bdays")) {
+            let bdayNotifCommand = new BirthdayNotifCommand(client)
+            let bdayNotifResult = await bdayNotifCommand.execute(
+              client,
+              interaction,
+              {},
+              true
+            )
+            this.null = true
+            return true
+          } else if (filename.startsWith("channels")) {
+            // channels
+            let channels = [
+              "welcome",              // Welcome
+              "rules",                // Rules
+              "roles",                // Role Request
+              "resources",            // Resources
+              "verify",               // Verify for Access
+              "stream-alerts-owner",  // Stream Alerts for Owner
+              "stream-alerts",        // Stream Alerts
+              "multiworld-planning",  // Multiworld Planning
+              "logging",              // Catch-all Logging
+              "logging-ban",          // Bans
+              "logging-boosts",       // Server Boosts
+              "logging-invites",      // Guild Invites
+              "logging-kick",         // Kicks
+              "logging-members",      // Members Join/Leave
+              "logging-messages",     // Message Edits/Deletions
+              "logging-names",        // Nicknames
+              "logging-pins",         // Message Pins
+              "logging-roles",        // Roles
+              "logging-say",          // /say
+              "logging-unban",        // Unbans
+              "logging-warn",         // Warns
+              "logging-vclogs",       // VC Join/Leave
+              "bot-salutations",      // Bot Hello/Goodbye
+              "bot-console",          // Bot Console
+              "bot-testing",          // Bot Testing
+              "zapper"                // Bot Zapper
+            ]
+            for (let k of channels) {
+              let v = client.profile.emojis.no
+              if ((k in thisDB) && (thisDB[k] != "")) {
+                v = thisDB[k]
+                v = mentionFuncs.channelMention(v)
+              }
+              this.props.description.push(
+                inlineCode(k.padEnd("multiworld-planning".length)) + `: ` + v
+              )
+            }
+          } else if (filename.startsWith("meta")) {
             // meta
             this.props.description.push(
               codeBlock(JSON.stringify(thisDB))
             )
-          } else if (filename.includes("roleIDs")) {
+          } else if (filename.startsWith("roleIDs")) {
             // roleIDs
             for (let [k,v] of Object.entries(thisDB)) {
               if (!k.includes("#") && v != "") {
@@ -112,7 +165,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 )
               }
             }
-          } else if (filename.includes("roleProfiles")) {
+          } else if (filename.startsWith("roleProfiles")) {
             // roleProfiles
             for (let [pName, pData] of Object.entries(thisDB)) {
               this.props.description.push(pName.boldUnderline())
@@ -127,11 +180,27 @@ module.exports = class BotDBsCommand extends BotDevCommand {
               }
               this.props.description.push("")
             }
-          } else if (filename.includes("roles")) {
+          } else if (filename.startsWith("roles")) {
             // roles
-            for (let [rGroup, rList] of Object.entries(thisDB)) {
-              if (!rGroup.includes("#")) {
-                let roles = []
+            let roleTypes = [
+              "owner",            // Owner
+              "streaming-owner",  // Owner when Streaming
+              "admin",            // Admin
+              "botdev",           // BotDev
+              "bot",              // Bot
+              "mod",              // Moderator
+              "captain",          // Captain
+              "streaming-member", // Member when Streaming
+              "booster",          // Server Booster
+              "access",           // Server Access
+              "member",           // Server Member
+              "server-tag",       // Has Server Tag
+              "muted"             // Muted
+            ]
+            for (let rGroup of roleTypes) {
+              let roles = []
+              if (rGroup in thisDB) {
+                let rList = thisDB[rGroup]
                 for (let rName of rList) {
                   let role = await this.getCache(client, interaction.guild, "roles", rName)
                   if (role) {
@@ -140,10 +209,13 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                     roles.push(inlineCode(`@${rName}`))
                   }
                 }
-                this.props.description.push(rGroup.boldUnderline() + ": " + roles.join(", "))
               }
+              if (globalFuncs.empty(roles)) {
+                roles.push(client.profile.emojis.no)
+              }
+              this.props.description.push(inlineCode(rGroup.padEnd("streaming-member".length)) + ": " + roles.join(", "))
             }
-          } else if (filename.includes("rrs")) {
+          } else if (filename.startsWith("rrs")) {
             // rrs
             for (let [rrKey, rrData] of Object.entries(thisDB)) {
               if(!rrKey.includes("#")) {
@@ -186,7 +258,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 this.props.description.push("")
               }
             }
-          } else if (filename.includes("visages")) {
+          } else if (filename.startsWith("visages")) {
             // visages
             for (let [vKey, vData] of Object.entries(thisDB)) {
               if (!vKey.includes("#")) {
@@ -195,7 +267,7 @@ module.exports = class BotDBsCommand extends BotDevCommand {
                 this.props.description.push("")
               }
             }
-          } else if (filename.includes("voiceChannelNames")) {
+          } else if (filename.startsWith("voiceChannelNames")) {
             // voiceChannelNames
             for (let [vKey, vData] of Object.entries(thisDB)) {
               if (!vKey.includes("#")) {
@@ -231,25 +303,39 @@ module.exports = class BotDBsCommand extends BotDevCommand {
         ]
       )
 
+      let dbs = {}
+
       let dbRes = await dbFuncs.getDB(guild.id, "", client.platform, "fs")
       fileList = dbRes[0]
       this.messages.push(...dbRes[1])
 
-      this.props.description.push("Filesystem")
-      this.props.description.push(
-        codeBlock(fileList.join("\n"))
-      )
-      this.props.description.push("")
+      for (let fsFile of fileList) {
+        fsFile = fsFile.replace(".json","")
+        if (!(fsFile in dbs)) {
+          dbs[fsFile] = [ "fs" ]
+        }
+      }
 
       dbRes = await dbFuncs.getDB(guild.id, "", client.platform, "mongodb")
       fileList = dbRes[0]
       this.messages.push(...dbRes[1])
 
-      this.props.description.push("MongoDB")
-      this.props.description.push(
-        codeBlock(fileList.join("\n"))
-      )
-      this.props.description.push("")
+      for (let mongoFile of fileList) {
+        if (!(mongoFile in dbs)) {
+          dbs[mongoFile] = [ "mongo" ]
+        } else {
+          dbs[mongoFile].push("mongo")
+        }
+      }
+
+      for (let dbType of Object.keys(dbs).sort()) {
+        let dbSources = dbs[dbType]
+        this.props.description.push(
+          (dbSources.contains("fs")     ? client.profile.emojis.fs    : client.profile.emojis.no) +
+          (dbSources.contains("mongo")  ? client.profile.emojis.mongo : client.profile.emojis.no) +
+          inlineCode(dbType)
+        )
+      }
     }
 
     return !this.error

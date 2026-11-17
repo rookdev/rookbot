@@ -22,6 +22,10 @@ module.exports = class NickChangeCommand extends RookCommand {
           required: true
         }
       ],
+      playerTypes: {
+        user:   "caller",
+        target: "target"
+      },
       testOptions: [
         { "target-id": "1307416505171968011" }, // rookbot (Minnie)
         { "target-id": "263968998645956608" },  // Minnie
@@ -65,12 +69,6 @@ module.exports = class NickChangeCommand extends RookCommand {
     const targetUserInput = coptions["target-id"] ?? "0"
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
-
-    // Set EmbedPlayerTypes to Caller|Target
-    this.props.playerTypes = {
-      user: "caller",
-      target: "target"
-    }
 
     let user = await this.getProp(client, interaction, "user")
     this.props.entities = {

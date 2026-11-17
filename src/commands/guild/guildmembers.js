@@ -17,6 +17,10 @@ module.exports = class GuildMembersCommand extends RookCommand {
       flags: {
         test: "basic"
       },
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       platforms: ["discord"]
     }
     let props = {
@@ -39,12 +43,6 @@ module.exports = class GuildMembersCommand extends RookCommand {
       this.error = true
       this.props.description = "Command must be run in guild."
       return false
-    }
-
-    // Set EmbedPlayerTypes to Bot|Guild
-    this.props.playerTypes = {
-      user: "bot",
-      target: "guild"
     }
 
     let counts = {
@@ -73,10 +71,15 @@ module.exports = class GuildMembersCommand extends RookCommand {
     let guildRoles = dbRes[0]
     this.messages.push(...dbRes[1])
 
+    this.props.title.text = `Guild Members for ${interactionGuild.name}`
     this.props.description = []
+    this.props.description.push(bold("Guild"))
+    this.props.description.push(mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true }))
+    this.props.description.push("")
+
     this.props.description.push(
-      inlineCode((counts.people+"").padStart(4)  + ":") + "👤",
-      inlineCode((counts.bots+"").padStart(4)    + ":") + "🤖"
+      inlineCode((counts.people+"").padStart(4)  + ":") + client.profile.emojis.user,
+      inlineCode((counts.bots+"").padStart(4)    + ":") + client.profile.emojis.bot
     )
 
     for (let roleType of [
@@ -153,13 +156,13 @@ module.exports = class GuildMembersCommand extends RookCommand {
         if (["total","people","bots"].includes(roleType)) { continue }
         let role = await this.getCache(client, interactionGuild, "roles", guildRoles[roleType][0])
         for (let [mType, mCount] of Object.entries(rData)) {
-          let mIcon = "👤"
+          let mIcon = client.profile.emojis.user
           switch(mType) {
             case "bots":
-              mIcon = "🤖"
+              mIcon = client.profile.emojis.bot
               break
             case "members":
-              mIcon = "🌎"
+              mIcon = client.profile.emojis.global
               break
           }
           this.props.description.push(
@@ -174,7 +177,7 @@ module.exports = class GuildMembersCommand extends RookCommand {
       }
     }
     this.props.description.push(
-      inlineCode((counts.total+"").padStart(4)   + ":") + "🌎"
+      inlineCode((counts.total+"").padStart(4)   + ":") + client.profile.emojis.global
     )
 
     this.messages.push(

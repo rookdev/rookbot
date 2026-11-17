@@ -22,7 +22,11 @@ module.exports = class BotAvatarCommand extends BotDevCommand {
           type: ApplicationCommandOptionType.String,
           required: true
         }
-      ]
+      ],
+      playerTypes: {
+        user:   "caller",
+        target: "bot"
+      }
     }
     let props = {}
 

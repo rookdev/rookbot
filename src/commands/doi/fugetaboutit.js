@@ -1,8 +1,10 @@
 // @ts-nocheck
 
+const { AttachmentBuilder } = require('discord.js')
 // Base Rook Command
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
+const fs = require('fs')
 
 /**
  * @class
@@ -29,24 +31,33 @@ module.exports = class FugetaboutitCommand extends RookCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async execute(client, interaction, coptions={}, independent=false) {
-    // Set path to video file
-    const videoPath = fileFuncs.getAPath(
-      [
-        "src",
-        "res",
-        "media"
-      ],
-      "fugetaboutit.mp4"
-    )
-
     try {
-      // Upload video file
-      await interaction.reply(
-        {
-          files: [ videoPath ]
-        }
+      await interaction.deferReply()
+      let vidData = await fileFuncs.getAFile(
+        [
+          "src",
+          "res",
+          "media"
+        ],
+        "fugetaboutit.mp4"
       )
+      if (vidData) {
+        await interaction.channel.send(
+          {
+            content: "Fugetaboutit!",
+            description: "Fugetaboutit!!",
+            files: [
+              new AttachmentBuilder()
+                .setName("fugetaboutit.mp4")
+                .setFile(Buffer.from(vidData))
+            ]
+          }
+        )
+      } else {
+        console.log("Vid didn't load")
+      }
     } catch (error) {
+      console.log(error.stack)
       this.error = true
       this.props.description = "Error uploading video"
       return false

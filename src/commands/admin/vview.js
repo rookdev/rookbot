@@ -1,7 +1,15 @@
 // @ts-nocheck
 
 // Formatters: userMention
-const { userMention, inlineCode, codeBlock, ApplicationCommandOptionType, OverwriteType, italic } = require('discord.js')
+const {
+  inlineCode,
+  codeBlock,
+  ApplicationCommandOptionType,
+  OverwriteType,
+  ChannelType,
+  bold,
+  italic
+} = require('discord.js')
 // AdminCommand
 const { AdminCommand } = require('../../classes/command/admincommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
@@ -39,6 +47,10 @@ module.exports = class VerboseViewCommand extends AdminCommand {
           type: ApplicationCommandOptionType.Channel
         }
       ],
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       testOptions: [
         { "role-id":    "<@&1461760455532871740>" },
         { "member-id":  "<@1111517386588307536>" },
@@ -73,7 +85,9 @@ module.exports = class VerboseViewCommand extends AdminCommand {
 
     if (guild) {
       this.props.description = []
-      this.props.description.push(mentionFuncs.guildMention(guild.name, guild.id))
+      this.props.description.push(bold("Guild"))
+      this.props.description.push(mentionFuncs.guildMention(guild.name, guild.id, { showID: true }))
+      this.props.description.push("")
 
       let role = null
       let member = null
@@ -113,14 +127,39 @@ module.exports = class VerboseViewCommand extends AdminCommand {
 
       // Channel
       if (channel) {
+        let avatar = ""
+        switch(ChannelType[channel.type]) {
+          case "GuildForum":    // Forum
+            avatar = "https://em-content.zobj.net/source/lg/57/two-speech-bubbles_1f5ea.png"
+            break
+          case "GuildNews":     // Announcements
+            avatar = "https://em-content.zobj.net/source/twitter/408/megaphone_1f4e3.png"
+            break
+          case "GuildVoice":    // Voice
+            avatar = "https://em-content.zobj.net/source/twitter/408/speaker-high-volume_1f50a.png"
+            break
+          case "GuildCategory": // Category
+            avatar = "https://em-content.zobj.net/source/twitter/408/file-folder_1f4c1.png"
+            break
+          default:
+            avatar = "https://em-content.zobj.net/source/twitter/408/keycap-number-sign_23-fe0f-20e3.png"
+            break
+        }
+        this.props.playerTypes.target = "target"
+        this.props.entities.target = { avatar }
+
         // Roles in Channel
-        this.props.description.push(mentionFuncs.channelMention(channel.id))
+        this.props.description.push(bold("Channel Mention"))
+        this.props.description.push(mentionFuncs.channelMention(channel.id, { showID: true }))
+        this.props.description.push("")
 
         // If synced, get parent
         if (channel.permissionsLocked) {
           let category = await this.getChannel(client, interaction, channel.parentId)
           channel = category
-          this.props.description.push(`Synced with 📁${mentionFuncs.channelMention(category.id)}`)
+          this.props.description.push(bold("Parent Mention"))
+          this.props.description.push(`Synced with 📁${mentionFuncs.channelMention(category.id, { showID: true })}`)
+          this.props.description.push("")
         }
 
         // Set ChannelRoles to all Roles
@@ -129,6 +168,17 @@ module.exports = class VerboseViewCommand extends AdminCommand {
 
       // Role
       if (role || member) {
+        if (role) {
+          if (role?.icon) {
+            this.props.playerTypes.target = "target"
+            this.props.entities.target.avatar = await r.iconURL( { size: 128 })
+          }
+        } else if (member) {
+          if (member?.avatar) {
+            this.props.playerTypes.target = "target"
+            this.props.entities.target.avatar = await member.displayAvatarURL( { size: 128 })
+          }
+        }
         if (channel) {
           // Role/Member in Channel
           // Set ChannelRoles to this Role/Member
@@ -139,11 +189,12 @@ module.exports = class VerboseViewCommand extends AdminCommand {
           }
         } else if (role && (!member)) {
           // Role in Server (not Member)
-          this.props.description.push(mentionFuncs.roleMention(role.id))
+          this.props.description.push(bold("Role Mention"))
+          this.props.description.push(mentionFuncs.roleMention(role.id, { showID: true }))
           this.props.description.push(this.profile.emojis.yes)
           this.props.description.push(codeBlock(role.permissions.toArray().join("\n")))
           let Table = new AsciiTable(
-            `👥${role.name} of ⚔️ ${guild.name}`,
+            `${client.profile.emojis.role}${role.name} of ⚔️ ${guild.name}`,
             {}
           )
             .setBorder('|','-','•','•')
@@ -231,10 +282,10 @@ module.exports = class VerboseViewCommand extends AdminCommand {
           if (chanOverwrite) {
             switch(chanRolePerms.type) {
               case 0:
-                chanRoleName = "👥" + chanOverwrite.name
+                chanRoleName = client.profile.emojis.role + chanOverwrite.name
                 break
               case 1:
-                chanRoleName = "👤" + chanOverwrite.user.username
+                chanRoleName = client.profile.emojis.user + chanOverwrite.user.username
                 break
             }
           }

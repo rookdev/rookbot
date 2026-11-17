@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 // Command Option Types
-const { ApplicationCommandOptionType } = require('discord.js')
+const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const getters = require('../../utils/guild/getters')
@@ -24,6 +24,10 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
           required: true
         }
       ],
+      playerTypes: {
+        user:   "caller",
+        target: "bot"
+      },
       platforms: ["discord","stoat"]
     }
     let props = {}
@@ -113,12 +117,12 @@ module.exports = class BotNicknameCommand extends BotDevCommand {
           // Old Nickname
           {
             name: "Old Nickname",
-            value: old_nickname
+            value: inlineCode(old_nickname)
           },
           // New Nickname
           {
             name: "New Nickname",
-            value: new_nickname
+            value: inlineCode(new_nickname)
           }
         ]
       ]

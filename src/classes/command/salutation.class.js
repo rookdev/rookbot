@@ -385,7 +385,7 @@ class SalutationCommand extends RookCommand {
           testGuild = await getters.getCachedGuild(client, client.guildID)
         }
         if (!testGuild) {
-          testGuild = await getters.getCachedGuild(Object.keys(guildsCache)[0])
+          testGuild = await getters.getCachedGuild(client, Object.keys(guildsCache)[0])
         }
         if (testGuild) {
           guildsCache = [

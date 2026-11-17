@@ -53,7 +53,7 @@ module.exports = async (client) => {
       // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
-      let guild = await getters.getCachedGuild(client, client, guildID)
+      let guild = await getters.getCachedGuild(client, guildID)
       if (!guild || !guild?.id) {
         continue
       }

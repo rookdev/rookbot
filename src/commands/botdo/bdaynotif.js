@@ -16,6 +16,10 @@ module.exports = class BirthdayNotifCommand extends RookCommand {
       name: "bdaynotif",
       category: "botdo",
       description: "Post birthday notification",
+      playerTypes: {
+        user:   "guild",
+        target: "bot"
+      },
       userPermissions: [ PermissionFlagsBits.ViewChannel ],
       botPermissions: [ PermissionFlagsBits.ViewChannel ]
     }
@@ -45,7 +49,7 @@ module.exports = class BirthdayNotifCommand extends RookCommand {
 
     if (result?.success) {
       this.messages.push(result.message)
-      this.messages.push(result?.bdays ? JSON.stringify(result.bdays) : null)
+      // this.messages.push(result?.bdays ? JSON.stringify(result.bdays) : null)
       if (result?.bdays) {
         this.props.description = []
         // Cycle through months
@@ -58,26 +62,26 @@ module.exports = class BirthdayNotifCommand extends RookCommand {
                 // Get User from This Guild
                 let guildMember = await getters.getCachedMember(client, interactionGuild, bdUserID)
                 let sendDate = {months: bdMonth-1, date: bdDay}
-                this.messages.push("ThisSend:  " + JSON.stringify(sendDate))
+                // this.messages.push("ThisSend:  " + JSON.stringify(sendDate))
                 let thisYear = moment(sendDate)
                 let momentFormat = "dd MMM DD, YYYY"
-                if (thisYear) {
-                  this.messages.push(
-                    "This Year: " +
-                    JSON.stringify(thisYear.toObject()) + ':' +
-                    thisYear.format(momentFormat)
-                  )
-                }
+                // if (thisYear) {
+                //   this.messages.push(
+                //     "This Year: " +
+                //     JSON.stringify(thisYear.toObject()) + ':' +
+                //     thisYear.format(momentFormat)
+                //   )
+                // }
                 let nextSend = {...sendDate, years: thisYear.toObject().years + 1}
-                this.messages.push("NextSend:  " + JSON.stringify(sendDate))
+                // this.messages.push("NextSend:  " + JSON.stringify(sendDate))
                 let nextYear = moment(nextSend)
-                if (nextYear) {
-                  this.messages.push(
-                    "Next Year: " +
-                    JSON.stringify(nextYear.toObject()) + ':' +
-                    nextYear.format(momentFormat)
-                  )
-                }
+                // if (nextYear) {
+                //   this.messages.push(
+                //     "Next Year: " +
+                //     JSON.stringify(nextYear.toObject()) + ':' +
+                //     nextYear.format(momentFormat)
+                //   )
+                // }
                 let thisNotif = inlineCode(thisYear.format("MM") + '/' + thisYear.format("DD") + ':')
                 thisNotif += mentionFuncs.userMention(bdUserID)
                 thisNotif += " ("

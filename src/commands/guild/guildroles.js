@@ -62,6 +62,10 @@ module.exports = class GuildRolesCommand extends RookCommand {
           ]
         }
       ],
+      playerTypes: {
+        user:   "bot",
+        target: "guild"
+      },
       platforms: ["discord"]
     }
     let props = {
@@ -94,13 +98,11 @@ module.exports = class GuildRolesCommand extends RookCommand {
       return false
     }
 
-    // Set EmbedPlayerTypes to Bot|Guild
-    this.props.playerTypes = {
-      user: "bot",
-      target: "guild"
-    }
-
+    this.props.title.text = `Guild Roles for ${interactionGuild.name}`
     this.props.description = []
+    this.props.description.push(bold("Guild"))
+    this.props.description.push(mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true }))
+    this.props.description.push("")
 
     let max = 35
     if (targetId) {
@@ -134,9 +136,9 @@ module.exports = class GuildRolesCommand extends RookCommand {
           inlineCode((role.id + "").padStart(20)) + ' [' + (memberNames.length) + '/' + (await role.members.size) + ']: ' +
           (
             {
-              "people":   "👤",
-              "bots":     "🤖",
-              "members":  "🌎"
+              "people":   client.profile.emojis.user,
+              "bots":     client.profile.emojis.bot,
+              "members":  client.profile.emojis.global
             }[memberType]
           ) +
           (logicMode == "not" ? "Not " : "") +
@@ -185,6 +187,7 @@ module.exports = class GuildRolesCommand extends RookCommand {
           end = end + (max * (page - 1))
         }
       }
+
       for (let roleId of roleIds) {
         let role = await this.getCache(client, interactionGuild, "roles", roleId)
         this.props.description.push(
