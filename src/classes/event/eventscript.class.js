@@ -19,15 +19,15 @@ const fs = require('fs')
  */
 class EventScript {
   constructor(client, evtprops) {
-    this.name = setValue(evtprops.name, "unknownName")
-    this.event = setValue(evtprops.event, "unknownEvent")
-    this.label = setValue(evtprops.label, "unknownLabel")
-    this.description = setValue(evtprops.description, "")
-    this.platforms = setValue(evtprops.platforms, ["discord"])
-    this.props = {}
-    this.pages = []
-    this.error = false
-    this.messages = []
+    this.name         = setValue(evtprops.name,         "unknownName")
+    this.event        = setValue(evtprops.event,        "unknownEvent")
+    this.label        = setValue(evtprops.label,        "unknownLabel")
+    this.description  = setValue(evtprops.description,  "")
+    this.platforms    = setValue(evtprops.platforms,    ["discord"])
+    this.props        = {}
+    this.pages        = []
+    this.error        = false
+    this.messages     = []
   }
 
   async getCache(client, parent, cacheType, cacheTest) {

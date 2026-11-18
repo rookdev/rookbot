@@ -77,13 +77,19 @@ module.exports = (client) => {
             // console.log(` ${eventFile}`)
 
             let handled = false
-            let eventObject = require(eventFile)
+            let eventObject = null
+            try {
+              eventObject = require(eventFile)
+            } catch (error) {
+              console.log(` ${eventFile}`)
+              console.log(error.stack)
+            }
 
             if (eventObject) {
               if (eventObject?.name) {
                 if (eventObject.name.includes("Event")) {
                   // Handle OOP
-                  // console.log(`  ${eventObject.name}`)
+                  // console.log(`    /${eventFile.split(path.sep).at(-1)}: ${eventObject.name}`)
                   let evt = new eventObject(client)
                   let result = await evt.execute(client, ...args)
                   handled = true
@@ -127,19 +133,17 @@ module.exports = (client) => {
                   // Print Platform
                   console.log(` ${client.profile.emojis[client.platform]} Platform: ${client.platform.ucfirst()}`)
                   // Print eventName
-                  console.log(`  Event: ${eventFolder.split(path.sep).slice(-1)[0]}`)
+                  console.log(`  Event: ${eventFolder.split(path.sep).at(-1)}`)
                   showEvent = false
                 }
                 if (showScript) {
                   // Print scriptName
-                  console.log(`   Script: ${eventFile.split(path.sep).slice(-1)[0]}`)
+                  console.log(`   Script: ${eventFile.split(path.sep).at(-1)}`)
                 }
                 console.log(
                   messages.map(m=>"    " + m).join("\n")
                 )
               }
-            } else {
-              return
             }
           }
         })

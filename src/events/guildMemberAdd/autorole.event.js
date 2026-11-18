@@ -1,12 +1,7 @@
-// @ts-nocheck
-
-const { GuildMember, hyperlink } = require('discord.js')
+const { GuildMember } = require('discord.js')
 const { EventScript } = require('../../classes/event/eventscript.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
-const mentionFuncs = require('../../utils/formatters/mentions')
-const timeFormat = require('../../utils/formatters/timeFormat')
 const dbFuncs = require('../../utils/db/dbFuncs')
-const moment = require('moment')
 
 /**
  * @class
@@ -35,6 +30,7 @@ module.exports = class AutoRoleEvent extends EventScript {
    */
   async action(client, newMember) {
     // this.messages.push(`/${this.name}: Event Action`)
+
     let guild = await this.getGuild(client, newMember)
 
     let dbRes = await dbFuncs.getDB(
@@ -44,10 +40,12 @@ module.exports = class AutoRoleEvent extends EventScript {
     let autoRoles = dbRes[0]
     this.messages.push(...dbRes[1])
 
+    let roles = []
     if (autoRoles) {
       for (let autoRoleName of autoRoles) {
         let autoRole = await this.getCache(client, guild, "roles", autoRoleName)
         await newMember.roles.add(autoRole)
+        roles.push(autoRole.name)
       }
     }
 
@@ -57,6 +55,7 @@ module.exports = class AutoRoleEvent extends EventScript {
       {
         guild: guild.name,
         member: newMember.user.tag,
+        roles,
         action: "autoroles"
       }
     )

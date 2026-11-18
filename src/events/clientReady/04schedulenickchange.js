@@ -50,7 +50,7 @@ module.exports = async (client) => {
       )
       .sort(natSort)
 
-      // Cycle through guilds
+    // Cycle through guilds
     for(let guildID of guilds) {
       // Find the guild
       let guild = await getters.getCachedGuild(client, guildID)

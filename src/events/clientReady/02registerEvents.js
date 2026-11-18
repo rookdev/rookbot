@@ -73,7 +73,9 @@ module.exports = async (client) => {
                 // Handle OOP
                 // console.log(`  ${eventObject.name}`)
                 let evt = new eventObject(client)
-                if (message != (eventName + ": ")) {
+                if (message == (eventName + ": ")) {
+                  message = message.padEnd("messageReactionRemove: ".length)
+                } else {
                   message += ", "
                 }
                 message += evt.name
@@ -88,6 +90,13 @@ module.exports = async (client) => {
                 }
                 handled = true
               }
+            } else {
+              if (message == (eventName + ": ")) {
+                message = message.padEnd("messageReactionRemove: ".length)
+              } else {
+                message += ", "
+              }
+              message += eventFile.split(path.sep).at(-1).replace(".js","")
             }
           }
         }

@@ -115,7 +115,7 @@ async function registerCommand(
     // If they're different
     if (areCommandsDifferent(existingCommand, cmdParts)) {
       cmdCount += 1
-      messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.reload} Updating: "${cmdParts.name}"`)
+      messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.reload} Updating: [${cmdParts.category.padEnd("diagnostic".length)}] "${cmdParts.name}"`)
       try {
         // Edit it
         await commandsManager.edit(
@@ -152,7 +152,7 @@ async function registerCommand(
     } else {
       // No change
       cmdCount += 1
-      messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.current} Current: "${cmdParts.name}"`)
+      messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.current} Current: [${cmdParts.category.padEnd("diagnostic".length)}] "${cmdParts.name}"`)
       client.commands[cmdParts.name] = existingCommand
     }
   } else {
@@ -170,7 +170,7 @@ async function registerCommand(
 
     // Register New Command
     cmdCount += 1
-    messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.yes} Registering new: "${cmdParts.name}"`)
+    messages.push(`${cmdCount.toString().padStart(3)} ${client.profile.emojis.yes} Registering new: [${cmdParts.category.padEnd("diagnostic".length)}] "${cmdParts.name}"`)
     try {
       // Create New
       let newCommand = await commandsManager.create(cmdParts)
@@ -195,7 +195,7 @@ async function registerCommand(
       } else {
         // Failed to register
         cmdCount -= 1
-        messages.push(`${client.profile.emojis.fail} Failed to register: "${cmdParts.name}":`, error.message)
+        messages.push(`${client.profile.emojis.fail} Failed to register: [${cmdParts.category.padEnd("diagnostic".length)}] "${cmdParts.name}":`, error.message)
       }
     }
   }

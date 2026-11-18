@@ -157,6 +157,7 @@ module.exports = class AutoRespondEvent extends EventScript {
     return false
   }
 
+  // Scrubber
   async respondScrubber(client, message) {
     if (message.author.id === client.user.id) { return }
     let guild = await this.getGuild(client, message)

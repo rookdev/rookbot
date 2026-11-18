@@ -34,6 +34,7 @@ module.exports = class LogMemberJoinEvent extends EventScript {
    */
   async action(client, newMember) {
     // this.messages.push(`/${this.name}: Event Action`)
+
     let joinedDateTime = moment.utc(newMember.joinedTimestamp)
     let createdDateTime = moment.utc(newMember.user.createdTimestamp)
     let guild = await this.getProp(client, newMember, "guild")

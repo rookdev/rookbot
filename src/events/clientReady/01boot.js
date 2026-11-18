@@ -11,6 +11,8 @@ module.exports = async (client) => {
 
   // messages.push(JSON.stringify(emojis))
 
+  messages.push(`${client.profile.emojis.bot}Information Society: It is useless to resist us.`)
+
   // Optional: Delete commands if enabled in the profile
   if (GLOBALS.deleteCommands) {
     result = await manageCommands(

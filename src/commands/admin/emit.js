@@ -107,7 +107,7 @@ module.exports = class EmitCommand extends AdminCommand {
           {}
         ]
       }
-      let oldMemberGuild = await this.getProp(client, oldMember, "guild")
+      let oldMemberGuild = await this.getGuild(client, oldMember)
       if (!(oldMemberGuild)) {
         // console.log("Adding Guild")
         oldMember.guild = guild
