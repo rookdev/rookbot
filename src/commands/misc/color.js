@@ -9,7 +9,7 @@ module.exports = class ColorCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "color",
-      category: "info",
+      category: "misc",
       description: "Displays information about a hex color code",
       options: [
         {

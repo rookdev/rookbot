@@ -12,7 +12,7 @@ module.exports = class TimeCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "time",
-      category: "info",
+      category: "misc",
       description: "Time",
       platforms: ["discord", "stoat"]
     }

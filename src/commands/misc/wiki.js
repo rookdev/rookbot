@@ -17,7 +17,7 @@ module.exports = class WikiCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "wiki",
-      category: "info",
+      category: "misc",
       description: "Links to a wikipage",
       options: [
         {
