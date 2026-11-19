@@ -10,11 +10,11 @@ const globalFuncs = require('../../utils/primitives/globalFuncs')
 const timeFormat = require('../../utils/formatters/timeFormat')
 const moment = require('moment')
 
-module.exports = class ServerStatusCommand extends RookCommand {
+module.exports = class GuildStatusCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "status",
-      description: "Server Status",
+      description: "Guild Status",
       playerTypes: {
         user:   "bot",
         target: "guild"
@@ -23,7 +23,7 @@ module.exports = class ServerStatusCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Server Status"
+        text: "Guild Status"
       }
     }
     super(

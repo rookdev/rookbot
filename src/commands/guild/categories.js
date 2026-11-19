@@ -7,10 +7,10 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 
-module.exports = class ServerCatsCommand extends RookCommand {
+module.exports = class GuildCatsCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      description: "Server Categories",
+      description: "Guild Categories",
       playerTypes: {
         user:   "bot",
         target: "guild"
@@ -19,7 +19,7 @@ module.exports = class ServerCatsCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Server Categories"
+        text: "Guild Categories"
       }
     }
     super(

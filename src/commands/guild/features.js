@@ -11,10 +11,10 @@ const timeFormat = require('../../utils/formatters/timeFormat')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 
-module.exports = class ServerFeaturesCommand extends RookCommand {
+module.exports = class GuildFeaturesCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      description: "Server Features",
+      description: "Guild Features",
       playerTypes: {
         user:   "bot",
         target: "guild"
@@ -23,7 +23,7 @@ module.exports = class ServerFeaturesCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Server Features"
+        text: "Guild Features"
       }
     }
     super(

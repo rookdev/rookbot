@@ -2,15 +2,15 @@ const { inlineCode, bold } = require('discord.js')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 
-module.exports = class ServerWebhooksCommand extends RookCommand {
+module.exports = class GuildWebhooksCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "webhooks",
-      description: "Server Webhooks"
+      description: "Guild Webhooks"
     }
     let props = {
       title: {
-        text: "Server Webhooks"
+        text: "Guild Webhooks"
       }
     }
 

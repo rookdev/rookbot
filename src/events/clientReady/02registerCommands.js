@@ -220,6 +220,8 @@ module.exports = async (client) => {
     return [result, messages]
   }
 
+  client.commands = {}
+
   try {
     const testGuildID = process.env.GUILD_ID
     const localCommands = await getLocalCommands(client)
@@ -242,7 +244,6 @@ module.exports = async (client) => {
     }
 
     const applicationCommands = await commandsManager.fetch()
-    client.commands = {}
 
     for (const localCommand of localCommands) {
       // Get Command Parts

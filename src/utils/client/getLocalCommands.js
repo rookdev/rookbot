@@ -11,7 +11,6 @@ const {
   SlashCommandUserOption,
   SlashCommandMentionableOption
 } = require('discord.js')
-const stringFuncs = require('../../utils/primitives/stringFuncs')
 const fileFuncs = require('../fs/fileFuncs')
 const getters = require('../../utils/guild/getters')
 const path = require('path')
@@ -40,11 +39,40 @@ module.exports = async (client, exceptions = []) => {
     if (hasSubcommands) {
       // continue
 
+      // /guild*
+      // /chan_edit
+      //  /edit channel
+      //  -mode:
+      //   Sync:    channel must have a parent
+      //   Sort:    channel must have a parent
+      //   NSFW:    channel must not be a category
+      //   Delete:  any channel
+      //  -channel
+      //  -channel-id
+      //  -channel-name
+      //  -channel-topic
+      //  -parent
+      //  -parent-id
+      //  -position
+      // /role_edit
+      //  /edit role
+      //  -mode: Delete
+      //  -role
+      //  -role-id
+      //  -role-name
+      //  -color
+      // /mention
+      //  /info channel : Channel
+      //  /info emoji   : Emoji
+      //  /info mention : User/Role
+      //  /info message : Message
+      //  /info role    : Role
+      //  /info user    : User
+
       // Subcommand Set
       // console.log(` Subcommands: ${filenames.join(", ")}`)
-      let commandsManager = null
+      let commandsManager     = null
       let applicationCommands = null
-      let commands
 
       const isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
       if (isDevelopment) {
@@ -63,8 +91,8 @@ module.exports = async (client, exceptions = []) => {
 
       if (!applicationCommands) { continue }
 
-      const registerCommand = true
-      if (registerCommand) {
+      const processCommand = true
+      if (processCommand) {
         let cmdParts = {
           name: commandCategoryName
         }
@@ -73,12 +101,15 @@ module.exports = async (client, exceptions = []) => {
         )
         if (!existingCommand) {
           try {
+            let subCommandData = {}
+            subCommandData[commandCategoryName] = []
             const newSubcommand = new SlashCommandBuilder()
               .setName(commandCategoryName)
               .setDescription(commandCategoryName.ucfirst())
             for (let filename of filenames) {
               if (filename == "index.js") { continue }
               let filenameName = filename.replace(".js","")
+              subCommandData[commandCategoryName].push(filenameName)
               let subCmdScript = require(
                 path.join(
                   commandCategory,
@@ -205,25 +236,48 @@ module.exports = async (client, exceptions = []) => {
               }
             }
             await commandsManager.create(newSubcommand)
+            console.log(`Registering new subcommand: ${JSON.stringify(subCommandData)}`)
             // console.log(printData)
           } catch (error) {
             console.log(error.stack)
           }
         } else {
-          let commandObject = require(
-            path.join(
-              commandCategory,
-              "index.js"
-            )
+          let commandObject = await fileFuncs.getAFile(
+            [ commandCategoryName ],
+            "index.js"
           )
           if (commandObject) {
             if (commandObject?.name) {
               if (commandObject.name.includes("IndexCommand")) {
                 let cmd = new commandObject(client)
                 commandObject = cmd
+                client.commands[commandCategoryName] = commandObject
                 localCommands.push(commandObject)
               }
             }
+          }
+          let subCommandFiles = await fileFuncs.getAllFiles(
+            [
+              "src",
+              "commands",
+              commandCategoryName
+            ]
+          )
+          for (let filepath of subCommandFiles) {
+            let filename = filepath.split(path.sep).at(-1).replace(".js","")
+            if (filename == "index") { continue }
+            commandObject = await fileFuncs.getAFile(filepath)
+            if (commandObject?.name) {
+              if (
+                commandObject.name.startsWith(commandCategoryName.ucfirst()) &&
+                commandObject.name.endsWith("Command")
+              ) {
+                let cmd = new commandObject(client)
+                cmd.name = commandCategoryName + " " + filename
+                client.commands[cmd.name] = cmd
+              }
+            }
+            console.log(commandCategoryName,filename)
           }
         }
       }

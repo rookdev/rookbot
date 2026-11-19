@@ -1,6 +1,10 @@
 // @ts-nocheck
 
-const { MessageFlags, inlineCode } = require('discord.js')
+const {
+  MessageFlags,
+  inlineCode,
+  DiscordjsTypeError
+} = require('discord.js')
 const getLocalCommands = require('../../utils/client/getLocalCommands')
 
 module.exports = async (client, interaction) => {
@@ -19,9 +23,30 @@ module.exports = async (client, interaction) => {
   const localCommands = await getLocalCommands(client)
 
   try {
-    let commandObject = localCommands.find(
-      cmd => cmd.name === interaction.commandName
-    )
+    let commandObject = null
+    let cmdName       = interaction.commandName
+    let subCmdName    = null
+
+    try {
+      if (interaction?.options?.getSubcommand()) {
+        subCmdName = interaction.options.getSubcommand()
+        if (subCmdName) {
+          commandObject = client.commands[`${cmdName} ${subCmdName}`]
+        }
+      }
+    } catch (error) {
+      if (error instanceof DiscordjsTypeError) {
+        // do nothing
+      } else {
+        console.log(error.stack)
+      }
+    }
+
+    if (!subCmdName) {
+      commandObject = localCommands.find(
+        cmd => cmd.name === cmdName
+      )
+    }
 
     let coptions = {}
     if (!commandObject) {

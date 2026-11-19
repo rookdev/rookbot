@@ -8,10 +8,10 @@ const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 
-module.exports = class ServerMembersCommand extends RookCommand {
+module.exports = class GuildMembersCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      description: "Server Members",
+      description: "Guild Members",
       playerTypes: {
         user:   "bot",
         target: "guild"
@@ -20,7 +20,7 @@ module.exports = class ServerMembersCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Server Members"
+        text: "Guild Members"
       }
     }
     super(

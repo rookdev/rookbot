@@ -10,12 +10,11 @@ const dbFuncs = require('../../utils/db/dbFuncs')
 const path = require('path')  // Easy filepath management
 const fs = require('fs')      // Filesystem manipulation
 
-module.exports = class RosterCommand extends RookCommand {
+module.exports = class GuildRosterCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "roster",
-      category: "guild",
-      description: "Display a Roster",
+      description: "Display a Guild Roster",
       flags: { target: "required" },
       options: [
         {
@@ -40,7 +39,7 @@ module.exports = class RosterCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Roster Viewer"
+        text: "Guild Roster Viewer"
       }
     }
 
