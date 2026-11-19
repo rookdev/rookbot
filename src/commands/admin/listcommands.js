@@ -156,7 +156,7 @@ module.exports = class ListCommandsCommand extends AdminCommand {
     }
     if (["local","universal"].includes(domain)) {
       // Get Local Commands
-      localCommands = getLocalCommands(client)
+      localCommands = await getLocalCommands(client)
       if (localCommands) {
         baseDomain = "local"
         for (let command of localCommands) {

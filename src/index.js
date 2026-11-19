@@ -30,7 +30,7 @@ async function callCommands(client, commandNames) {
 
   // Get local commands
   const getLocalCommands = require('./utils/client/getLocalCommands')
-  const localCommands = getLocalCommands(client)
+  const localCommands = await getLocalCommands(client)
 
   for(let commandName of commandNames) {
     const commandObject = localCommands.find(

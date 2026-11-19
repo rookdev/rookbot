@@ -51,7 +51,7 @@ module.exports = class DeleteCommandCommand extends AdminCommand {
   async action(client, interaction, coptions) {
     let cmdName = coptions["command-name"] ?? null
     
-    const localCommands = getLocalCommands(client)
+    const localCommands = await getLocalCommands(client)
     
     let isDevelopment = !coptions["scope"].startsWith('prod')
     let commandsManager = null

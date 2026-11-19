@@ -104,7 +104,7 @@ module.exports = class BatchModCommand extends BotDevCommand {
     this.messages.push(`/${this.name}: BatchMod Action`)
 
     // Get Local Commands
-    const localCommands = getLocalCommands(client)
+    const localCommands = await getLocalCommands(client)
     // Get requested Command Name
     let commandName = coptions["command-name"] ?? "ping"
     let batchFile = interaction.options.getAttachment("batchlist")

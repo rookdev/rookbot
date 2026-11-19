@@ -7,15 +7,10 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 
-module.exports = class GuildWebhooksCommand extends RookCommand {
+module.exports = class ServerCatsCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      name: "guildwebhooks",
-      category: "guild",
-      description: "Guild Webhooks",
-      flags: {
-        test: "basic"
-      },
+      description: "Server Categories",
       playerTypes: {
         user:   "bot",
         target: "guild"
@@ -24,7 +19,7 @@ module.exports = class GuildWebhooksCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Guild Webhooks"
+        text: "Server Categories"
       }
     }
     super(
@@ -44,20 +39,34 @@ module.exports = class GuildWebhooksCommand extends RookCommand {
       return false
     }
 
-    let hookCache = await interactionGuild.fetchWebhooks()
-
-    this.props.title.text = `Guild Webhooks for ${interactionGuild.name}`
     this.props.description = []
     this.props.description.push(bold("Guild"))
     this.props.description.push(mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true }))
     this.props.description.push("")
 
-    for (let [hID, hook] of hookCache) {
-      this.props.description.push(
-        inlineCode(hID) + ': ' +
-        "'" + hook.name + "': " +
-        mentionFuncs.channelMention(hook.channel.id)
-      )
+    let channels = []
+    let chanCache = interactionGuild.channels.cache
+    if (globalFuncs.isStoat(client)) {
+      chanCache = interactionGuild.categories
+    }
+
+    for (let [cID, channel] of chanCache) {
+      if (
+        (channel.type == ChannelType.GuildCategory) ||
+        (channel?.children?.size > 0)
+      ) {
+        if (channel?.rawPosition) {
+          channels[channel.rawPosition] = channel
+        } else {
+          channels.push(channel)
+        }
+      }
+    }
+
+    for (let channel of channels) {
+      if (channel) {
+        this.props.description.push(`${inlineCode(channel.id)}: ${channel.name}`)
+      }
     }
 
     return !this.error

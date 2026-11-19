@@ -16,7 +16,7 @@ module.exports = async (client, interaction) => {
   const userIDs = require('../../dbs/userids.json')
   const guildIDs = require('../../dbs/guilds.json')
 
-  const localCommands = getLocalCommands(client)
+  const localCommands = await getLocalCommands(client)
 
   try {
     let commandObject = localCommands.find(
@@ -25,6 +25,10 @@ module.exports = async (client, interaction) => {
 
     let coptions = {}
     if (!commandObject) {
+      console.log(
+        interaction.commandName,
+        localCommands.map(cmd => cmd.name).join(", ")
+      )
       for (let cmd of localCommands) {
         if (cmd?.aliases && cmd.aliases.length > 0) {
           for (let alias of cmd.aliases) {

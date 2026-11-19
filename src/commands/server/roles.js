@@ -7,15 +7,10 @@ const { RookCommand } = require('../../classes/command/rcommand.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 
-module.exports = class GuildRolesCommand extends RookCommand {
+module.exports = class ServerRolesCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      name: "guildroles",
-      category: "guild",
-      description: "Guild Roles",
-      flags: {
-        test: "basic"
-      },
+      description: "Server Roles",
       options: [
         {
           name: "role-id",
@@ -70,7 +65,7 @@ module.exports = class GuildRolesCommand extends RookCommand {
     }
     let props = {
       title: {
-        text: "Guild Roles"
+        text: "Server Roles"
       }
     }
     super(

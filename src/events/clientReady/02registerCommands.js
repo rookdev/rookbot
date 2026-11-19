@@ -85,6 +85,13 @@ async function registerCommand(
   let result = false
   let messages = []
 
+  if (cmdParts.name == "server") {
+    return [result, messages]
+  }
+  if (cmdParts.name.includes("IndexCommand")) {
+    return [result, messages]
+  }
+
   // Find existing command if present
   const existingCommand = applicationCommands.find(
     cmd => cmd.name === cmdParts.name
@@ -215,7 +222,7 @@ module.exports = async (client) => {
 
   try {
     const testGuildID = process.env.GUILD_ID
-    const localCommands = getLocalCommands(client)
+    const localCommands = await getLocalCommands(client)
 
     // Determine if we are in development or production mode
     let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')

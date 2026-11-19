@@ -43,7 +43,7 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
     this.messages.push(`/${this.name}: TestSuite Action`)
 
     // Get Local Commands
-    const localCommands = getLocalCommands(client)
+    const localCommands = await getLocalCommands(client)
     // Get requested Command Name
     let commandName = coptions["command-name"]
 
