@@ -11,11 +11,11 @@ const dbFuncs = require('../../utils/db/dbFuncs')
 const shell = require('shelljs')
 const fs = require('fs')
 
-module.exports = class MongoDBCommand extends BotDevCommand {
+module.exports = class BotEditMongoDBCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "mongodb",
-      category: "botmeta",
+      category: "botedit",
       description: "Manage MongoDB's dbs for this guild",
       flags: {
         user: "unapplicable"

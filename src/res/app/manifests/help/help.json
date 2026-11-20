@@ -15,10 +15,6 @@
           "description": "Selected Channel (Channel)"
         },
         {
-          "name": "channel-id",
-          "description": "Selected Channel ID"
-        },
-        {
           "name": "channel-name",
           "description": "New Channel Name"
         },
@@ -29,10 +25,6 @@
         {
           "name": "parent",
           "description": "Parent Channel (Channel)"
-        },
-        {
-          "name": "parent-id",
-          "description": "Parent Channel ID"
         },
         {
           "name": "position",
@@ -111,10 +103,6 @@
           "description": "Selected Role (Role)"
         },
         {
-          "name": "role-id",
-          "description": "Selected Role ID"
-        },
-        {
           "name": "role-name",
           "description": "New Role Name"
         },
@@ -158,11 +146,11 @@
       "description": "Manage Channel/Role Permissions",
       "options": [
         {
-          "name": "channel-id",
+          "name": "channel",
           "description": "Channel to check (Channel)"
         },
         {
-          "name": "role-id",
+          "name": "role",
           "description": "Role to check"
         },
         {
@@ -181,15 +169,15 @@
       "description": "Verbose View",
       "options": [
         {
-          "name": "role-id",
+          "name": "role",
           "description": "Role ID (Role)"
         },
         {
-          "name": "member-id",
+          "name": "member",
           "description": "Member ID (User)"
         },
         {
-          "name": "channel-id",
+          "name": "channel",
           "description": "Channel ID (Channel)"
         }
       ],
@@ -329,7 +317,7 @@
       "description": "Immediately triggers a nickname change for specified user",
       "options": [
         {
-          "name": "target-id",
+          "name": "target",
           "description": "Target User ID",
           "required": true
         }
@@ -445,6 +433,21 @@
       "instanceClassName": "BotAvatarCommand",
       "parentClassName": "BotDevCommand"
     },
+    "botdbs": {
+      "name": "botdbs",
+      "category": "botedit",
+      "description": "Get rookbot's dbs for this guild",
+      "options": [
+        {
+          "name": "database-type",
+          "description": "Database Type"
+        }
+      ],
+      "access": "BotDev",
+      "segment": "local",
+      "instanceClassName": "BotDBsCommand",
+      "parentClassName": "BotDevCommand"
+    },
     "botnickname": {
       "name": "botnickname",
       "category": "botedit",
@@ -460,24 +463,24 @@
       "segment": "local",
       "instanceClassName": "BotNicknameCommand",
       "parentClassName": "BotDevCommand"
-    }
-  },
-  "botmeta": {
-    "botdbs": {
-      "name": "botdbs",
-      "category": "botmeta",
-      "description": "Get rookbot's dbs for this guild",
+    },
+    "mongodb": {
+      "name": "mongodb",
+      "category": "botedit",
+      "description": "Manage MongoDB's dbs for this guild",
       "options": [
         {
-          "name": "database-type",
-          "description": "Database Type"
+          "name": "mode",
+          "description": "Mode"
         }
       ],
       "access": "BotDev",
       "segment": "local",
-      "instanceClassName": "BotDBsCommand",
+      "instanceClassName": "MongoDBCommand",
       "parentClassName": "BotDevCommand"
-    },
+    }
+  },
+  "botmeta": {
     "botguilds": {
       "name": "botguilds",
       "category": "botmeta",
@@ -512,69 +515,6 @@
       "segment": "local",
       "instanceClassName": "BotSourceCommand",
       "parentClassName": "RookCommand"
-    },
-    "help": {
-      "name": "help",
-      "category": "botmeta",
-      "description": "Help",
-      "options": [
-        {
-          "name": "section-name",
-          "description": "Section Name"
-        },
-        {
-          "name": "command-name",
-          "description": "Command Name"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "HelpCommand",
-      "parentClassName": "RookCommand"
-    },
-    "listevents": {
-      "name": "listevents",
-      "category": "botmeta",
-      "description": "Events Help",
-      "options": [
-        {
-          "name": "event-name",
-          "description": "Event Name"
-        },
-        {
-          "name": "script-name",
-          "description": "Script Name"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "ListEventsCommand",
-      "parentClassName": "RookCommand"
-    },
-    "mongodb": {
-      "name": "mongodb",
-      "category": "botmeta",
-      "description": "Manage MongoDB's dbs for this guild",
-      "options": [
-        {
-          "name": "mode",
-          "description": "Mode"
-        }
-      ],
-      "access": "BotDev",
-      "segment": "local",
-      "instanceClassName": "MongoDBCommand",
-      "parentClassName": "BotDevCommand"
-    },
-    "uptime": {
-      "name": "uptime",
-      "category": "botmeta",
-      "description": "Uptime",
-      "options": [],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "UptimeCommand",
-      "parentClassName": "RookCommand"
     }
   },
   "diagnostic": {
@@ -596,6 +536,16 @@
       "access": "unset",
       "segment": "local",
       "instanceClassName": "TestCommand",
+      "parentClassName": "RookCommand"
+    },
+    "uptime": {
+      "name": "uptime",
+      "category": "diagnostic",
+      "description": "Uptime",
+      "options": [],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "UptimeCommand",
       "parentClassName": "RookCommand"
     }
   },
@@ -658,7 +608,7 @@
       "description": "Slap another user around with a specified item",
       "options": [
         {
-          "name": "target-id",
+          "name": "target",
           "description": "ID of target",
           "required": true
         },
@@ -682,7 +632,7 @@
       "description": "Slap another user around a bit with a large trout",
       "options": [
         {
-          "name": "target-id",
+          "name": "target",
           "description": "ID of target",
           "required": true
         }
@@ -691,6 +641,46 @@
       "access": "unset",
       "segment": "local",
       "instanceClassName": "SlapCommand",
+      "parentClassName": "RookCommand"
+    }
+  },
+  "help": {
+    "help": {
+      "name": "help",
+      "category": "help",
+      "description": "Help",
+      "options": [
+        {
+          "name": "section-name",
+          "description": "Section Name"
+        },
+        {
+          "name": "command-name",
+          "description": "Command Name"
+        }
+      ],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "HelpCommand",
+      "parentClassName": "RookCommand"
+    },
+    "listevents": {
+      "name": "listevents",
+      "category": "help",
+      "description": "Events Help",
+      "options": [
+        {
+          "name": "event-name",
+          "description": "Event Name"
+        },
+        {
+          "name": "script-name",
+          "description": "Script Name"
+        }
+      ],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "ListEventsCommand",
       "parentClassName": "RookCommand"
     }
   },
@@ -853,10 +843,6 @@
         {
           "name": "channel",
           "description": "Channel (Channel)"
-        },
-        {
-          "name": "channel-id",
-          "description": "Channel ID"
         }
       ],
       "access": "Mod",
@@ -1106,7 +1092,7 @@
       "description": "Post a Shoutout for a user.",
       "options": [
         {
-          "name": "target-id",
+          "name": "target",
           "description": "User to shoutout",
           "required": true
         },

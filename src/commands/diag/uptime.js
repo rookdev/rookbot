@@ -14,7 +14,7 @@ module.exports = class UptimeCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "uptime",
-      category: "botmeta",
+      category: "diagnostic",
       description: "Uptime",
       flags: {
         user: "unapplicable",

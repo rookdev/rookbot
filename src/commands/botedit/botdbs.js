@@ -13,7 +13,7 @@ const {
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 
-const BirthdayNotifCommand = require('../../commands/botdo/bdaynotif')
+const BirthdayNotifCommand = require('../botdo/bdaynotif')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 const stringFuncs = require('../../utils/primitives/stringFuncs')
@@ -22,11 +22,11 @@ const numFuncs = require('../../utils/primitives/numFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const fs = require('fs')
 
-module.exports = class BotDBsCommand extends BotDevCommand {
+module.exports = class BotEditDBsCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "botdbs",
-      category: "botmeta",
+      category: "botedit",
       description: "Get rookbot's dbs for this guild",
       flags: {
         user: "unapplicable"

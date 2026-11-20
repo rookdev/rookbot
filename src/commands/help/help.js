@@ -30,7 +30,7 @@ module.exports = class HelpCommand extends RookCommand {
 
     let comprops = {
       name: "help",
-      category: "botmeta",
+      category: "help",
       description: "Help",
       options: [
         {
@@ -46,7 +46,9 @@ module.exports = class HelpCommand extends RookCommand {
             { name: "Diagnostics",    value: "diagnostic" },
             { name: serverGameName,   value: "doi" },
             { name: "Fun",            value: "fun" },
+            { name: "Help",           value: "help" },
             { name: "Information",    value: "info" },
+            { name: "Guild",          value: "guild" },
             { name: "Miscellaneous",  value: "misc" },
             { name: "Moderation",     value: "mod" },
             { name: "Randomizers",    value: "rando" },

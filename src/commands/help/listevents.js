@@ -28,7 +28,7 @@ module.exports = class ListEventsCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "listevents",
-      category: "botmeta",
+      category: "help",
       description: "Events Help",
       options: [
         {
