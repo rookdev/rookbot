@@ -1,0 +1,11 @@
+{
+  "AutoModQuarintinedGuildTag":                 "Guild Clan Tag is blocked by AutoMod",
+  "AutomodQuarantinedUsernameOrGuildNickname":  "Display/nick/username is blocked by AutoMod",
+  "BypassesVerification":                       "Exempt from Guild Verification requirements",
+  "CompletedHomeActions":                       "Completed Server Guide",
+  "CompletedOnboarding":                        "Completed Server Onboarding",
+  "DidRejoin":                                  "Joined/left/rejoined",
+  "IsGuest":                                    "Voice Channel Guest",
+  "StartedHomeActions":                         "Started Server Guide",
+  "StartedOnboarding":                          "Started Server Onboarding"
+}

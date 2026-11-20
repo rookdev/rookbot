@@ -2,6 +2,7 @@ const {
   DiscordjsTypeError,
   ChannelType,
   codeBlock,
+  hyperlink,
   inlineCode,
   italic
 } = require('discord.js')
@@ -128,12 +129,18 @@ class MentionCommand extends RookCommand {
        * Clan Tag, Clan ID
        * Nickname, Display Name, Global Name
        * Roles
+       * Member Flags
+       * User Flags
+       * Profile Banner
        * Bot User? Can Bot Edit? Can Bot Moderate?
        * Joined Time
        */
       fieldTypes.push([ "clanTag", "clanId" ])
       fieldTypes.push([ "nickname", "displayName", "globalName" ])
       fieldTypes.push([ "roles" ])
+      fieldTypes.push([ "memberFlags"])
+      fieldTypes.push([ "userFlags"])
+      fieldTypes.push([ "banner" ])
       fieldTypes.push([ "seenStr", "seenChan", "seenMsg" ])
       fieldTypes.push([ "botUser", "botEdit", "botMod" ])
       fieldTypes.push([ "joinedTime" ])
@@ -159,6 +166,8 @@ class MentionCommand extends RookCommand {
       animated:     "Animated?",
       clanTag:      "Clan Guild Tag",
       clanId:       "Clan Guild ID",
+      memberFlags:  "Member Flags",
+      userFlags:    "User Flags",
       parentName:   "Parent Name",
       parentId:     "Parent ID",
       displayName:  "Display Name",
@@ -191,9 +200,8 @@ class MentionCommand extends RookCommand {
         } else if (fieldId == "id") {
           fieldValue = codeBlock(targetId)
         } else if ([ "memberCount", "rank", "topic", "subtype", "position" ].contains(fieldId)) {
-          if (specs[fieldId]) {
-            fieldValue = codeBlock(specs[fieldId])
-          }
+          if (!specs[fieldId]) { continue }
+          fieldValue = codeBlock(specs[fieldId])
         } else if (fieldId == "clanTag") {
           fieldValue = specs?.clan?.tag ? codeBlock(specs.clan.tag) : ""
         } else if (fieldId == "clanId") {
@@ -203,9 +211,32 @@ class MentionCommand extends RookCommand {
         } else if (fieldId == "parentId") {
           fieldValue = specs?.parent?.id ? codeBlock(specs.parent.id) : ""
         } else if (fieldId == "roles") {
-          if (specs?.roles?.length && specs.roles.length > 0) {
-            fieldName += ' [' + specs.roles.length + specs?.highest + ']'
-            fieldValue = codeBlock(specs.roles.join(", "))
+          if (globalFuncs.empty(specs[fieldId])) { continue }
+          fieldName += ' [' + specs.roles.length + specs?.highest + ']'
+          fieldValue = codeBlock(specs.roles.join(", "))
+        } else if ([ "memberFlags", "userFlags" ].contains(fieldId)) {
+          if (globalFuncs.empty(specs[fieldId])) { continue }
+          let flagDescs = await fileFuncs.getAFile(
+            [
+              "src",
+              "dbs",
+              fieldId + ".json"
+            ]
+          )
+          let flags = []
+          for (let flag of specs[fieldId]) {
+            flags.push(
+              (
+                (flag in flagDescs) ? flagDescs[flag] : flag
+              )
+            )
+          }
+          if (!globalFuncs.empty(flags)) {
+            fieldValue = codeBlock(flags.join(", "))
+          }
+        } else if (fieldId == "banner") {
+          if (specs?.banner?.url) {
+            fieldValue = hyperlink("Link", specs.banner.url)
           }
         } else if ([ "synced", "hoisted" ].contains(fieldId)) {
           let show = true
@@ -242,14 +273,18 @@ class MentionCommand extends RookCommand {
             }
           }
         }
-        buildFieldRow.push(
-          {
-            name:  fieldName,
-            value: fieldValue
-          }
-        )
+        if (fieldValue) {
+          buildFieldRow.push(
+            {
+              name:  fieldName,
+              value: fieldValue
+            }
+          )
+        }
       }
-      buildFieldRows.push(buildFieldRow)
+      if (!globalFuncs.empty(buildFieldRow)) {
+        buildFieldRows.push(buildFieldRow)
+      }
     }
 
     // this.messages.push(JSON.stringify(fieldTypes))
@@ -664,6 +699,7 @@ class MentionCommand extends RookCommand {
             if (!targetMember?.user) {
               break
             }
+            await targetMember.user.fetch()
             specs = {}
             specs.nickname      = targetMember?.nickname                ?? targetMember.displayName
             specs.displayName   = targetMember.displayName
@@ -690,9 +726,13 @@ class MentionCommand extends RookCommand {
               specs.roles = roles
             }
 
+            specs.memberFlags = targetMember?.flags       ? targetMember.flags.toArray()      : null
+            specs.userFlags   = targetMember?.user?.flags ? targetMember.user.flags.toArray() : null
+
             specs.highest = await targetMember.roles.highest
             specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
             specs.clan = targetMember?.user?.primaryGuild
+            specs.banner = targetMember?.user?.banner ? { url: await targetMember.user.bannerURL({ size: 512, extension: "png" }) } : null
 
             if (specs?.highest) {
               let numRoles = await guild.roles.fetch()
