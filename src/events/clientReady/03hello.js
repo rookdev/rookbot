@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-const BotActivityCommand = require('../../commands/botedit/botactivity')
+const BotActivityCommand = require('../../commands/botedit/activity')
 const salutation = require('../maybeReady/salutation')
 
 module.exports = async (client, interaction) => {

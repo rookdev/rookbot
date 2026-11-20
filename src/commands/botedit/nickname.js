@@ -9,7 +9,7 @@ const getters = require('../../utils/guild/getters')
 module.exports = class BotEditNicknameCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
-      name: "botnickname",
+      name: "nickname",
       category: "botedit",
       description: "Set rookbot's Nickname",
       flags: {

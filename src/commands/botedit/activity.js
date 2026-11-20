@@ -23,7 +23,7 @@ const AsciiTable = require('ascii-table') // Pretty-print to console
 module.exports = class BotEditActivityCommand extends BotDevCommand {
   constructor(client, comprops, props={}) {
     comprops = {
-      name: "botactivity",
+      name: "activity",
       category: "botedit",
       description: "Bot Activity setter",
       options: [

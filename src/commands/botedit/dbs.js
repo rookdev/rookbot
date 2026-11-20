@@ -25,7 +25,7 @@ const fs = require('fs')
 module.exports = class BotEditDBsCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
-      name: "botdbs",
+      name: "dbs",
       category: "botedit",
       description: "Get rookbot's dbs for this guild",
       flags: {

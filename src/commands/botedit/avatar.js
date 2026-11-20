@@ -9,7 +9,7 @@ const fileFuncs = require('../../utils/fs/fileFuncs')
 module.exports = class BotEditAvatarCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
-      name: "botavatar",
+      name: "avatar",
       category: "botedit",
       description: "Set rookbot's Avatar",
       flags: {
