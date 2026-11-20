@@ -42,11 +42,6 @@ module.exports = class ChannelEditCommand extends AdminCommand {
           type: ApplicationCommandOptionType.Channel
         },
         {
-          name: "channel-id",
-          description: "Selected Channel ID",
-          type: ApplicationCommandOptionType.String
-        },
-        {
           name: "channel-name",
           description: "New Channel Name",
           type: ApplicationCommandOptionType.String
@@ -60,11 +55,6 @@ module.exports = class ChannelEditCommand extends AdminCommand {
           name: "parent",
           description: "Parent Channel (Channel)",
           type: ApplicationCommandOptionType.Channel
-        },
-        {
-          name: "parent-id",
-          description: "Parent Channel ID",
-          type: ApplicationCommandOptionType.String
         },
         {
           name: "position",
@@ -97,7 +87,9 @@ module.exports = class ChannelEditCommand extends AdminCommand {
   async action(client, interaction, coptions) {
     let mode = coptions.mode ?? "set"
 
-    let targetInput = coptions?.channel ?? coptions["channel-id"]
+    let targetInput = coptions?.channel ?? null
+    // FIXME: Handle error
+    if (!targetInput) { return }
 
     this.props.description = []
 
@@ -149,7 +141,9 @@ module.exports = class ChannelEditCommand extends AdminCommand {
           await channel.delete()
         }
       } else if (mode == "move") {
-        let parentInput = coptions?.parent ?? coptions["parent-id"]
+        let parentInput = coptions?.parent ?? null
+        // FIXME: Handle error
+        if (!parentInput) { return }
         // Get Parent ID
         let parentId = parentInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
         let parentChannel = await this.getChannel(client, interaction, parentId)

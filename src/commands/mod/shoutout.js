@@ -19,9 +19,9 @@ module.exports = class ShoutoutCommand extends ModCommand {
       description: "Post a Shoutout for a user.",
       options: [
         {
-          name: "target-id",
+          name: "target",
           description: "User to shoutout",
-          type: ApplicationCommandOptionType.String,
+          type: ApplicationCommandOptionType.User,
           required: true
         },
         {
@@ -44,7 +44,7 @@ module.exports = class ShoutoutCommand extends ModCommand {
   // declare props: import('../../types/embed').EmbedProps
 
   async action(client, interaction, coptions) {
-    let targetInput = coptions["target-id"]
+    let targetInput = coptions["target"]
     let streamURL = coptions["stream-url"]
     // Get Target ID
     let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >

@@ -19,11 +19,6 @@ module.exports = class GuildInviteCommand extends ModCommand {
           name: "channel",
           description: "Channel (Channel)",
           type: ApplicationCommandOptionType.Channel
-        },
-        {
-          name: "channel-id",
-          description: "Channel ID",
-          type: ApplicationCommandOptionType.String
         }
       ],
       flags: {
@@ -92,7 +87,7 @@ module.exports = class GuildInviteCommand extends ModCommand {
     }
 
     if (validInvites == 0) {
-      let targetInput = coptions["channel"] ?? coptions["channel-id"] ?? null
+      let targetInput = coptions["channel"] ?? null
       if (targetInput) {
         // Get Target ID
         let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >

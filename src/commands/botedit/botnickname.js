@@ -6,7 +6,7 @@ const { ApplicationCommandOptionType, inlineCode } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const getters = require('../../utils/guild/getters')
 
-module.exports = class BotNicknameCommand extends BotDevCommand {
+module.exports = class BotEditNicknameCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "botnickname",

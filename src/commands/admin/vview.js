@@ -32,17 +32,17 @@ module.exports = class VerboseViewCommand extends AdminCommand {
       description: "Verbose View",
       options: [
         {
-          name: "role-id",
+          name: "role",
           description: "Role ID (Role)",
           type: ApplicationCommandOptionType.Role
         },
         {
-          name: "member-id",
+          name: "member",
           description: "Member ID (User)",
           type: ApplicationCommandOptionType.User
         },
         {
-          name: "channel-id",
+          name: "channel",
           description: "Channel ID (Channel)",
           type: ApplicationCommandOptionType.Channel
         }
@@ -52,11 +52,11 @@ module.exports = class VerboseViewCommand extends AdminCommand {
         target: "guild"
       },
       testOptions: [
-        { "role-id":    "<@&1461760455532871740>" },
-        { "member-id":  "<@1111517386588307536>" },
-        { "channel-id": "<#1461760186682310788>" },
-        { "role-id":    "<@&1461760455532871740>", "channel-id": "<#1461760186682310788>" },
-        { "member-id":  "<@1111517386588307536>",  "channel-id": "<#1461760186682310788>" }
+        { "role":    "<@&1461760455532871740>" },
+        { "member":  "<@1111517386588307536>" },
+        { "channel": "<#1461760186682310788>" },
+        { "role":    "<@&1461760455532871740>", "channel": "<#1461760186682310788>" },
+        { "member":  "<@1111517386588307536>",  "channel": "<#1461760186682310788>" }
       ]
     }
     let props = {
@@ -76,9 +76,9 @@ module.exports = class VerboseViewCommand extends AdminCommand {
 
   async action(client, interaction, coptions={}) {
     let stripMentionPattern = /[<#@&!>]/g
-    let roleId    = coptions["role-id"] ? coptions["role-id"].replace(stripMentionPattern, '') : null
-    let memberId  = coptions["member-id"] ? coptions["member-id"].replace(stripMentionPattern, '') : null
-    let channelId = coptions["channel-id"] ? coptions["channel-id"].replace(stripMentionPattern, '') : null
+    let roleId    = coptions["role"] ? coptions["role"].replace(stripMentionPattern, '') : null
+    let memberId  = coptions["member"] ? coptions["member"].replace(stripMentionPattern, '') : null
+    let channelId = coptions["channel"] ? coptions["channel"].replace(stripMentionPattern, '') : null
 
     // Get Guild
     let guild = await this.getGuild(client, interaction)

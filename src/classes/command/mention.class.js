@@ -277,11 +277,11 @@ class MentionCommand extends RookCommand {
         "target"
       ]
     ) {
-      if (coptions[`${check}-id`]) {
+      if (check in coptions) {
         if (!["mention","target"].includes(check)) {
           targetType = check
         }
-        targetInput = coptions[`${check}-id`]
+        targetInput = coptions[check]
       }
     }
 

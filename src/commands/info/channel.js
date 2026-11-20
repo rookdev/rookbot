@@ -7,7 +7,7 @@ module.exports = class InfoChannelCommand extends MentionCommand {
       description: "Channel Info",
       options: [
         {
-          name: "channel-id",
+          name: "channel",
           description: "Channel ID (Channel)",
           type: ApplicationCommandOptionType.Channel,
           required: true

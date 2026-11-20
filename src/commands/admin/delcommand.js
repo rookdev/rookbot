@@ -57,8 +57,9 @@ module.exports = class DeleteCommandCommand extends AdminCommand {
     let commandsManager = null
 
     if (isDevelopment) {
-      const testGuildID = process.env.GUILD_ID
-      const testGuild = await getters.getCachedGuild(client, testGuildID)
+      const interactionGuild  = await this.getGuild(client, interaction)
+      const testGuildID       = interactionGuild?.id ?? process.env.GUILD_ID
+      const testGuild         = await getters.getCachedGuild(client, testGuildID)
       if (!testGuild) {
         this.error = true
         this.messages.push(`${client.profile.emojis.fail} Test guild not found: ${testGuildID}`)
@@ -73,20 +74,30 @@ module.exports = class DeleteCommandCommand extends AdminCommand {
 
     const applicationCommands = await commandsManager.fetch()
 
-    const existingCommand = applicationCommands.find(
-      cmd => cmd.name === cmdName
-    )
+    let cmdNames = [cmdName]
 
-    if (existingCommand) {
-      this.messages.push(`${client.profile.emojis.delete} Deleting: "${existingCommand.name}"`)
-      try {
-        await commandsManager.delete(existingCommand.id)
-      } catch (error) {
-        this.error = true
-        this.messages.push(`${client.profile.emojis.fail} Failed to delete: "${existingCommand.name}":`, error.message)
+    if (cmdName == "<ALL>") {
+      cmdNames = applicationCommands.map(cmd => cmd.name)
+    }
+
+    for (cmdName of cmdNames) {
+      const existingCommand = applicationCommands.find(
+        cmd => cmd.name === cmdName
+      )
+  
+      if (existingCommand) {
+        this.messages.push(`${client.profile.emojis.delete} Deleting: "${existingCommand.name}"`)
+        try {
+          await commandsManager.delete(existingCommand.id)
+        } catch (error) {
+          this.error = true
+          this.messages.push(`${client.profile.emojis.fail} Failed to delete: "${existingCommand.name}":`, error.message)
+        }
+      } else {
+        this.messages.push(`${client.profile.emojis.no} Command not found: "${cmdName}"`)
       }
-    } else {
-      this.messages.push(`${client.profile.emojis.no} Command not found: "${cmdName}"`)
+      console.log(this.messages.join("\n"))
+      this.messages = []
     }
 
     return !this.error

@@ -13,7 +13,7 @@ module.exports = class GuildRolesCommand extends RookCommand {
       description: "Guild Roles",
       options: [
         {
-          name: "role-id",
+          name: "role",
           description: "Role ID",
           type: ApplicationCommandOptionType.Role
         },
@@ -79,7 +79,7 @@ module.exports = class GuildRolesCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     // Get Target Input
-    let targetInput   = coptions["role-id"] ?? null
+    let targetInput   = coptions["role"] ?? null
     // Get Target ID
     let targetId = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
     let page = coptions["page"] ?? null

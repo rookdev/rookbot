@@ -7,7 +7,7 @@ module.exports = class InfoEmojiCommand extends MentionCommand {
       description: "Emoji Info",
       options: [
         {
-          name: "emoji-id",
+          name: "emoji",
           description: "Emoji ID",
           type: ApplicationCommandOptionType.String,
           required: true

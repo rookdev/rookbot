@@ -6,7 +6,7 @@ const { userMention, ApplicationCommandOptionType } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const { RookMessage } = require('../../classes/objects/rmessage.class')
 // UptimeCommand
-const UptimeCommand = require('../../commands/botmeta/uptime')
+const UptimeCommand = require('../../commands/diag/uptime')
 // Base Rook Embed
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')

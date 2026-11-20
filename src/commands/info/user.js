@@ -7,7 +7,7 @@ module.exports = class InfoUserCommand extends MentionCommand {
       description: "User Info",
       options: [
         {
-          name: "user-id",
+          name: "user",
           description: "User ID (User)",
           type: ApplicationCommandOptionType.User,
           required: true

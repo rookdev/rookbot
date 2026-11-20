@@ -40,11 +40,6 @@ module.exports = class RoleEditCommand extends AdminCommand {
           type: ApplicationCommandOptionType.Role
         },
         {
-          name: "role-id",
-          description: "Selected Role ID",
-          type: ApplicationCommandOptionType.String
-        },
-        {
           name: "role-name",
           description: "New Role Name",
           type: ApplicationCommandOptionType.String
@@ -79,7 +74,9 @@ module.exports = class RoleEditCommand extends AdminCommand {
 
   async action(client, interaction, coptions) {
     let mode = coptions.mode ?? "rename"
-    let targetInput = coptions?.role ?? coptions["role-id"]
+    let targetInput = coptions?.role ?? null
+    // FIXME: Handle error
+    if (!targetInput) { return }
     // Get Target ID
     let targetId = targetInput.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 

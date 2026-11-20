@@ -7,7 +7,7 @@ module.exports = class InfoRoleCommand extends MentionCommand {
       description: "Role Info",
       options: [
         {
-          name: "role-id",
+          name: "role",
           description: "Role ID (Role)",
           type: ApplicationCommandOptionType.Role,
           required: true

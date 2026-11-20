@@ -16,9 +16,9 @@ module.exports = class NickChangeCommand extends RookCommand {
       description: "Immediately triggers a nickname change for specified user",
       options: [
         {
-          name: "target-id",
+          name: "target",
           description: "Target User ID",
-          type: ApplicationCommandOptionType.String,
+          type: ApplicationCommandOptionType.User,
           required: true
         }
       ],
@@ -27,25 +27,25 @@ module.exports = class NickChangeCommand extends RookCommand {
         target: "target"
       },
       testOptions: [
-        { "target-id": "1307416505171968011" }, // rookbot (Minnie)
-        { "target-id": "263968998645956608" },  // Minnie
-        { "target-id": "1111517386588307536" }, // castIe
-        { "target-id": "283321345612185611" },  // Murder
-        { "target-id": "1017468471669440692" }, // lostflake
-        { "target-id": "942642507488034841" },  // TridentBot
-        { "target-id": "211926100681424906" },  // Nikose
-        { "target-id": "375068222057086976" }   // DoI Dev
+        { "target": "1307416505171968011" }, // rookbot (Minnie)
+        { "target": "263968998645956608" },  // Minnie
+        { "target": "1111517386588307536" }, // castIe
+        { "target": "283321345612185611" },  // Murder
+        { "target": "1017468471669440692" }, // lostflake
+        { "target": "942642507488034841" },  // TridentBot
+        { "target": "211926100681424906" },  // Nikose
+        { "target": "375068222057086976" }   // DoI Dev
       ],
       aliases: [
         {
           name: "castiename",
           description: "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
-          options: { "target-id": "1111517386588307536" }
+          options: { "target": "1111517386588307536" }
         },
         {
           name: "castlename",
           description: "Immediately triggers a nickname change for castIe to a random castIe-esque name.",
-          options: { "target-id": "1111517386588307536" }
+          options: { "target": "1111517386588307536" }
         }
       ],
       userPermissions: [ PermissionFlagsBits.ViewChannel ],
@@ -66,7 +66,7 @@ module.exports = class NickChangeCommand extends RookCommand {
     const interactionGuild = await this.getGuild(client, interaction)
     const guildID = interactionGuild.id
     // Get User Input
-    const targetUserInput = coptions["target-id"] ?? "0"
+    const targetUserInput = coptions["target"] ?? "0"
     // Extract user ID from mention (if it's a mention)
     const targetUserId = targetUserInput.replace(/[<@!>]/g, '')  // Remove <@>, <@!>, and >
 

@@ -7,17 +7,17 @@ module.exports = class InfoMentionCommand extends MentionCommand {
       description: "Mention Info",
       options: [
         {
-          name: "channel-id",
+          name: "channel",
           description: "Channel ID (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {
-          name: "role-id",
+          name: "role",
           description: "Role ID (Role)",
           type: ApplicationCommandOptionType.Role
         },
         {
-          name: "user-id",
+          name: "user",
           description: "User ID (User)",
           type: ApplicationCommandOptionType.User
         }

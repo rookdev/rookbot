@@ -22,14 +22,14 @@ module.exports = class SetPermsCommand extends AdminCommand {
       description: "Manage Channel/Role Permissions",
       options: [
         {
-          name: "channel-id",
+          name: "channel",
           description: "Channel to check (Channel)",
           type: ApplicationCommandOptionType.Channel
         },
         {
-          name: "role-id",
+          name: "role",
           description: "Role to check",
-          type: ApplicationCommandOptionType.String
+          type: ApplicationCommandOptionType.Role
         },
         {
           name: "profile-name",
@@ -133,8 +133,8 @@ module.exports = class SetPermsCommand extends AdminCommand {
   }
 
   async action(client, interaction, coptions={}) {
-    let channelID = coptions["channel-id"] ?? null
-    let roleID = coptions["role-id"]?.replace(/[<#@&!>]/g, '')
+    let channelID = coptions["channel"] ?? null
+    let roleID = coptions["role"]?.replace(/[<#@&!>]/g, '')
     let profileToApply = coptions["profile-name"] ?? null
     let channel = null
     let role = { name: "@everyone", id: 0 }
@@ -166,7 +166,7 @@ module.exports = class SetPermsCommand extends AdminCommand {
       setMode = "channel"
     }
 
-    if ((!roleID) || roleID == "" || (coptions["role-id"].indexOf("@everyone") > -1)) {
+    if ((!roleID) || roleID == "" || (coptions["role"].indexOf("@everyone") > -1)) {
       roleID = "@everyone"
     }
 
@@ -217,8 +217,8 @@ module.exports = class SetPermsCommand extends AdminCommand {
       // Cycle through roles that have existing permissions settings
       for (let [oID, oData] of channel.permissionOverwrites.cache) {
         let role = await this.getCache(client, interaction.guild, "roles", oID)
-        if (coptions["role-id"]) {
-          isEveryone = (coptions["role-id"].indexOf("@everyone") > -1) && (role.name.indexOf("@everyone") > -1)
+        if (coptions["role"]) {
+          isEveryone = (coptions["role"].indexOf("@everyone") > -1) && (role.name.indexOf("@everyone") > -1)
         }
         printPerms = false
         if (

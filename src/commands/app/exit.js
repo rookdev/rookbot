@@ -5,7 +5,7 @@ const { userMention } = require('discord.js')
 // BotDevCommand
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 // UptimeCommand
-const UptimeCommand = require('../../commands/botmeta/uptime')
+const UptimeCommand = require('../../commands/diag/uptime')
 const mentionFuncs = require('../../utils/formatters/mentions')
 const clientUnready = require('../../events/clientUnready/exit')  // unreadyEvent
 

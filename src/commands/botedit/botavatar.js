@@ -6,7 +6,7 @@ const { ApplicationCommandOptionType } = require('discord.js')
 const { BotDevCommand } = require('../../classes/command/botdevcommand.class')
 const fileFuncs = require('../../utils/fs/fileFuncs')
 
-module.exports = class BotAvatarCommand extends BotDevCommand {
+module.exports = class BotEditAvatarCommand extends BotDevCommand {
   constructor(client) {
     let comprops = {
       name: "botavatar",

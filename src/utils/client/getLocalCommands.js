@@ -263,7 +263,7 @@ module.exports = async (client, exceptions = []) => {
             commandObject = await fileFuncs.getAFile(filepath)
             if (commandObject?.name) {
               if (
-                commandObject.name.startsWith(commandCategoryName.ucfirst()) &&
+                commandObject.name.toLowerCase().startsWith(commandCategoryName.toLowerCase()) &&
                 commandObject.name.endsWith("Command")
               ) {
                 let cmd = new commandObject(client)

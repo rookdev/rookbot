@@ -16,9 +16,9 @@ module.exports = class SlapCommand extends RookCommand {
       },
       options: [
         {
-          name: "target-id",
+          name: "target",
           description: "ID of target",
-          type: ApplicationCommandOptionType.String,
+          type: ApplicationCommandOptionType.User,
           required: true
         },
         {
@@ -38,9 +38,9 @@ module.exports = class SlapCommand extends RookCommand {
       },
       platforms: ["discord", "stoat"],
       testOptions: [
-        { "target-id": "1306491719717748830" },
-        { "target-id": "1306491719717748830", "item": "a sledgehammer" },
-        { "target-id": "1306491719717748830", "distance": "a fair bit" }
+        { "target": "1306491719717748830" },
+        { "target": "1306491719717748830", "item": "a sledgehammer" },
+        { "target": "1306491719717748830", "distance": "a fair bit" }
       ],
       aliases: [
         {
@@ -65,7 +65,7 @@ module.exports = class SlapCommand extends RookCommand {
     let distance      = coptions.distance ?? "a bit"
     let item          = coptions.item ?? "a large trout"
     // Get Target Input
-    let targetInput   = coptions["target-id"]
+    let targetInput   = coptions["target"]
     // Get Target ID
     let targetId      = targetInput?.replace(/[<#@&!>]/g, '')  // Remove <@>, <@!>, and >
 
