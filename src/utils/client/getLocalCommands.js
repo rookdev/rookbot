@@ -39,7 +39,6 @@ module.exports = async (client, exceptions = []) => {
     if (hasSubcommands) {
       // continue
 
-      // /guild*
       // /chan_edit
       //  /edit channel
       //  -mode:
@@ -61,13 +60,6 @@ module.exports = async (client, exceptions = []) => {
       //  -role-id
       //  -role-name
       //  -color
-      // /mention
-      //  /info channel : Channel
-      //  /info emoji   : Emoji
-      //  /info mention : User/Role
-      //  /info message : Message
-      //  /info role    : Role
-      //  /info user    : User
 
       // Subcommand Set
       // console.log(` Subcommands: ${filenames.join(", ")}`)
@@ -263,6 +255,8 @@ module.exports = async (client, exceptions = []) => {
               commandCategoryName
             ]
           )
+          let subCommandData = {}
+          subCommandData[commandCategoryName] = []
           for (let filepath of subCommandFiles) {
             let filename = filepath.split(path.sep).at(-1).replace(".js","")
             if (filename == "index") { continue }
@@ -277,8 +271,9 @@ module.exports = async (client, exceptions = []) => {
                 client.commands[cmd.name] = cmd
               }
             }
-            console.log(commandCategoryName,filename)
+            subCommandData[commandCategoryName].push(filename)
           }
+          console.log("Current: " + JSON.stringify(subCommandData))
         }
       }
     } else {

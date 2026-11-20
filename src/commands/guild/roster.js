@@ -13,7 +13,6 @@ const fs = require('fs')      // Filesystem manipulation
 module.exports = class GuildRosterCommand extends RookCommand {
   constructor(client) {
     let comprops = {
-      name: "roster",
       description: "Display a Guild Roster",
       flags: { target: "required" },
       options: [

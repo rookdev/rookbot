@@ -694,31 +694,10 @@
       "parentClassName": "RookCommand"
     }
   },
-  "guild": {
-    "roster": {
-      "name": "roster",
-      "category": "guild",
-      "description": "Display a Roster",
-      "options": [
-        {
-          "name": "section-type",
-          "description": "Roster Section"
-        },
-        {
-          "name": "guild-id",
-          "description": "Target Guild"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "RosterCommand",
-      "parentClassName": "RookCommand"
-    }
-  },
-  "info": {
+  "misc": {
     "calc": {
       "name": "calc",
-      "category": "info",
+      "category": "misc",
       "description": "Evaluates a math expression",
       "options": [
         {
@@ -734,7 +713,7 @@
     },
     "color": {
       "name": "color",
-      "category": "info",
+      "category": "misc",
       "description": "Displays information about a hex color code",
       "options": [
         {
@@ -748,73 +727,6 @@
       "instanceClassName": "ColorCommand",
       "parentClassName": "RookCommand"
     },
-    "mention": {
-      "name": "mention",
-      "category": "info",
-      "description": "Give code to post a mention in chat",
-      "options": [
-        {
-          "name": "target-id",
-          "description": "Generic Target ID"
-        },
-        {
-          "name": "mention-id",
-          "description": "Mention ID (Role/User)"
-        },
-        {
-          "name": "channel-id",
-          "description": "Channel ID (Channel)"
-        },
-        {
-          "name": "emoji-id",
-          "description": "Emoji ID"
-        },
-        {
-          "name": "message-url",
-          "description": "Message URL"
-        },
-        {
-          "name": "target-type",
-          "description": "Target Type"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "MentionCommand",
-      "parentClassName": "RookCommand"
-    },
-    "time": {
-      "name": "time",
-      "category": "info",
-      "description": "Time",
-      "options": [],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "TimeCommand",
-      "parentClassName": "RookCommand"
-    },
-    "wiki": {
-      "name": "wiki",
-      "category": "info",
-      "description": "Links to a wikipage",
-      "options": [
-        {
-          "name": "pagename",
-          "description": "The Page Name to link to",
-          "required": true
-        },
-        {
-          "name": "wikikey",
-          "description": "The Wiki to link to"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "WikiCommand",
-      "parentClassName": "RookCommand"
-    }
-  },
-  "misc": {
     "embed": {
       "name": "embed",
       "category": "misc",
@@ -858,6 +770,36 @@
       "access": "unset",
       "segment": "local",
       "instanceClassName": "NLCommand",
+      "parentClassName": "RookCommand"
+    },
+    "time": {
+      "name": "time",
+      "category": "misc",
+      "description": "Time",
+      "options": [],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "TimeCommand",
+      "parentClassName": "RookCommand"
+    },
+    "wiki": {
+      "name": "wiki",
+      "category": "misc",
+      "description": "Links to a wikipage",
+      "options": [
+        {
+          "name": "pagename",
+          "description": "The Page Name to link to",
+          "required": true
+        },
+        {
+          "name": "wikikey",
+          "description": "The Wiki to link to"
+        }
+      ],
+      "access": "unset",
+      "segment": "local",
+      "instanceClassName": "WikiCommand",
       "parentClassName": "RookCommand"
     }
   },
