@@ -389,43 +389,6 @@
       "parentClassName": "ModCommand"
     }
   },
-  "botmeta": {
-    "botguilds": {
-      "name": "botguilds",
-      "category": "botmeta",
-      "description": "Bot Guilds",
-      "options": [
-        {
-          "name": "locale",
-          "description": "Locale"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "BotGuildsCommand",
-      "parentClassName": "RookCommand"
-    },
-    "botinvite": {
-      "name": "botinvite",
-      "category": "botmeta",
-      "description": "Invite rookbot",
-      "options": [],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "BotInviteCommand",
-      "parentClassName": "RookCommand"
-    },
-    "botsrc": {
-      "name": "botsrc",
-      "category": "botmeta",
-      "description": "Links to the GitHub repository of rookbot",
-      "options": [],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "BotSourceCommand",
-      "parentClassName": "RookCommand"
-    }
-  },
   "diagnostic": {
     "ping": {
       "name": "ping",
