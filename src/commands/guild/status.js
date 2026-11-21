@@ -8,6 +8,7 @@ const mentionFuncs = require('../../utils/formatters/mentions')
 const globalFuncs = require('../../utils/primitives/globalFuncs')
 // Use Discord HammerTime
 const timeFormat = require('../../utils/formatters/timeFormat')
+const fileFuncs = require('../../utils/fs/fileFuncs')
 const moment = require('moment')
 
 module.exports = class GuildStatusCommand extends RookCommand {
@@ -59,9 +60,12 @@ module.exports = class GuildStatusCommand extends RookCommand {
       serverBoostEmoji = "⭐"
     }
 
+    let serverLevel = guild?.premiumTier
+
     this.props.title.text = `Guild Status for ${guild.name}`
     this.props.description = []
 
+    // Guild Description
     if (guild.description) {
       this.props.description.push(
         bold("Description"),
@@ -75,6 +79,87 @@ module.exports = class GuildStatusCommand extends RookCommand {
         bold("Features"),
         codeBlock(guild.features.sort().join(", "))
       )
+    }
+
+    // List Boosts options
+    let subCount = guild?.premiumSubscriptionCount
+    let guildFeatures = await fileFuncs.getAFile(
+      [
+        "src",
+        "dbs"
+      ],
+      "guildFeatures.json"
+    )
+
+    if (guildFeatures) {
+      let perksByLevel  = {}
+      let perksBySpent  = {}
+      let levelIcon     = "⭐"
+      let spentIcon     = "🌟"
+
+      let spent = 0
+      if (serverLevel) {
+        if (serverLevel >= 1) {
+          spent += 2
+        }
+        if (serverLevel >= 2) {
+          spent += 5
+        }
+        if (serverLevel >= 3) {
+          spent += 7
+        }
+      }
+
+      let hasGuildTags = false
+      for (let [flag, label] of Object.entries(guildFeatures)) {
+        if (flag.startsWith("!SERVER_LEVEL")) {
+          if (flag.endsWith("1") && (serverLevel >= 1)) {
+            continue
+          } else if (flag.endsWith("2") && (serverLevel >= 2)) {
+            continue
+          } else if (flag.endsWith("3") && (serverLevel >= 3)) {
+            continue
+          }
+        }
+        if (label.contains(levelIcon)) {
+          let perkLevel = label.split(levelIcon).length - 1
+          if (!(perkLevel in perksByLevel)) {
+            perksByLevel[perkLevel] = []
+          }
+          perksByLevel[perkLevel].push(flag)
+        } else if (label.contains(spentIcon)) {
+          let perkSpent = label.split(spentIcon).length - 1
+          if (!(perkSpent in perksBySpent)) {
+            perksBySpent[perkSpent] = []
+          }
+          let hasPerk = false
+          if (guild?.features?.length > 0) {
+            if (guild.features.includes(flag)) {
+              hasPerk = true
+              spent += perkSpent
+              if (flag == "GUILD_TAGS") {
+                hasGuildTags = true
+              }
+            }
+          }
+          let pushPerk = !hasPerk
+          if (flag.startsWith("GUILD_TAGS_") && (!hasGuildTags)) {
+            pushPerk = false
+          }
+          if (pushPerk) {
+            perksBySpent[perkSpent].push(flag)
+          }
+        }
+      }
+
+      let unspent     = subCount - spent
+      let spendables  = `Spendables (${spent}/${unspent}/${subCount})`
+      this.props.description.push(bold(spendables))
+      for (let [spend, perks] of Object.entries(perksBySpent)) {
+        if (globalFuncs.empty(perks)) { continue }
+        this.props.description.push(codeBlock(spend + ": " + perks.join(", ")))
+      }
+      this.props.description.push("")
     }
 
     this.props.fields = []
@@ -152,7 +237,6 @@ module.exports = class GuildStatusCommand extends RookCommand {
     let soundboardSounds  = await guild.soundboardSounds.fetch()
     let numSoundboard     = soundboardSounds?.size ?? 0
 
-    let serverLevel = guild.premiumTier
     if (serverLevel >= 1) {
       maxEmojis     = 100
       maxStickers   =  15

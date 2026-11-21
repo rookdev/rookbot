@@ -138,18 +138,21 @@ class MentionCommand extends RookCommand {
       fieldTypes.push([ "clanTag", "clanId" ])
       fieldTypes.push([ "nickname", "displayName", "globalName" ])
       fieldTypes.push([ "roles" ])
+      fieldTypes.push([ "highestRole", "colorRole", "iconRole" ])
       fieldTypes.push([ "memberFlags"])
       fieldTypes.push([ "userFlags"])
       fieldTypes.push([ "banner" ])
-      fieldTypes.push([ "seenStr", "seenChan", "seenMsg" ])
+      // fieldTypes.push([ "seenStr", "seenChan", "seenMsg" ])
       fieldTypes.push([ "botUser", "botEdit", "botMod" ])
       fieldTypes.push([ "joinedTime" ])
     } else if (targetType == "role") {
       /**
        * Member Count, Rank
+       * IconRole (hack to see unicode emoji)
        * Position, Color, Hoisted?
        */
       fieldTypes.push([ "memberCount", "rank" ])
+      fieldTypes.push([ "iconRole" ])
       fieldTypes.push([ "position", "color", "hoisted" ])
     }
     /**
@@ -172,6 +175,9 @@ class MentionCommand extends RookCommand {
       parentId:     "Parent ID",
       displayName:  "Display Name",
       globalName:   "Global Name",
+      highestRole:  "Highest Role",
+      colorRole:    "Color Role",
+      iconRole:     "Icon Role",
       synced:       "Synced?",
       hoisted:      "Hoisted?",
       creationTime: "Creation Time",
@@ -210,6 +216,18 @@ class MentionCommand extends RookCommand {
           fieldValue = specs?.parent?.name ?? ""
         } else if (fieldId == "parentId") {
           fieldValue = specs?.parent?.id ? codeBlock(specs.parent.id) : ""
+        } else if ([ "highestRole", "colorRole", "iconRole" ].contains(fieldId)) {
+          if (specs[fieldId] && specs[fieldId]?.id) {
+            fieldValue  = mentionFuncs.roleMention(specs[fieldId].id) + "\n"
+            fieldValue += inlineCode('[' + specs[fieldId].id + ']') + "\n"
+            if (specs[fieldId]?.iconURL()) {
+              fieldValue += hyperlink("Link", specs[fieldId].iconURL({ size: 128 }))
+            } else if (specs[fieldId]?.unicodeEmoji) {
+              fieldValue += specs[fieldId].unicodeEmoji
+            } else {
+              fieldValue += "No Icon"
+            }
+          }
         } else if (fieldId == "roles") {
           if (globalFuncs.empty(specs[fieldId])) { continue }
           fieldName += ' [' + specs.roles.length + specs?.highest + ']'
@@ -645,14 +663,6 @@ class MentionCommand extends RookCommand {
             specs = {
               name: role?.name,
               url: await role?.iconURL({ size: 128 }),
-              color: role?.colors ? 
-                codeBlock(
-                  Object.values(role.colors)
-                    .filter(v => v)
-                    .map(v => ("#" + v.toString(16).toUpperCase()))
-                    .join(", ")
-                ) :
-                "",
               hoisted: role?.hoist ?
                 (
                   role.hoist ?
@@ -663,6 +673,15 @@ class MentionCommand extends RookCommand {
               position: role?.position,
               rank: numRoles - role?.position,
               memberCount: roleCounts.get(role.id)
+            }
+            if (role?.colors) {
+              let colors = Object.values(role.colors)
+                .filter(v => v)
+                .map(v => ("#" + v.toString(16).toUpperCase()))
+                .join("\n")
+              if (colors) {
+                specs.color = codeBlock(colors)
+              }
             }
 
             this.props.color = role?.hexColor
@@ -676,11 +695,24 @@ class MentionCommand extends RookCommand {
               user: "target",
               target: "target"
             }
+
             this.props.entities = {
               target: {
-                name: specs?.name,
-                avatar: specs?.url ?? "https://em-content.zobj.net/source/twitter/408/busts-in-silhouette_1f465.png"
+                name: specs?.name
               }
+            }
+
+            let avatar = null
+            if (specs?.url) {
+              avatar = specs.url
+            } else if (role?.unicodeEmoji) {
+              specs.iconRole = role
+            } else {
+              avatar = "https://em-content.zobj.net/source/twitter/408/busts-in-silhouette_1f465.png"
+            }
+
+            if (avatar) {
+              this.props.entities.target.avatar = avatar
             }
           }
         }
@@ -729,8 +761,21 @@ class MentionCommand extends RookCommand {
             specs.memberFlags = targetMember?.flags       ? targetMember.flags.toArray()      : null
             specs.userFlags   = targetMember?.user?.flags ? targetMember.user.flags.toArray() : null
 
-            specs.highest = await targetMember.roles.highest
-            specs.roleIcon = await targetMember.roles.icon?.iconURL({ size: 128 })
+            let highestRole = await targetMember?.roles?.highest
+            let colorRole   = await targetMember?.roles?.color
+            let iconRole    = await targetMember?.roles?.icon
+
+            if (highestRole) {
+              specs.highest     = highestRole
+              specs.highestRole = highestRole
+            }
+            if (colorRole) {
+              specs.colorRole = colorRole
+            }
+            if (iconRole) {
+              specs.iconRole = iconRole
+            }
+
             specs.clan = targetMember?.user?.primaryGuild
             specs.banner = targetMember?.user?.banner ? { url: await targetMember.user.bannerURL({ size: 512, extension: "png" }) } : null
 
@@ -843,11 +888,13 @@ class MentionCommand extends RookCommand {
               targetAvatar = await targetMember.displayAvatarURL({ size: 128 })
               targetImage = await targetMember.displayAvatarURL({ size: 256 })
             }
-            if (specs?.roleIcon) {
-              targetAvatar = specs.roleIcon
-            } else if (specs?.clan?.badge) {
+
+            if (specs?.clan?.badge) {
               targetAvatar = await targetMember.user.guildTagBadgeURL({ size: 128 })
+            } else if (specs?.iconRole) {
+              targetAvatar = specs.iconRole.iconURL({ size: 128 })
             }
+
             this.props.entities = {
               target: {
                 type:   "target",

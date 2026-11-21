@@ -1,4 +1,4 @@
-const { inlineCode, italic, shouldUseGlobalFetchAndWebSocket } = require('discord.js')
+const { inlineCode, italic } = require('discord.js')
 
 /*
 

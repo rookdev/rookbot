@@ -33,23 +33,32 @@ module.exports = class TimeCommand extends RookCommand {
 
   async action(client, interaction, coptions={}) {
     const now = Date.now()  // Get now
+    // Los Angeles
+    // New York
+    // St Johns
+    // Perth
+    // Adelaide
+    // Sydney
+    // Auckland
     const tzs = [
-      "Australia/Perth",    // + 8
-      "Australia/Adelaide", // + 930
-      "Australia/Sydney",   // +10
-      "Pacific/Auckland",   // +12
-      "America/St_Johns",   // - 2.5
-      "America/New_York",   // - 4
-      "America/Los_Angeles" // - 7
+      "America/Los_Angeles",  // - 7
+      "America/New_York",     // - 4
+      "America/St_Johns",     // - 2.5
+      "Australia/Perth",      // + 8
+      "Australia/Adelaide",   // + 930
+      "Australia/Sydney",     // +10
+      "Pacific/Auckland"      // +12
     ]
     const mytz = tz(
-      require("timezone/en_AU"),
-      require("timezone/en_US"),
-      require("timezone/Australia"),
-      require("timezone/Pacific/Auckland"),
-      require("timezone/America/St_Johns"),
+      require("timezone/America/Los_Angeles"),
       require("timezone/America/New_York"),
-      require("timezone/America/Los_Angeles")
+      require("timezone/America/St_Johns"),
+      require("timezone/Australia/Adelaide"),
+      require("timezone/Australia/Perth"),
+      require("timezone/Australia/Sydney"),
+      require("timezone/Pacific/Auckland"),
+      require("timezone/en_AU"),
+      require("timezone/en_US")
     )
 
     this.props.description = ""
