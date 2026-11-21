@@ -6,6 +6,7 @@ const { RookMessage } = require('../../classes/objects/rmessage.class')
 const { RookClient } = require('../../classes/objects/rclient.class')
 const { RookEmbed } = require('../../classes/embed/rembed.class')
 const mentionFuncs = require('../../utils/formatters/mentions')
+const globalFuncs = require('../../utils/primitives/globalFuncs')
 const dbFuncs = require('../../utils/db/dbFuncs')
 const getters = require('../../utils/guild/getters')
 
@@ -39,59 +40,74 @@ module.exports = class BoosterPraiseEvent extends EventScript {
     // this.messages.push(`/${this.name}: Event Action`)
 
     let guild = await this.getProp(client, newMember, "guild")
-    let boostRoleID = guild.roles.premiumSubscriberRole?.id
+    let numBoosts = guild?.premiumSubscriptionCount ?? 0
+    let boostRoleIDs = []
+    let boostColor = "#f47fff"
+    if (guild.roles.premiumSubscriberRole?.id) {
+      boostRoleIDs.push(guild.roles.premiumSubscriberRole.id + "")
+      if (guild.roles.premiumSubscriberRole?.colors?.primaryColor) {
+        let color = guild.roles.premiumSubscriberRole.colors.primaryColor
+        color = ("#" + color.toString(16).toUpperCase())
+        boostColor = color
+      }
+    }
 
-    if (!boostRoleID) {
-      // DB
-      let dbRes = await dbFuncs.getDB(
-        guild.id,
-        "roles"
-      )
-      let roleNames = dbRes[0]
-      // this.messages.push(...dbRes[1])
+    // DB
+    let dbRes = await dbFuncs.getDB(
+      guild.id,
+      "roles"
+    )
+    let roleNames = dbRes[0]
+    // this.messages.push(...dbRes[1])
 
-      if (!roleNames) {
-        this.messages.push("No Role Names!")
-        return false
+    if (!roleNames) {
+      this.messages.push("No Role Names!")
+      return false
+    }
+
+    let boostRoleNames = roleNames?.booster
+    if (boostRoleNames) {
+      for (let boostRoleName of boostRoleNames) {
+        let boostRole = await getters.getCachedRole(client, guild, boostRoleName)
+        if (boostRole) {
+          if (boostRole?.id) {
+            boostRoleIDs.push(boostRole.id + "")
+            if (boostRole?.colors?.primaryColor) {
+              let color = boostRole.colors.primaryColor
+              color = ("#" + color.toString(16).toUpperCase())
+              boostColor = color
+            }
+          }
+        }
+      }
+    }
+
+    if (globalFuncs.empty(boostRoleIDs)) {
+      this.messages.push(`${client.profile.emojis.fail} Failed to get Boost Role ID for ${mentionFuncs.guildMention(newMember.guild.name, newMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
+      return false
+    }
+
+    let hadBoost    = await oldMember.roles.cache.some(r => boostRoleIDs.contains(r.id + ""))
+    let hasBoost    = await newMember.roles.cache.some(r => boostRoleIDs.contains(r.id + ""))
+    let gotBoost    = (!hadBoost && hasBoost)
+    let lostBoost   = (hadBoost && !hasBoost)
+    let boostChange = (gotBoost || lostBoost)
+    
+    if (boostChange) {
+      let userEntity = {
+        name: newMember.displayName,
+        avatar: await newMember.displayAvatarURL({ size: 128 })
       }
 
-      let boostRoleNames = roleNames?.booster
-      if (!boostRoleNames || boostRoleNames?.length < 1) {
-        this.messages.push("No Boost Role Names!")
-        return false
-      }
-
-      let boostRole = await getters.getCachedRole(client, guild, roleNames.booster[0])
-      if (!boostRole) {
-        // this.messages.push("No Boost Role!")
-        return false
-      }
-
-      boostRoleID = boostRole?.id
-
-      if (!boostRoleID) {
-        this.messages.push(`${client.profile.emojis.fail} Failed to get Boost Role ID for ${mentionFuncs.guildMention(newMember.guild.name, newMember.guild.id, { showID: true, oneLine: true, textOnly: true })}`)
-        return false
-      }
-
-      let hadBoost = await oldMember.roles.cache.has(boostRoleID)
-      let hasBoost = await newMember.roles.cache.has(boostRoleID)
-
-      if (!hadBoost && hasBoost) {
+      if (gotBoost) {
         let boostEmojiName = "heartcontainer"
         let heartContainerEmoji = await getters.getCachedEmoji(client, guild, boostEmojiName)
         if (heartContainerEmoji == boostEmojiName) {
           heartContainerEmoji = "<3"
         }
         let msg = {
-          name: newMember.displayName,
-          avatar: await newMember.displayAvatarURL({ size: 128 }),
-          guild: {
-            name: guild.name,
-            boosts: guild.premiumSubscriptionCount
-          },
           msg: [
-            `${bold(guild.name)} currently has ${bold(guild.boosts)} boosts!`,
+            `${bold(guild.name)} currently has ${bold(numBoosts)} boosts!`,
             "",
             `Thank you for boosting!`
           ]
@@ -102,31 +118,31 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           }
           msg.msg[2] += ` ${heartContainerEmoji}`
         }
-
+  
         // messages.push(
         //   `${newMember.displayName} is boosting '${newMember.guild.name}'!`,
         //   msg
         // )
-
-        let userEntity = {
-          name: msg.name,
-          avatar: msg.avatar
-        }
+  
         let props = {
           title: { text: "<NONE>" },
-          color: "#f47fff",
+          color: boostColor,
           description: msg.msg,
           playerTypes: { user: "target", target: "target" },
           entities: {
+            guild: {
+              name: guild.name,
+              avatar: await guild.iconURL({ size: 128 })
+            },
             target: userEntity
           },
           footer: {
-            text: `${msg.name} Boosted the server :)`,
+            text: `${userEntity.name} boosted the server :)`,
             image: msg?.footer?.image
           }
         }
 
-        let boostChannel = await this.getChannel(client, guild, [ "logging-boosts", "logging" ])
+        let boostChannel = await this.getChannel(client, guild, [ "boost-alerts", "logging-boosts", "logging" ])
         let boostMessage = await new RookMessage(
           client,
           null,
@@ -136,57 +152,78 @@ module.exports = class BoosterPraiseEvent extends EventScript {
           }
         )
         await boostMessage.execute()
-
-        let logFields = [
-          [
-            {
-              name: "Name",
-              value: newMember.displayName
-            },
-            {
-              name: "Guild",
-              value: guild.name
-            },
-            {
-              name: "Boosts",
-              value: guild.premiumSubscriptionCount
-            }
-          ]
-        ]
-        let logProps = {
-          color: "#f47fff",
-          title: {
-            text: "[Log] Server Boosted",
-            emoji: ""
-          },
-          playerTypes: { user: "target", target: "target" },
-          entities: { target: userEntity },
-          fields: logFields
-        }
-
-        // client
-        // guild
-        // logging-<this> guildchannel key
-        // embed props
-        await this.logPost(
-          client,
-          guild,
-          "boosts",
-          logProps
-        )
-
-        // appended messages for debugging
-        await this.logMessages(
-          "💗",
-          {
-            guild: guild.name,
-            member: newMember.displayName,
-            action: "boost",
-            level: guild.premiumTier,
-            boosts: guild.premiumSubscriptionCount
-          }
-        )
       }
+
+      let logFields = [
+        [
+          {
+            name: "Name",
+            value: mentionFuncs.userMention(newMember.id, { showID: true })
+          },
+          {
+            name: "Guild",
+            value: mentionFuncs.guildMention(guild.name, guild.id, { showID: true })
+          }
+        ],
+        [
+          {
+            name: "Had Boost",
+            value: hadBoost ? client.profile.emojis.yes : client.profile.emojis.no
+          },
+          {
+            name: "Has Boost",
+            value: hasBoost ? client.profile.emojis.yes : client.profile.emojis.no
+          }
+        ],
+        [
+          {
+            name: "Boosts",
+            value: guild.premiumSubscriptionCount
+          }
+        ]
+      ]
+      let logProps = {
+        playerTypes: { user: "target", target: "target" },
+        entities: { target: userEntity },
+        fields: logFields
+      }
+      if (gotBoost) {
+        logProps.color = boostColor,
+        logProps.title = {
+          text: "[Log] Server Boosted",
+          emoji: "💗"
+        }
+      } else if (lostBoost) {
+        logProps.color = client.profile.colors.bad,
+        logProps.title = {
+          text: "[Log] Boost Lost",
+          emoji: "💔"
+        }
+      }
+
+      // client
+      // guild
+      // logging-<this> guildchannel key
+      // embed props
+      await this.logPost(
+        client,
+        guild,
+        "boosts",
+        logProps
+      )
+
+      // appended messages for debugging
+      await this.logMessages(
+        logProps.title.emoji,
+        {
+          guild: guild.name,
+          member: newMember.displayName,
+          action: "boosts",
+          direction: (gotBoost ? "got" : "lost"),
+          level: guild.premiumTier,
+          boosts: guild.premiumSubscriptionCount
+        }
+      )
     }
   }
 }

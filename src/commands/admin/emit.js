@@ -155,8 +155,11 @@ module.exports = class EmitCommand extends AdminCommand {
           }
         }
         newMember.roles.cache = {
+          some: async (rID) => {
+            return true
+          },
           has: async (rID) => {
-            return rID = 1
+            return rID == 1
           }
         }
 

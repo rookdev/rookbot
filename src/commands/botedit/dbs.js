@@ -120,6 +120,7 @@ module.exports = class BotEditDBsCommand extends BotDevCommand {
               "verify",               // Verify for Access
               "stream-alerts-owner",  // Stream Alerts for Owner
               "stream-alerts",        // Stream Alerts
+              "boost-alerts",         // Boost Alerts
               "multiworld-planning",  // Multiworld Planning
               "logging",              // Catch-all Logging
               "logging-ban",          // Bans
