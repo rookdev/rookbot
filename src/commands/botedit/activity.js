@@ -181,7 +181,7 @@ module.exports = class BotEditActivityCommand extends BotDevCommand {
         status: PresenceUpdateStatus.Online
       }
 
-      client.user.setPresence(presenceOptions)
+      await client.user.setPresence(presenceOptions)
 
       let desc = "Status changed succesfully: "
       desc += ActivityType[activityID]

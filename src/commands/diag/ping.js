@@ -39,6 +39,7 @@ module.exports = class PingCommand extends RookCommand {
     const reply = await interaction?.fetchReply()
     // Find difference in time
     const ping = (reply?.createdTimestamp ?? 0) - (interaction?.createdTimestamp ?? 0)
+    const wsPing = client?.ping ?? client?.ws?.ping ?? "??"
 
     this.props.fields = [
       [
@@ -50,7 +51,7 @@ module.exports = class PingCommand extends RookCommand {
         // Websocket Ping
         {
           name: "Websocket",
-          value: `${client.ws.ping}ms`
+          value: `${wsPing}ms`
         }
       ]
     ]
