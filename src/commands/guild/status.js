@@ -184,6 +184,7 @@ module.exports = class GuildStatusCommand extends RookCommand {
       ]
     )
 
+    this.props.image = { image: await guild.iconURL({ size: 256 }) }
     if (guild?.ownerId && guild.ownerId != "undefined") {
       // this.messages.push(`Guild Owner: ${guild.ownerId}`)
       this.props.fields.push(
@@ -216,6 +217,10 @@ module.exports = class GuildStatusCommand extends RookCommand {
             }
           ]
         )
+        this.props.playerTypes.target = "target"
+        this.props.entities.target = {
+          avatar: await owner.user.guildTagBadgeURL({ size: 128 })
+        }
       }
     }
 
