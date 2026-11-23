@@ -146,20 +146,32 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
         (sData["url"].indexOf("%3Chash%3E") > -1)
       ) {
         let srcURL = sData["url"]
-        if (permalinkURL != "") {
-          srcURL = new URL(sData["url"])
-          let prmURL = new URL(permalinkURL)
-          // messages.push(srcURL)
-          // messages.push(prmURL)
-          srcURL = srcURL.href.replace(
-            srcURL.origin,
-            prmURL.origin
+        // if (permalinkURL != "") {
+        //   srcURL = new URL(sData["url"])
+        //   let prmURL = new URL(permalinkURL)
+        //   srcURL = srcURL.href.replace(
+        //     srcURL.origin,
+        //     prmURL.origin
+        //   )
+        // }
+        if (hashID == "SSNQEbLqfcJRlUlr") {
+          sources[sKey] = await fileFuncs.getAFile(
+            [
+              "src",
+              "dbs",
+              "randos",
+              "seeds",
+              "z1m1z3m3"
+            ],
+            hashID + ".json"
+          )
+          // console.log(Object.keys(sources[sKey]))
+        } else {
+          sources[sKey] = await fileFuncs.getAURL(
+            srcURL.replace("<hash>",hashID).replace("%3Chash%3E",hashID),
+            "json"
           )
         }
-        sources[sKey] = await fileFuncs.getAURL(
-          srcURL.replace("<hash>",hashID).replace("%3Chash%3E",hashID),
-          "json"
-        )
       } else if (sData["url"].indexOf("<slugid>") > -1) {
         try {
           slugID = decode(hashID).replaceAll("-",'')
@@ -197,7 +209,7 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
     }
   }
 
-  if (["z1m1z3m3","sm-total"].includes(gameID)) {
+  if (["sm-total"].includes(gameID)) {
     rData = fileFuncs.getAFile(
       [
         "src",
@@ -310,7 +322,7 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
                           )
               break
           }
-        } else if(["z3m3","z1m1z3m3","sm-total"].includes(gameID)) {
+        } else if(["z3m3","sm-total"].includes(gameID)) {
           let nums = [
             "Zero",
             "One",
@@ -407,6 +419,18 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
                           )
               break
           }
+        } else if(["z1m1z3m3"].includes(gameID)) {
+          switch(itemCell["name"]) {
+            case "permalink":
+              itemValue = hyperlink(
+                            inlineCode(hashID),
+                            permalinkURL
+                          )
+              break
+            case "generation_date":
+              itemValue = timeFormat(moment.utc(sources.hash_meta?.createdAt).format("x"), { with: "relative" })
+              break
+          }
         } else if(["m4xfr"].includes(gameID)) {
           let domain = "https://mxfrando.com"
           if (permalinkURL.indexOf("dev.") > -1) {
@@ -418,7 +442,7 @@ module.exports = async (hashID, gameID="z3r", permalinkURL="") => {
               break
             case "hash":
               itemName  = "race_hash"
-              itemValue = inlineCode(sources["logic"].seedHash.join("\n"))
+              itemValue = inlineCode(sources["logic"].seedHash?.join("\n"))
               break
             case "time":
               itemValue = timeFormat(moment.utc(sources["metadata"].created).format("x"), { with: "relative" })

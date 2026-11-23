@@ -27,6 +27,7 @@ class RookCommand {
     this.options          = setValue(comprops.options, [])
     this.category         = setValue(comprops.category, "unknown")
     this.aliases          = setValue(comprops.aliases, [])
+    this.subAliases       = setValue(comprops.subAliases, [])
     this.defaultOptions   = setValue(comprops.defaultOptions, {})
     this.testOptions      = setValue(comprops.testOptions, [])
     this.testIndependent  = setValue(comprops.testIndependent, false)
@@ -483,7 +484,8 @@ class RookCommand {
       interaction,
       {
         channelName: this.channel?.id,
-        pages: pages
+        pages: pages,
+        content: this.content
       }
     )
     let sendResult = await rmessage.execute()
@@ -675,7 +677,8 @@ class RookCommand {
         interaction,
         {
           channelName: this.channel?.id,
-          pages: this.pages
+          pages: this.pages,
+          content: this.content
         }
       )
       let rexec = await rmessage.execute()
@@ -762,7 +765,8 @@ class RookCommand {
             client,
             interaction,
             {
-              pages: pages
+              pages: pages,
+              content: this.content
             }
           )
           execResult = await rmessage.execute()

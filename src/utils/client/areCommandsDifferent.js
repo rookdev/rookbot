@@ -5,13 +5,37 @@ const mapByName = (array) => {
   return map
 }
 
+// Function to check if counts are different
+const areCountsDifferent = (existingItems, localItems) => {
+  let existingCount = existingItems?.length ?? 0
+  let localCount    = localItems?.length    ?? 0
+
+  if (existingCount && (!localCount)) {
+    return true
+  }
+  if ((!existingCount) && localCount) {
+    return true
+  }
+  if (existingCount !== localCount) {
+    // console.log(existingCount, localCount)
+  }
+
+  return false
+}
+
 // Function to check if choices are different
 const areChoicesDifferent = (existingChoices, localChoices) => {
   const existingMap = mapByName(existingChoices)
 
   for (const localChoice of localChoices) {
     const existingChoice = existingMap.get(localChoice.name)
-    if (!existingChoice || localChoice.value !== existingChoice.value) {
+    if (
+      // Choice missing
+        !existingChoice ||
+      // Value mismatch
+        (existingChoice.value !== localChoice.value) ||
+      false
+    ) {
       return true
     }
   }
@@ -27,17 +51,44 @@ const areOptionsDifferent = (existingOptions, localOptions) => {
     const existingOption = existingMap.get(localOption.name)
 
     if (
-      !existingOption || // Option missing
-      localOption.description !== existingOption.description || // Description mismatch
-      localOption.type !== existingOption.type || // Type mismatch
-      (localOption.required || false) !== existingOption.required || // Required flag mismatch
-      (localOption.choices?.length || 0) !== (existingOption.choices?.length || 0) || // Choice count mismatch
-      areChoicesDifferent(localOption.choices || [], existingOption.choices || []) // Choice values mismatch
+      // Option missing
+        !existingOption ||
+      // Description mismatch
+        (existingOption.description !== localOption.description) ||
+      // Type mismatch
+        (existingOption.type !== localOption.type) ||
+      // Required flag mismatch
+        (existingOption.required !== (localOption.required || false)) ||
+      // Choice count mismatch
+        areCountsDifferent(existingOption.choices, localOption.choices) ||
+      // Choice values mismatch
+        areChoicesDifferent(existingOption.choices || [], localOption.choices || []) ||
+      false
     ) {
       return true
     }
   }
 
+  return false
+}
+
+// Function to check if subcommands are different
+const areSubcommandsDifferent = (existingSubcommands, localSubcommands) => {
+  const existingMap = mapByName(existingSubcommands)
+
+  for (const localSub of localSubcommands) {
+    const existingSub = existingMap.get(localSub.name)
+
+    if(
+      // Subcommand missing
+        !existingSub ||
+      // Description mismatch
+        (localSub.description !== existingSub.description) ||
+      false
+    ) {
+      return true
+    }
+  }
   return false
 }
 
@@ -47,10 +98,27 @@ module.exports = (existingCommand, localCommand) => {
     throw new Error('Both existingCommand and localCommand must be provided')
   }
 
+  // if (existingCommand.description !== localCommand.description) {
+  //   console.log(
+  //     existingCommand.name,
+  //     "Description mismatch",
+  //     JSON.stringify(existingCommand.description.split(" ").slice(-2)),
+  //     JSON.stringify(localCommand.description.split(" ").slice(-2))
+  //   )
+  // }
+
   if (
-    existingCommand.description !== localCommand.description || // Description mismatch
-    existingCommand.options?.length !== (localCommand.options?.length || 0) || // Option count mismatch
-    areOptionsDifferent(existingCommand.options || [], localCommand.options || []) // Option details mismatch
+    // Description mismatch
+      (existingCommand.description !== localCommand.description) ||
+    // Option count mismatch
+      areCountsDifferent(existingCommand.options, localCommand.options) ||
+    // Subcommand count mismatch
+      areCountsDifferent(existingCommand.subcommands, localCommand.subcommands) ||
+    // Option details mismatch
+      areOptionsDifferent(existingCommand.options || [], localCommand.options || []) ||
+    // Subcommand details mismatch
+      areSubcommandsDifferent(existingCommand.subcommands || [], localCommand.subcommands || []) ||
+    false
   ) {
     return true
   }

@@ -195,6 +195,28 @@ module.exports = class GuildStatusCommand extends RookCommand {
           }
         ]
       )
+
+      let owner = await guild.fetchOwner()
+      if (owner && owner.partial) {
+        owner = await owner.fetch()
+      }
+      if (owner?.user?.primaryGuild?.identityGuildId == guild.id) {
+        let clanGuild = owner.user.primaryGuild
+        this.props.fields.push(
+          [
+            // Clan Guild Tag
+            {
+              name: "Clan Tag",
+              value: codeBlock(clanGuild.tag)
+            },
+            // Clan Guild Icon
+            {
+              name: "Clan Icon",
+              value: hyperlink("Link", await owner.user.guildTagBadgeURL({ size: 128 }))
+            }
+          ]
+        )
+      }
     }
 
     // Vanity URL

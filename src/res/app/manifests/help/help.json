@@ -1128,37 +1128,6 @@
       "instanceClassName": "MMMInfoCommand",
       "parentClassName": "RookCommand"
     },
-    "seedannounce": {
-      "name": "seedannounce",
-      "category": "rando",
-      "description": "Starts a specified Randomizer Game with all necessary details",
-      "options": [
-        {
-          "name": "pingable-role-id",
-          "description": "Role ID number to ping"
-        },
-        {
-          "name": "seed-url",
-          "description": "The URL of the seed to play"
-        },
-        {
-          "name": "prep-time",
-          "description": "The number of minutes to prepare before the game starts."
-        },
-        {
-          "name": "scheduled-time",
-          "description": "A parsesable DateTime for when to schedule this game"
-        },
-        {
-          "name": "group-id",
-          "description": "Group ID number"
-        }
-      ],
-      "access": "unset",
-      "segment": "local",
-      "instanceClassName": "SeedAnnounceCommand",
-      "parentClassName": "RookCommand"
-    },
     "seedmeta": {
       "name": "seedmeta",
       "category": "rando",

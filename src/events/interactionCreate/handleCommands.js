@@ -42,7 +42,7 @@ module.exports = async (client, interaction) => {
       }
     }
 
-    if (!subCmdName) {
+    if (!commandObject) {
       commandObject = localCommands.find(
         cmd => cmd.name === cmdName
       )
@@ -50,10 +50,10 @@ module.exports = async (client, interaction) => {
 
     let coptions = {}
     if (!commandObject) {
-      console.log(
-        interaction.commandName,
-        localCommands.map(cmd => cmd.name).join(", ")
-      )
+      // console.log(
+      //   interaction.commandName,
+      //   localCommands.map(cmd => cmd.name).join(", ")
+      // )
       for (let cmd of localCommands) {
         if (cmd?.aliases && cmd.aliases.length > 0) {
           for (let alias of cmd.aliases) {
@@ -154,6 +154,17 @@ module.exports = async (client, interaction) => {
         messages.map(m=>"   " + m).join("\n")
       )
       messages = []
+    }
+
+    if (subCmdName) {
+      if (commandObject?.subAliases && commandObject.subAliases.length > 0) {
+        for (let subAlias of commandObject.subAliases) {
+          if (subAlias.name === subCmdName) {
+            coptions = subAlias.options
+            messages.push(`/${commandObject.name} ${subAlias.name} is a subalias of /${commandObject.name} with ` + JSON.stringify(coptions))
+          }
+        }
+      }
     }
     result = await commandObject.execute(
       client,

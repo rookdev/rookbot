@@ -8,8 +8,7 @@
     "scripts": [
     ],
     "permalink": [
-      "https://mxfrando.com/seed/<hash>/",
-      "https://dev.mxfrando.com/seed/<hash>/"
+      "https://mxfrando.com/seed/<hash>/"
     ],
     "fields": {
       "sources": {

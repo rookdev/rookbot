@@ -219,7 +219,7 @@ module.exports = class ServerProfileCommand extends AdminCommand {
           }
         }
 
-        console.log(catPerms)
+        this.messages.push(catPerms)
 
         let guildCatProps = {
           name: category,

@@ -6,12 +6,37 @@
       "avatar": "http://alttp.mymm1.com/holyimage/images/alttpo/quad.png"
     },
     "permalink": [
-      "https://quad.beta.samus.link/seed/<hash>",
       "https://quad.samus.link/seed/<hash>"
     ],
     "fields": {
-      "sources": {},
-      "items": []
+      "sources": {
+        "hash_meta": {
+          "url": "https://quad.samus.link/api/seed/<hash>",
+          "check": "createdAt"
+        }
+      },
+      "items": [
+        [
+          {
+            "name": "game_version",
+            "value": ["hash_meta","randomizerVersionId"]
+          },
+          {
+            "name": "Selected Games",
+            "value": ["hash_meta","settingsSnapshot","selectedGames"]
+          }
+        ],
+        [
+          {
+            "name": "permalink",
+            "value": "???"
+          },
+          {
+            "name": "generation_date",
+            "value": "???"
+          }
+        ]
+      ]
     }
   }
 }

@@ -12,6 +12,9 @@ const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 let helpDoc = {}
 let aliasesDoc = {}
 
+// Determine if we are in development or production mode
+let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
+
 let cmdCount = 0
 
 async function extractCommand(command) {
@@ -85,10 +88,7 @@ async function registerCommand(
   let result = false
   let messages = []
 
-  if (cmdParts.name == "server") {
-    return [result, messages]
-  }
-  if (cmdParts.name.includes("IndexCommand")) {
+  if (cmdParts.name.endsWith("IndexCommand")) {
     return [result, messages]
   }
 
@@ -117,6 +117,12 @@ async function registerCommand(
         messages.push(`${client.profile.emojis.fail} Failed to delete: "${cmdParts.name}":`, error.message)
       }
       return [result, messages]
+    }
+
+    if (isDevelopment) {
+      if (!existingCommand.description.endsWith(")")) {
+        // cmdParts.description +=  " (⚙️)"
+      }
     }
 
     // If they're different
@@ -226,8 +232,6 @@ module.exports = async (client) => {
     const testGuildID = process.env.GUILD_ID
     const localCommands = await getLocalCommands(client)
 
-    // Determine if we are in development or production mode
-    let isDevelopment = !process.env.ENV_ACTIVE.startsWith('prod')
     let commandsManager = null
 
     if (isDevelopment) {

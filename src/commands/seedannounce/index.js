@@ -2,7 +2,7 @@
 
 // Command Option Types, Formatters: bold, italic, userMention, roleMention
 const { ApplicationCommandOptionType, bold, italic, inlineCode, userMention, roleMention, hyperlink } = require('discord.js')
-const SeedMetaCommand = require('./seedmeta')
+const SeedMetaCommand = require('../rando/seedmeta')
 const { RookCommand } = require('../../classes/command/rcommand.class')
 const autodetectRando = require('../../utils/rando/autodetectRando')
 const getSeedFields = require('../../utils/rando/getSeedFields')
@@ -51,11 +51,11 @@ function isValidURLFromDomain(input, domain) {
   return valid
 }
 
-module.exports = class SeedAnnounceCommand extends RookCommand {
+module.exports = class SeedAnnounceIndexCommand extends RookCommand {
   constructor(client, comprops, props) {
     comprops = comprops || {
       name: "seedannounce",
-      category: "rando",
+      category: "seedannounce",
       description: "Starts a specified Randomizer Game with all necessary details",
       options: [
         {
@@ -67,6 +67,26 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           name: 'seed-url',
           description: 'The URL of the seed to play',
           type: ApplicationCommandOptionType.String
+        },
+        {
+          name: 'seed-id',
+          description: 'The ID of the seed to play',
+          type: ApplicationCommandOptionType.String
+        },
+        {
+          name: 'game-id',
+          description: 'The Game of the seed to play',
+          type: ApplicationCommandOptionType.String,
+          choices: [
+            { name: "Metroid X-Fusion Item Randomizer", value: "m4xfr" },
+            { name: "A Link to the Past Randomizer",    value: "z3r" },
+            { name: "Super Metroid and A Link to the Past Crossover Randomizer", value: "z3m3" },
+            { name: "Super Metroid Item Randomizer",    value: "sm-total" },
+            { name: "Super Metroid Map Randomizer",     value: "m3maprando" },
+            { name: "Super Metroid VARIA Randomizer",   value: "varia" },
+            { name: "Quad Randomizer",                  value: "z1m1z3m3" },
+            { name: "Archipelago",                      value: "ap" }
+          ]
         },
         {
           name: 'prep-time',
@@ -86,39 +106,68 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
           type: ApplicationCommandOptionType.String
         }
       ],
+      subAliases: [
+        {
+          name:         "basic",
+          description:  "Starts a specified Randomizer Game with all necessary details"
+        },
+        {
+          name:         "smmr",
+          description:  "Starts a Super Metroid Map Randomizer Game with all necessary details",
+          options:      { "game-id": "m3maprando" }
+        },
+        {
+          name:         "mxfr",
+          description:  "Starts a Metroid X-Fusion Item Randomizer Game with all necessary details",
+          options:      { "game-id": "m4xfr" }
+        },
+        {
+          // Works
+          name:         "alttpr",
+          description:  "Starts an A Link to the Past Randomizer Game with all necessary details",
+          options:      { "game-id": "z3r" }
+        },
+        {
+          // Works
+          name:         "smz3",
+          description:  "Starts a Super Metroid & A Link to the Past Randomizer Game with all necessary details",
+          options:      { "game-id": "z3m3" }
+        },
+        {
+          name:         "quad",
+          description:  "Starts a Quad Randomizer Game with all necessary details",
+          options:      { "game-id": "z1m1z3m3" }
+        }
+      ],
       testOptions: [
         // Rando & Ping
         // Rando & Prep Time
         // Rando & Start Time
         // Rando & Group ID
-        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "ping-multiplayer-role": true },
-        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "prep-time": 60 },
+        { "seed-url": "https://alttpr.com/h/xvJo0YX9yJ", "ping-multiplayer-role": true },
+        { "seed-url": "https://alttpr.com/h/xvJo0YX9yJ", "prep-time": 60 },
         { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "scheduled-time": "3155760000" },
-        { "seed-url": "https://alttpr.com/h/0yAONb6XMV", "group-id": "1983" },
-        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "ping-multiplayer-role": true },
-        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "prep-time": 60 },
-        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "scheduled-time": "3155760000" },
-        { "seed-url": "https://samus.link/seed/q8q8Z5NMQlGiSYgqPHKTkA", "group-id": "1983" },
-        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "ping-multiplayer-role": true },
-        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "prep-time": 60 },
-        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "scheduled-time": "3155760000" },
-        { "seed-url": "https://quad.beta.samus.link/seed/MOaOZII0QzS80DG9VTluXw", "group-id": "1983" },
-        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "ping-multiplayer-role": true },
-        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "prep-time": 60 },
-        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "scheduled-time": "3155760000" },
-        { "seed-url": "https://quad.samus.link/seed/taMbuylcr1ufQm6K", "group-id": "1983" },
-        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "ping-multiplayer-role": true },
-        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "prep-time": 60 },
-        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "scheduled-time": "3155760000" },
-        { "seed-url": "https://maprando.com/seed/wPvtmGMpc", "group-id": "1983" },
+        { "seed-url": "https://alttpr.com/h/xvJo0YX9yJ", "group-id": "1983" },
+        { "seed-url": "https://samus.link/seed/Zc37Ob9gT0G0Q331sRj1SQ", "ping-multiplayer-role": true },
+        { "seed-url": "https://samus.link/seed/Zc37Ob9gT0G0Q331sRj1SQ", "prep-time": 60 },
+        { "seed-url": "https://samus.link/seed/Zc37Ob9gT0G0Q331sRj1SQ", "scheduled-time": "3155760000" },
+        { "seed-url": "https://samus.link/seed/Zc37Ob9gT0G0Q331sRj1SQ", "group-id": "1983" },
+        { "seed-url": "https://quad.samus.link/seed/SSNQEbLqfcJRlUlr", "ping-multiplayer-role": true },
+        { "seed-url": "https://quad.samus.link/seed/SSNQEbLqfcJRlUlr", "prep-time": 60 },
+        { "seed-url": "https://quad.samus.link/seed/SSNQEbLqfcJRlUlr", "scheduled-time": "3155760000" },
+        { "seed-url": "https://quad.samus.link/seed/SSNQEbLqfcJRlUlr", "group-id": "1983" },
+        { "seed-url": "https://maprando.com/seed/gJXBCRqYw", "ping-multiplayer-role": true },
+        { "seed-url": "https://maprando.com/seed/gJXBCRqYw", "prep-time": 60 },
+        { "seed-url": "https://maprando.com/seed/gJXBCRqYw", "scheduled-time": "3155760000" },
+        { "seed-url": "https://maprando.com/seed/gJXBCRqYw", "group-id": "1983" },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "ping-multiplayer-role": true },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "prep-time": 60 },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "scheduled-time": "3155760000" },
         { "seed-url": "https://variabeta.pythonanywhere.com/customizer/50098285-a918-4a2f-96bc-8e97c47ea410", "group-id": "1983" },
-        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "ping-multiplayer-role": true },
-        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "prep-time": 60 },
-        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "scheduled-time": "3155760000" },
-        { "seed-url": "https://mxfrando.com/seed/VkFSSUEgSUNFIEZSQU5LRVJaIEJSRUFDSA/", "group-id": "1983" }
+        { "seed-url": "https://mxfrando.com/seed/VEFOSyBNREsgU0VDUkVUIFdBVkVS/", "ping-multiplayer-role": true },
+        { "seed-url": "https://mxfrando.com/seed/VEFOSyBNREsgU0VDUkVUIFdBVkVS/", "prep-time": 60 },
+        { "seed-url": "https://mxfrando.com/seed/VEFOSyBNREsgU0VDUkVUIFdBVkVS/", "scheduled-time": "3155760000" },
+        { "seed-url": "https://mxfrando.com/seed/VEFOSyBNREsgU0VDUkVUIFdBVkVS/", "group-id": "1983" }
       ]
     }
     props = props || {}
@@ -133,30 +182,28 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
 
   async action(client, interaction, coptions) {
     // Role to ping
-    let roleID = coptions['pingable-role-id'] ?? 0
+    let roleID  = coptions['pingable-role-id'] ?? 0
+
     // Seed URL
     let seedURL = coptions['seed-url'] ?? null
+
+    // Seed ID
+    let seedID  = coptions['seed-id'] ?? null
+
+    // Game ID
+    let gameID  = coptions['game-id'] ?? null
+
     // Prep time length
     const prepTimeMinutes = coptions['prep-time'] ?? 5 // Default to 5 minutes
+
     // Scheduled Time
     let scheduledTime = coptions['scheduled-time'] ?? null
 
-    const [randomizer, hashID, permalinkURL] = await autodetectRando(seedURL)
-    if (permalinkURL) {
-      seedURL = permalinkURL
+    let [randomizer, hashID, permalinkURL] = [gameID, seedID, seedURL]
+
+    if (seedURL) {
+      [randomizer, hashID, permalinkURL] = await autodetectRando(seedURL)
     }
-
-      /*
-    const sahaBot = await interactionGuild.members.fetch(userIDs['sahabot'])
-
-    if (!sahaBot) {
-      let intOptions = {
-        content: `SahasrahBot not found on this server. ${userMention(userIDs['sahabot'])}`,
-        flags: MessageFlags.Ephemeral
-      }
-      await interaction.reply(intOptions)
-      return
-    }*/
 
     // Generate random group name
     const randNum = coptions['group-id'] ?? randFuncs.myRand(10000000001)
@@ -216,6 +263,23 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       this.error = true
       this.props.description = `Randomizer Database file for '${randomizer}' not found!`
       return false
+    }
+
+    if (!permalinkURL) {
+      if (randomizer && hashID) {
+        if (randoData?.rando?.permalink) {
+          if (typeof randoData.rando.permalink == "string") {
+            randoData.rando.permalink = [randoData.rando.permalink]
+          }
+          for (let pattern of randoData.rando.permalink) {
+            permalinkURL = pattern.replace("<hash>",hashID)
+          }
+        }
+      }
+    }
+
+    if (permalinkURL) {
+      seedURL = permalinkURL
     }
 
     // Get the title
@@ -311,6 +375,10 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       target: "caller"
     }
     if (randoData?.rando?.player?.avatar) {
+      this.props.entities.rando = {
+        avatar: randoData.rando.player.avatar
+      }
+      this.props.playerTypes.target = "rando"
       this.props.image = { image: randoData?.rando?.player?.avatar }
     }
 
@@ -340,9 +408,11 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       // If no role, try the one listed in the guild DB
       if (roleID == 0) {
         if (roleIDs[randomizer]) {
+          // roleIDs[randomizer]
           this.messages.push(`Found Game-Specific Pingable Role ID for ${mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs[randomizer]
         } else if (roleIDs["pingable-multiplayer-role"]) {
+          // roleIDs[pingable-multiplayer-role]
           this.messages.push(`Found Pingable Role ID for ${mentionFuncs.guildMention(interactionGuild.name, interactionGuild.id, { showID: true, oneLine: true, textOnly: true })}`)
           roleID = roleIDs["pingable-multiplayer-role"]
         }          
@@ -395,11 +465,6 @@ module.exports = class SeedAnnounceCommand extends RookCommand {
       )
 
       // Get metadata fields
-      if (seedURL.endsWith("/")) {
-        seedURL = seedURL.substring(0, seedURL.length - 1)
-      }
-      let hashID = seedURL.split("/")
-      hashID = hashID[hashID.length - 1]
       this.props.fields = await getSeedFields(hashID, randomizer, permalinkURL)
     } else {
       // No permalink, no fields
