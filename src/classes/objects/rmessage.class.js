@@ -24,6 +24,7 @@ class RookMessage {
   }
 
   async getChannel() {
+    // FIXME: Support DMChannel
     if (numFuncs.myIsNumeric(this.channelName)) {
       return await getters.getCachedChannel(
         this.client,
@@ -536,16 +537,21 @@ class RookMessage {
           }
           console.log(
             {
-              channelName: this.channel.name,
-              channelID: this.channel.id,
-              package: JSON.stringify(this_package),
-              new_package: JSON.stringify(new_package)
+              channelName:  this.channel?.name ?? this.channel?.recipient?.tag ?? "???",
+              channelID:    this.channel.id,
+              package:      JSON.stringify(this_package),
+              new_package:  JSON.stringify(new_package)
             }
           )
           this_package = new_package
         }
         let channelGuild = await this.getGuild(this.client, this.channel)
-        this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)
+        if (channelGuild) {
+          this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.name}' of '${channelGuild?.name}'`)
+        } else if (this.channel?.recipient) {
+          this.messages.push(`/${this.name}: Posting Independent to '${this.channel?.recipient?.tag}'`)
+        }
+
         if (Array.isArray(this_package)) {
           for (let page of this_package) {
             send_result = await this.channel.send(page)

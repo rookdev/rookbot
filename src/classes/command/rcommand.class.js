@@ -227,13 +227,17 @@ class RookCommand {
   async getChannel(client, interaction, channelTypes) {
     // console.log(`Get ${channelTypes} of guild`)
     let guild = await this.getGuild(client, interaction)
-    // console.log(`Get ${channelTypes} of ${guild.name}`)
-    return await this.getCache(
-      client,
-      guild,
-      "channels",
-      channelTypes
-    )
+    if (guild) {
+      // console.log(`Get ${channelTypes} of ${guild.name}`)
+      return await this.getCache(
+        client,
+        guild,
+        "channels",
+        channelTypes
+      )
+    } else if (interaction?.channel?.recipient) {
+      return interaction.channel.recipient
+    }
   }
 
   async getProp(client, parent, propName) {
@@ -542,6 +546,7 @@ class RookCommand {
     dateTable.addRow(now.format())
     this.messages.push(dateTable.toString())
 
+    // May not be a guild if sent in DM
     let guild = await this.getGuild(client, interaction)
 
     let Table = new AsciiTable("", {})
@@ -562,19 +567,39 @@ class RookCommand {
         "Platforms",
         this.platforms.map(p => p.ucfirst()).join(", ")
       )
-      // Guild it was in
-      .addRow(
-        "Guild",
-        guild?.name,
-        guild?.id
-      )
-      // Channel it was in
-      .addRow(
-        "Channel",
-        await interaction?.channel?.name,
-        interaction?.channelId
-      )
-      // Interaction associated with it
+
+    // Guild it was in
+    if (guild) {
+      Table
+        .addRow(
+          "Guild",
+          guild?.name,
+          guild?.id
+        )
+    }
+
+    // DMChannel it was in
+    if (interaction?.channel?.recipient) {
+      Table
+        .addRow(
+          "DM",
+          interaction.channel.recipient.tag,
+          interaction.channel.recipient.id
+        )
+    }
+
+    // Channel it was in
+    if (interaction?.channel?.name) {
+      Table
+        .addRow(
+          "Channel",
+          await interaction?.channel?.name,
+          interaction?.channelId
+        )
+    }
+
+    // Interaction associated with it
+    Table
       .addRow(
         "Interaction",
         interaction?.id ? this.profile.emojis.check : this.profile.emojis.nocheck,
@@ -593,6 +618,7 @@ class RookCommand {
 
     if (
       interaction &&
+      guild &&
       !(coptions?.bypass)
     ) {
       // Permissions Required
@@ -668,6 +694,18 @@ class RookCommand {
     let doSend = !(this?.null && this.null)
     let sendResult = false
 
+    if (!guild) {
+      if ("domain" in this.flags) {
+        if (
+          (!this.flags["domain"].contains("bot")) &&
+          (this.flags["domain"].contains("guild"))
+        ) {
+          // Must be run in Guild
+          doSend = false
+        }
+      }
+    }
+
     // If we're still sending, send it
     if (doSend) {
       if (!this.pages.length) {
@@ -702,84 +740,102 @@ class RookCommand {
     this.messages.push(`/${this.name}: Rook Test`)
     let execResult = false
 
-    // If we've got test options defined
-    if (this.testOptions.length > 0) {
-      let pages = []
-      let i = 0
-      let testBook  = !this.testIndependent // One Book
-      let testBooks = this.testIndependent  // Many Books
+    let doTest = true
 
-      if (testBook) {
-        this.messages.push(`/${this.name}: Test One Book with ${this.testOptions.length} Pages`)
-      } else if (testBooks) {
-        this.messages.push(`/${this.name}: Test ${this.testOptions.length} Books`)
-      }
-      // Cycle through test options
-      for (let thisTest of this.testOptions) {
-        this.testPageNum += 1
-        // Reset props
-        this.props = {}
-        // Reset error
-        this.error = false
-
-        // If One Book
-        if (testBook) {
-          // Build this Page
-          let buildResult = await this.build(
-            client,
-            interaction,
-            thisTest
-          )
-          // Check truth assertion
-          if (this.testOptions.hasOwnProperty("assert")) {
-            if (buildResult != this.testOptions.assert) {
-              this.props["error"] = true
-            }
-          }
-
-          // Push this Page
-          let a_page = {...this.props}
-          pages.push(a_page)
-          i += 1
+    // May not be a guild if sent in DM
+    let guild = await this.getGuild(client, interaction)
+    if (!guild) {
+      if ("domain" in this.flags) {
+        if (
+          (!this.flags["domain"].contains("bot")) &&
+          (this.flags["domain"].contains("guild"))
+        ) {
+          // Must be run in Guild
+          doTest = false
         }
+      }
+    }
 
-        // If Many Books
-        if (testBooks) {
-          try {
-            // Execute the Command
-            execResult = await this.execute(
+    if (doTest) {
+      // If we've got test options defined
+      if (this.testOptions.length > 0) {
+        let pages = []
+        let i = 0
+        let testBook  = !this.testIndependent // One Book
+        let testBooks = this.testIndependent  // Many Books
+  
+        if (testBook) {
+          this.messages.push(`/${this.name}: Test One Book with ${this.testOptions.length} Pages`)
+        } else if (testBooks) {
+          this.messages.push(`/${this.name}: Test ${this.testOptions.length} Books`)
+        }
+        // Cycle through test options
+        for (let thisTest of this.testOptions) {
+          this.testPageNum += 1
+          // Reset props
+          this.props = {}
+          // Reset error
+          this.error = false
+  
+          // If One Book
+          if (testBook) {
+            // Build this Page
+            let buildResult = await this.build(
               client,
               interaction,
-              thisTest,
-              testBooks
+              thisTest
             )
-          } catch(e) {
-            // do nothing
+            // Check truth assertion
+            if (this.testOptions.hasOwnProperty("assert")) {
+              if (buildResult != this.testOptions.assert) {
+                this.props["error"] = true
+              }
+            }
+  
+            // Push this Page
+            let a_page = {...this.props}
+            pages.push(a_page)
+            i += 1
+          }
+  
+          // If Many Books
+          if (testBooks) {
+            try {
+              // Execute the Command
+              execResult = await this.execute(
+                client,
+                interaction,
+                thisTest,
+                testBooks
+              )
+            } catch(e) {
+              // do nothing
+            }
           }
         }
-      }
-
-      if (testBook) {
-        // If we built a Book, send it
-        try {
-          let rmessage = await new RookMessage(
-            client,
-            interaction,
-            {
-              pages: pages,
-              content: this.content
-            }
-          )
-          execResult = await rmessage.execute()
-        } catch(e) {
-          this.messages.push(e)
+  
+        if (testBook) {
+          // If we built a Book, send it
+          try {
+            let rmessage = await new RookMessage(
+              client,
+              interaction,
+              {
+                pages: pages,
+                content: this.content
+              }
+            )
+            execResult = await rmessage.execute()
+          } catch(e) {
+            this.messages.push(e)
+          }
         }
+  
+        this.null = true
+      } else {
+        // Else, no test options sent, just execute as normal
+        execResult = await this.execute(client, interaction)
       }
-
-      this.null = true
-    } else {
-      // Else, no test options sent, just execute as normal
-      execResult = await this.execute(client, interaction)
     }
 
     this.messages.push(''.padEnd(50, "*"))

@@ -59,7 +59,8 @@ module.exports = class ExitCommand extends BotDevCommand {
     }
 
     // Log who called Exit
-    this.messages.push(`!!! Bot Exit by: ${interaction.member.user.tag} !!!`)
+    let usertag = interaction?.user?.tag ?? interaction?.member?.tag ?? interaction?.author?.tag ?? "???"
+    this.messages.push(`!!! Bot Exit by: ${usertag} !!!`)
     this.props.description = `Exiting ${mentionFuncs.userMention(client.user.id)}`
 
     // Call UptimeCommand
