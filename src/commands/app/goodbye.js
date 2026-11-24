@@ -19,6 +19,12 @@ module.exports = class GoodbyeCommand extends SalutationCommand {
       name: "goodbye",
       category: "app",
       description: "Goodbye",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       // BotPerms: Administrator
       permissions: [ PermissionFlagsBits.Administrator ]
     }

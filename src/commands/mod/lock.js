@@ -17,6 +17,11 @@ module.exports = class LockCommand extends ModCommand {
       name: "lock",
       category: "mod",
       description: "Locks a channel, preventing anyone from sending messages.",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "channel",

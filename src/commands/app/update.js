@@ -14,7 +14,11 @@ module.exports = class UpdateCommand extends BotDevCommand {
       category: "app",
       description: "Update Node Modules",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {}

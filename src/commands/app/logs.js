@@ -28,7 +28,11 @@ module.exports = class LogsCommand extends BotDevCommand {
         }
       ],
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {}

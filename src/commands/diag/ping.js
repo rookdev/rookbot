@@ -11,7 +11,11 @@ module.exports = class PingCommand extends RookCommand {
       category: "diagnostic",
       description: "Pong!",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {

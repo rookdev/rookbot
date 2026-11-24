@@ -14,6 +14,12 @@ module.exports = class DeleteCommandCommand extends AdminCommand {
       name: "delcommand",
       category: "admin",
       description: "Delete a Command",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "command-name",

@@ -18,7 +18,11 @@ module.exports = class UptimeCommand extends RookCommand {
       description: "Uptime",
       flags: {
         user: "unapplicable",
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {

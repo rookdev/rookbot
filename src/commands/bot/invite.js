@@ -10,7 +10,11 @@ module.exports = class BotInviteCommand extends RookCommand {
       category: "botmeta",
       description: "Invite rookbot",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     super(

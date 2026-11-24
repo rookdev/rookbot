@@ -14,6 +14,12 @@ module.exports = class TimeCommand extends RookCommand {
       name: "time",
       category: "misc",
       description: "Time",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       platforms: ["discord", "stoat"]
     }
     let props = {

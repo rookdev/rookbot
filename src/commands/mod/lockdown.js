@@ -26,6 +26,11 @@ module.exports = class LockdownCommand extends ModCommand {
       name: "lockdown",
       category: "mod",
       description: "Locks or unlocks all channels for the @everyone role.",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "action",

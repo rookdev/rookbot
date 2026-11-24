@@ -19,6 +19,11 @@ module.exports = class ReactionRolesCommand extends ModCommand {
       name: "rr",
       category: "mod",
       description: "Create Reaction Role posts for cloning.",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      }
     }
     let props = {}
 

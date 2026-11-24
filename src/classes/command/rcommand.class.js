@@ -25,6 +25,7 @@ class RookCommand {
     this.name             = setValue(comprops.name, "unknown")
     this.description      = setValue(comprops.description, (this.name.charAt(0).toUpperCase() + this.name.slice(1)))
     this.options          = setValue(comprops.options, [])
+    this.flags            = setValue(comprops.flags, {})
     this.category         = setValue(comprops.category, "unknown")
     this.aliases          = setValue(comprops.aliases, [])
     this.subAliases       = setValue(comprops.subAliases, [])
@@ -42,12 +43,12 @@ class RookCommand {
     this.playerTypes      = setValue(comprops.playerTypes, null)
 
     // Initialize global properties
-    this.profile = client.profile // Loaded Profile
-    this.pages = []               // Bucket for Pages to Print
-    this.content = ""             // Message Content
-    this.error = false            // Did we have an error?
-    this.ephemeral = false        // Make sure Ephemeral Response
-    this.testPageNum = 0
+    this.profile      = client.profile  // Loaded Profile
+    this.pages        = []              // Bucket for Pages to Print
+    this.content      = ""              // Message Content
+    this.error        = false           // Did we have an error?
+    this.ephemeral    = false           // Make sure Ephemeral Response
+    this.testPageNum  = 0
 
     // Figure out if we're in Production or Development
     let PROD = false

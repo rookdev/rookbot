@@ -29,7 +29,10 @@ module.exports = class BotEditDBsCommand extends BotDevCommand {
       category: "botedit",
       description: "Get rookbot's dbs for this guild",
       flags: {
-        user: "unapplicable"
+        user: "unapplicable",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

@@ -17,6 +17,12 @@ module.exports = class HolyImageCommand extends RookCommand {
       name: "holyimage",
       category: "rando",
       description: "Calls a Holy Image",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "game-id",

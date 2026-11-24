@@ -10,7 +10,11 @@ module.exports = class EmbedCommand extends AdminCommand {
       category: "misc",
       description: "Sends an embed with predefined content",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {

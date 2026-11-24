@@ -20,6 +20,11 @@ module.exports = class BirthdayNotifCommand extends RookCommand {
         user:   "guild",
         target: "bot"
       },
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       userPermissions: [ PermissionFlagsBits.ViewChannel ],
       botPermissions: [ PermissionFlagsBits.ViewChannel ]
     }

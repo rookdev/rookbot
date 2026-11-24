@@ -11,6 +11,11 @@ module.exports = class GuildCatsCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       description: "Guild Categories",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       playerTypes: {
         user:   "bot",
         target: "guild"

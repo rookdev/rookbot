@@ -32,7 +32,11 @@ module.exports = class BotGuildsCommand extends RookCommand {
       description: "Bot Guilds",
       flags: {
         user: "unapplicable",
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       },
       options: [
         {

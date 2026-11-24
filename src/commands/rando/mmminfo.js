@@ -30,6 +30,12 @@ module.exports = class MMMInfoCommand extends RookCommand {
       name: "mmminfo",
       category: "rando",
       description: "Calls up information from Mothula's Multiworld Mayhem",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "episode-id",

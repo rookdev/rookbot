@@ -11,7 +11,11 @@ module.exports = class MothCommand extends RookCommand {
       category: "doi",
       description: "Hear it from the legend himself",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {}

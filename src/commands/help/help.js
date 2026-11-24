@@ -32,6 +32,12 @@ module.exports = class HelpCommand extends RookCommand {
       name: "help",
       category: "help",
       description: "Help",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "section-name",

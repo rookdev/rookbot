@@ -17,6 +17,11 @@ module.exports = class ShoutoutCommand extends ModCommand {
       name: "shoutout",
       category: "mod",
       description: "Post a Shoutout for a user.",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "target",

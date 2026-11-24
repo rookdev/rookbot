@@ -6,7 +6,12 @@ module.exports = class GuildWebhooksCommand extends RookCommand {
   constructor(client) {
     let comprops = {
       name: "webhooks",
-      description: "Guild Webhooks"
+      description: "Guild Webhooks",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      }
     }
     let props = {
       title: {

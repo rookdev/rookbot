@@ -8,7 +8,13 @@ module.exports = class NLCommand extends RookCommand {
     let comprops = {
       name: "nl",
       category: "misc",
-      description: "Posts a rainbow divider line"
+      description: "Posts a rainbow divider line",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      }
     }
     let props = {}
 

@@ -18,7 +18,10 @@ module.exports = class BotEditMongoDBCommand extends BotDevCommand {
       category: "botedit",
       description: "Manage MongoDB's dbs for this guild",
       flags: {
-        user: "unapplicable"
+        user: "unapplicable",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

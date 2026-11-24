@@ -12,6 +12,12 @@ module.exports = class SeedMetaCommand extends RookCommand {
       name: "seedmeta",
       category: "rando",
       description: "Gets metadata for a seed",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "hash-id",

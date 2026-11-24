@@ -18,6 +18,12 @@ module.exports = class CalcCommand extends RookCommand {
       name: "calc",
       category: "misc",
       description: "Evaluates a math expression",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "expression",

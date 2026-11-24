@@ -12,7 +12,10 @@ module.exports = class SlapCommand extends RookCommand {
       category: "fun",
       description: "Slap another user around with a specified item",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

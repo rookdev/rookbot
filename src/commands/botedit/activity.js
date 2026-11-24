@@ -26,6 +26,12 @@ module.exports = class BotEditActivityCommand extends BotDevCommand {
       name: "activity",
       category: "botedit",
       description: "Bot Activity setter",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "activity-id",

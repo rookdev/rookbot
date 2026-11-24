@@ -10,7 +10,11 @@ module.exports = class TestCommand extends RookCommand {
       name: "test",
       category: "diagnostic",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     super(

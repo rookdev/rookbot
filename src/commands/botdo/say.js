@@ -53,6 +53,11 @@ module.exports = class SayCommand extends ModCommand {
       name: "say",
       description: "Say as Bot",
       category: "botdo",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "message",

@@ -20,6 +20,11 @@ module.exports = class SetPermsCommand extends AdminCommand {
       name: "setperms",
       category: "admin",
       description: "Manage Channel/Role Permissions",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "channel",

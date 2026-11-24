@@ -18,7 +18,13 @@ module.exports = class FugetaboutitCommand extends RookCommand {
     let comprops = {
       name: "fugetaboutit",
       description: "Pronunciation Tutorial",
-      category: "doi"
+      category: "doi",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      }
     }
     let props = {}
     super(

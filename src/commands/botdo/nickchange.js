@@ -22,6 +22,11 @@ module.exports = class NickChangeCommand extends RookCommand {
           required: true
         }
       ],
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       playerTypes: {
         user:   "caller",
         target: "target"

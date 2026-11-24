@@ -15,7 +15,13 @@ module.exports = class HelloCommand extends SalutationCommand {
     let comprops = {
       name: "hello",
       category: "app",
-      description: "Hello"
+      description: "Hello",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      }
     }
     super(
       client,

@@ -14,6 +14,11 @@ module.exports = class GuildInviteCommand extends ModCommand {
       name: "guildinvite",
       category: "mod",
       description: "Guild Invite",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "channel",

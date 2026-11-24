@@ -11,6 +11,12 @@ module.exports = class ColorCommand extends RookCommand {
       name: "color",
       category: "misc",
       description: "Displays information about a hex color code",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "hex",

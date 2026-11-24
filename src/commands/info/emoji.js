@@ -5,6 +5,11 @@ module.exports = class InfoEmojiCommand extends MentionCommand {
   constructor(client) {
     let comprops = {
       description: "Emoji Info",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "emoji",

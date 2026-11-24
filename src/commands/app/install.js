@@ -21,7 +21,11 @@ module.exports = class InstallCommand extends BotDevCommand {
       category: "app",
       description: "Install Node Modules",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {}

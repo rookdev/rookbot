@@ -16,10 +16,13 @@ module.exports = class BatchModCommand extends BotDevCommand {
       category: "mod",
       description: "Runs a batch of Mod commands",
       flags: {
-        user: "unapplicable",
-        target: "unapplicable",
-        mention: "unapplicable",
-        bot: "unapplicable"
+        user:     "unapplicable",
+        target:   "unapplicable",
+        mention:  "unapplicable",
+        bot:      "unapplicable",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

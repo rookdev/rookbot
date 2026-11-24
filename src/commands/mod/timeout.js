@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 // Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
@@ -12,9 +12,12 @@ module.exports = class TimeoutCommand extends ModCommand {
       category: "mod",
       description: "Times out a user for a specified duration.",
       flags: {
-        bot: "optional",
-        user: "invalid",
-        target: "required"
+        bot:    "optional",
+        user:   "invalid",
+        target: "required",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

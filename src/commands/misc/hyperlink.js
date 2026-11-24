@@ -17,6 +17,12 @@ module.exports = class HyperlinkCommand extends RookCommand {
       name: "hyperlink",
       category: "misc",
       description: "Helps create markdown hyperlink",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "link-url",

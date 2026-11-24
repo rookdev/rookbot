@@ -16,6 +16,11 @@ module.exports = class GuildMembersCommand extends RookCommand {
         user:   "bot",
         target: "guild"
       },
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       platforms: ["discord"]
     }
     let props = {

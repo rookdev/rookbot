@@ -14,10 +14,13 @@ module.exports = class TestSuiteCommand extends BotDevCommand {
       category: "app",
       description: "Runs a test suite for a command",
       flags: {
-        user: "unapplicable",
-        target: "unapplicable",
-        mention: "unapplicable",
-        bot: "unapplicable"
+        user:     "unapplicable",
+        target:   "unapplicable",
+        mention:  "unapplicable",
+        bot:      "unapplicable",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

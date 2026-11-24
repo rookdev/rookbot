@@ -16,6 +16,11 @@ module.exports = class GuildStatusCommand extends RookCommand {
     let comprops = {
       name: "status",
       description: "Guild Status",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       playerTypes: {
         user:   "bot",
         target: "guild"

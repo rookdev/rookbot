@@ -13,7 +13,10 @@ module.exports = class BotEditNicknameCommand extends BotDevCommand {
       category: "botedit",
       description: "Set rookbot's Nickname",
       flags: {
-        user: "unapplicable"
+        user: "unapplicable",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

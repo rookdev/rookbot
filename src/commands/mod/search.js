@@ -31,8 +31,11 @@ module.exports = class SearchCommand extends ModCommand {
       category: "mod",
       description: "Search Logs",
       flags: {
-        bot: "optional",
-        target: "required"
+        bot:    "optional",
+        target: "required",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

@@ -14,6 +14,11 @@ module.exports = class ServerProfileCommand extends AdminCommand {
       name: "server_profile",
       category: "admin",
       description: "Server Profile",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "manifest",

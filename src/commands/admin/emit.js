@@ -24,6 +24,11 @@ module.exports = class EmitCommand extends AdminCommand {
       name: "emit",
       category: "admin",
       description: "Emit event",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "event-name",

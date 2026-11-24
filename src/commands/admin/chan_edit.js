@@ -20,6 +20,11 @@ module.exports = class ChannelEditCommand extends AdminCommand {
       name: "chan_edit",
       category: "admin",
       description: "Edit a Channel",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "mode",

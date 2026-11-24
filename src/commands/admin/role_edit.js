@@ -22,6 +22,11 @@ module.exports = class RoleEditCommand extends AdminCommand {
       name: "role_edit",
       category: "admin",
       description: "Edit a Role",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "mode",

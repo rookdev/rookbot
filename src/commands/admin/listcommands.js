@@ -24,6 +24,12 @@ module.exports = class ListCommandsCommand extends AdminCommand {
       name: "listcommands",
       category: "admin",
       description: "List Commands",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "domain",

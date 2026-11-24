@@ -25,7 +25,11 @@ module.exports = class ExitCommand extends BotDevCommand {
       category: "app",
       description: "Exit rookbot",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {

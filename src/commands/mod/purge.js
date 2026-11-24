@@ -17,6 +17,11 @@ module.exports = class PurgeCommand extends ModCommand {
       name: "purge",
       category: "mod",
       description: "Purge Messages",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "amount",

@@ -19,6 +19,12 @@ module.exports = class WikiCommand extends RookCommand {
       name: "wiki",
       category: "misc",
       description: "Links to a wikipage",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "pagename",

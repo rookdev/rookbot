@@ -5,6 +5,11 @@ module.exports = class InfoMentionCommand extends MentionCommand {
   constructor(client) {
     let comprops = {
       description: "Mention Info",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "channel",

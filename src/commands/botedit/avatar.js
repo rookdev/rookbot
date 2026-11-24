@@ -13,7 +13,11 @@ module.exports = class BotEditAvatarCommand extends BotDevCommand {
       category: "botedit",
       description: "Set rookbot's Avatar",
       flags: {
-        user: "unapplicable"
+        user: "unapplicable",
+        domain: [
+          "bot",
+          "guild"
+        ]
       },
       options: [
         {

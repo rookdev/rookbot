@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 // Command Option Types, Permission Flags
 const { ApplicationCommandOptionType, PermissionFlagsBits } = require('discord.js')
@@ -12,9 +12,12 @@ module.exports = class RoleAddCommand extends ModCommand {
       category: "mod",
       description: "Adds a role to a member",
       flags: {
-        bot: "optional",
-        user: "invalid",
-        target: "required"
+        bot:    "optional",
+        user:   "invalid",
+        target: "required",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

@@ -30,6 +30,11 @@ module.exports = class VerboseViewCommand extends AdminCommand {
       name: "vview",
       category: "admin",
       description: "Verbose View",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "role",

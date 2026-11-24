@@ -12,7 +12,11 @@ module.exports = class CoinFlipCommand extends RookCommand {
       category: "fun",
       description: "Flips a coin and return either Heads or Tails",
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       },
       platforms: ["discord", "stoat"]
     }

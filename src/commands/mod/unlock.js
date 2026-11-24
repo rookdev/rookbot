@@ -28,6 +28,11 @@ module.exports = class UnlockCommand extends ModCommand {
       name: "unlock",
       category: "mod",
       description: "Unlocks a channel, allowing users to send messages again.",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "channel",

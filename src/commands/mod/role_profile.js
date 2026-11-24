@@ -14,6 +14,11 @@ module.exports = class RoleProfileCommand extends ModCommand {
       name: "role_profile",
       category: "mod",
       description: "Apply a Role Profile to a member",
+      flags: {
+        domain: [
+          "guild"
+        ]
+      },
       options: [
         {
           name: "target-id",

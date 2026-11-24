@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 
 // Command Option Types
 const { ApplicationCommandOptionType } = require('discord.js')
@@ -12,9 +12,12 @@ module.exports = class KickCommand extends ModCommand {
       category: "mod",
       description: "Kicks a user from the server.",
       flags: {
-        bot: "optional",
-        user: "invalid",
-        target: "required"
+        bot:    "optional",
+        user:   "invalid",
+        target: "required",
+        domain: [
+          "guild"
+        ]
       },
       options: [
         {

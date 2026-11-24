@@ -29,7 +29,11 @@ module.exports = class PullCommand extends BotDevCommand {
         }
       ],
       flags: {
-        test: "basic"
+        test: "basic",
+        domain: [
+          "bot",
+          "guild"
+        ]
       }
     }
     let props = {

@@ -30,6 +30,12 @@ module.exports = class ListEventsCommand extends RookCommand {
       name: "listevents",
       category: "help",
       description: "Events Help",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "event-name",

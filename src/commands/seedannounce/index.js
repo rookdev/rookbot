@@ -57,6 +57,12 @@ module.exports = class SeedAnnounceIndexCommand extends RookCommand {
       name: "seedannounce",
       category: "seedannounce",
       description: "Starts a specified Randomizer Game with all necessary details",
+      flags: {
+        domain: [
+          "bot",
+          "guild"
+        ]
+      },
       options: [
         {
           name: "pingable-role-id",
