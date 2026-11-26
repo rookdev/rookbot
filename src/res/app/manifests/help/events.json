@@ -56,6 +56,15 @@
       ]
     }
   },
+  "guildUpdate": {
+    "logGuildUpdate": {
+      "label": "Guild Update",
+      "description": "Log to a channel and to disk when guild is updated",
+      "platforms": [
+        "discord"
+      ]
+    }
+  },
   "inviteCreate": {
     "logCreatedInvite": {
       "label": "Invite Created",

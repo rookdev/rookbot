@@ -128,6 +128,7 @@ module.exports = class BotEditDBsCommand extends BotDevCommand {
               "logging",              // Catch-all Logging
               "logging-ban",          // Bans
               "logging-boosts",       // Server Boosts
+              "logging-guild",        // Guild Changes
               "logging-invites",      // Guild Invites
               "logging-kick",         // Kicks
               "logging-members",      // Members Join/Leave

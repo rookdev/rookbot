@@ -86,6 +86,34 @@ module.exports = class EmitCommand extends AdminCommand {
 
       channel.name = "New Name"
       args.push(channel)
+    } else if (eventName == "guildUpdate") {
+      let oldGuild = {
+        id: guild.id,
+        description: "Old Description",
+        features: [ "ONE", "TWO", "THREE" ],
+        name: "Old Name",
+        ownerId: client.user.id,
+        channels: await guild.channels,
+        members: await guild.members,
+        premiumSubscriptionCount: 1,
+        premiumProgressBarEnabled: false,
+        vanityURLCode: null
+      }
+      let newGuild = {
+        id: guild.id,
+        description: "New Description",
+        features: [ "THREE", "FOUR", "FIVE" ],
+        name: "New Name",
+        ownerId: "263968998645956608",
+        channels: await guild.channels,
+        members: await guild.members,
+        premiumSubscriptionCount: 2,
+        premiumProgressBarEnabled: true,
+        vanityURLCode: "code"
+      }
+
+      args.push(oldGuild)
+      args.push(newGuild)
     } else if (
       [
         "guildMemberAdd",

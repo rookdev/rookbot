@@ -209,7 +209,12 @@ class RookEmbed extends EmbedBuilder {
     // Hack footer for PROD Mode
     if (!(footerDev || footerNone)) {
       let profileFooterText = client.profile?.footer?.text && client.profile?.footer.text != "" ? client.profile.footer.text : ""
-      let profileFooterImage = client.profile?.footer?.image && client.profile?.footer.image != "" ? client.profile.footer.image : ""
+      let profileFooterImage = ""
+      if (client?.profile?.footer?.image && (client.profile.footer.image != "")) {
+        profileFooterImage = client.profile.footer.image
+      } else {
+        profileFooterImage = client.user.displayAvatarURL({ size: 32 })
+      }
       if (!this.props?.footer) {
         this.props.footer = {
           text: "",

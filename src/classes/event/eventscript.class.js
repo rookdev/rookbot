@@ -50,6 +50,7 @@ class EventScript {
     if (typeof channelNames === "string") {
       channelNames = [ channelNames ]
     }
+    channelNames.push("bot-console")
 
     let channel = null
 
