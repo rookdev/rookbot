@@ -49,6 +49,12 @@ module.exports = class LogGuildUpdateEvent extends EventScript {
       text: "[Log] Guild Updated",
       emoji: ""
     }
+    logProps.entities = {
+      guild: {
+        name: newGuild.name,
+        avatar: newGuild.iconURL({ size: 128 })
+      }
+    }
     logProps.playerTypes = {
       user:   "guild",
       target: "guild"

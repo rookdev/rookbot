@@ -229,7 +229,7 @@ module.exports = class EmitCommand extends AdminCommand {
         {
           channel: interaction.channel,
           channelId: interaction.channelId,
-          code: "iddqd",
+          code: "snafubarmoozippers",
           createdAt: 0,
           expiresAt: 0,
           guild: guild,

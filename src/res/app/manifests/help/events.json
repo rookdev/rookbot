@@ -41,7 +41,7 @@
         "discord"
       ]
     },
-    "roleChange": {
+    "detectRoleChange": {
       "label": "Detect Role Change and do something",
       "description": "Log to a channel when a member has specific roles added/removed",
       "platforms": [

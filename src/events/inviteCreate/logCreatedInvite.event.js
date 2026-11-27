@@ -35,6 +35,45 @@ module.exports = class LogCreatedInviteEvent extends EventScript {
   async action(client, newInvite) {
     // this.messages.push(`/${this.name}: Event Action`)
     let guild = await this.getProp(client, newInvite, "guild")
+
+    if (guild) {
+      // Normal Invites
+      let newInvites = await guild
+        .invites
+        .fetch()
+      newInvites = newInvites
+        .valueOf()
+        .map(i => {
+          return {
+            guildName: guild.name,
+            code: i.code,
+            channelName: i.channel.name,
+            inviter: i.inviter,
+            maxUses: i.maxUses,
+            uses: i.uses
+          }
+        }
+      )
+      // this.messages.push(`New Invites: ${JSON.stringify(newInvites)}`)
+
+      if (newInvites) {
+        let newInvitesHash = {}
+        for (let newInvite of newInvites) {
+          // this.messages.push(`New Invite: ${JSON.stringify(newInvite)}`)
+          newInvitesHash[newInvite.code] = {
+            guildName: guild.name,
+            code: newInvite.code,
+            channelName: await newInvite?.channel?.name,
+            inviter: newInvite.inviter,
+            maxUses: newInvite.maxUses,
+            uses: newInvite.uses
+          }
+        }
+        // this.messages.push(`New Invites Hash: ${JSON.stringify(newInvitesHash)}`)
+        client.invites.normal.set(guild.id, newInvitesHash)
+      }
+    }
+
     let createdDateTime = moment.utc(newInvite.createdTimestamp)
     let expiresDateTime = newInvite.expiresTimestamp ? moment.utc(newInvite.expiresTimestamp) : null
     let logProps = {}

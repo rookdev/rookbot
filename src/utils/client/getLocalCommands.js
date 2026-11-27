@@ -362,7 +362,9 @@ module.exports = async (client, exceptions = []) => {
             }
             subCommandData[commandCategoryName].push(filename)
           }
-          console.log("Current: " + JSON.stringify(subCommandData))
+          if (false) {
+            console.log("Current: " + JSON.stringify(subCommandData))
+          }
         }
       }
     } else {

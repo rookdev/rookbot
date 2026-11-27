@@ -10,13 +10,13 @@ const moment = require('moment')
 
 /**
  * @class
- * @this {RoleChangeEvent}
+ * @this {DetectRoleChangeEvent}
  * @public
  */
-module.exports = class RoleChangeEvent extends EventScript {
+module.exports = class DetectRoleChangeEvent extends EventScript {
   constructor(client) {
     let evtprops = {
-      name: "roleChange",
+      name: "detectRoleChange",
       event: "guildMemberUpdate",
       label: "Detect Role Change and do something",
       description: "Log to a channel when a member has specific roles added/removed"
@@ -134,6 +134,8 @@ module.exports = class RoleChangeEvent extends EventScript {
       }
     }
 
+    let roleMode = ""
+
     // Make logpost
     let logProps = {}
     logProps.title = {
@@ -141,14 +143,17 @@ module.exports = class RoleChangeEvent extends EventScript {
       emoji: "🏷️"
     }
     if ((roleSets.removed.length > 0) && (roleSets.added.length > 0)) {
+      roleMode = "changed"
       logProps.color = client.profile.colors.info
     } else if (roleSets.added.length > 0) {
+      roleMode = "added"
       logProps.color = client.profile.colors.good
       logProps.title = {
         text: "[Log] Roles Added",
         emoji: "➕"
       }
     } else if (roleSets.removed.length > 0) {
+      roleMode = "removed"
       logProps.color = client.profile.colors.bad
       logProps.title = {
         text: "[Log] Roles Removed",
@@ -203,11 +208,13 @@ module.exports = class RoleChangeEvent extends EventScript {
             if (guildRoles["member"].includes(roleName)) {
               verifiedRole = true
               if (roleSet == "added") {
+                roleMode = "verified"
                 logProps.title = {
                   text: "[Log] Member Verified",
                   emoji: client.profile.emojis.success
                 }
               } else if (roleSet == "removed") {
+                roleMode = "denied"
                 logProps.title = {
                   text: "[Log] Member Denied",
                   emoji: client.profile.emojis.bad
@@ -292,12 +299,21 @@ module.exports = class RoleChangeEvent extends EventScript {
     fieldRow = []
 
     // [Message]
-
     await this.logPost(
       client,
       guild,
       logType,
       logProps
+    )
+
+    // appended messages for debugging
+    await this.logMessages(
+      logProps.title.emoji,
+      {
+        guild: guild.name,
+        member: newMember.user.tag,
+        action: roleMode
+      }
     )
   }
 }

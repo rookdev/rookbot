@@ -90,7 +90,8 @@ module.exports = class LogVCMemberAddRemoveEvent extends EventScript {
     // Ignore these accounts
     if (
       [
-        "1470151477610938509",  // Green-bot
+        "1470151477610938509",  // Green-bot Classic
+        "1300236759606497310",  // Green-bot
         "1222739006350032966"   // Suno Bot
       ].includes(state.id)
     ) {

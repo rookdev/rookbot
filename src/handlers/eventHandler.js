@@ -56,19 +56,6 @@ module.exports = (client) => {
 
           // Cycle through event scripts
           for (const eventFile of eventFiles) {
-            /**
-             * Don't push these notifications to console for:
-             *  interactionCreate
-             *  messageUpdate
-             */
-            if (
-              [
-                "interactionCreate"
-              ].includes(eventFile)
-            ) {
-              continue
-            }
-
             // Skip it if it's *.off
             if (eventFile.endsWith(".off")) {
               continue
@@ -114,6 +101,20 @@ module.exports = (client) => {
                 } catch (error) {
                   messages.push(`${client.profile.emojis.bad}${error.stack}`)
                 }
+              }
+
+              /**
+               * Don't push these notifications to console for:
+               *  interactionCreate
+               *  messageUpdate
+               */
+              if (
+                [
+                  "interactionCreate",
+                  "presenceUpdate"
+                ].includes(eventName)
+              ) {
+                messages = []
               }
 
               if (messages.length) {
